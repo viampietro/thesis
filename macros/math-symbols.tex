@@ -1,0 +1,96 @@
+% New math symbols.
+
+% Defining simple hyphen for math mode.
+
+\mathchardef\mhyphen="2D
+
+\newcommand\steq{
+  \mathrel{\stackrel{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily state}}}{=}}}
+
+\newcommand\lassign[1]{
+\mathrel{\stackrel{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily #1}}}{:=}}}
+
+\newcommand\rlabelledarrow[1]{
+\mathrel{\stackon[2pt]{$\rightarrow$}{\scriptsize $#1$}}}
+
+\newcommand\srsquigarrow[2]{%
+  \mathrel{%
+    \begin{tikzpicture}[%
+      baseline={(current bounding box.south)}
+      ]
+      \node[%
+      ,inner sep=1ex
+      ,align=center
+      ] (tmp) {#2 $#1$};
+      
+      \path[%
+      ,draw,<-
+      ,decorate,decoration={%
+        ,zigzag
+        ,amplitude=0.7pt
+        ,segment length=1.2mm,pre length=3.5pt}
+      ] 
+      ($(tmp.south east)-(3pt,0)$) -- ($(tmp.south west)+(3pt,0)$);
+    \end{tikzpicture}
+  }
+}
+
+\newcommand\xrsquigarrow[1]{%
+  \mathrel{%
+    \begin{tikzpicture}[%
+      baseline={(current bounding box.south)}
+      ]
+      \node[%
+      ,inner sep=1ex
+      ,align=center
+      ] (tmp) {\scriptsize $#1$};
+      
+      \path[%
+      ,draw,<-
+      ,decorate,decoration={%
+        ,zigzag
+        ,amplitude=0.7pt
+        ,segment length=1.2mm,pre length=3.5pt}
+      ] 
+      ($(tmp.south east)-(3pt,0)$) -- ($(tmp.south west)+(3pt,0)$);
+    \end{tikzpicture}
+  }
+}
+
+\newcommand\xlsquigarrow[1]{%
+  \mathrel{%
+    \begin{tikzpicture}[%
+      ,baseline={(current bounding box.south)}
+      ]
+      \node[%
+      ,inner sep=.44ex
+      ,align=center
+      ] (tmp) {\scriptstyle $#1$};
+      \path[%
+      ,draw,<-
+      ,decorate,decoration={%
+        ,zigzag
+        ,amplitude=0.7pt
+        ,segment length=1.2mm,pre length=3.5pt
+      }
+      ] 
+      (tmp.south west) -- (tmp.south east);
+    \end{tikzpicture}
+  }
+}
+
+\newcommand\srarrow[2]{%
+  \mathrel{%
+    \begin{tikzpicture}[%
+      baseline={(current bounding box.south)}
+      ]
+      \node[%
+      ,inner sep=1ex
+      ,align=center
+      ] (tmp) {#2 $#1$};
+      \path[%
+      ,draw,<-,] 
+      ($(tmp.south east)+(0,2pt)$) -- ($(tmp.south west)+(3pt,2pt)$);
+    \end{tikzpicture}
+  }
+}
