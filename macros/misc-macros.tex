@@ -33,5 +33,16 @@
 }
  
 \newcommand{\backupend}{
-  \setcounter{framenumber}{\value{finalframe}}
+ \setcounter{framenumber}{\value{finalframe}}
 }
+
+% To make notes on the text
+
+\newcommand\pnote[1]{\parbox{\linewidth}{\textcolor{CarnationPink}{\ding{212} #1}}}
+\newcommand\bnote[1]{\parbox{\linewidth}{\textcolor{RoyalBlue}{\ding{212} #1}}}
+\newcommand\rnote[1]{\parbox{\linewidth}{\textcolor{Red}{\ding{212} #1}}}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
