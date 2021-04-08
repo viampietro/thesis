@@ -1,0 +1,98 @@
+\chapter{\hvhdl{}: a target hardware description language}
+\label{chap:hvhdl}
+
+\textsc{Research question of the chapter:}\\
+\fbox{\parbox{\textwidth}{\sc Which formal semantics of VHDL will most
+    suit our needs?}}
+
+\section{Presentation of the \vhdl{} language}
+\label{sec:vhdl-presentation}
+
+\begin{itemize}
+\item Present the main concepts of \vhdl{}
+\item Present the informal semantics of \vhdl{}, i.e as described in
+  the \textit{Language Reference Manual} (LRM):
+  \begin{itemize}
+  \item elaboration
+  \item simulation
+  \end{itemize}
+\item Present what use is made of \vhdl{} in \hilecop{}
+  \begin{itemize}
+  \item show our simulation cycle
+  \item present the P and T designs, and maybe a very high-level view
+    of the transformation
+  \item show a figure of the P and T designs interfaces
+  \end{itemize}
+  \pnote{Don't go in too much details while presenting the use of
+    \vhdl{} in \hilecop{}. Details of which \vhdl{} constructs are
+    used in our programs will be given in the next section, and
+    details on the transformation will be given in the next chapter.}
+\end{itemize}
+
+\section{Choosing a semantics for \vhdl{}}
+\label{sec:choosing-vhdl-sem}
+
+\begin{itemize}
+\item Our needs for a formal semantics\\
+  \ding{212} reminder of the final goal of the thesis\\
+  \pnote{Do not describe what the semantics must look like, but rather
+    remind the purpose of the semantics in relation to the PhD goal.}
+\item Research question: which semantics should we consider?\\
+  \ding{212} express the trade-off between
+  \begin{enumerate}
+  \item using existing tools
+  \item creating our own tools
+  \end{enumerate}
+\item Formalization depends on our needs
+  \begin{itemize}[label=\ding{212}]
+  \item present our needs
+  \item present the qualifying criterions, and talk about the
+    mandatory hypotheses about stable signals\\
+    \pnote{Talking about the mandatory hypotheses first here. Decide
+      the level of precision we want our semantics to have. }
+  \end{itemize}
+\item Presentation of the literature works and relations to our needs\\
+  \fbox{\sc Conclusion:} ``We choose to set up our own semantics.''
+\end{itemize}
+
+\section{A natural semantics for \hvhdl{}}
+\label{sec:hvhdl-sem}
+
+\pnote{Refer to appendix \nameref{app:nat-sem} for a presentation of
+  natural semantics on a very simple imperative programming language.}
+
+\begin{itemize}
+\item Abstract syntax
+\item Semantical domains
+\item Elaboration
+\item Simulation
+\end{itemize}
+
+\pnote{Add examples of derivation of elaboration and simulation rules
+  + P and T design in concrete syntax and abstract syntax.}
+
+\section{\coq{} implementation of \hvhdl{}}
+\label{sec:hvhdl-coq-impl}
+
+\begin{itemize}
+\item Give some interesting parts of the code (maybe implementation of
+  $\Delta$ and $\sigma$ environment)
+\item Discussing improvements with dependent-types?
+\item Give some inductive types, simulation relations maybe?
+\item Give metrics about the code
+\item Give link to Git repo
+\end{itemize}
+
+\textsc{CONCLUSION OF THE CHAPTER:}\\
+
+Contributions:
+\begin{itemize}
+\item setting a semantics for \hvhdl{}, fitting our needs closely, but
+  based on previous formalization works
+\item implementing the simulation semantics + abs. syntax in \coq{}
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

@@ -1,0 +1,89 @@
+\chapter{The \hilecop{} model-to-text transformation}
+\label{chap:transformation}
+
+\textsc{Research question of the chapter:}\\
+\fbox{\parbox{\textwidth}{\sc Is there a proper way to express our
+    (i.e, \hilecop{}'s) transformation function?}}
+
+\section{Expressing transformation functions}
+\label{sec:expr-transf}
+
+\begin{itemize}
+\item Literature review on compiler verification, model-to-model and
+  model-to-text transformation verification
+\item Additional questions that the lit. review results try to give an
+  answer to:
+  \begin{itemize}
+  \item How to implement the transformation function to ease proof verification?
+  \item How to implement the transformation function to make it extensible? modular?
+    (thinking about new elements added to the source model)
+  \end{itemize}
+\end{itemize}
+
+\section{Informal presentation of the transformation}
+\label{sec:informal-transf}
+
+
+\begin{itemize}
+\item High-level presentation of the transformation\\
+  \pnote{use the figures of the 2nd CSI}
+\item point out the particularities of \hilecop{}'s transformation
+  function compared to what have been presented in the lit. review.\\
+
+  \pnote{don't know if the lit. review will give enough material to do
+    so}
+
+  \pnote{are there cases of model-to-text transformation close enough
+    to our case to enable comparison?}
+\item Give an example of transformation in the form of schematic figure.
+\end{itemize}
+
+\textsc{Conclusion of the section:} Hard to express our trans. fun. in
+a way that facilitate compositional reasoning (if compositional
+reasoning is at all possible), partly because component instances are
+connected. However, the lit. review pointed out the necessity to keep
+a binding between elements of the source models and elements of the
+target programs (introduction of the $\gamma$ binder) to enable state
+comparison, i.e on which relies the proof of semantic preservation.
+
+\section{The transformation algorithm}
+\label{sec:trans-alg}
+
+\bnote{maybe talk about the fact that the transformation algorithm has
+  been established by observing the behavior of the current \hilecop{}
+  implementation, and through discussions with the \hilecop{} designer
+  (a.k.a David Andreu)}
+
+\begin{itemize}
+\item Give the model-to-text transformation algorithm\\
+  \pnote{give the alg. as established through our meetings, or maybe
+    use a simpler alg. (without the generate infos part, maybe too
+    much implementation oriented)}
+\item Give the formal specification of the transformation, i.e which
+  structural properties between SITPN elements and \hvhdl{} constructs\\
+  \rnote{don't know if I'll have the time to do that, but it would be
+    great to have it, and use it in the proof. Each time the proof
+    says ``by construction'', then the reader can refer to the formal
+    spec}
+\item Give a concrete example of generated \hvhdl{} code from a simple
+  SITPN
+\end{itemize}
+
+\section{\coq{} implementation of the \hilecop{} model-to-text transformation}
+\label{sec:trans-coq-impl}
+
+\pnote{talk about the state-and-error monad, the $\gamma$ binder, the
+  use of generic list functions (fold, map, filter, iter\dots)}
+
+\textsc{Conclusion of the chapter:} Our transformation function is not
+really expressible in a compositional way as P and T instances are
+bound together. It's a specific case of model-to-text
+transformation. However, as much as the comparison with other works of
+transformation verification holds, we have been trying to inspire
+ourselves from the literature to implement the \hilecop{}
+model-to-text transformation function in \coq{}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

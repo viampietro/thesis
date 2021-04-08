@@ -1,0 +1,86 @@
+\chapter{Implementation of the \hilecop{} high-level models}
+\label{chap:hilecop-models}
+
+\textsc{Research question of the chapter:}\\
+\tikz[text width=.8\textwidth, align=center]{
+  \node[draw, rectangle]{%
+    \normalsize\sc
+    \begin{tabular}{c}
+      Which formal semantics should we consider\\
+      in the case of \hilecop{} high-level models?
+    \end{tabular}};
+}
+
+%----------------------------------------------------------------------------------------
+%	GENERAL FACTS ABOUT PETRI NETS & SEMANTICS
+%----------------------------------------------------------------------------------------
+
+\section{General facts about Petri nets}
+\label{sec:pn}
+
+\begin{itemize}
+\item Make a general presentation of Petri nets.\\
+  \pnote{maybe put the general presentation of PNs in appendix, and
+    focus here on the PNs semantics.}
+\item Literature review on PNs semantics.\\
+  \pnote{don't forget to
+    mention linear logic when talking about PNs semantics}
+\end{itemize}
+
+\ding{212} CONCLUSION: ``we choose to adopt the formal semantics set
+in previous work''.
+
+\rnote{insist on the fact that most of the formalization is not my
+  contribution, but comes from previous works}
+
+\section{Synchronously executed Petri Nets}
+\label{sec:sitpn-informal}
+
+\begin{itemize}
+\item Informal presentation of SITPNs\\
+  \pnote{check out what we did for SEFM and PNSE} 
+\end{itemize}
+
+\section{Formal definition of SITPNs \& semantics}
+\label{sec:sitpn-formal}
+
+\begin{itemize}
+\item Present the formal structure of SITPNs, main definitions, and semantics\\
+  \pnote{check out SEFM and PNSE, and the last formalization of SITPN
+    semantics (with the new definition of the set of \textit{Fired} transitions)}\\
+  \bnote{it's better to present the changes made in the semantics in
+    the chapter about the proof}
+\item Present the contribution to formalizing the notion of
+  well-defined SITPN, and motivate the reason of the contribution
+  
+  \pnote{the motivation is as follows: if sitpn is not well-defined,
+    then the transformation returns an error + well-definition
+    otherwise cannot prove behavior similarity}
+\end{itemize}
+
+\section{\coq{} implementation of SITPNs}
+\label{sec:sitpn-coq-impl}
+
+\begin{itemize}
+\item Talk about the dependtly-typed version
+\item Give the SITPN structure + SITPN state structure
+\item Give the state transition relation
+\item Give the full execution relation
+\item Talk about the implementation of the set of fired transitions
+\end{itemize}
+
+\textsc{CONCLUSION OF THE CHAPTER:}
+
+\fbox{\parbox{\textwidth}{
+    \begin{itemize}
+  \item We will consider the formal semantics defined in
+    previous theses to perform the proof of semantic preservation
+  \item Reminder of the contributions: an operational formalization of
+    the set of fired transitions + formalization of conflict
+    resolution and well-defined SITPNs + \coq{} implementation
+  \end{itemize}}}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

@@ -1,0 +1,96 @@
+\chapter{Proving semantic preservation in \hilecop{}}
+\label{chap:proof}
+
+\textsc{Research question of the chapter:}\\
+\fbox{\parbox{\textwidth}{\sc What is the strategy to prove that the
+    \hilecop{} model-to-text transformation function is
+    semantic-preserving?}}
+
+\pnote{Refer to appendix \nameref{app:ind-pciples} for a presentation
+  of induction principles that will be used through the proof.}
+
+\section{Tranformation functions and proof strategies}
+\label{sec:lit-rev-proof-strat}
+
+\pnote{maybe explain the difference between compiler verification and
+  compiler validation, and stress the fact that we do verification}
+\pnote{maybe to close to the first
+  part of X. Leroy's article on CompCert}
+
+\begin{itemize}
+\item Lit. review on proof strategies
+  \begin{itemize}
+  \item are there usual proof strategies?
+  \item do they apply in our case?
+  \end{itemize}
+\item Present the main results (mostly coming from the first part of X. Leroy's article on CompCert):
+  \begin{itemize}
+  \item proofs are based on execution steps, and state comparison
+  \item \dots
+  \end{itemize}
+\end{itemize}
+
+\section{Behavior preservation theorem}
+\label{sec:beh-pres-thm}
+
+\begin{itemize}
+\item preliminary definitions for the proof (+ notations to follow the proof)\\
+  \pnote{illustrate the state similarity relation}
+\item definitions of main thms + proofs (proofs refer to lemmas that
+  will be presented in the next section)
+\item illustrating the main thms (execution steps figure)
+\end{itemize}
+
+\section{Proving semantic preservation}
+\label{sec:sem-pres-proof}
+
+\begin{itemize}
+\item Give the proof (the whole proof? maybe a bit long, some part as
+  appendices?)
+  \begin{enumerate}
+  \item Initial states
+  \item First step\\
+    \pnote{not sure it is really relevant, as it uses most of the
+      material coming from the ``Initial states'' part and the ``Rising
+      edge'' part}
+  \item Rising edge
+  \item Falling edge
+  \end{enumerate}
+\item Illustrate some point of the proof (determine which points) with
+  figures\\
+  \pnote{illustrate the part that says ``by construction'',
+    linking PN parts to \hvhdl{} parts}
+\end{itemize}
+
+\section{A detailled proof: equivalence of fired transitions}
+\label{sec:detailled-proof}
+
+\bnote{don't know if this is a separate section or if it must be a
+  part of the previous section}
+
+\begin{itemize}
+\item Informal presentation of the proof
+\item formal proof
+\item bug detection (illustrated, show the figure)
+\end{itemize}
+
+\section{Verification of the proof of behavior preservation}
+\label{sec:proof-verif}
+
+\begin{itemize}
+\item Present the interesting points in the verification of the proof
+  with \coq{}
+\end{itemize}
+
+\textsc{Conclusion of the chapter:}
+\begin{itemize}
+\item Remind of the main proof strategy
+\item Remind of the bug detection, the changes on the SITPN and
+  \hvhdl{} semantics that are consequences of the proof
+\item State of the proof verification. How far am I right now?
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

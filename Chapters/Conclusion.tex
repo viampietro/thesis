@@ -1,0 +1,43 @@
+\chapter{Conclusion}
+\label{chap:concl}
+
+\section{Contributions}
+\label{sec:contribs}
+
+\begin{itemize}
+\item Contributions to SITPN
+\item Contributions to VHDL
+\item Contributions to transformation functions
+\item Proof
+  \begin{itemize}
+  \item Bug detections + changes in semantics
+  \item How far are we to complete the verification?
+  \end{itemize}
+\end{itemize}
+
+\section{Improvements and perspectives}
+\label{sec:improvs-and-perspect}
+
+\pnote{if proof not yet verified, first thing is not complete this job!}
+
+\begin{itemize}
+\item improvements on the implementation of \hvhdl{}, get closer to
+  the formal def., more use of dependent types
+\item proving the semantic preservation thm in its existential version, i.e:
+  \begin{itemize}
+  \item the generated design is always elaborable
+  \item the generated design is always simulable, i.e, it will never
+    produce errors as long as the input model verifies some properties
+    (liveness, boundedness\dots)
+  \end{itemize}
+\item consider the whole \hilecop{} high-level model
+  \begin{itemize}
+  \item macroplaces
+  \item GALS
+  \end{itemize}
+\end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
