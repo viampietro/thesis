@@ -1,5 +1,36 @@
-\chapter{Implementation of the \hilecop{} high-level models}
-\label{chap:hilecop-models}
+\documentclass{article}
+
+\input{packages}
+\input{macros}
+
+% ====================================================== %
+% ====================================================== %
+
+% ====================================================== %
+% ====================================================== %
+
+%                               %
+% ========= TITLE PAGE ======== %
+%                               %
+
+\title{SITPN Semantics}
+\author{Vincent Iampietro}
+
+\date{\today}
+
+% ====================================================== %
+% ====================================================== %
+
+%                               %
+% =========  DOCUMENT ========= %
+%                               %
+
+\begin{document}
+
+% \nocite{*}
+
+
+\maketitle
 
 \section{SITPN Definitions}
 \label{sec:sitpn-defs}
@@ -78,7 +109,7 @@ becomes effective.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.3\linewidth]{SITPN/struct-conflict-with-basic}
+  \includegraphics[keepaspectratio,width=.3\linewidth]{pictures/struct-conflict-with-basic}
   \caption{Example of conflict between two transitions}
   \label{fig:basic-conflict}
 \end{figure}
@@ -104,10 +135,9 @@ group.  The formal definition of a conflict group is as follows:
   $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
 \end{definition}
 
-Contrary to the statement made in
-\cite[p.67]{Leroux2014}, we no more consider the notion
-of conflict as being transitive. To illustrate this,
-Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
+Contrary to the statement made in \cite[p. 67]{Leroux14}, we no more
+consider the notion of conflict as being transitive. To illustrate
+this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
 $\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
 Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
 dealt with, i.e, for all pair of transitions in the group the conflict
@@ -124,7 +154,7 @@ being necessary.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.4\linewidth]{SITPN/conflict-not-trans}
+  \includegraphics[keepaspectratio,width=.4\linewidth]{pictures/conflict-not-trans}
   \caption{Example of two separate conflict groups}
   \label{fig:conflict-not-trans}
 \end{figure}
@@ -337,14 +367,6 @@ way to inductive reasoning.
 \subsection{SITPN Semantics}
 \label{sec:sitpn-sem}
 
-\begin{todobox}
-  \begin{itemize}
-  \item Change $E$ into $E_c$.
-  \item Change typing of the state transition relation to include the
-    environment.
-  \end{itemize}
-\end{todobox}
-
 \begin{definition}[SITPN Semantics]
   \label{def:semantics}
   The semantics of an SITPN is the transition system
@@ -360,10 +382,7 @@ way to inductive reasoning.
     labels, where $Clk\in\{\uparrow,\downarrow\}$. A label is a couple $(clk,\tau)$
     composed of a clock event $clk\in{}Clk$, and a time value $\tau\in\mathbb{N}$
     expressing the current count of clock cycles.
-
-  \item
-
-    $E\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is the
+  \item $E\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is the
     environment function, which gives (Boolean) values to conditions ($\mathcal{C}$)
     depending on the count of clock cycles ($\mathbb{N}$).
   \item $\rightsquigarrow\subseteq{}S\times{}L\times{}S$ is the state
@@ -559,7 +578,12 @@ way to inductive reasoning.
   \end{tabular}
 \end{definition}
 
+\bibliographystyle{abbrv}
+\bibliography{biblio} 
+
+\end{document}
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: t
 %%% End:

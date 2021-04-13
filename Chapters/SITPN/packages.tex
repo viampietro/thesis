@@ -1,10 +1,14 @@
-% Refs and navigation.
+% Character sets.
 
-\usepackage[colorlinks=true]{hyperref}
+\usepackage[english]{babel}
 
 % Item list style.
 
 \usepackage{enumitem}
+
+% Colors.
+
+\usepackage{xcolor}
 
 % To set font size.
 
@@ -14,7 +18,7 @@
 % Listings and algorithms.
 
 \usepackage[noline]{algorithm2e}
-\usepackage{listings,lstautogobble,lstcoq,lstvhdl,lstpseudocoq}
+\usepackage{listings,lstautogobble,lstcoq,lstvhdl}
 
 % To strike out text.
 
@@ -25,10 +29,6 @@
 \usepackage{amsfonts,amssymb,amsmath,amsthm}
 \usepackage{stackengine}
 
-% Custom frame boxes.
-
-\usepackage[framemethod=TikZ]{mdframed}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       PROGRAMMING LANGUAGE SPECIFICATION PACKAGES      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,20 +37,10 @@
 
 \usepackage{semantic}
 \usepackage{ebproof}
-\ebproofset{left label template=\fontsize{7}{8}\selectfont\inserttext}
-\ebproofset{right label template=\fontsize{7}{8}\selectfont\inserttext}
 
 % Grammar specification.
 
 \usepackage{syntax}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%       TITLES FORMATTING    %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\usepackage{titlesec}
-\titleformat{\paragraph}{\normalfont\small\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       FIGURE-RELATED PACKAGES    %

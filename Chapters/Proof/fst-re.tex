@@ -1,0 +1,445 @@
+\begin{definition}[First Rising Edge Hypotheses]
+  \label{def:fst-re-hyps}
+  Given an
+  $sitpn\in{}SITPN,d\in{}design,\gamma\in{}WM(sitpn,d),
+  \Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),$
+  $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma\in{}\Sigma(\Delta)$,
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\tau\in\mathbb{N}$, assume that:
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    and $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
+  \item $\sigma_0$ is the initial state of $\Delta$: 
+    $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \item $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
+  \item $\mathtt{Inject}_\uparrow(\sigma_0, E_p, \tau, \sigma_i)$
+    and
+    $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_{\uparrow}$
+    and
+    $\Delta,\sigma_{\uparrow}\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma$
+  \end{itemize}
+  
+\end{definition}
+
+\def\fstrehyps{For all $sitpn,d,\gamma,\Delta,$
+  $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma$, $E_c$, $E_p$,
+  $\tau$ that verify the hypotheses of Def.~\ref{def:fst-re-hyps},}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FIRST RISING EDGE LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[First Rising Edge]
+  \label{lem:fst-re}
+  \fstrehyps{} then
+  $\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}{}\sigma$.
+\end{lemma}
+
+\begin{proof}
+  By definition of \nameref{def:post-re-state-sim}, 6 subgoals.
+  \begin{frameb}
+    \begin{enumerate}
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$
+      and $\sigma(id_p)=\sigma_p,$
+      $~s_0.M(p)=\sigma_p("s\_marking")$.\label{it:fst-re-marking-eq}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
+      $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")\land{}$\\
+      $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")$.\label{it:fst-re-tc-eq}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+      and
+      $\sigma(id_t)=\sigma_t,~$\\
+      $s_0.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.\label{it:fst-re-reset-eq}
+    \item
+      $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s_0.ex(a)=\sigma(id_a)$.\label{it:fst-re-action-eq}
+    \item
+      $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s_0.ex(f)=\sigma(id_f)$.\label{it:fst-re-fun-eq}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$,
+      $t\in{}Sens(s.M)\Leftrightarrow\sigma_t("s\_enabled")=\mathtt{true}$.\label{it:fst-re-sens-eq}
+    \end{enumerate}
+  \end{frameb}
+
+  \begin{itemize}[label=--]
+  \item Apply Lemma~\nameref{lem:fst-re-equal-marking} to solve \ref{it:fst-re-marking-eq}.
+  \item Apply ``First Rising Edge Equal Time Counters'' lemma to solve \ref{it:fst-re-tc-eq}.
+  \item Apply ``First Rising Edge Equal Reset Orders'' lemma to solve \ref{it:fst-re-reset-eq}.
+  \item Apply ``First Rising Edge Equal Action Executions'' lemma to solve \ref{it:fst-re-action-eq}.
+  \item Apply ``First Rising Edge Equal Function Executions '' lemma to solve \ref{it:fst-re-fun-eq}.
+  \item Apply ``First Rising Edge Equal Sensitized'' lemma to solve \ref{it:fst-re-sens-eq}.
+  \end{itemize}
+  
+\end{proof}
+
+\subsection{First rising edge and marking}
+\label{sec:fst-re-marking}
+
+\begin{lemma}[First Rising Edge Equal Marking]
+  \label{lem:fst-re-equal-marking}
+  \fstrehyps{} then
+  $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$
+  and $\sigma(id_p)=\sigma_p,$ $~s_0.M(p)=\sigma_p("s\_marking")$.
+\end{lemma}
+
+\begin{proof}
+  Given a $p$, $id_p$, $\sigma_p$ s.t. $\gamma(p)=id_p$ and
+  $\sigma(id_p)=\sigma_p$, let us show that
+  \fbox{$~s_0.M(p)=\sigma_p("s\_marking")$.}
+  
+  \noindent{}By definition of $id_p$, there exist
+  $gm_p,ipm_p,opm_p~s.t.~\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$.\\
+  
+  \noindent By property of the \hvhdl{} elaboration relation, the
+  \hvhdl{} initialization relation, the $\mathtt{Inject}_\uparrow$
+  relation, the \hvhdl{} rising edge relation and
+  $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, there exist
+  a
+  $\sigma_p^{e},\sigma_p^{0},\sigma_p^{injr},\sigma_p^{r}\in{}\Sigma(\Delta)$
+  s.t.  $\sigma_{e}(id_p)=\sigma_p^{e}$ and
+  $\sigma_{0}(id_p)=\sigma_p^{0}$ and
+  $\sigma_i(id_p)=\sigma_p^{injr}$ and
+  $\sigma_{r}(id_p)=\sigma_p^{r}$ .
+
+  \begin{pcomm}
+    From the elaboration to the end of the first rising edge phase, an
+    internal state is associated with the P component instance
+    $id_p$ in the component store of the top-level design $d$.
+  \end{pcomm}
+  
+  \noindent{} By property of the \hvhdl{} rising edge relation, the P design behavior (process ``\texttt{marking}''), and\\
+  $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, then\\
+  $\sigma_p^{r}("s\_marking")=\sigma_p^{injr}("s\_marking")+\sigma_p^{injr}("s\_input\_token\_sum")-\sigma_p^{injr}("s\_output\_token\_sum")$.
+
+  \begin{pcomm}
+    Result of the execution of the process ``\texttt{marking}'' that performs the signal assignment\\
+    $\mathtt{s\_marking\Leftarrow{}s\_marking+s\_input\_token\_sum-s\_output\_token\_sum}$.
+  \end{pcomm}
+
+  \noindent{} By property of the \hvhdl{} stabilize relation, the P design behavior (process ``\texttt{marking}''), and\\
+  $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, then
+  $\sigma_p^{r}("s\_marking")=\sigma_p("s\_marking")$.
+
+  \begin{pcomm}
+    As it is only assigned by the process ``\texttt{marking}'', and as
+    the process ``\texttt{marking}'' is never executed during the
+    stabilization phase, the ``\texttt{s\_marking}'' signal has an
+    invariant value during the stabilization phase.
+  \end{pcomm}
+
+  \noindent{} Rewriting $\sigma_p("s\_marking")$ as
+  $\sigma_p^{r}("s\_marking")$,
+  and $\sigma_p^{r}("s\_marking")$ as\\
+  $\sigma_p^{injr}("s\_marking")+\sigma_p^{injr}("s\_input\_token\_sum")-\sigma_p^{injr}("s\_output\_token\_sum")$,\\
+  \fbox{$s_0.M(p)=\sigma_p^{injr}("s\_marking")+\sigma_p^{injr}("s\_input\_token\_sum")-\sigma_p^{injr}("s\_output\_token\_sum")$.}\\
+
+  \noindent{} By property of the $\mathtt{Inject}_\uparrow$ relation,
+  $\sigma_p^{injr}("s\_marking")=\sigma_p^{0}("s\_marking")$ and\\
+  $\sigma_p^{injr}("s\_input\_token\_sum")=\sigma_p^{0}("s\_input\_token\_sum")$
+  and\\
+  $\sigma_p^{injr}("s\_output\_token\_sum")=\sigma_p^{0}("s\_output\_token\_sum")$.
+  Rewriting the above,\\
+  \fbox{$s_0.M(p)=\sigma_p^{0}("s\_marking")+\sigma_p^{0}("s\_input\_token\_sum")-\sigma_p^{0}("s\_output\_token\_sum")$.}\\
+
+  \begin{todobox}
+    Detail the two lemmas giving this property.
+  \end{todobox}
+  \noindent{}By property of the \hvhdl{} initialization relation,
+  $\sigma_p^{0}("s\_input\_token\_sum")=0$ and\\
+  $\sigma_p^{0}("s\_output\_token\_sum")=0$. Rewriting the above,
+  \fbox{$s_0.M(p)=\sigma_p^{0}("s\_marking")$.}\\
+
+  \noindent{} Applying the \nameref{lem:init-states-eq-marking} lemma,
+  \qedbox{$s_0.M(p)=\sigma_p^{0}("s\_marking")$.}
+\end{proof}
+
+\subsection{First rising edge and time counters}
+\label{sec:fst-re-tc}
+
+\begin{lemma}[First Rising Edge Equal Time Counters]
+  \label{lem:fst-re-equal-tc}
+  \fstrehyps{} then\\
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")\land{}$\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")$.
+\end{lemma}
+
+\begin{proof}
+  \noindent{}Given a $t\in{}T_i$, an $id_t\in{}Comps(\Delta)$ and a
+  $\sigma_t\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and
+  $\sigma(id_t)=\sigma_t$, let's show that:
+  \begin{enumerate}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")$}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t("s\_tc")$}
+  \end{enumerate}
+
+  \noindent{}By definition of $id_t$, there exist $gm_t,ipm_t,opm_t$
+  s.t.
+  $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$.\\
+
+  \noindent By property of the \hvhdl{} elaboration relation, the
+  \hvhdl{} initialization relation, the $\mathtt{Inject}_\uparrow$
+  relation, the \hvhdl{} rising edge relation and
+  $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$, there
+  exist a
+  $\sigma_t^{e},\sigma_t^{0},\sigma_t^{injr},\sigma_t^{r}\in{}\Sigma(\Delta)$
+  s.t.  $\sigma_{e}(id_t)=\sigma_t^{e}$ and
+  $\sigma_{0}(id_t)=\sigma_t^{0}$ and
+  $\sigma_i(id_t)=\sigma_t^{injr}$ and
+  $\sigma_{r}(id_t)=\sigma_t^{r}$ .
+
+  \begin{pcomm}
+    From the elaboration to the end of the first rising edge phase, an
+    internal state is associated with the T component instance $id_t$
+    in the component store of the top-level design $d$.
+  \end{pcomm}
+  
+  \noindent{}Then, let's show the 4 previous subgoals.
+  
+  \begin{enumerate}
+  \item Assume $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))$, then show \framebox{${}s_0.I(t)=\sigma_t("s\_tc")$.}\\
+    \noindent{} By property of the $\mathtt{Inject_\uparrow}$
+    relation, the \hvhdl{} rising edge and stabilize relations, and\\
+    $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$,
+    $\sigma_t("s\_tc")=\sigma_t^0("s\_tc")$.
+    \begin{pcomm}
+      The above equality is deduced from the two following facts:
+      
+      \begin{itemize}
+      \item The process ``\texttt{time\_counter}'' is the only process
+        that assigns signal \texttt{s\_tc} in the T component
+        behavior, and it is never executed during the rising edge and
+        stabilization phases.
+        
+      \item The values of component instances' internal signals are
+        invariant through the $\mathtt{Inject_\uparrow}$ relation.
+      \end{itemize}
+    \end{pcomm}
+
+  \noindent{} Rewriting $\sigma_t("s\_tc")$ as $\sigma_t^0("s\_tc")$,
+  \fbox{${}s_0.I(t)=\sigma_t^0("s\_tc")$.}\\
+
+  Applying the \nameref{lem:init-states-eq-tc} lemma,
+  \qedbox{${}s_0.I(t)=\sigma_t^0("s\_tc")$.}
+  
+  \item Assume $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))$,
+    then show \framebox{$\sigma_t("s\_tc")=lower(I_s(t))$}.  By
+    definition, $lower(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \colorbox{red!20}{$lower(I_s(t)){}<0$ is a
+      contradiction.}
+  \item Assume
+    $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))$, then
+    show \framebox{$\sigma_t("s\_tc")=upper(I_s(t))$}.  By definition,
+    $upper(I_s(t))\in\mathbb{N}^{*}$ and $s_0.I(t)=0$. Then,
+    \colorbox{red!20}{$upper(I_s(t)){}<0$ is a contradiction.}
+  \item Assume
+    $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))$, then
+    show \framebox{$s_0.I(t)=\sigma_t("s\_tc")$}.\\
+
+    \noindent{} By property of the $\mathtt{Inject_\uparrow}$
+    relation, the \hvhdl{} rising edge and stabilize relations, and\\
+    $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$,
+    $\sigma_t("s\_tc")=\sigma_t^0("s\_tc")$.\\
+
+    \noindent{} Rewriting $\sigma_t("s\_tc")$ as $\sigma_t^0("s\_tc")$,
+    \fbox{${}s_0.I(t)=\sigma_t^0("s\_tc")$.}\\
+
+    Applying the \nameref{lem:init-states-eq-tc} lemma,
+    \qedbox{${}s_0.I(t)=\sigma_t^0("s\_tc")$.}
+  \end{enumerate}
+\end{proof}
+
+\subsection{First rising edge and condition combination}
+\label{sec:fst-re-cond-comb}
+
+\begin{lemma}[First Rising Edge Equal Condition Combination]
+  \label{lem:fst-re-equal-cond-comb}
+  \fstrehyps{} then\\
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+  $\sigma(id_t)("s\_condition\_combination")=
+  \prod\limits_{c\in{}conds(t)}
+  \begin{cases}
+    E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+    \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+  \end{cases}$\\
+  where
+  $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+\end{lemma}
+
+\begin{table}[h]
+  \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Full signal name} & \textbf{Alias} \\
+    \hline
+    $"s\_condition\_combination"$ & $"scc"$ \\
+    \hline
+    $"conditions\_number"$ & $"cn"$ \\
+    \hline
+    $"input\_conditions"$ & $"ic"$ \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{proof}
+  Given a $t$, $id_t$, $\sigma_t$ s.t. $\gamma(t)=id_t$, let us show that\\
+  \fbox{$\sigma(id_t)("s\_condition\_combination")=
+    \prod\limits_{c\in{}conds(t)}
+    \begin{cases}
+      E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+      \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+    \end{cases}$.}\\
+
+  \noindent{}By definition of $id_t$, there exist $gm_t,ipm_t,opm_t$
+  s.t. $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$.\\
+
+  \noindent By property of the \hvhdl{} stabilize relation, and $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$,\\
+  $\sigma(id_t)("scc")=\prod\limits_{i=0}^{\Delta(id_t)("conditions\_number")-1}\sigma(id_t)("input\_conditions")[i]$.
+
+  \noindent{}Rewriting $\sigma(id_t)("scc")$ as
+  $\prod\limits_{i=0}^{\Delta(id_t)("cn")-1}\sigma(id_t)("ic")[i]$,\\
+  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("cn")-1}\sigma(id_t)("ic")[i]=
+    \prod\limits_{c\in{}conds(t)}
+    \begin{cases}
+      E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+      \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+    \end{cases}$.}\\
+
+  \noindent{}Case analysis on $conds(t)$ (2 CASES):
+
+  \begin{itemize}
+  \item \textbf{CASE} $conds(t)=\emptyset$:\\
+    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("cn")-1}\sigma(id_t)("ic")[i]=\mathtt{true}$.}\\
+    
+    \noindent{}By construction,
+    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}gm_t$ and
+    ${<}\mathtt{input\_conditions(0)\Rightarrow{}true}{>}\in{}ipm_t$.\\
+
+    \noindent{}By property of the stabilize relation and
+    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}gm_t$ and
+    ${<}\mathtt{input\_conditions(0)\Rightarrow{}true}{>}\in{}ipm_t$,
+    then $\Delta(id_t)("cn")=1$ and
+    $\sigma(id_t)("ic")[0]=\mathtt{true}$.
+
+    \noindent{}Rewriting $\Delta(id_t)("cn")$ as $1$,
+    \qedbox{$\sigma(id_t)("ic")[0]=\mathtt{true}$.}
+  \item \textbf{CASE} $conds(t)\neq\emptyset$:\\
+    \noindent{}By construction,
+    ${<}\mathtt{conditions\_number\Rightarrow{}\vert{}conds(t)\vert}{>}\in{}gm_t$,
+    and by property of the stabilize relation, then
+    $\Delta(id_t)("cn")=\vert{}conds(t)\vert$.
+    
+    Then, 2 subgoals to prove the equation:
+
+    \begin{enumerate}
+    \item\label{it:fst-re-eq-cond-comb}
+      \fbox{\parbox{\linewidth}{$\forall{}c\in{}conds(t),~\exists{}i\in{}[0,\Delta(id_t)("cn")-1]~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}
+      Given a $c\in{}conds(t)$, let us show that\\
+      \fbox{\parbox{\linewidth}{$\exists{}i\in{}[0,\Delta(id_t)("cn")-1]~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}
+      By definition of $c\in{}conds(t)$, there are 2 cases:
+      \begin{itemize}
+      \item \textbf{CASE} $\mathbb{C}(t,c)=1$:\\
+        By construction, there exists $id_c\in{}Ins(\Delta)$
+        s.t. $\gamma(c)=id_c$, and there
+        exists $i\in{}[0,\vert{}conds(t)\vert-1]$ s.t.
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$.
+
+        \noindent{}As $\Delta(id_t)("cn")=\vert{}conds(t)\vert$, then
+        we have $i\in[0,\Delta(id_t)("cn")-1]$. Let us take this $i$
+        to prove the goal,\\
+        \fbox{\parbox{\linewidth}{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
+        
+        The right part of the goal is proved by contradiction, then
+        what is left to prove is:
+        \fbox{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)$.}\\
+
+        Assuming $\mathbb{C}(t,c)=1$, let us show
+        \fbox{$\sigma(id_t)("ic")[i]=E_c(\tau,c)$.}\\
+
+        \noindent{}By property of the stabilize relation and
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$,
+        then $\sigma(id_t)("ic")[i]=\sigma(id_c)$.
+
+        \noindent{}By property of the \hvhdl{}
+        $\mathtt{Inject_{\uparrow}}$, the rising edge, the stabilize
+        relations, and $id_c\in{}Ins(\Delta)$, then
+        $\sigma(id_c)=E_p(\tau,\uparrow)(id_c)$.
+
+        \noindent{}By property of
+        $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, then
+        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
+
+        \noindent{}Rewriting the goal with the above equations,
+        \qedbox{$\sigma(id_t)("ic")[i]=E_c(\tau,c)$.}
+
+      \item \textbf{CASE} $\mathbb{C}(t,c)=-1$:\\
+        By construction, there exists $id_c\in{}Ins(\Delta)$
+        s.t. $\gamma(c)=id_c$, and there exists
+        $i\in{}[0,\vert{}conds(t)\vert-1]$ s.t.
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$.
+
+        \noindent{}As $\Delta(id_t)("cn")=\vert{}conds(t)\vert$, then
+        we have $i\in[0,\Delta(id_t)("cn")-1]$. Let us take this $i$
+        to prove the goal,\\
+        \fbox{\parbox{\linewidth}{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
+        
+        The left part of the goal is proved by contradiction, then
+        what is left to prove is:
+        \fbox{$\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}\\
+
+        Assuming $\mathbb{C}(t,c)=-1$, let us show
+        \fbox{$\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}\\
+
+        \noindent{}By property of the stabilize relation and
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$,
+        then $\sigma(id_t)("ic")[i]=\mathtt{not}~\sigma(id_c)$.
+
+        \noindent{}By property of the \hvhdl{}
+        $\mathtt{Inject_{\uparrow}}$, the rising edge, the stabilize
+        relations, and $id_c\in{}Ins(\Delta)$, then
+        $\sigma(id_c)=E_p(\tau,\uparrow)(id_c)$.
+
+        \noindent{}By property of
+        $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, then
+        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
+
+        \noindent{}Rewriting the goal with the above equations,
+        \qedbox{$\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}
+      \end{itemize}
+      
+    \item
+      \fbox{\parbox{\linewidth}{$\forall{}i\in{}[0,\Delta(id_t)("cn")-1],~\exists{}c\in{}conds(t),~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
+
+      Given a $i\in{}[0,\Delta(id_t)("cn")-1]$, let us show\\
+      \fbox{\parbox{\linewidth}{$\exists{}c\in{}conds(t),~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
+
+      By construction, there exists $c\in{}conds(t)$ and
+      $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$, and
+      $\mathbb{C}(t,c)=1\Rightarrow{<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$
+      and
+      $\mathbb{C}(t,c)=-1\Rightarrow{<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$.
+
+      Let us take such an $c\in{}conds(t)$ to prove the goal. By
+      definition of $c\in{}conds(t)$, there are 2 cases: see
+      \ref{it:fst-re-eq-cond-comb} for the remainder of the proof.
+    \end{enumerate}
+    
+  \end{itemize}
+  
+
+  
+\end{proof}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

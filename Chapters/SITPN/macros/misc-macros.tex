@@ -9,6 +9,7 @@
 \def\cakeml{\textsf{CakeML}}
 \def\cnrs{\textsf{CNRS}}
 \def\coq{\textsf{Coq}}
+\def\vhdl{\textsf{VHDL}}
 \def\hilecop{\textsf{HILECOP}}
 \def\inria{\textsf{Inria}}
 \def\isahol{\textsf{Isabelle/HOL}}
@@ -18,8 +19,6 @@
 \def\um{\textsf{Université de Montpellier}}
 \def\neurin{\textsf{NEURINNOV}}
 \def\uml{\textsf{UML}}
-\def\vhdl{\textsf{VHDL}}
-\def\hvhdl{$\mathcal{H}$-\textsf{VHDL}}
 
 % Counter definitions.
 
@@ -33,17 +32,5 @@
 }
  
 \newcommand{\backupend}{
- \setcounter{framenumber}{\value{finalframe}}
+  \setcounter{framenumber}{\value{finalframe}}
 }
-
-% To make notes on the text
-
-\newcommand\pnote[1]{\parbox{\linewidth}{\textcolor{CarnationPink}{\ding{212} #1}}}
-\newcommand\bnote[1]{\parbox{\linewidth}{\textcolor{RoyalBlue}{\ding{212} #1}}}
-\newcommand\rnote[1]{\parbox{\linewidth}{\textcolor{Red}{\ding{212} #1}}}
-\newcommand\qedbox[1]{\colorbox{red!20}{#1}}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../main"
-%%% End:

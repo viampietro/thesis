@@ -1,0 +1,287 @@
+\subsection{Semantics Domains}
+
+Let $id$ denote the set of identifiers in the semantical domain. We
+write $prefix\mhyphen{}id$ to denote arbitrary subsets of the $id$
+set. The $type$ and $value$ semantical types are defined as follows:
+
+\begin{table}[H]
+  \begin{tabular}{lcl}
+    $type$ & ::= & \texttt{bool} | \texttt{nat(}$nat$,$nat$\texttt{)} | \texttt{array} \texttt{(}$type$,$nat$,$nat$\texttt{)} \\
+           & & \\
+    $value$ & ::= & $bool$ | $nat$ | $array$ \\
+    $bool$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
+    $nat$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
+    $array$ & ::= & \texttt{(}$value^{+}$\texttt{)}\\
+
+  \end{tabular}
+  \caption{The $type$ and $value$ semantical types.}
+  \label{tab:type-value}
+\end{table}
+
+In Table~\ref{tab:type-value}, the $type$ type is in any way similar
+to the $\tau$ entry of the abstract syntax, however, all constraint
+bounds in the \texttt{nat} and \texttt{array} types have been
+evaluated to natural numbers. $\mathtt{NATMAX}$ denotes the maximum
+value for a natural number.  The $\mathtt{NATMAX}$ value depends on
+the implementation of the VHDL language; $\mathtt{NATMAX}$ must at
+least be equal to $2^{31}-1$. Note that the $array$ value contains at
+least one value as an array's index range contains at least one index
+(that is index 0).
+
+\begin{notation}[Partial functions]
+  Here, we present our notations pertaining to partial functions:
+  \begin{itemize}[label=-]
+  \item The $\nrightarrow$ arrow denotes a partial function.
+  \item The $\rightarrow$ denotes an application (i.e, a total
+    function).
+  \item For all $f\in{}A\nrightarrow{}B$, $x\in{}f$ states that x is in
+    the domain of function $f$.
+  \item For all $f\in{}A\nrightarrow{}B$ and $g\in{}A\nrightarrow{}C$,
+    $f\subseteq{}g$ states that the domain of $f$ is a subset of the
+    domain of $g$.
+  \item For all $X\subset{}A$ and $f\in{}A\nrightarrow{}B$,
+    $X\subseteq{}f$ states that $X$ is a subset of the domain of $f$.
+  \end{itemize}
+\end{notation}
+
+Now, let us define the structure of an elaborated design which is a
+structure bound to a given \hvhdl{} design and to a design store, i.e
+a global environment mapping identifiers to \hvhdl{} designs. Only the
+designs referenced into the global design store can be instantiated as
+subcomponents of a given design. The elaborated design structure is
+used in the expression of the elaboration relation presented in
+Section~\nameref{sec:elab-rules}, as well as in the expression of the
+simulation rules. Let $ElDesign(d,\mathcal{D})$ be the set of the
+elaborated designs for a given \hvhdl{} design $d$ and a design store
+$D$. An elaborated design is a composite environment built out of
+multiple sub-environments.  Each sub-environment is a table,
+represented as a partial function, mapping identifiers of a certain
+category of constructs (e.g, input port identifiers) to their
+declaration information (e.g, type indication for input ports). We
+represent an elaborated design as a record where the fields are the
+sub-environments. An elaborated design is defined as follows:
+
+\begin{definition}[Elaborated Design] For a given \hvhdl{} design
+  $d\in{}design$ s.t. $d=$ \vhdle|design| \textit{$id_{ent}$
+    $id_{arch}$ gens ports sigs behavior} and a given design store
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$ is a record
+  ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
+  \begin{itemize}[label=$-$]
+  \item
+    $Gens\in{}generic\mhyphen{}id\nrightarrow{}(type\times{}value)$
+    where
+    $generic\mhyphen{}id=\{id~\vert~(id,\tau,e)\in{}gens\}$,
+    is the partial function yielding the type and the value of generic
+    constants.
+  \item $Ins\in{}input\mhyphen{}id\nrightarrow{}type$ where
+    $input\mhyphen{}id=\{id~\vert~(\mathtt{in},id,\tau)\in{}ports\}$,
+    is the partial function yielding the type of input ports.
+  \item $Outs\in{}output\mhyphen{}id\nrightarrow{}type$ where
+    $output\mhyphen{}id=\{id~\vert~(\mathtt{out},id,\tau)\in{}ports\}$,
+    the partial function yielding the type of output ports.
+  \item
+    $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\nrightarrow{}type$
+    where
+    $declared\mhyphen{}signal\mhyphen{}id=\{id~\vert~(id,\tau)\in{}sigs\}$,
+    the partial function yelding the type of declared signals.
+  \item
+    $Ps\in{}process\mhyphen{}id\nrightarrow{}(variable\mhyphen{}id(id_p)\nrightarrow{}(type\times{}value))$
+    where
+    $process\mhyphen{}id=\{id_p~\vert~\mathtt{process}(id_p,sl,vars,ss)\in{}behavior\}$,
+    the partial function associating processes to their local
+    environment. Local environments are functions mapping local
+    variable identifiers to their corresponding type and
+    value. Therefore, each set of local variable identifiers
+    $variable\mhyphen{}id(id_p)$ depends on the process identifier
+    (represented by $id_p$) passed as the first argument of the $Ps$
+    function.
+  \item
+    $Comps\in{}component\mhyphen{}id\nrightarrow{}ElDesign(d_e,\mathcal{D})$,
+    where
+    $component\mhyphen{}id=\{id_c~\vert~\mathtt{comp}(id_c,id_e,gm,ipm,opm)\in{}behavior\}$,
+    the partial function mapping component instance ids to their
+    elaborated design version. The set $ElDesign(d_e,\mathcal{D})$
+    depends on the design $d_e$ from which the component identifier
+    $id_c$, passed as the first argument of the $Comps$ function, is
+    an instance. Design $d_e$ is retrieved from the design store
+    $\mathcal{D}$ s.t. $d_e=\mathcal{D}(id_e)$.
+  \end{itemize}
+\end{definition}
+
+We assume that there are no overlapping between the identifiers of the
+sub-environments (i.e, an identifier belongs to at most one
+sub-environment). We note $\Delta(x)$ to denote the value returned for
+identifier $x$, where $x$ is looked up in the appropriate field of
+$\Delta$. We note $x\in\Delta$ to state that identifier $x$ is defined
+in one of $\Delta$'s fields. We note $\Delta(x)\leftarrow{}v$ the
+overriding of the value associated to identifier $x$ with value $v$ in
+the appropriate field of $\Delta$, $\Delta\cup{}(x,v)$ to note the
+addition the mapping from identifier $x$ to value $v$ in the
+appropriate field of $\Delta$, that assuming $x\notin\Delta$. We note
+$x\in\mathcal{F}(\Delta)$, where $\mathcal{F}$ is a field of $\Delta$,
+when more precision is needed regarding the lookup of identifier $x$
+in the record $\Delta$.
+
+Let $\Sigma(\Delta)$ be the set of design states for a given
+elaborated design $\Delta$.  A design state of $\Delta$ is defined as
+follows:
+
+\begin{definition}[Design state]
+  A design state $\sigma\in\Sigma(\Delta)$, for a given design
+  $d\in{}design$, a given design store $\mathcal{D}$ and an elaborated
+  design $\Delta\in{}ElDesign(d,\mathcal{D})$, is a record
+  ${<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ where:
+  \begin{itemize}[label=$-$]
+  \item $\mathcal{S}\in{}signal\mhyphen{}id\rightarrow{}value$, the
+    partial function yielding the current values of the design's
+    signals (ports and declared signals).
+  \item
+    $\mathcal{C}\in{}component\mhyphen{}id\rightarrow{}\Sigma(\Delta_c)$,
+    the partial function yielding the current state of design's
+    component instances, where $\Delta_c=\Delta(id_c)$ and
+    $id_c\in{}component\mhyphen{}id$ is the component identifier
+    passed to function $\mathcal{C}$.
+  \item
+    $\mathcal{E}\subseteq{}signal\mhyphen{}id\cup{}component\mhyphen{}id$,
+    the set of signal and component instance ids that generated an
+    event at the current simulation cycle.
+  \end{itemize}
+\end{definition}
+
+The $signal\mhyphen{}id$ subset is the disjoint union of
+$input\mhyphen{}id$, $output\mhyphen{}id$ and
+$declared\mhyphen{}signal\mhyphen{}id$. We use $\sigma(id)$ to denote
+the value associated to an identifier in the signal store
+$\mathcal{S}$ or in the component store $\mathcal{C}$
+fields. $id\in_\mathcal{E}\sigma$ states that an identifier belongs to
+the event set $\mathcal{E}$, whereas $id\in\sigma$ states that an
+identifier is defined in either the signal store $\mathcal{S}$ or the
+component store $\mathcal{C}$ fields. $\sigma\cup_\mathcal{E}\{id\}$
+denotes a new design state, in all points similar to $\sigma$ but
+enriched with the identifier $id$ in its events set.
+
+\begin{notation}[No events design state]
+  For a given \hvhdl{} design $d$, a design store $\mathcal{D}$, and
+  an elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, the
+  function $NoEv\in\Sigma(\Delta)\rightarrow\Sigma(\Delta)$ returns a
+  design state similar to the one passed in parameter only with an
+  empty set of events. I.e, for all design state
+  $\sigma\in\Sigma(\Delta)$
+  s.t. $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$,
+  $NoEv(\sigma)={<}\mathcal{S},\mathcal{C},\emptyset{>}$.
+\end{notation}
+
+% \subsection{Design evaluation workflow.}
+% \label{subsec:elab-sim-wflow}
+
+% The workflow to evaluate a top-level VHDL design comprises two phases
+% with some pre-requisites.
+
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+
+%     \node(elab) {\textcircled{1} Elaboration phase};
+%     \node(sim) at ($(elab.east)+(2.5,0)$) {\textcircled{2} Simulation phase};
+
+%     \draw (elab.east) edge[->] ($(sim.west)-(.1,0)$);
+%   \end{tikzpicture}
+%   \caption{Workflow for \emph{top-level} design evaluation.}
+%   \label{fig:toplevel-eval}
+% \end{figure}
+
+% \begin{itemize}[label=-]
+% \item Pre-requisites to the top-level design evaluation are as
+%   follows:
+
+%   \begin{enumerate}
+%   \item All types and subtypes defined in VHDL standard library packages
+%     are present in the environment, under the $\Gamma$ parameter.
+%   \item All types and subtypes defined in user-defined packages are
+%     present in the environment, under the $\Gamma$ parameter.
+%   \item All globally defined constants will be considered as known
+%     values in the elaboration/simulation rules.
+%   \item No shared variables or signals are globally declared.
+%   \end{enumerate}
+  
+% \item The \emph{elaboration} phase:
+
+%   \begin{enumerate}
+%   \item Builds a functor for each design of the project, including for
+%     the top-level design.
+%   \item Type-check designs' declarative parts.
+%   \item Type-checks designs' behavioral parts.
+%   \end{enumerate}
+
+% \item The \emph{simulation} phase:
+%   \begin{enumerate}
+%   \item Instantiates the top-level design thanks to the $I_p$ function
+%     yelding the primary input values.
+%   \item Simulates the top-level design until $T_c$, the count of
+%     simulation cycles, equals $0$.
+%   \end{enumerate}
+% \end{itemize}
+
+% \subsection{Notation of rules.}
+% \todo[inline]{Add examples of type-checking rules.}
+
+% Semantics rules are expressed by judgments that take the following form: 
+
+% \begin{figure}[H]
+
+  
+%   \centering
+%   \begin{prooftree}
+%     \hypo{env &\vdash \mathtt{a}\xrightarrow{rel}i}
+%   \end{prooftree}
+% \end{figure}
+
+% Here is how to interpret the above judgment: some syntactic element
+% \texttt{a} of the VHDL language is interpreted as \textit{i}
+% with respect to the relation \textit{rel}, in the environment
+% \textit{env}.
+
+% Moreover, semantics rules can be with or without premises.
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont \textsc{Axiom}}
+  
+%   \begin{prooftree}
+%     \infer0{
+%       env \vdash \mathtt{a}{}\xrightarrow{rel}i
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% Semantics rules without premises, as the one shown above, are called
+% axioms.
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont \textsc{WithPremises}}
+  
+%   \begin{prooftree}
+%     \hypo{env &\vdash \mathtt{a}\xrightarrow{rel}i}
+%     \hypo{env &\vdash \mathtt{b}\xrightarrow{rel}j}
+%     \infer2{
+%       env \vdash S\mathtt{(a,b)}\xrightarrow{rel}I(i,j)
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% The above example depicts a rule with premises. The premises are
+% placed above the judgment bar, and the conclusion appears below.  The
+% above rule expresses that if the syntactic element \texttt{a} is
+% interpreted as \textit{i} and the syntactic element \texttt{b} is
+% interpreted as \textit{j} both with respect to relation \textit{rel},
+% then the syntactic element $S\mathtt{(a,b)}$ is interpreted as
+% $I\mathtt{(i,j)}$ with respect to relation \textit{rel}. Here, $S$ is
+% a relation appearing in the syntax of the VHDL language and bounding
+% syntactic elements \texttt{a} and \texttt{b}, whereas $I$ is a
+% relation belonging to the interpretation world, bounding elements $i$
+% and $j$ which are both interpretation results.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

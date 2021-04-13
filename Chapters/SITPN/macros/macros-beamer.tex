@@ -1,0 +1,66 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Beamer macros.%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Remove circles from navigation.
+
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{mini frames}{} 
+
+% Shows or hides notes.
+
+% \setbeameroption{hide notes}
+
+% Display section title at the beginning of a section.
+
+\AtBeginSection[]
+{
+  \begingroup
+  \setbeamertemplate{footline}{}
+  \begin{frame}[label=context]
+    \begin{center}
+      \Large{\insertsection}
+    \end{center}
+  \end{frame}
+  \addtocounter{framenumber}{-1}
+  \endgroup
+}
+
+%%%%%% CUSTOM APPEARANCE %%%%%%%
+
+% Custom footline.
+
+\setbeamertemplate{footline}{
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2ex,dp=1.5ex,leftskip=2ex,rightskip=2ex]{page footer}%
+      \usebeamerfont{title in head/foot}%
+      \insertnavigation{0.7\paperwidth} \hfill
+      \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}}%
+}
+
+% Custom title page.
+
+\newcommand{\director}{\textit{PhD supervisors}:\\ David Andreu, David Delahaye}
+
+\setbeamertemplate{title page}{
+  \centering
+  \begin{beamercolorbox}[rounded=true,shadow=true,sep=8pt,center]{title}
+    \usebeamerfont{title} \inserttitle \par
+  \end{beamercolorbox}
+  \vfill
+  \begin{beamercolorbox}[center,wd=\textwidth]{author}
+    \textit{PhD student}:\\
+    \insertauthor\\
+    \vspace{10pt}
+    \director
+  \end{beamercolorbox}
+  \vfill
+  \centering
+  \insertdate\par
+  \vfill
+}
+
+% Custom itemize items.
+
+\setbeamertemplate{itemize subitem}[circle]

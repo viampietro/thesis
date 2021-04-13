@@ -1,0 +1,902 @@
+The goal of the elaboration phase is to build an elaborated design
+$\Delta$ along with a \emph{default} state $\sigma_e$, out of a
+\hvhdl{} design $d$. The elaboration relation also covers
+type-checking operations for the declarative and behavioral parts of
+design $d$.
+
+\subsection{Design elaboration.}
+\label{subsubsec:design-elab}
+
+\begin{definition}[Design store]
+  \label{def:design-store}
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}\mathrm{design}$ is
+  the partial function mapping entity ids to their corresponding
+  representation in abstract syntax. As a prerequisite to the
+  elaboration of \hilecop{}-generated designs (i.e, resulting from the
+  transformation of a SITPN into an \hvhdl{} design), a particular
+  design store $\mathcal{D}_\mathcal{H}$ is defined. Design store
+  $\mathcal{D}_\mathcal{H}$ holds the description of the
+  \texttt{place} and \texttt{transition} designs which full definition
+  in abstract syntax are given in appendices \ref{sec:place-abs-synt}
+  and \ref{sec:trans-abs-synt}.
+\end{definition}
+
+At the beginning of the elaboration phase, a function
+$\mathcal{M}_g\in{}generic\mhyphen{}id\nrightarrow{}value$ mapping the
+top-level design's generic constants to values is passed as an element
+of the environment. The $\mathcal{M}_g$ function is refered to as the
+\emph{dimensioning} function.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{DesignElab}} \\    
+    {\begin{prooftree}
+
+        % Elaborates gens, ports, sigs and cs.
+
+        \hypo{\Delta_{\emptyset},\mathcal{M}_g&\vdash{}\mathrm{gens}\xrightarrow{egens}\Delta}
+        \infer[no rule]1{\Delta,\sigma_\emptyset&\vdash{}
+          \mathrm{ports}\xrightarrow{eports}\Delta',\sigma}
+        \infer[no rule]1{\Delta',\sigma&\vdash{}\mathrm{sigs}\xrightarrow{esigs}\Delta'',\sigma'}
+        \infer[no rule]1{\mathcal{D},\Delta'',\sigma'&\vdash
+          \mathrm{cs}\xrightarrow{ebeh}\Delta''',\sigma''}
+        
+        % Conclusion
+        
+        \infer[template={\fontsize{10}{13}\selectfont\inserttext}]1
+        {
+          $\mathcal{D},\mathcal{M}_g\vdash$
+          \vhdle|design| id$_e$ id$_a$ gens ports sigs cs
+          $\xrightarrow{elab}$
+          $\Delta''',\sigma''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+where $\Delta_\emptyset$ denotes an empty elaborated design, that is
+an elaborated design initialized with empty fields (empty tables). In
+the same manner, $\sigma_\emptyset$ denotes an empty design state.
+The effect of the $egens$, $eports$, $esigs$ and $ebeh$ that
+respectively deal with the elaboration of the generic constants, the
+ports, the architecture declarative part and the behavioral part of
+the design, are explicited in the following sections.
+
+\subsection{Generic clause elaboration.}
+\label{subsubsec:gen-clause-elab}
+
+\begin{premises}
+  \begin{itemize}[label=-]
+  \item $etype_g$ transforms a subtype indication, specifically
+    attached to a generic constant declaration, into a $type$ instance
+    and checks its well-formedness (see \ref{subsec:type-elab}).
+  \item The $e$ relation evaluates expression $e$ to value $v$ (see
+    \ref{subsec:expr-rules}).
+  \item $SE_l$ states that an expression is $locally$ static (see
+    \ref{subsubsec:loc-static}).
+  \item $v\in_c{}T$ and $\mathcal{M}(\mathrm{id}_g)\in_c{}T$ checks
+    that the default value and the value of yielded by the
+    dimensioning function belongs to the type of the declared generic
+    constant (see \ref{subsec:constr-satif-rel}).
+  \end{itemize}  
+\end{premises}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{GenElabDimen}} \\
+    {\begin{prooftree}
+
+        % Well-formed type and elaborates type.
+        \hypo{\vdash\tau\xrightarrow{etype_g}T}
+        
+        % Evaluates expr. default.
+        \hypo{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&\vdash
+          \mathrm{e}\xrightarrow{e}v}
+
+        % Checks static expr. default
+        \hypo{&SE_l(\mathrm{e})}
+
+        % Checks the type of the value yielded by the dimensioning fun.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{\mathcal{M}(\mathrm{id}_g)&\in_c{}T}
+        
+        % Conclusion
+        \infer[template={\inserttext}]4
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_g\notin\Delta$ \\ 
+            $\mathrm{id}_g\in\mathcal{M}$\\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\mathcal{M}\vdash
+          \mathtt{(}\mathrm{id}_g\mathtt{,}\tau\mathtt{,}\mathrm{e}\mathtt{)}
+          \xrightarrow{egens}$
+          $\Delta\cup{}(id_g,(T,\mathcal{M}(\mathrm{id}_g)))$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{GenElabDefault}}
+  
+  \begin{prooftree}
+
+    % Well-formed type and elaborates type.
+    \hypo{\vdash\tau\xrightarrow{etype_g}T}
+
+    % Evaluates default value.
+    \hypo{
+      \Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&
+      \vdash{}\mathrm{e}\xrightarrow{e}v}
+
+    % Checks static expr. default value.
+    \hypo{&SE_l(\mathrm{e})}    
+
+    % Well-typed default.
+    \hypo{v\in_c{}T}
+    
+    % Conclusion
+    \infer[template={\inserttext}]4
+    [{\renewcommand{\arraystretch}{1.5}
+      \begin{tabular}{@{}l}
+        $\mathrm{id}_g\notin\Delta$ \\
+        $\mathrm{id}_g\notin\mathcal{M}$\\
+      \end{tabular}
+    }]
+    {
+      $\Delta,\mathcal{M}\vdash
+      \mathtt{(}\mathrm{id}_g\mathtt{,}\tau\mathtt{,}\mathrm{e}\mathtt{)}
+      \xrightarrow{egens}$
+      $\Delta\cup{}(id_g,(T,v))$
+    }
+  \end{prooftree}
+\end{figure}
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{GenElabComp}}
+    
+  \begin{prooftree}
+
+    % Evaluates GE1
+    \hypo{\Delta,\mathcal{M}\vdash\mathrm{gdecl}\xrightarrow{egens}{}\Delta'}
+
+    % Evaluates GE2.
+    \hypo{\Delta',\mathcal{M}\vdash\mathrm{gens}\xrightarrow{egens}{}\Delta''}
+
+    % Conclusion
+    \infer[template={\inserttext}]2{
+      $\Delta,\mathcal{M}\vdash
+      \mathrm{gdecl}\mathtt{;}~\mathrm{gens}
+      \xrightarrow{egens}\Delta''$
+    }
+  \end{prooftree}
+\end{figure}
+
+\subsection{Port clause elaboration.}
+\label{subsubsec:port-clause-elab}
+
+\begin{premises}
+  The $defaultv$ relation yields the implicit \emph{default} value for
+  a given type.
+\end{premises}
+
+% Elaborate IN port.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{InPortElab}}
+  
+  \begin{prooftree}
+        
+    % Elaborates type.
+    \hypo{\Delta\vdash\tau\xrightarrow{etype}T}
+
+    % Retrieves leftmost value of type T.
+    \hypo{\Delta\vdash{}T\xrightarrow{defaultv}v}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    [{
+      \begin{tabular}{@{}l}
+        $\mathrm{id}\notin\Delta$ \\
+        $\mathrm{id}\notin\sigma$ \\
+      \end{tabular}
+    }]
+    {
+      $\Delta,\sigma\vdash
+      ($\vhdle|in|$,\mathrm{id},\tau)$
+      $\xrightarrow{eports}$
+      $\Delta\cup{}(id,T),$
+      $\sigma\cup(id,v)$
+    }
+  \end{prooftree}
+\end{figure}
+
+% Elaborate OUT port.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{OutPortElab}}
+  
+  \begin{prooftree}
+
+    % Elaborates type.
+    \hypo{\Delta\vdash\tau\xrightarrow{etype}T}
+
+    % Retrieves leftmost value of type T.
+    \hypo{\Delta\vdash{}T\xrightarrow{defaultv}v}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    [{
+      \begin{tabular}{@{}l}
+        $\mathrm{id}\notin\Delta$ \\
+        $\mathrm{id}\notin\sigma$ \\
+      \end{tabular}
+    }]
+    {
+      $\Delta,\sigma\vdash
+      ($\vhdle|out|$,\mathrm{id},\tau)$
+      $\xrightarrow{eports}$
+      $\Delta\cup{}(id,T),$
+      $\sigma\cup(id,v)$
+    }
+  \end{prooftree}
+\end{figure}
+
+% Inductive def. of port elab.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PortElabComp}}
+  
+  \begin{prooftree}
+
+    % Evaluates PE1
+    \hypo{\Delta,\sigma\vdash\mathrm{pdecl}\xrightarrow{eports}{}\Delta',\sigma'}
+
+    % Evaluates PE2.
+    \hypo{\Delta',\sigma'\vdash\mathrm{ports}\xrightarrow{eports}{}\Delta'',\sigma''}
+
+    % Conclusion
+    \infer[template={\inserttext}]2{
+      $\Delta,\sigma\vdash
+      \mathrm{pdecl}\mathtt{;}~\mathrm{ports}
+      \xrightarrow{eports}\Delta'',\sigma''$
+    }
+  \end{prooftree}
+\end{figure}
+
+\subsection{Architecture declarative part elaboration.}
+\label{subsubsec:arch-decl-part-elab}
+
+% Signal elaboration rule.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{SigElab}}
+  
+  \begin{prooftree}
+
+    % Elaborates type.
+    \hypo{\Delta\vdash\tau\xrightarrow{etype}T}
+    
+    % Retrieves leftmost value of type T.
+    \hypo{\Delta\vdash{}T\xrightarrow{defaultv}v}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    [{
+      \begin{tabular}{@{}l}
+        $\mathrm{id}\notin\Delta$ \\
+        $\mathrm{id}\notin\sigma$ \\
+      \end{tabular}
+    }]
+    {
+      $\Delta,\sigma\vdash$
+      $(\mathrm{id},\tau)$
+      $\xrightarrow{esigs}$
+      $\Delta\cup{}(id,T),$
+      $\sigma\cup(id,v)$
+    }
+  \end{prooftree}
+\end{figure}
+
+
+% Inductive elaboration rule for sequence of decl. entries.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{SigElabComp}}
+  
+  \begin{prooftree}
+
+    % Evaluates sdecl.
+    \hypo{\Delta,\sigma\vdash\mathrm{sdecl}\xrightarrow{esigs}{}\Delta',\sigma'}
+
+    % Evaluates sigs.
+    \hypo{\Delta',\sigma'\vdash\mathrm{sigs}\xrightarrow{esigs}{}\Delta'',\sigma''}
+
+    % Conclusion
+    \infer[template={\inserttext}]2{
+      $\Delta,\sigma\vdash
+      \mathrm{sdecl}\mathtt{;}~\mathrm{sigs}
+      \xrightarrow{esigs}\Delta'',\sigma''$
+    }
+  \end{prooftree}
+\end{figure}
+
+\subsection{Type indication elaboration.}
+\label{subsec:type-elab}
+
+The $etype$ relation checks the well-formedness of a type indication
+$\tau$, and transforms it into a semantical $type$ (as defined in
+Table~\ref{tab:type-value}). A subtype indication $\tau$ is well-formed
+in the context $\Delta$ if $\tau$ denotes the \texttt{boolean} keyword
+or the \texttt{nat} or \texttt{array} keywords with a
+\emph{well-formed} constraint, and a well-formed element type in the
+\texttt{array} case.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ETypeBool}} \\
+    {\begin{prooftree}
+        
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\Delta\vdash$
+          $~\mathtt{boolean}$
+          $\xrightarrow{etype}$
+          $\mathtt{bool}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ETypeNat}} \\
+    {\begin{prooftree}
+        
+        % Well-formed constraint and evaluates constraint.
+        \hypo{
+          \Delta\vdash
+          (\mathrm{e},\mathrm{e}')
+          \xrightarrow{econstr}
+          (v,v')
+        }
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        {
+          $\Delta\vdash$
+          $~\mathtt{natural}(\mathrm{e},\mathrm{e}')$
+          $\xrightarrow{etype}$
+          $\mathtt{nat}(v,v')$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ETypeArray}} \\
+    {\begin{prooftree}
+
+        % Checks well-formednes and evaluates tau_ind.
+        \hypo{\Delta\vdash\tau\xrightarrow{etype}T}
+
+        % Checks well-formednes and evaluates index constraint.
+        \hypo{\Delta\vdash(\mathrm{e},\mathrm{e'})\xrightarrow{econstr}(v,v')}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        {
+          $\Delta\vdash
+          ~\mathtt{array(}\tau,\mathrm{e},\mathrm{e'}\mathtt{)}$
+          $\xrightarrow{etype}$
+          $\mathtt{array(}T,v,v'\mathtt{)}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+The $econstr$ relation checks that a constraint is well-formed and
+evaluates the constraint bounds.  A constraint $c$ is well-formed in
+the context $\Delta$ if:
+
+\begin{itemize}[label=-]
+\item its bounds are globally static expressions \cite[p.36]{VHDL2000}
+  of the \texttt{nat} type.
+\item its lower bound value is inferior or equal to its upper bound
+  value.
+\end{itemize}
+
+\begin{remark}[Type of constraints]
+  As the VHDL language reference stays unclear about the type of range
+  and index constraints \cite[p.33]{VHDL2000}, we add the restriction
+  that range and index constraints must have bounds of the
+  \texttt{nat} type (i.e, value of type $nat$).
+\end{remark}
+
+\begin{premises}
+  $SE_g$ states that an expression is \emph{globally} static (see
+  \ref{subsubsec:glob-static}).
+\end{premises}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{EConstr}} \\
+    {\begin{prooftree}
+        
+        
+        % Globally static e and e'.
+        \hypo{\Delta\vdash{}SE_g(\mathrm{e})}
+        \infer[no rule]1{\Delta\vdash{}SE_g(\mathrm{e}')}
+        
+        % Evaluates e and e'
+        \hypo{\Delta,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}'\xrightarrow{e}v'}
+
+        % Well-typed e and e'.
+        \hypo{v&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $v\leq{}v'$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta\vdash$
+          $(\mathrm{e},\mathrm{e}')$
+          $\xrightarrow{econstr}$
+          $(v,v')$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+When considering a type indication in a generic constant declaration,
+the definition of well-formedness differs slightly from the general
+definition. A type indication $\tau$ associated to a generic constant
+declaration is well-formed if $\tau$ denotes the \texttt{boolean}
+keyword, or the \texttt{nat} keyword with a \emph{well-formed}
+constraint.
+
+The $etype_g$ relation is specially defined to check the
+well-formedness of a subtype indication associated with a generic
+constant declaration.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ETypeGBool}} \\
+    {\begin{prooftree}
+        
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\vdash$
+          $~\mathtt{boolean}$
+          $\xrightarrow{etype}$
+          $\mathtt{bool}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+    \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ETypeGNat}} \\
+    {\begin{prooftree}
+        
+        % Well-formed constraint and evaluates constraint.
+        \hypo{
+          \Delta\vdash
+          (\mathrm{e},\mathrm{e}')
+          \xrightarrow{econstr_g}
+          (v,v')
+        }
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        {
+          $\vdash$
+          $~\mathtt{natural}(\mathrm{e},\mathrm{e}')$
+          $\xrightarrow{etype}$
+          $\mathtt{nat}(v,v')$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+The $econstr_g$ relation checks that a \emph{generic} constraint (i.e,
+a constraint appearing in a type indication associated with a generic
+constant declaration) is well-formed and evaluates the constraint
+bounds.
+
+A \emph{generic} constraint $c$ is well-formed if:
+
+\begin{itemize}[label=-]
+\item its bounds are locally static expressions \cite[p.36]{VHDL2000} of
+  the \texttt{nat} type.
+\item its lower bound value is inferior or equal to its upper bound
+  value.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{EConstrG}} \\
+    {\begin{prooftree}
+        
+        % Locally static e and e'.
+        \hypo{&SE_l(\mathrm{e})}
+        \infer[no rule]1{&SE_l(\mathrm{e}')}
+        
+        % Evaluates e and e'
+        \hypo{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}'\xrightarrow{e}v'}
+
+        % Well-typed v and v'.
+        \hypo{v&\in_c\mathtt{nat}(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c\mathtt{nat}(0,\mathtt{NATMAX})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $v\leq{}v'$ \\
+          \end{tabular}
+        }]
+        {
+          $\vdash$
+          $(\mathrm{e},\mathrm{e}')$
+          $\xrightarrow{econstr_g}$
+          $(v,v')$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Behavior elaboration.}
+\label{subsec:beh-elab}
+
+\subsubsection{Elaboration of concurrent statements.}
+\label{subsubsec:conc-elab}
+
+As it is, the elaboration of the composition of concurrent statements
+is performed in a sequential manner.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+  {\fontsize{8}{11}\selectfont\textsc{CsParElab}} \\
+  {\begin{prooftree}
+
+    % Elaborates first conc. stmt.
+    \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{ebeh}\Delta',\sigma'}
+
+    % Elaborates second conc. stmt.
+    \hypo{\mathcal{D},\Delta',\sigma'\vdash\mathrm{cs'}\xrightarrow{ebeh}\Delta'',\sigma''}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    {
+        $\mathcal{D},\Delta,\sigma\vdash$
+        $~\mathrm{cs}~||~\mathrm{cs'}$
+        $\xrightarrow{ebeh}$
+        $\Delta'',\sigma''$
+    }
+  \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{CsNullElab}} \\
+    {\begin{prooftree}
+
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          $~\mathtt{null}$
+          $\xrightarrow{ebeh}$
+          $\Delta,\sigma$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Process elaboration.}
+\label{subsubsec:ps-elab}
+
+% Well-typed process with sensitivity list and vars.
+
+\begin{premises}
+  $\mathtt{valid}_{ss}$ states that a sequential statement is
+  well-typed.
+\end{premises}
+
+\begin{sideconds}
+  $\mathrm{sl}\subseteq{}Ins(\Delta)\cup{}Sigs(\Delta)$ indicates that
+  the sensitivity list \emph{sl} must only contain signal identifiers
+  that are readable, that is, \emph{input} ports and declared signals.
+\end{sideconds}
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsElab}}
+  \vspace{1em}
+  
+  \begin{prooftree}
+
+    % Elaborates local context.
+    \hypo{\Delta,\Lambda_\emptyset\vdash\mathrm{vars}\xrightarrow{evars}\Lambda}
+
+    % Well-typed sequential statement.
+    \hypo{\Delta,\sigma,\Lambda\vdash{}\mathtt{valid}_{ss}(\mathrm{ss})}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    [{\renewcommand{\arraystretch}{1.5}
+      \begin{tabular}{@{}l}
+        $\mathrm{id}_p\notin\Delta$ \\
+        $\mathrm{sl}\subseteq{}Ins(\Delta)\cup{}Sigs(\Delta)$ \\
+      \end{tabular}
+    }]
+    {
+        $\mathcal{D},\Delta,\sigma\vdash$
+        $~$\vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+        $\xrightarrow{ebeh}$
+        $\Delta\cup{}(id_p,\Lambda),\sigma$
+    }
+  \end{prooftree}
+\end{figure}
+
+\subsubsection{Process declarative part elaboration.}
+\label{subsubsec:ps-decl-elab}
+
+The $evars$ relation builds a local environment out of a process
+declarative part.
+
+% Variable declaration elaboration.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{VarElab}}
+  
+  \begin{prooftree}
+        
+    % Elaborates type ind.
+    \hypo{\Delta\vdash\tau\xrightarrow{etype}T}
+
+    % Retrieves leftmost value of type T.
+    \hypo{\vdash{}T\xrightarrow{defaultv}v}
+    
+    % Conclusion
+    \infer[template={\inserttext}]2
+    [$\mathrm{id}\notin{}\Lambda,\mathrm{id}\notin\Delta$]
+    {
+      $\Delta,\Lambda\vdash$
+      $~(\mathrm{id},\tau)$
+      $\xrightarrow{evars}$
+      $\Lambda\cup{}(id,(T,v))$
+    }
+  \end{prooftree}
+\end{figure}
+
+% Inductive elab. rule for composition of variable declaration.
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{VarElabComp}}
+  
+  \begin{prooftree}
+
+    % Evaluates VE1
+    \hypo{\Delta,\Lambda\vdash\mathrm{vdecl}\xrightarrow{evars}{}\Lambda'}
+
+    % Evaluates VE2.
+    \hypo{\Delta,\Lambda'\vdash\mathrm{vars}\xrightarrow{evars}{}\Lambda''}
+
+    % Conclusion
+    \infer[template={\inserttext}]2{
+      $\Delta,\Lambda\vdash
+      ~\mathrm{vdecl}\mathtt{,}~\mathrm{vars}
+      \xrightarrow{evars}\Lambda''$
+    }
+  \end{prooftree}
+\end{figure}
+
+\subsubsection{Component instantiation elaboration.}
+\label{subsubsec:comp-inst-elab}
+
+\begin{premises}
+  \begin{itemize}[label=-]
+  \item The $emapg$ relation binds a generic map to a function
+    $\mathcal{M}\in{}id\nrightarrow{}value$ (see definition below).
+  \item \texttt{valid}$_{ipm}$ (resp. \texttt{valid}$_{opm}$) states
+    that a in port map (resp. out port map) is valid, i.e well-formed
+    and well-typed (see \ref{subsec:valid-pm}).
+  \end{itemize}
+\end{premises}
+
+\begin{sideconds}
+  $\mathcal{M}\subseteq{}Gens(\Delta_c)$ checks that
+  the generic map \emph{gmap} contains references to known generic
+  constant identifiers only.
+\end{sideconds}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompElab}} \\
+    {\begin{prooftree}
+        
+        % Creates mapping and elaborates gens.
+        \hypo{\mathcal{M}_\emptyset&\vdash\mathrm{gmap}\xrightarrow{emapg}\mathcal{M}}
+        
+        % Elaborates design.
+        \hypo{
+          \mathcal{D},\mathcal{M}&\vdash
+          \mathcal{D}(\mathrm{id}_e)\xrightarrow{elab}\Delta_c,\sigma_c}
+
+        % Checks in port map validity.
+        \hypo{\Delta,\Delta_c,\sigma&\vdash\mathtt{valid}_{ipm}(\mathrm{ipmap})}
+
+        % Checks out port map validity.
+        \infer[no rule]1{\Delta,\Delta_c&\vdash\mathtt{valid}_{opm}(\mathrm{opmap})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_c\notin\Delta$, $\mathrm{id}_c\notin\sigma$ \\
+            $\mathrm{id}_e\in{}\mathcal{D}$\\
+            % $\mathcal{D}(\mathrm{id}_e)=$ \vhdlep{7}{9}|design| id$_{ce}$ id$_{ca}$ gens ports sigs cs \\
+            $\mathcal{M}\subseteq{}Gens(\Delta_c)$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| $(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap}, \mathrm{ipmap}, \mathrm{opmap})\xrightarrow{ebeh}$
+          $\Delta\cup{}(id_c,\Delta_c),$
+          $\sigma\cup{}(id_c,\sigma_c)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+A port map is a mapping between signals coming from an embedding
+design ($\Delta$) and ports of an internal component instance
+($\Delta_c$). The formal part of an port map entry (i.e, left of the
+arrow) belongs to the internal component, whereas the actual part
+(i.e, right of the arrow) refers to the embedding design. Therefore,
+we need both $\Delta$ and $\Delta_c$ to verify if a port map is
+well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
+
+\begin{remark}[Valid generic map]
+  Note that we are not checking the validity of the generic map.  In
+  case of an ill-formed generic map, a inconsistent mapping
+  $\mathcal{M}$ is generated by the \emph{emapg} that will make the
+  \emph{elab} relation, taking $\mathcal{M}$ as a parameter, never
+  derivable. Therefore, the \emph{elab} relation does an implicit
+  validity check on the generic map.
+\end{remark}
+
+% Creates a mapping function from an assoc. list.
+
+% Case formal part is not partial.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{AssocGElab}} \\
+    
+    {\begin{prooftree}
+
+        % Locally static expression e.
+        \hypo{SE_l(\mathrm{e})}
+        
+        % Evaluates e.
+        \hypo{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [$\mathrm{id}_g\notin\mathcal{M}$]
+        {
+          $\mathcal{M}\vdash$
+          $~\mathrm{id}_g\Rightarrow\mathrm{e}$
+          $\xrightarrow{emapg}$
+          $\mathcal{M}\cup{}(\mathrm{id}_g,v)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{GmapElabComp}} \\
+    
+    {\begin{prooftree}
+
+        % Collects assoc_g.
+        \hypo{\mathcal{M}\vdash\mathrm{assoc}_g\xrightarrow{emapg}\mathcal{M}'}
+
+        % Collects lassoc_g.
+        \hypo{\mathcal{M}'\vdash\mathrm{gmap}\xrightarrow{emapg}\mathcal{M}''}
+
+        % Conclusion
+        \infer[template={\inserttext}]2
+        {
+          $\mathcal{M}\vdash
+          \mathrm{assoc}_g,~\mathrm{gmap}$
+          $\xrightarrow{emapg}\mathcal{M}''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+An $\mathrm{assoc}_g$ entry doesn't allow indexed id in its formal
+part, due to the restriction of generic constants to scalar types.
+Note that this restriction is not imposed by the VHDL language
+reference; it is our stance towards a simplification of the VHDL
+semantics.
+
+\subsection{Implicit default value.}
+\label{subsec:implicit-default-v}
+
+According to the VHDL reference, when declaring a port, a signal or a
+variable, these items must receive an implicit default value depending
+on their types \cite[p.61, 64, 173]{VHDL2000}. The $defaultv$ relation
+determines the default value for a given type.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{DefaultVBool}} \\
+    {\begin{prooftree}
+
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\mathtt{bool}$
+          $\xrightarrow{defaultv}\bot$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{DefaultVCNat}} \\
+    {\begin{prooftree}
+
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\mathtt{nat}(n,m)$
+          $\xrightarrow{defaultv}n$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{DefaultVCArr}} \\
+    {\begin{prooftree}
+
+        % Retrieves default value for element subtype.
+        \hypo{T\xrightarrow{defaultv}v}
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        [$size=(m-n)+1$]
+        {
+          $\mathtt{array}(T,n,m)$
+          $\xrightarrow{defaultv}$
+          $\mathtt{create\_array}(size,T,v)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+$\mathtt{create\_array}(size,T,v)$ creates an array of size $size$,
+containing element of type $T$, where each element is initialized with
+the value $v$.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

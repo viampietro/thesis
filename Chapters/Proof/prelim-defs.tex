@@ -1,0 +1,171 @@
+\begin{definition}[SITPN-to-\hvhdl{} Design Binder]
+  Given a $sitpn\in{}SITPN$ and a \hvhdl{} design $d\in{}design$, a
+  SITPN-to-\hvhdl{} design binder $\gamma\in{}WM(sitpn,d)$ is a tuple
+  ${<}PMap,TMap,\mathcal{C}_{id},\mathcal{A}_{id},\mathcal{F}_{id},CMap,AMap,FMap{>}$
+  where:
+  \begin{itemize}
+    \fontsize{9}{10}\selectfont
+  \item
+    $sitpn={<}P,T,pre,test,inhib,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
+    \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$
+  \item $d=$ \vhdle|design| \textit{$id_{ent}$ $id_{arch}$ gens ports sigs behavior}
+  \item $PMap\in{}P\rightarrow{}P_{id}$ where $P_{id}=\{id~|~\mathtt{comp}(id,"place",gm,ipm,opm)\in{}behavior\}$
+  \item $TMap\in{}T\rightarrow{}T_{id}$ where $T_{id}=\{id~|~\mathtt{comp}(id,"transition",gm,ipm,opm)\in{}behavior\}$
+  \item $\mathcal{C}_{id}\subseteq\{id~|~(\mathtt{in}, id, t)\in{}ports\wedge{}id\notin\{"clk","rst"\}\}$
+  \item $\mathcal{A}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
+  \item $\mathcal{F}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
+  \item $CMap\in\mathcal{C}\rightarrow\mathcal{C}_{id}$
+  \item $AMap\in\mathcal{A}\rightarrow\mathcal{A}_{id}$
+  \item $FMap\in\mathcal{F}\rightarrow\mathcal{F}_{id}$        
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Similar Environments]
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
+  design store
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
+  elaborated version $\Delta\in{}ElDesign(d,\mathcal{D})$ of design
+  $d$, and a binder $\gamma\in{}WM(sitpn,d)$, the environment
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  that yields the value of the primary input ports of $\Delta$ at a
+  given simulation cycle and a given clock event, and the environment
+  $E_c$, that yields the value of conditions of $sitpn$ at a given
+  execution cycle, are similar, noted
+  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, iff for all
+  $\tau\in{}\mathbb{N}$, $clk\in\{\uparrow,\downarrow\}$,
+  $c\in\mathcal{C}$, $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$,
+  $E_p(\tau,clk)(id_c)=E_c(\tau)(c)$.
+\end{definition}
+
+\subsection{State Similarity}
+\label{sec:state-sim}
+
+\begin{definition}[General State Similarity]
+  \label{def:state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
+  design store
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma(\Delta)$ are similar, written
+  $\gamma\vdash{}s\sim\sigma$ iff
+  \begin{enumerate}
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
+    $~s.M(p)=\sigma_p("s\_marking")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
+    $upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")\land{}$\\
+    $upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
+    $upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
+    $upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+    and $\sigma(id_t)=\sigma_t,$\\
+    $s.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.
+  \item
+    $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
+  \item
+    $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
+  \item
+    $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}[Post Rising Edge State Similarity]
+  \label{def:post-re-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d)$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, a clock cycle count $\tau\in\mathbb{N}$,
+  and an SITPN execution environment
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
+  SITPN state $s\in{}S(sitpn)$ and a design state
+  $\sigma\in\Sigma(\Delta)$ are similar after a rising edge happening
+  at clock cycle count $\tau$, written
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
+  \begin{enumerate}
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
+    $~s.M(p)=\sigma_p("s\_marking")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
+    $upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")\land{}$\\
+    $upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
+    $upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
+    $upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+    and $\sigma(id_t)=\sigma_t,$\\
+    $s.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.
+  \item
+    $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
+  \item
+    $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \item
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+    and $\sigma(id_t)=\sigma_t,$\\
+    $t\in{}Sens(s.M)\Leftrightarrow\sigma_t("s\_enabled")=\mathtt{true}$.
+  \item
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+    and $\sigma(id_t)=\sigma_t,$\\
+    $\sigma_t("s\_condition\_combination")=\prod_{c\in{}conds(t)}E_c(\tau,c)~.~\prod_{c\in{}\overline{conds}(t)}\mathtt{not}(E_c(\tau,c))$\\
+    where $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\}$ and
+    $\overline{conds}(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=-1\}$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}[Post Falling Edge State Similarity]
+  \label{def:post-fe-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d)$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma(\Delta)$ are similar after a falling
+  edge, written $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
+  $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
+  similarity) and
+  \begin{enumerate}
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
+    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma_p("s\_output\_token\_sum")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
+    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma_p("s\_input\_token\_sum")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+    and $\sigma(id_t)=\sigma_t,$\\
+    $t\in{}Fired(s)\Leftrightarrow\sigma_t("fired")$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}[Execution Trace Similarity]
+  \label{def:exec-trace-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
+  design store
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, the execution trace
+  $\theta_s\in{}\mathtt{list}(S(sitpn))$, and the simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
+  $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
+  following rules:
+
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
+    
+    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]        
+        \infer0{$\gamma\vdash{}[~]\sim{}[~]$}
+      \end{prooftree}} 
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTraceCons}} \\
+    
+    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
+
+        \hypo{$\gamma\vdash{}s\sim\sigma$}
+        \hypo{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$}
+        \infer2{$\gamma\vdash{}(s :: \theta_s)\sim{}(\sigma :: \theta_\sigma)$}
+      \end{prooftree}} 
+  \end{tabular}
+  
+\end{definition}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

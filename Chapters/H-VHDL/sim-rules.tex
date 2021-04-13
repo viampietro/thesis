@@ -1,0 +1,2370 @@
+% \subsection{Well-formed environment.}
+% \label{subsec:env-wf}
+
+% To avoid the situation where an identifier met in an expression refers
+% both to a variable and a signal at the same time, we need to ensure
+% that identifiers referenced in the environment are unique.  We define
+% the predicate $\mathcal{U}$ stating that identifier unicity is met at
+% different environment levels.
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont\textsc{WFTypedefEnv}}
+  
+%   \begin{prooftree}
+
+%     % No intersection dom and val
+%     \hypo{\mathtt{dom}(f)\cap\mathtt{val}(f)=\emptyset}
+
+%     % Unique val.
+%     \infer[no rule]1{
+%       \forall{}id,id'\in\mathtt{dom}(f),~id\neq{}id'\wedge\mathtt{enum}(f(id))\wedge\mathtt{enum}(f(id'))
+%       \Rightarrow{}f(id)\cap{}f(id')=\emptyset
+%     }
+    
+%     % Conclusion
+%     \infer1
+%     [$f\in{}ident\nrightarrow{}typedef$]
+%     {
+%       \mathcal{U}(f)
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% where $\mathtt{enum}$ is a predicate stating that a $typedef$ instance
+% is an enumeration of values.
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont\textsc{WFDesign}}
+  
+%   \begin{prooftree}
+
+%     % Well-formed Types.
+%     \hypo{\mathcal{U}(Types)}
+
+%     % No intersection val(Types).
+%     \infer[no rule]1{
+%       \mathtt{val}(Types)\cap\mathtt{dom}(\Delta)=\emptyset
+%     }
+    
+%     % No intersection dom(Types).
+%     \infer[no rule]1{
+%       \mathtt{dom}(Types)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Types))\big)=\emptyset
+%     }
+
+%     % No intersection Gens.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Gens)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Gens))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+
+%     % No intersection Ins.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Ins)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Ins))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+
+%     % No intersection Outs.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Outs)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Outs))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+
+%     % No intersection Sigs.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Sigs)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Sigs))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+
+%     % No intersection Consts.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Consts)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Consts))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+    
+%     % No intersection Ps.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Ps)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Ps))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+
+%     % No intersection Comps.
+%     \infer[no rule]1{
+%       \mathtt{dom}(Comps)\cap\big((\mathtt{dom}(\Delta)\setminus\mathtt{dom}(Comps))\cup\mathtt{val}(Types)\big)=\emptyset
+%     }
+    
+%     % Conclusion
+%     \infer1
+%     [$\Delta\in{}Design$]
+%     {
+%       \mathcal{U}(\Delta)
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% where $\Delta=(Gens,Ins,Outs,Sigs,Consts,Ps,Comps,Types,Behavior)$.
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont\textsc{WFGammaDeltaEnv}}
+%   \vspace{2ex}
+  
+%   \begin{prooftree}
+
+%     % Well-formed .
+%     \hypo{\mathcal{U}()}
+
+%     % Well-formed \Delta.
+%     \hypo{\mathcal{U}(\Delta)}
+
+%     % No intersection  and \Delta.
+%     \hypo{(\mathtt{dom}()\cup\mathtt{val}())
+%       \cap(\mathtt{dom}(\Delta)\cup\mathtt{val}(Types))=\emptyset}
+    
+%     % Conclusion
+%     \infer3
+%     [{
+%       \begin{tabular}{@{}l}
+%         $\in{}ident\nrightarrow{}typedef$ \\
+%         $\Delta\in{}Design$ \\
+%       \end{tabular}
+%     }]
+%     {
+%       \mathcal{U}(\Delta)
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% \begin{figure}[H]
+%   {\fontsize{8}{11}\selectfont\textsc{WFGammaDeltaLambdaEnv}}
+%   \vspace{2ex}
+  
+%   \begin{prooftree}
+
+%     % Well-formed  and \Delta.
+%     \hypo{\mathcal{U}(\Delta)}
+
+%     % No intersection \Lambda and .
+%     \hypo{\mathtt{dom}(\Lambda)\cap(\mathtt{dom}()\cup\mathtt{val}())=\emptyset}
+    
+%     % No intersection \Lambda and \Delta.
+%     \hypo{\mathtt{dom}(\Lambda)\cap(\mathtt{dom}(\Delta)\cup\mathtt{val}(Types))=\emptyset}
+    
+%     % Conclusion
+%     \infer3
+%     [{
+%       \begin{tabular}{@{}l}
+%         $\in{}ident\nrightarrow{}typedef$ \\
+%         $\Delta\in{}Design$ \\
+%         $\Lambda\in{}ident\nrightarrow{}(type\times{}value)$
+%       \end{tabular}
+%     }]
+%     {
+%       \mathcal{U}(\Delta,\Lambda)
+%     }
+%   \end{prooftree}
+% \end{figure}
+
+% To safely pursue the simulation phase for a given top-level design, we
+% need to prove Theorem~\ref{thm:id-unicity} stating that if the
+% elaboration of the top-level design succeeds then there is no
+% overlaping of identifiers between the $$ and $\Delta$ structures
+% and every local environment of processes present in the top-level
+% design's behavior.
+
+% \begin{theorem}
+%   \label{thm:id-unicity}
+%   $\forall{}\mathrm{design},\mathcal{M},\Delta,$
+%   $\big(\mathcal{D},\mathcal{M}\vdash\mathrm{design}\xrightarrow{elab}\Delta\big)$
+%   $\Rightarrow\forall\Lambda,\exists\mathrm{id}\in\mathtt{dom}(Ps)|Ps(\mathrm{id})=\Lambda,~\mathcal{U}(\Delta,\Lambda)$.
+% \end{theorem}
+
+% Note that in $$ and $\mathcal{D}$ are free variables in
+% Theorem~\ref{thm:id-unicity} as they are known structures.  With
+% Theorem~\ref{thm:id-unicity} proved, they can be no ambiguity due to
+% identifiers while interpreting expressions during the simulation
+% phase.
+
+\subsection{Full Simulation}
+
+The full simulation process is decomposed in two steps. The first step
+is the elaboration phase that builds an elaborated version of a
+\hvhdl{} design along with its default state, and type-checks the
+design. Previous to the elaboration phase, the top-level design
+receives a value for each of its generic constant; we refer to it as
+the \emph{dimensioning} of the top-level design. The second step is
+the simulation phase that executes the behavioral part of the
+top-level design starting from an initial state. The simulation is
+decomposed into simulation cycles.  Each simulation cycle is divided
+in four parts entailed by the \emph{synchronous} execution of
+$\mathcal{H}$-VHDL top-level designs, i.e designs whose behavior
+depend on a clock signal. The four parts are, first, the execution of
+concurrent statements responding to the rising edge of the clock
+signal, then, a phase of signal stabilization followed by the
+execution of concurrent statements responding to the falling edge of
+the clock signal, and finally another phase of signal
+stabilization. At each clock event, the value of the primary inputs of
+the design being currrently simulated are captured and injected in the
+simulation; primary inputs receive values from the design
+environment. Here, the environment is represented by a function
+mapping input port identifiers to values depending on the current
+count of simulation cycles and the considered clock event. This leads
+to the following hypothesis:
+
+\begin{hypothesis}[Stable primary inputs]
+  \label{hyp:stable-pi}
+  The values of primary inputs (i.e, input ports of the top-level
+  design) are captured at each clock event, and therefore are stable
+  (i.e, their values do not change) between two contiguous clock
+  events.
+\end{hypothesis}
+
+Hypothesis~\nameref{hyp:stable-pi} arises from the fact that the clock
+signal sample rate respects the Nyquist-Shannon sampling
+theorem. Therefore, the sample rate of the design's clock is
+sufficient to capture all events possibly arising in the environment.
+We only need to settle the values of the primary inputs at the clock
+edges.
+
+Also, after each clock event phase follows a signal stabilization
+phase in the proceedings of a simulation cycle. One more hypothesis is
+needed here:
+
+\begin{hypothesis}[Stabilization]
+  \label{hyp:stabilization}
+  All signals have enough time to stabilize during the signal
+  stabilization phase that happens between two clock events.
+\end{hypothesis}
+
+As a \hvhdl{} design represents a physical circuit, one can assume
+that the represented circuit is analyzed former to the simulation.
+Therefore, one knows exactly how much time is needed to propagate
+signal values through the longest physical path; as a consequence, a
+proper clock frequency is set ensuring signal stabilization between
+two clock events. Thus, Hypothesis~\nameref{hyp:stabilization} arises
+from the previous facts.
+
+%%% DESIGN ELABORATION AND SIMULATION.
+
+The $full$ simulation relation takes in parameter a top-level design
+d, a design store $\mathcal{D}\in{}id\nrightarrow{}design$, an
+elaborated design $\Delta\in{}ElDesign(d)$, a dimensioning function
+$\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, a primary input
+environment
+$E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
+a simulation cycle count $\tau\in\mathbb{N}$, and a simulation trace
+$\theta\in{}\mathtt{list}(\Sigma(\Delta))$, corresponding to the list
+of states yielded by design d after $\tau$ simulation cycles. Note
+that we use the pointed notation to access the behavioral part of
+design d, written d.cs. It is this part of the design that is executed
+during the simulation, and therefore is passed as a parameter of the
+initialization and simulation relations. % The states in
+% $\sigma_t$ are \emph{time}-ordered, that is, the first states of the
+% list are the earliest states in the simulation history. To achieve
+% conciseness, further on a singleton trace containing the only element
+% $\sigma$ is written $\sigma$. The trace resulting of the concatenation
+% of two traces $\sigma_t$ and $\sigma_t'$ is written
+% $\sigma_t.\sigma_t'$.
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{FullSim}}
+  
+  \begin{prooftree}[template=\inserttext]
+
+    % Design elab.
+    \hypo{$\mathcal{D},\mathcal{M}_g\vdash\mathrm{d}\xrightarrow{elab}\Delta,\sigma$}
+
+    % Initialization.
+    \hypo{$\mathcal{D},\Delta,\sigma\vdash{}\mathrm{d.cs}\xrightarrow{init}\sigma_0$}
+       
+    % Simulation loop.
+    \hypo{$\mathcal{D},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta$}
+    
+    \infer3 [] { $\mathcal{D},\Delta,\mathcal{M}_g,E_p,\tau\vdash$
+      $\mathrm{d}\xrightarrow{full}\theta$ }
+  \end{prooftree}
+\end{table}
+
+where:
+
+\begin{itemize}[label=-]
+\item $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, the
+  function yelding the values of generic constants for a given
+  top-level design, refered to as the \emph{dimensioning} function.
+\item
+  $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(ident\nrightarrow{}value)$,
+  the function yelding a mapping from primary inputs (i.e, input ports
+  of the top-level design) to values at a given simulation cycle count
+  (i.e, the $\mathbb{N}$ argument), and a given clock event (i.e, the
+  $Clk$ argument, where $Clk=\{\uparrow,\downarrow\}$).
+\item $\tau$, the number of simulation cycles to execute.  The value
+  of $\tau$ is decremented at each clock cycle until it reaches zero
+  (see Section~\ref{sec:sim-loop}).
+\end{itemize}
+
+\subsection{Simulation loop.}
+\label{sec:sim-loop}
+
+\begin{table}[H]
+
+  \begin{tabular}{@{}l}
+    %%% SIMULATION END.
+    
+    {\fontsize{8}{11}\selectfont\textsc{SimEnd}} \\
+    
+    {\begin{prooftree}[template=\inserttext]
+        \infer0 {
+          $\mathcal{D},E_p,\Delta,0,\sigma\vdash{}cs\rightarrow{}[~]$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    % SIMULATION LOOP
+    
+    {\fontsize{8}{11}\selectfont\textsc{SimLoop}} \\
+    
+    {\begin{prooftree}[template=\inserttext]
+        
+        % First column.
+        \hypo{$\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\xrightarrow{\uparrow,\downarrow}\sigma'$}
+        
+        % Second column.
+        \hypo{$\mathcal{D},E_p,\Delta,\tau-1,\sigma'\vdash{}cs\rightarrow\theta$}
+        
+        \infer2
+        [$T_c>0$]
+        {
+          $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\rightarrow\theta$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+
+\end{table}
+
+\subsection{Simulation cycle.}
+
+ To ease the reading of
+forward simulation rules, we need to introduce two notations.
+
+\begin{notation}[Overriding union]
+  For all partial function $f,f'\in{}X\nrightarrow{}Y$, $f\ocup{}f'$
+  denotes the overriding union of $f$ and $f'$ such that
+  $f\ocup{}f'=\lambda{}x.
+  \begin{cases}
+    f'(x) & if~x\in\mathtt{dom}(f') \\
+    f(x) & otherwise \\
+  \end{cases}
+  $
+\end{notation}
+
+\begin{notation}[Differentiated intersection domain]
+  For all partial function $f,f'\in{}X\nrightarrow{}Y$, $f\dcap{}f'$
+  denotes the intersection of the domain of $f$ and $f'$ for which $f$
+  and $f'$ yields different values. That is,
+  $f\dcap{}f'=\{~x\in\mathtt{dom}(f)\cap\mathtt{dom}(f')~|~f(x)\neq{}f'(x)~\}$.
+\end{notation}
+
+% \begin{remark}[Initialization and signal events.]
+%   In the definition of the $\dcap$ relation, adding the difference
+%   between the domain of $f'$ and $f$ is mandatory, as it permits to
+%   take into account elements that have a fresh value in $f'$.  This
+%   helps to catch events on signals that happened to have no values in
+%   a signal store $\mathcal{S}$ but have a fresh (initial) value in a
+%   resulting signal store $\mathcal{S}'$.
+% \end{remark}
+
+The cycle relation states that the design state $\sigma''$ is the
+result of the execution of concurrent statement $cs$ over one
+simulation cycle, this starting from state $\sigma$.  As told in
+Hypothesis~\ref{hyp:stable-pi}, we update the input port values at
+each clock event. Fresh input port values are coming from the
+environment $E_p$. The updates are made in the definitions of
+$\sigma_{injr}$ and $\sigma_{injf}$. These definitions are expressed
+as side conditions.
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{SimCyc}}
+  
+  \begin{prooftree}[template=\inserttext]
+
+    % Rising
+    \hypo{$\mathcal{D},\Delta,\sigma_{injr}\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_r$}
+
+    % Falling
+    \infer[no rule]1{$\mathcal{D},\Delta,\sigma_{injf}\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_f$}
+
+    % Stabilize after rising.
+    \hypo{$\mathcal{D},\Delta,\sigma_r\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma'$}
+
+    % Stabilize after falling.
+    \infer[no rule]1{$\mathcal{D},\Delta,\sigma_f\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
+    
+    \infer2
+    [{
+      \renewcommand{\arraystretch}{1.5}
+      \begin{tabular}{@{}l}
+        $\sigma={<}\mathcal{S}, \mathcal{C}, \mathcal{E}{>}$ \\
+        $\sigma_{injr}={<}\mathcal{S}\ocup{}E_p(\tau,\uparrow),
+        \mathcal{C},
+        \mathcal{E}\cup(\mathcal{S}\dcap{}E_p(\tau,\uparrow)){>}$ \\
+        $\sigma'={<}\mathcal{S}', \mathcal{C}', \mathcal{E}'{>}$ \\
+        $\sigma_{injf}={<}\mathcal{S}'\ocup{}E_p(\tau,\downarrow),
+        \mathcal{C}',
+        \mathcal{E}'\cup(\mathcal{S}'\dcap{}E_p(\tau,\downarrow)){>}$ \\
+      \end{tabular}
+    }] {
+      $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash\mathrm{cs}\xrightarrow{\uparrow,\downarrow}$
+      $\sigma''$ }
+  \end{prooftree}
+\end{table}
+
+\begin{remark}[Input ports and signal store]
+  For a given $\Delta\in{}Design$, $\sigma\in\Sigma(\Delta)$,
+  $E_p\in{}\mathbb{N}\rightarrow{}Clk\rightarrow{}(input\mhyphen{}id\rightarrow{}value)\mathbb{}$,
+  $\tau\in\mathbb{N}$, $clk\in{}Clk$, we have
+  $\mathtt{dom}(E_p(\tau,clk))\subset{}\mathtt{dom}(\mathcal{S})$,
+  where $\sigma={<}\mathcal{S}, \mathcal{C}, \mathcal{E}{>}$. Indeed,
+  the input ports of $\Delta$ that constitutes the domain of
+  $E_p(\tau,clk)$ are a subset of the set of signals. The set of
+  signals constitutes the domain of state $\sigma$'s signal store
+  (i.e, $\mathcal{S}$); thus we have
+  $\mathtt{dom}(E_p(\tau,clk))\subset{}\mathtt{dom}(\sigma.\mathcal{S})$.
+  Consequently, all signals that belong to
+  $\mathtt{dom}(E_p(\tau,clk))$ and have a different value than in the
+  signal store $\mathcal{S}$ are captured by the expression
+  $\mathcal{S}\dcap{}E_p(\tau,clk)$.
+\end{remark}
+
+\subsection{Initialization rules}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{Init}}
+  
+  \begin{prooftree}[template=\inserttext]
+
+    % Run all processes once.
+    \hypo{$\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{runinit}{}\sigma'$}
+
+    % Stabilization phase after runinit.
+    \hypo{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}{}\sigma''$}
+
+    % Conclusion.
+    \infer2
+    {
+      $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{init}\sigma''$
+    }
+
+  \end{prooftree}
+\end{table}
+
+At the initialization phase, the block of sequential instructions of
+all processes is executed exactly once ($runinit$), then a
+stabilization phase follows ($stabilize$). It is during the
+initialization phase that the first part of $\mathtt{rst}$ blocks is
+executed. A block (\vhdle|rst| ss ss') is equivalent to (\vhdle|if|
+(rst = false) \vhdle|then| ss \vhdle|else| ss') where \texttt{rst} is
+a reserved signal identifier. Therefore, when considering a
+\texttt{rst} block, the $runinit$ relation executes the ss block; at
+every other moment of the simulation, the ss' block is executed. This
+mimicks the conventional proceeding of a simulation where the
+\texttt{rst} signal (for \textit{reset} signal) is set to false during
+the initialization (only during the $runinit$ phase, not during the
+stabilization phase), and then is set to true for the rest of the
+simulation.
+
+\subsubsection{Evaluation of a process statement}
+\label{subsubsec:ps-stmt-init}
+
+\begin{premises}
+  \begin{itemize}
+  \item The $i$ flag of the $ss_i$ relation indicates that all
+    sequential instructions responding to the initialization phase
+    (i.e, \texttt{rst} blocks) will be executed.
+  \item The set of events of state $\sigma$ is emptied
+    ($NoEv(\sigma)$) before the evaluation of the process statement
+    body. 
+\end{itemize}
+\end{premises}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{PsRunInit}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Runs seq.
+        \hypo{$\Delta,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}{}\sigma',\Lambda'$}
+
+        % Conlcusion.
+        \infer1
+        [{
+          \begin{tabular}{@{}l}
+            $\Delta(\mathrm{id}_p)=\Lambda$\\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+          $\xrightarrow{runinit}\sigma'$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Evaluation of a component instantiation statement}
+\label{subsubsec:comp-stmt-init}
+
+\begin{sideconds}
+  If $\sigma_c''$ has a non-empty set of events, then the state of
+  component $\mathrm{id}_c$ must be overidden in the target state of
+  the $runinit$ relation. Moreover, $\mathrm{id}_c$ must be added to
+  the set of events of the embedding design. This is expressed by the
+  side condition:
+  $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$
+\end{sideconds}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompRunInitEvents}} \\
+    {\begin{prooftree}
+        
+        % Builds mapping for in ports.
+        \hypo{\Delta,\Delta_c,\sigma,\sigma_c&\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c}
+        
+        % Executes runinit on component behavior.
+        \infer[no rule]1{\mathcal{D},\Delta_c,\sigma_c'&\vdash{}\mathcal{D}(\mathrm{id_e}).\mathrm{cs}\xrightarrow{runinit}\sigma_c''}
+        
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''&\vdash
+          \mathrm{opmap}
+          \xrightarrow{mapop}
+          \sigma'
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma_c''={<}\mathcal{S}_c'',\mathcal{C}_c'',\mathcal{E}_c''{>}$, $\mathcal{E}_c''\neq\emptyset$ \\
+            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash~
+          $\vhdle|comp|$~(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap},
+          \mathrm{ipmap}, \mathrm{opmap})
+          \xrightarrow{runinit}{}\sigma''
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompRunInitNoEvent}} \\
+    {\begin{prooftree}
+        
+        % Builds mapping for in ports.
+        \hypo{\Delta,\Delta_c,\sigma,\sigma_c&\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c}
+        
+        % Executes runinit on component behavior.
+        \infer[no rule]1{\mathcal{D},\Delta_c,\sigma_c'&\vdash\mathcal{D}(\mathrm{id_e}).\mathrm{cs}\xrightarrow{runinit}\sigma_c''}
+
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''&\vdash
+          \mathrm{opmap}
+          \xrightarrow{mapop}
+          \sigma'
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma_c''={<}\mathcal{S}_c'',\mathcal{C}_c'',\emptyset{>}$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash~
+          $\vhdle|comp|$~(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap},
+          \mathrm{ipmap}, \mathrm{opmap})
+          \xrightarrow{runinit}{}\sigma'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{remark}[No event on component execution]
+  If, after the injection of fresh input values and the execution of
+  its internal behavior, a component instance displays an empty set of
+  events, then its state stayed the same
+  ($\sigma_c=\sigma'_c=\sigma''_c$). Then, no need to override the
+  component instance state in the embedding design state, and no need
+  to propagate the values coming from the output ports of the
+  component instance to the embedding design.
+\end{remark}
+
+\subsubsection{Evaluation of the composition of concurrent statements}
+\label{subsubsec:ps-stmt-init}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ParRunInit}} \\
+    {\begin{prooftree}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{runinit}\sigma'}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{runinit}\sigma''}
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l@{}}
+            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
+            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
+            $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{runinit}\mathtt{merge}(\sigma,\sigma',\sigma'')
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{NullRunInit}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{runinit}NoEv(\sigma)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+The \texttt{merge} function computes a new state based on the original
+state \textit{o}, and the states \textit{s} and \textit{s'} yielded by
+the computation of two concurrent statements. In the resulting state,
+the signal value store $\mathcal{S}_m$ is a function merging together
+the signal store functions at state $o$, $s$ and $s'$. $S_m$ yields
+values from the signal store $\mathcal{S}$ (resp. $\mathcal{S}'$) for
+all signal that belongs to the set of events at state $s$
+(resp. $s'$), and yields values from the original signal store
+$\mathcal{S}_o$ for all unchanged signals. The same goes for the
+resulting component instance state store $C_m$. The new set of events
+$\mathcal{E}_m$ is the union between set of events at state $s$ and
+$s'$.
+
+\begin{table}[H]
+\begin{lstlisting}[language=PseudoCoq]
+Definition merge(o,s,s') :=
+   let o = ($\mathcal{S}_o$,$\mathcal{C}_o$,$\mathcal{E}_o$) in
+   let s = ($\mathcal{S}$,$\mathcal{C}$,$\mathcal{E}$) in
+   let s' = ($\mathcal{S}'$,$\mathcal{C}'$,$\mathcal{E}'$) in
+   let $\mathcal{S}_m$ = $\lambda\mathrm{id}.$ if $\mathrm{id}\in\mathcal{E}$ then $\mathcal{S}(\mathrm{id})$ else if $\mathrm{id}\in\mathcal{E}'$ then $\mathcal{S}'(\mathrm{id})$ else $\mathcal{S}_o(\mathrm{id})$
+   let $\mathcal{C}_m$ = $\lambda\mathrm{id}.$ if $\mathrm{id}\in\mathcal{E}$ then $\mathcal{C}(\mathrm{id})$ else if $\mathrm{id}\in\mathcal{E}'$ then $\mathcal{C}'(\mathrm{id})$ else $\mathcal{C}_o(\mathrm{id})$
+   let $\mathcal{E}_m$ = $\mathcal{E}\cup\mathcal{E}'$ in ($\mathcal{S}_m$,$\mathcal{C}_m$,$\mathcal{E}_m$).
+\end{lstlisting}
+\end{table}
+
+\begin{remark}[No multiply-driven signals]
+  For all states $\sigma=(\mathcal{S},\mathcal{C},\mathcal{E})$ and
+  $\sigma'=(\mathcal{S}',\mathcal{C}',\mathcal{E}')$ resulting from
+  the execution of two concurrent statements cs and cs',
+  $\mathcal{E}\cap\mathcal{E}'=\emptyset$. Otherwise, there exists
+  some multiply-driven signals, which are forbidden in our semantics.
+\end{remark}
+
+\subsection{Clock phases rules}
+
+The following rules express the evaluation of concurrent statements at
+clock phases, i.e, the $\uparrow$ and $\downarrow$ phases. The clock
+signal, trigerring the evaluation of synchronous process statements,
+is represented by the reserved signal identifier \texttt{clk}. Thus,
+synchronous processes are processes containing the \texttt{clk} in
+their sensitivity list.
+
+\subsubsection{Evaluation of a process statement}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsRENoClk}}
+  
+  \begin{prooftree}[template=\inserttext]
+    \hypo{}
+
+    \infer1
+    [$\mathtt{clk}\notin\mathrm{sl}$]
+    {
+      $\mathcal{D},\Delta,\sigma\vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{\uparrow}$
+      $\sigma$
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{premises}
+  The $\uparrow$ flag in the $ss_\uparrow$ relation indicates that
+  $\mathtt{rising}$ blocks will be executed.
+\end{premises}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsREClk}}
+  
+  \begin{prooftree}[template=\inserttext]
+
+    \hypo{$\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}{}\sigma'$}
+    
+    \infer1
+    [{
+      \begin{tabular}{@{}l}
+        $\mathtt{clk}\in\mathrm{sl}$ \\
+        $\Delta(\mathrm{id}_p)=\Lambda$ \\
+      \end{tabular}
+    }]
+    {
+      $\mathcal{D},\Delta,\sigma\vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{\uparrow}$
+      $\sigma'$
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsFENoClk}}
+  
+  \begin{prooftree}[template=\inserttext]
+    \hypo{}
+
+    \infer1
+    [$\mathtt{clk}\notin\mathrm{sl}$]
+    {
+      $\mathcal{D},\Delta,\sigma
+      \vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{\downarrow}\sigma$
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{premises}
+  The $\downarrow$ flag in the $ss_\downarrow$ relation indicates that
+  $\mathtt{falling}$ blocks will be executed.
+\end{premises}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsFEClk}}
+  
+  \begin{prooftree}[template=\inserttext]
+
+    \hypo{$\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}{}\sigma'$}
+    
+    \infer1
+    [{
+      \begin{tabular}{@{}l}
+        $\mathtt{clk}\in\mathrm{sl}$ \\
+        $\Delta(\mathrm{id}_p)=\Lambda$ \\
+      \end{tabular}
+    }]
+    {
+      $\mathcal{D},\Delta,\sigma
+      \vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{\downarrow}$
+      $\sigma'$
+    }
+  \end{prooftree}
+\end{table}
+
+\subsubsection{Evaluation of a component instantiation statement}
+\label{subsubsec:sync-comp-inst}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompREEvents}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        
+        % Executes rising on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\uparrow}\sigma_c''$}
+        
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
+            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{\uparrow}{}\sigma''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompRENoEvent}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        
+        % Executes rising on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\uparrow}\sigma_c''$}
+
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{\uparrow}{}\sigma'$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompFEEvents}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        
+        % Executes rising on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\downarrow}\sigma_c''$}
+        
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
+            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{\downarrow}{}\sigma''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompFENoEvent}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        
+        % Executes rising on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\downarrow}\sigma_c''$}
+
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in{}\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{\downarrow}{}\sigma'$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Evaluation of the composition of concurrent statements}
+\label{subsubsec:comp-of-cs-clk}
+
+\begin{sideconds}
+  \begin{itemize}
+  \item As the set of events of the source state $\sigma$ is not
+    emptied during the evaluation of concurrent statements at clock
+    phases, we have $\mathcal{E}\subseteq{}\mathcal{E'}$ and
+    $\mathcal{E}\subseteq{}\mathcal{E''}$. Thus, the side condition
+    $\mathcal{E'}\cap\mathcal{E''}=\emptyset$, used to prevent
+    multiply driven signals in the evaluation rules of the
+    initialization and stabilization phases, only holds here if
+    $\mathcal{E}=\emptyset$, which is not always the case. So, we have
+    to remove the set $\mathcal{E}$ from the intersection of
+    $\mathcal{E'}$ and $\mathcal{E''}$ before checking that there are
+    no multiply-driven signals:
+    $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$.
+  \end{itemize}
+\end{sideconds}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ParFE}} \\
+    {\begin{prooftree}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma'}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{\downarrow}\sigma''}
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l@{}}
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
+            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
+            $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{\downarrow}
+          \mathtt{merge}(\sigma,\sigma',\sigma'')
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{NullFE}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{\downarrow}\sigma
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ParRE}} \\
+    {\begin{prooftree}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma'}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{\uparrow}\sigma''}
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l@{}}
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
+            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
+            $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{\uparrow}
+          \mathtt{merge}(\sigma,\sigma',\sigma'')
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{NullRE}} \\
+    {\begin{prooftree}
+        \infer0
+        {\Delta,\sigma\vdash\mathtt{null}\xrightarrow{\uparrow}\sigma}
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{remark}[Events at clock phases]
+  Considering that an $\uparrow$ (or $\downarrow$) phase, is always
+  preceded by a stabilization phase during the full simulation of an
+  \hvhdl{} design, we are always able to state that the set of events
+  of source state $\sigma$ is a subset of input port identifiers, i.e
+  $\mathcal{E}\subseteq{}Ins(\Delta)$. Thus, withdrawing the set
+  $\mathcal{E}$ from $\mathcal{E}'\cap\mathcal{E}''$ will never
+  overshadow cases of multiply-driven signals. Indeed, only input port
+  identifiers will be withdrawn from the set by the minus
+  operation. And, input port identifiers are not subject to the
+  problem of multiply-driven signals, because they are read-only
+  constructs.
+\end{remark}
+
+\subsection{Stabilization rules}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{StabilizeEnd}} \\
+    
+    {\begin{prooftree}[template=\inserttext]
+        \infer0
+        [$\sigma={<}\mathcal{S},\mathcal{C},\emptyset{>}$]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{StabilizeLoop}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \hypo{$\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{comb}\sigma'$}
+        \hypo{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{E}\neq\emptyset$ \\
+            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\emptyset{>}$
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Evaluation of a process statement}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsCombStable}}
+  
+  \begin{prooftree}[template=\inserttext]
+    \infer0
+    [{
+      \begin{tabular}{@{}l}
+        $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$\\
+        $\mathrm{sl}\cap\mathcal{E}=\emptyset$
+      \end{tabular}
+    }]
+    {
+      $\mathcal{D},\Delta,\sigma\vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{comb}NoEv(\sigma)$
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{premises}
+  The $c$ flag (for \textit{combinational}) on the $ss_c$ relation
+  indicates that instructions responding to clock events
+  (\texttt{falling} and \texttt{rising} blocks) and instructions
+  executed during the initialization phase only (\texttt{rst} blocks)
+  will not be considered.
+\end{premises}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{PsCombUnstable}}
+  
+  \begin{prooftree}[template=\inserttext]
+    
+    % Executes ss.
+    \hypo{$\Delta,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_c}{}\sigma'$}
+
+    % Conclusion.
+    \infer1
+    [{
+      \begin{tabular}{@{}l}
+        $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+        $\mathrm{sl}\cap\mathcal{E}\neq\emptyset$ \\
+        $\Delta(\mathrm{id}_p)=\Lambda$ \\
+      \end{tabular}
+    }]
+    {
+      $\mathcal{D},\Delta,\sigma\vdash$
+      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+      $\xrightarrow{comb}\sigma'$
+    }
+  \end{prooftree}
+\end{table}
+
+\subsubsection{Evaluation of a component instantiation statement}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompCombEvents}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        
+        % Executes comb on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{comb}\sigma_c''$}
+        
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
+            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{comb}$
+          $\sigma''$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{CompCombNoEvent}} \\
+    {\begin{prooftree}[template=\inserttext]
+        
+        % Builds mapping for in ports.
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+
+        % Executes comb on component behavior.
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{comb}\sigma_c''$}
+        
+        % Builds mapping for out ports.
+        \infer[no rule]1{
+          $\Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash$
+          $\mathrm{opmap}$
+          $\xrightarrow{mapop}$
+          $\sigma'$
+        }
+        
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $id_e\in\mathcal{D}$ \\
+            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
+            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
+          \end{tabular}
+        }]
+        {
+          $\mathcal{D},\Delta,\sigma\vdash$
+          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          $\xrightarrow{comb}$
+          $\sigma'$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Evaluation of the composition of concurrent statements}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ParComb}} \\
+    {\begin{prooftree}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{comb}\sigma'}
+        \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{comb}\sigma''}
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l@{}}
+            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
+            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
+            $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
+          \end{tabular}
+        }] {
+          \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{comb}
+          \mathtt{merge}(\sigma,\sigma',\sigma'')
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{NullComb}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{\downarrow}NoEv(\sigma)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Evaluation of input and output port maps}
+\label{subsec:mapinout}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapipSimple}} \\
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Checks that v complies with T.
+        \hypo{v\in_c{}T}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\Delta_c(\mathrm{id}_s)=T$ \\
+            $\sigma_c={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow{}v$ \\
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_s\Rightarrow\mathrm{e}
+          \xrightarrow{mapip}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapipPartial}} \\
+    {\begin{prooftree}
+
+        % Evaluates e_i and e.
+        \hypo{\Delta,\sigma&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}        
+
+        % Checks that v complies with T.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\Delta_c(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\sigma_c={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_s))$ \\
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_s(\mathrm{e}_i)\Rightarrow\mathrm{e}
+          \xrightarrow{mapip}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{MapipComp}}
+  
+  \begin{prooftree}    
+    % Evaluates mapip on assoc_p.
+    \hypo{
+      \Delta,\Delta_c,\sigma,\sigma_c\vdash
+      \mathrm{assoc}_{ip} 
+      \xrightarrow{mapip}
+      \sigma'_c
+    }
+
+    % Evaluates mapip on portmap.
+    \hypo{
+      \Delta,\Delta_c,\sigma,\sigma'_c\vdash
+      \mathrm{ipmap}
+      \xrightarrow{mapip}
+      \sigma''_c
+    }
+
+    % Conclusion.
+    \infer2
+    {
+      \Delta,\Delta_c,\sigma,\sigma_c\vdash
+      \langle{}\mathrm{assoc}_{ip},~\mathrm{ipmap}\rangle
+      \xrightarrow{mapip}
+      \sigma''_c
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{remark}[Out ports and $e$]
+  We can not use the $e$ relation to interpret the values of output
+  ports, because output ports are write-only constructs. We append the
+  flag $o$ to the $e$ relation (i.e, $e_o$) to permit the
+  evaluation of output port identifiers as regular signal identifier
+  expressions.
+\end{remark}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapopOpen}} \\
+    {\begin{prooftree}
+
+        % Conclusion
+        \infer
+        0
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_f\Rightarrow\mathtt{open}
+          \xrightarrow{mapop}
+          \sigma_c
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapopSimpleToSimple}} \\
+    {\begin{prooftree}
+
+        % Evaluates name.
+        \hypo{\Delta_c,\sigma_c\vdash\mathrm{id}_f\xrightarrow{e_o}v}
+
+        % Checks that v complies with T.
+        \hypo{v\in_c{}T}
+        
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_a)=T$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow{}v$, $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_f\Rightarrow\mathrm{id}_a
+          \xrightarrow{mapop}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapopSimpleToPartial}} \\
+    {\begin{prooftree}
+
+        % Evaluates id_f and e_i.
+        \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \infer[no rule]1{&\Delta_c,\sigma_c\vdash\mathrm{id}_f\xrightarrow{e_o}v}
+
+        % Checks that v complies with T.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_a))$ \\
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_f\Rightarrow\mathrm{id}_a(\mathrm{e}_i)
+          \xrightarrow{mapop}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapopPartialToSimple}} \\
+    {\begin{prooftree}
+
+        % Evaluates name.
+        \hypo{\Delta_c,\sigma_c\vdash\mathrm{id}_f(\mathrm{e}'_i)\xrightarrow{e_o}v}
+
+        % Checks that v complies with T.
+        \hypo{v\in_c{}T}
+        
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_a)=T$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow{}v$, $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_f(\mathrm{e}'_i)\Rightarrow\mathrm{id}_a
+          \xrightarrow{mapop}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{MapopPartialToPartial}} \\
+    {\begin{prooftree}
+
+        % Evaluates id_f and e_i.
+        \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \infer[no rule]1{&\Delta_c,\sigma_c\vdash\mathrm{id}_f(\mathrm{e}'_i)\xrightarrow{e_o}v}
+
+        % Checks that v complies with T.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_a))$ \\
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\Delta_c,\sigma,\sigma_c\vdash
+          \mathrm{id}_f(\mathrm{e}'_i)\Rightarrow\mathrm{id}_a(\mathrm{e}_i)
+          \xrightarrow{mapop}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{MapopComp}}
+  
+  \begin{prooftree}    
+    % Evaluates mapip on assoc.
+    \hypo{\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{assoc}_{po}\xrightarrow{mapop}\sigma'}
+
+    % Evaluates mapip on portmap.
+    \hypo{\Delta,\Delta_c,\sigma',\sigma_c\vdash\mathrm{opmap}\xrightarrow{mapop}\sigma''}
+
+    % Conclusion.
+    \infer2
+    {
+      \Delta,\Delta_c,\sigma,\sigma_c\vdash
+      \langle{}\mathrm{assoc}_{po},~\mathrm{opmap}\rangle
+      \xrightarrow{mapop}\sigma''
+    }
+  \end{prooftree}
+\end{table}
+
+The $e_o$ relation is only defined to retrieve the value of out
+ports from a store signal $\mathcal{S}$ under a design state
+$\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{OutO}} \\
+    {\begin{prooftree}
+        \infer0
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_s\in\sigma_c$ \\
+          \end{tabular}
+        }] {
+          \Delta_c,\sigma_c\vdash
+          \mathrm{id}_s
+          \xrightarrow{e_o}
+          \sigma_c(\mathrm{id}_s)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IdxOutO}} \\
+    {\begin{prooftree}
+
+        % Evaluates e_i.
+        \hypo{
+          \vdash
+          \mathrm{e}_i
+          \xrightarrow{e}
+          v_i
+        }
+
+        % Checks well-typed v_i.
+        \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_s\in\sigma_c$ \\
+            $\Delta_c(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $i=v_i~\mathtt{mod}~n$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta_c,\sigma_c\vdash
+          \mathrm{id}_s(\mathrm{e}_i)
+          \xrightarrow{e_o}
+          \mathtt{get\_at}(i,\sigma_c(\mathrm{id}_s))
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Evaluation of sequential statements}
+\label{subsec:seq-stmts}
+
+The $ss$ symbol indicates that the evaluation of the considered
+sequential statement does not depend on a specific flag (i.e, the $c$,
+$i$, $\uparrow$ or $\downarrow$ flag). In the rules of the $ss$
+relation, a $ss$ flag is tranferred from the conclusion to the
+premises when an sequential statement is composed of inner sequential
+blocks.
+
+\subsubsection{Signal assigment statement} A signal assignment
+generates a new state $\sigma'$ with a modified signal value store
+$\mathcal{S'}$ and a new event set $\mathcal{E'}$.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{SigAssign}} \\
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Checks that v complies with T.
+        \hypo{v\in_c{}T}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_s)=T$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow{}v$,
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_s\Leftarrow\mathrm{e}
+          \xrightarrow{ss}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>},\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IdxSigAssign}} \\
+    {\begin{prooftree}
+
+        % Evaluates e_i and e.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Checks that v complies with T.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_s))$ \\
+            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_s(\mathrm{e}_i)\Leftarrow\mathrm{e}
+          \xrightarrow{ss}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>},\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Variable assignment statement}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{VarAssign}} \\    
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Checks that v complies with T.
+        \hypo{v\in_c{}T}
+
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(T,val)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_v:=\mathrm{e}
+          \xrightarrow{ss}
+          \sigma,\Lambda(id_v)\leftarrow{}(T,v)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IdxVarAssign}} \\    
+    {\begin{prooftree}
+
+        % Evaluates e_i.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Checks that v complies with T.
+        \hypo{v_i&\in_c\mathtt{nat}(n,m)}
+        \infer[no rule]1{v&\in_c{}T}
+
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},val)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_v(\mathrm{e}_i):=\mathrm{e}
+          \xrightarrow{ss}
+          \sigma,\Lambda(id_v)\leftarrow{}(T,\mathtt{set\_at}(v,v_i,val))
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{If statement}
+\label{subsubsec:if-stmt}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{If}$\top$} \\    
+    {\begin{prooftree}
+
+        % Evaluates condition.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\top}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+
+        % Conclusion.
+        \infer2
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{If}$\bot$} \\
+    {\begin{prooftree}
+
+        % Evaluates condition.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\bot}
+
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma,\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IfElse}$\top$} \\    
+    {\begin{prooftree}
+
+        % Evaluates condition.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{expr}\top}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+
+        % Conclusion.
+        \infer2
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}~\mathrm{ss}'
+          \xrightarrow{ss}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IfElse}$\bot$} \\  
+    {\begin{prooftree}
+
+        % Evaluates condition.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\bot}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}'\xrightarrow{ss}\sigma',\Lambda'}
+
+        % Conclusion.
+        \infer2
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}~\mathrm{ss}'
+          \xrightarrow{ss}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Loop statement}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{Loop}$\bot$} \\
+    {\begin{prooftree}
+
+        % Evaluates upper bound check.
+        \hypo{\Delta,\sigma,\Lambda_i\vdash\mathrm{id}_v=\mathrm{e}'\xrightarrow{e}\bot}
+
+        % Evaluates ss and recursive call.
+        \hypo{\Delta,\sigma,\Lambda_i&\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+        \infer[no rule]1{
+          \Delta,\sigma',\Lambda'&\vdash~
+          $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
+          \xrightarrow{ss}\sigma'',\Lambda''
+        }
+        
+        % Conclusion. 
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(T,val)$ \\
+            $\Lambda_i=\Lambda(id_v)\leftarrow{}(T,val+1)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma'',\Lambda''
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{Loop}$\top$} \\    
+    {\begin{prooftree}
+                
+        % Upper bound check true.
+        \hypo{\Delta,\sigma,\Lambda_i\vdash\mathrm{id}_v=\mathrm{e}'\xrightarrow{e}\top}
+
+        % Conclusion.
+        \infer1
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(T,val)$ \\
+            $\Lambda_i=\Lambda(id_v)\leftarrow(T,val+1)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma,\Lambda\setminus(id_v,\Lambda(id_v))
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{LoopInit}} \\
+    {\begin{prooftree}
+        
+        % Evaluates e and e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+        
+        % Upper bound check true.
+        \hypo{\Delta,\sigma,\Lambda_i\vdash~
+          $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma',\Lambda'}
+
+        % Conclusion.
+        \infer2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\notin\Lambda$ \\
+            $\Lambda_i=\Lambda\cup(id_v,(\mathtt{nat}(v,v'),v))$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
+          \xrightarrow{ss}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Rising and falling edge block statements}
+\label{subsubsec:rise-and-fall-stmts}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{RisingEdgeDefault}} \\    
+    {\begin{prooftree}
+        
+        % Conclusion.
+        \infer0
+        [$f\neq\uparrow$]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|rising|$~\mathrm{ss}
+          \xrightarrow{ss_f}
+          \sigma,\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{FallingEdgeDefault}} \\    
+    {\begin{prooftree}
+        
+        % Conclusion.
+        \infer0
+        [$f\neq\downarrow$]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|falling|$~\mathrm{ss}
+          \xrightarrow{ss_f}
+          \sigma,\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{RisingEdgeExec}} \\    
+    {\begin{prooftree}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}\sigma',\Lambda'}
+        
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|rising|$~\mathrm{ss}
+          \xrightarrow{ss_\uparrow}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{FallingEdgeExec}} \\    
+    {\begin{prooftree}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}\sigma',\Lambda'}
+        
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|falling|$~\mathrm{ss}
+          \xrightarrow{ss_\downarrow}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Rst block statement}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{RstDefault}} \\    
+    {\begin{prooftree}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss'}\xrightarrow{ss_f}\sigma',\Lambda'}
+        
+        % Conclusion.
+        \infer1
+        [$f\neq{}i$]
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|rst|$~\mathrm{ss}~\mathrm{ss'}
+          \xrightarrow{ss_f}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{RstExec}} \\    
+    {\begin{prooftree}
+
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}\sigma',\Lambda'}
+        
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash~
+          $\vhdle|rst|$~\mathrm{ss}~\mathrm{ss'}
+          \xrightarrow{ss_i}
+          \sigma',\Lambda'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Composition of sequential statements and null statement}
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{SeqStmt}} \\
+    {\begin{prooftree}
+        
+        % Evaluates ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+
+        % Evaluates ss'.
+        \hypo{\Delta,\sigma',\Lambda'\vdash\mathrm{ss'}\xrightarrow{ss}\sigma'',\Lambda''}
+
+        % Conclusion.
+        \infer2{
+          \Delta,\sigma,\Lambda\vdash\mathrm{ss}\mathtt{;}~\mathrm{ss}'\xrightarrow{ss}\sigma'',\Lambda''
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{NullStmt}} \\
+    {\begin{prooftree}        
+
+        % Conclusion.
+        \infer0{
+          \Delta,\sigma,\Lambda\vdash\mathtt{null}\xrightarrow{ss}\sigma,\Lambda
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Evaluation of expressions}
+\label{subsec:expr-rules}
+
+% Nat and Bool literals.
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{Nat}} \\
+    {\begin{prooftree}
+        \infer0
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{n}\in\mathbb{N}$ \\
+            $\mathrm{n}\le\mathtt{NATMAX}$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{n}\xrightarrow{e}n
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{False}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma,\Lambda\vdash\mathtt{false}\xrightarrow{e}\bot
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{True}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma,\Lambda\vdash\mathtt{true}\xrightarrow{e}\top
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+
+\end{table}
+
+% Aggregate.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{Aggreg}} \\
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Conclusion.
+        \infer1
+        [$i=1,\dots,n$]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathtt{(}\mathrm{e}_1,\dots,\mathrm{e}_n\mathtt{)}\xrightarrow{e}(v_1,\dots,v_n)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+% Name expressions.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{Sig}} \\
+    {\begin{prooftree}
+        \infer0
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Ins(\Delta)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{id}_s\xrightarrow{e}\sigma(\mathrm{id}_s)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{Var}} \\
+    {\begin{prooftree}
+        \infer0
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(T,v)$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{id}_v\xrightarrow{e}v
+        }
+      \end{prooftree}} \\
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{Gen}} \\
+    {\begin{prooftree}
+      \infer0
+      [{
+        \begin{tabular}{@{}l}
+          $\mathrm{id}_g\in{}Gens(\Delta)$ \\
+          $\Delta(\mathrm{id}_g)=(T,v)$ \\
+        \end{tabular}
+      }]
+      {
+        \Delta,\sigma,\Lambda\vdash\mathrm{id}_g\xrightarrow{e}v
+      }
+    \end{prooftree}} \\
+  \end{tabular}
+  % Idx name expressions.
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IdxSig}} \\
+    {\begin{prooftree}
+
+        % Evaluates e_i.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Well-typed v_i.
+        \hypo{v_i\in_c{}\mathtt{nat}(n,m)}
+        
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Ins(\Delta)$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $i=v_i~\mathtt{mod}~n$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_s(\mathrm{e}_i)
+          \xrightarrow{e}
+          \mathtt{get\_at}(i,\sigma(\mathrm{id}_s))
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IdxVar}} \\
+    {\begin{prooftree}
+        
+        % Evaluates e_i.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Well-typed v_i.
+        \hypo{v_i\in_c{}\mathtt{nat}(n,m)}
+        
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},v)$ \\
+            $i=v_i~\mathtt{mod}~n$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{id}_v(\mathrm{e}_i)
+          \xrightarrow{e}
+          \mathtt{get\_at}(i,v)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+where \texttt{get\_at}$(i,a)$ is a function returning the $i$-th
+element of array $a$.
+
+% Natural operators.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{NatAdd}} \\
+    {\begin{prooftree}
+
+        % Evaluates e and e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+        % Conclusion.
+        \infer2
+        [$v+_{\mathbb{N}}v'\le\mathtt{NATMAX}$]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{e}~+~\mathrm{e'}\xrightarrow{e}v~+_{\mathbb{N}}~v'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{NatSub}} \\
+    {\begin{prooftree}
+
+        % Evaluates e and e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+        % Conclusion.
+        \infer2
+        [$v\ge{}v'$]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{e}~-~\mathrm{e'}\xrightarrow{e}v~-_{\mathbb{N}}~v'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{OrdOp}} \\
+    
+    {\begin{prooftree}
+
+        % Evaluates e and e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+        % Conclusion.
+        \infer2
+        [$\mathrm{op}_{ordn}\in{}\{<,\le,>,\ge\}$]
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{e}~\mathrm{op}_{ordn}~\mathrm{e'}\xrightarrow{e}v~op_{ord\mathbb{N}}~v'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+% Boolean operators.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{BoolBinOp}} \\
+    {\begin{prooftree}
+
+        % Evaluates e adn e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+        % Conclusion.
+        \infer2
+        [$\mathrm{op}_{bool}\in{}\{\mathtt{and},\mathtt{or}\}$]
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{e}~\mathrm{op}_{bool}~\mathrm{e'}
+          \xrightarrow{e}
+          v~op_{\mathbb{B}}~v'
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{NotOp}} \\    
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+        
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash~$\vhdle|not|$~\mathrm{e}\xrightarrow{e}\lnot{}v
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+% Equality and difference.
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{EqOp}}
+  
+  \begin{prooftree}
+
+    % Evaluates e.
+    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+    % Evaluates e'.
+    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+    % Conclusion.
+    \infer2
+    {
+      \Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}eq(v,v')
+    }
+  \end{prooftree}
+\end{table}
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{DiffOp}}
+  
+  \begin{prooftree}
+
+    % Evaluates e.
+    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}v}
+
+    % Conclusion.
+    \infer1
+    {
+      \Delta,\sigma,\Lambda\vdash
+      \mathrm{e}~\neq~\mathrm{e'}
+      \xrightarrow{e}\lnot{}v
+    }
+  \end{prooftree}
+\end{table}
+
+where $eq$ is the equality relation established for all types defined
+in the semantics.
+
+\begin{table}[H]
+  {\fontsize{8}{11}\selectfont\textsc{Parenth}}
+  
+  \begin{prooftree}
+
+    % Evaluates e.
+    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+    % Conclusion.
+    \infer1
+    {
+      \Delta,\sigma,\Lambda\vdash\mathtt{(}\mathrm{e}\mathtt{)}\xrightarrow{e}v
+    }
+  \end{prooftree}
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

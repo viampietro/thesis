@@ -1,0 +1,163 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% RISING EDGE HYPOTHESES %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}[Rising Edge Hypotheses]
+  \label{def:re-hyps}
+  Given an $sitpn$, $d$, $\gamma$, $E_c$, $E_p$, $\tau$, $\Delta$,
+  $\sigma_e$, $s$, $s'$, $\sigma$, $\sigma_{injr}$, $\sigma_r$,
+  $\theta$, $\sigma'$ assume that:
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
+  \item $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ 
+  \item $E_c,\tau\vdash{}sitpn,s\srarrow{\uparrow}{\fontsize{5}{7}\selectfont}s'$
+  \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_{injr})$
+    and
+    $\Delta,\sigma_{injr}\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_r$
+    and
+    $\Delta,\sigma_r\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
+  \end{itemize}
+\end{definition}
+
+\def\rehyps{For all $sitpn$, $d$, $\gamma$, $E_c$, $E_p$, $\tau$,
+  $\Delta$, $\sigma_e$, $s$, $s'$, $\sigma$, $\sigma_{injr}$,
+  $\sigma_r$, $\theta$, $\sigma'$ that verify the hypotheses of
+  Def.~\ref{def:re-hyps},}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% RISING EDGE LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Rising Edge]
+  \label{lem:re}
+  \rehyps{} then
+  $\gamma,E_c,\tau\vdash{}s'\stackrel{\uparrow}{\sim}{}\sigma'$.
+\end{lemma}
+
+\begin{proof}
+  By definition of \nameref{def:post-re-state-sim}, 6 subgoals.
+  \begin{frameb}
+    \begin{enumerate}
+    \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$
+      $~s.M(p)=\sigma_p("s\_marking")$.\label{it:marking-eq-re}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
+      $upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")\land{}$\\
+      $upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")$.\label{it:time-count-eq-re}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),~s.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.\label{it:reset-eq-re}
+    \item
+      $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.\label{it:action-eq-re}
+    \item
+      $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.\label{it:fun-eq-re}
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta),~t\in{}Sens(s.M)\Leftrightarrow\sigma_t("s\_enabled")=\mathtt{true}$.\label{it:sens-eq-re}
+    \end{enumerate}
+  \end{frameb}
+  
+  Use a separate lemma to prove each different point:
+  \begin{itemize}[label=--]
+  \item Apply Lemma~\nameref{lem:re-equal-marking} to solve \ref{it:marking-eq-re}.
+  \item Apply ``Rising Edge Equal Time Counter'' lemma to solve \ref{it:time-count-eq-re}.
+  \item Apply ``Rising Edge Equal Reset Order'' lemma to solve \ref{it:reset-eq-re}.
+  \item Apply ``Rising Edge Equal Action'' lemma to solve \ref{it:action-eq-re}.
+  \item Apply ``Rising Edge Equal Function'' lemma to solve \ref{it:fun-eq-re}.
+  \item Apply ``Rising Edge Equal Sensitized'' lemma to solve \ref{it:sens-eq-re}.
+  \end{itemize}
+\end{proof}
+
+\subsection{Rising Edge and Marking}
+\label{sec:re-marking}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% RISING EDGE EQUAL MARKING LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Rising Edge Equal Marking]
+  \label{lem:re-equal-marking}
+  \rehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$ and
+  $\sigma'(id_p)=\sigma'_p,~s'.M(p)=\sigma'_p("s\_marking")$.
+\end{lemma}
+
+\begin{proof}
+
+  Assume we have a $p\in{}P$, then prove $s'.M(p)=\sigma'_p("s\_marking")$.
+  \begin{itemize}
+  \item By definition of the SITPN state transition relation:\\
+    $s'.M(p)=s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)$.
+
+  \item By the definition of the state similarity relation:\\
+    $s.M(p)=\sigma_p("\mathtt{s\_marking}")$.
+    
+  \item By the definition of the VHDL rising and stabilize relation
+    and the
+    definition of the Place component behavior (VHDL code):\\
+    $\sigma'_p("s\_marking")=\sigma_p("s\_marking")-\sigma_p("s\_output\_token\_sum")+\sigma_p("s\_input\_token\_sum")$
+  \end{itemize}
+  Now, let's reason about the past execution that led to state $s$ and
+  $\sigma$. There are two cases:
+
+  \begin{enumerate}
+  \item The past execution traces are empty, i.e, $s$ and $\sigma$ are
+    the initial states of $sitpn$ and $d$. Then, we know that:
+    \begin{itemize}
+    \item the set of fired transitions at $s_0$ is empty, thus:
+      \begin{itemize}
+      \item $\sum\limits_{t\in{}Fired(s_0)}pre(p,t)=0$.
+      \item $\sum\limits_{t\in{}Fired(s_0)}post(t,p)=0$.
+      \item $s'.M(p)=s_0.M(p)$.
+      \end{itemize}
+    \item by reasoning on the VHDL initialization relation:
+      \begin{itemize}
+      \item $\sigma_p^0("s\_input\_token\_sum")=0$.
+      \item $\sigma_p^0("s\_output\_token\_sum")=0$.
+      \item $\sigma'_p("s\_marking")=\sigma_p^0("s\_marking")$.
+      \end{itemize}
+    \end{itemize}
+    Thanks to the Lemma \nameref{lem:sim-init-states}, we know
+    $s_0\sim{}\sigma_0$; thus, $s_0.M(p)=\sigma_p^0("s\_marking")$.
+
+    Then, by rewriting, $s'.M(p)=\sigma'_p("s\_marking")$.
+  \end{enumerate}
+  
+  \begin{enumerate}[resume]
+  \item The past execution traces are not empty, and therefore:\\
+
+    $\exists{}s_{-1}\in{}S(sitpn),~\sigma_{-1},\sigma_{injf},\sigma_f\in\Sigma(\Delta),\theta_{-1}\in\mathtt{list}(\Sigma(\Delta))$
+    such that:
+    
+    \begin{itemize}
+    \item
+      $E_c,\tau+1\vdash{}sitpn,s_{-1}\xrightarrow{\downarrow}s$
+    \item
+      $\mathtt{Inject}_\downarrow(\sigma_{-1}, E_p, \tau+1, \sigma_{injf})$
+      and
+      $\Delta,\sigma_{injf}\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_f$
+      and
+      $\Delta,\sigma_f\vdash\mathrm{d.cs}\xrightarrow{\theta_{-1}}\sigma$
+
+    \item $\gamma\vdash{}s_{-1}\sim\sigma_{-1}$
+    \end{itemize}
+    
+    Now that we know that a falling edge preceded state $s$ and
+    $\sigma$ in the past execution trace, we can apply
+    Lemma~\nameref{lem:fe-prepare-marking}. Thus, we have:
+    
+    \begin{itemize}
+    \item $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma_p("s\_output\_token\_sum")$.
+    \item $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma_p("s\_input\_token\_sum")$.
+    \end{itemize}
+
+  \end{enumerate}
+
+  Then, by rewriting, $s'.M(p)=\sigma'_p("s\_marking")$.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

@@ -1,23 +1,5 @@
 % New math symbols.
 
-% Defining simple hyphen for math mode.
-
-\mathchardef\mhyphen="2D
-
-% Typing relation with flag.
-
-\newcommand{\tflag}[1]{\mathop{:}\limits_{}^{#1}}
-
-% Overriding union operator.
-\newcommand{\ocup}{\mathop{\cup}\limits_{}^{\leftarrow}}
-
-% Differentiated intersection domain.
-\newcommand{\dcap}{\mathop{\cap}\limits_{}^{\neq}}
-
-% Concat operator
-\newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
-\newcommand\mdoubleplus{\ensuremath{\mathbin{+\mkern-9mu+}}}
-
 \newcommand\steq{
   \mathrel{\stackrel{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily state}}}{=}}}
 
@@ -26,28 +8,6 @@
 
 \newcommand\rlabelledarrow[1]{
 \mathrel{\stackon[2pt]{$\rightarrow$}{\scriptsize $#1$}}}
-
-\newcommand\srsquigarrow[2]{%
-  \mathrel{%
-    \begin{tikzpicture}[%
-      baseline={(current bounding box.south)}
-      ]
-      \node[%
-      ,inner sep=1ex
-      ,align=center
-      ] (tmp) {#2 $#1$};
-      
-      \path[%
-      ,draw,<-
-      ,decorate,decoration={%
-        ,zigzag
-        ,amplitude=0.7pt
-        ,segment length=1.2mm,pre length=3.5pt}
-      ] 
-      ($(tmp.south east)-(3pt,0)$) -- ($(tmp.south west)+(3pt,0)$);
-    \end{tikzpicture}
-  }
-}
 
 \newcommand\xrsquigarrow[1]{%
   \mathrel{%
@@ -108,12 +68,3 @@
     \end{tikzpicture}
   }
 }
-
-% NEW MATH ENVIRONMENTS
-
-\newtheorem{definition}{Definition}
-\newtheorem{notation}{Notation}
-\newtheorem{thm}{Theorem}
-\newtheorem{remark}{Remark}
-\newtheorem{hypothesis}{Hypothesis}
-\newtheorem{lemma}{Lemma}

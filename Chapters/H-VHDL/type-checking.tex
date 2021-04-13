@@ -1,0 +1,923 @@
+\subsection{Typing relation.}
+\label{subsec:constr-satif-rel}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IsBool}} \\
+    {\begin{prooftree}
+
+        % Conclusion.
+        \infer0[$b\in{}\mathbb{B}$]{b\in_c\mathtt{bool}}
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{IsCNat}} \\
+    {\begin{prooftree}
+
+        % Conclusion.
+        \infer0[$n\in{}[l,u]$]{n\in_c\mathtt{nat}(l,u)}
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{Array}} \\
+    {\begin{prooftree}
+        
+        % Subelements satisfy subtype indication's constraint.
+        \hypo{v_i\in_c{}T}
+        
+        % Conclusion.
+        \infer1
+        [{
+          \begin{tabular}{@{}l}
+            $i=1,\dots,n$ \\
+            $n=(u-l)+1$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta\vdash
+          \mathtt{(}v_1,\dots,v_n\mathtt{)}
+          \in_c
+          \mathtt{array(}T,l,u\mathtt{)}}
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Static expressions.}
+\label{subsubsec:wfe}
+
+Static expressions are either locally static or globally static.
+
+\subsubsection{Locally static expressions.}
+\label{subsubsec:loc-static}
+
+An expression is \emph{locally} static if:
+
+\begin{itemize}[label=-]
+\item It is composed of operators and operands of a \emph{scalar} type
+  (i.e, \texttt{natural} or \texttt{boolean}).
+\item It is a \emph{literal} of a scalar type.
+\end{itemize}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{LSENat}} \\
+    {\begin{prooftree}
+        
+        % Conclusion
+        \infer[template={\inserttext}]0
+        [$\mathrm{n}\in\mathbb{N}$]
+        {$SE_l(\mathrm{n})$}
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{LSEBool}} \\
+    {\begin{prooftree}
+        
+        % Conclusion
+        \infer[template={\inserttext}]0
+        [$\mathrm{b}\in\mathbb{B}$]
+        {$SE_l(\mathrm{b})$}
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{LSENot}} \\
+    {\begin{prooftree}
+
+        % Locally static e.
+        \hypo{SE_l(\mathrm{e})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        {
+          $SE_l(\mathtt{not}~\mathrm{e})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{LSEBinOp}}\\    
+    {\begin{prooftree}
+
+        % Locally static e.
+        \hypo{SE_l(\mathrm{e})}
+
+        % Locally static e'.
+        \hypo{SE_l(\mathrm{e'})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [$\mathtt{op}\in\{~+,-,=,\neq,<,\le,>,\ge,\mathtt{and},\mathtt{or}~\}$]
+        {
+          $SE_l(\mathrm{e}~\mathtt{op}~\mathrm{e'})$
+        }
+      \end{prooftree}}\\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Globally static expressions.}
+\label{subsubsec:glob-static}
+
+An expression is \emph{globally} static in the context $\Delta$
+if:
+
+\begin{itemize}[label=-]
+\item It is a generic constant.
+\item It is an array aggregate composed of globally static
+  expressions.
+\item It is a locally static expression.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{GSELocal}} \\
+    {\begin{prooftree}
+
+      % Locally static e.
+      \hypo{SE_l(\mathrm{e})}
+      
+      % Conclusion
+      \infer[template={\inserttext}]1
+      {
+        $\Delta\vdash{}SE_g(\mathrm{e})$
+      }
+    \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{GSEGen}} \\
+    {\begin{prooftree}
+      
+      % Conclusion
+      \infer[template={\inserttext}]0
+      [{\renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{@{}l}
+          $\mathrm{id}_g\in{}Gens(\Delta)$ \\
+        \end{tabular}
+      }]
+      {
+        $\Delta\vdash{}SE_g(\mathrm{id}_g)$
+      }
+    \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{GSEAggregate}} \\
+    {\begin{prooftree}
+
+        % Locally static e.
+        \hypo{\Delta\vdash{}SE_g(\mathrm{e}_i)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        [$i=1,\dots,n$]
+        {
+          $\Delta\vdash{}SE_g($\texttt{(}$\mathrm{e}_1,\dots,\mathrm{e}_n$\texttt{)}$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Valid port map.}
+\label{subsec:valid-pm}
+
+The $\mathtt{valid}_{ipm}$ predicate states that an \emph{in} port map
+is valid in the context $\Delta,\Delta_c$, where $\Delta$ is
+the embedding design structure and $\Delta_c$ denotes the component
+instance owner of the port map, if:
+
+\begin{itemize}[label=-]
+\item All ports defined in $\Delta_c$ are exactly mapped once in the
+  portmap.
+\item For each port map entry, the formal and actual part are of the
+  same type.
+\end{itemize}
+
+\begin{premises}
+  \begin{itemize}[label=-]
+  \item $list_{ipm}$ builds a set
+    $\mathcal{L}\subset{}id\sqcup{}(id\times\mathbb{N})$ out of
+    the port map association list.
+  \item $\mathtt{check}_{pm}$ checks the validity of a port map based on
+    the corresponding port list and the set built by the $list_{ipm}$
+    relation.
+  \end{itemize}
+\end{premises}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ValidIPM}} \\
+    {\begin{prooftree}
+
+        % Lists formal parts.
+        \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}_\emptyset\vdash\mathrm{ipmap}\xrightarrow{list_{ipm}}\mathcal{L}}
+
+        % Well-formed port map.
+        \hypo{\mathtt{check}_{pm}(Ins(\Delta_c),\mathcal{L})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        {
+          $\Delta,\Delta_c,\sigma\vdash\mathtt{valid}_{ipm}(\mathrm{ipmap})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{sideconds}
+  $\mathrm{id}_p\notin\mathcal{L}$ checks that the port identifier
+  $id_p$ is not already mapped.
+\end{sideconds}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListIPMSimple}} \\
+    {\begin{prooftree}
+
+        % Evaluates actual.
+        \hypo{\Delta,\sigma\vdash\mathrm{e}~\xrightarrow{e}v}
+
+        % Well-typed actual.
+        \hypo{v\in_c{}T}
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        2
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_p\in{}Ins(\Delta_c)$\\
+            $\Delta_c(\mathrm{id}_p)=T$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
+          ~\mathrm{id}_p\Rightarrow\mathrm{e}~$
+          $\xrightarrow{list_{ipm}}\mathcal{L}\cup{}\{id_p\}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{premises}
+  $v_i\in_c\mathtt{nat}(n,m)$ checks that the index value stays in the
+  array bounds.
+\end{premises}
+
+\begin{sideconds}
+  $\mathrm{id}_p\notin\mathcal{L}$ and
+  $(\mathrm{id}_p, v_i)\notin\mathcal{L}$ checks that neither the port
+  identifier $id_p$ nor the couple port identifier $id_p$ and index
+  $v_i$ are already mapped.
+\end{sideconds}
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{ListIPMPartial}}
+  \vspace{1em}
+
+  \begin{prooftree}
+
+    % Static expr e_i.
+    \hypo{SE_l(\mathrm{e}_i)}
+
+    % Evaluates e_i and e.
+    \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+    \infer[no rule]1{\Delta,\sigma&\vdash\mathrm{e}\xrightarrow{e}v}
+    
+    % Evaluates e.
+    \hypo{v_i&\in_c\mathtt{nat}(n,m)}
+    \infer[no rule]1{v&\in_c{}T}
+    
+    
+    % Conclusion
+    \infer[template={\inserttext}]
+    3
+    [{\renewcommand{\arraystretch}{1.5}
+      \begin{tabular}{l}
+        $\mathrm{id}_p\notin\mathcal{L}$, $(\mathrm{id}_p, v_i)\notin\mathcal{L}$ \\
+        $\mathrm{id}_p\in{}Ins(\Delta_c)$ \\
+        $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+      \end{tabular}
+    }]
+    {
+      $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
+      ~\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{e}~$
+      $\xrightarrow{list_{ipm}}
+      \mathcal{L}\cup\{~(id_p,v_i)~\}$
+    }
+  \end{prooftree}
+\end{figure}
+
+\begin{figure}[H]
+  {\fontsize{8}{11}\selectfont\textsc{ListIPMCons}}
+  \vspace{1em}
+
+  \begin{prooftree}
+
+    % Lists assoc.
+    \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}\vdash\mathrm{assoc}_{ip}\xrightarrow{list_{ipm}}\mathcal{L}'}
+
+    % Lists lassoc.
+    \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}'\vdash\mathrm{ipmap}\xrightarrow{list_{ipm}}\mathcal{L}''}
+    
+    % Conclusion
+    \infer[template={\inserttext}]
+    2
+    {
+      $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
+      ~\mathrm{assoc}_{ip}\mathtt{,}~\mathrm{ipmap}~$
+      $\xrightarrow{list_{ipm}}\mathcal{L}''$
+    }
+  \end{prooftree}
+\end{figure}
+
+The $\mathtt{check}_{pm}(Ports,\mathcal{L})$ predicate states that all
+port identifiers referenced in the domain of
+$Ports\in{}id\nrightarrow{}type$ appear in $\mathcal{L}$ as a
+simple identifier, or if the port identifier is of type array, then
+all couples ($id$,$i$) must belong to $\mathcal{L}$, where $i$ denotes
+all indexes of the array range and $id$, the port id.
+
+\begin{equation*}
+  \mathtt{check}_{pm}(Ports,\mathcal{L})\equiv
+  \forall{}\mathrm{id}_p\in\mathtt{dom}(Ports),~\mathrm{id}_p\in\mathcal{L}\vee
+  (Ports(\mathrm{id}_p)=\mathtt{array}(T,n,m)\wedge\forall{}i\in[n,m],~(\mathrm{id}_p,i)\in\mathcal{L})
+\end{equation*}
+
+The $\mathtt{valid}_{opm}$ predicate states that an \emph{output} port
+map is valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
+embedding design structure and $\Delta_c$ denotes the component
+instance owner of the port map, if:
+
+\begin{itemize}[label=-]
+\item An output port appears at most once in the output port map.
+\item Two different output ports cannot be connected to the same
+  signal.
+\item For each port map entry, the formal and the actual part are of
+  the exact same type (i.e, in the sense of the Leibniz equality).
+\end{itemize}
+
+We allow partially connected output port map; i.e, an output port map
+where all output ports might not be present in the mapping. Such
+output ports are \texttt{open} by default.
+
+\begin{premises}
+  $list_{opm}$ builds two sets
+  $\mathcal{L},\mathcal{L}_{ids}\subseteq{}id\sqcup{}(id\times\mathbb{N})$
+  out of the port map $\textrm{opmap}$. $\mathcal{L}_{ids}$ is
+  built incrementally to check that there are no multiply-driven
+  signals resulting of the port map connection.
+\end{premises}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{ValidOPM}} \\
+    {\begin{prooftree}
+
+        % Lists formal parts.
+        \hypo{
+          \Delta,\Delta_c,\mathcal{L}_\emptyset,\mathcal{L}_{ids\emptyset}\vdash
+          \mathrm{opmap}
+          \xrightarrow{list_{opm}}
+          \mathcal{L},\mathcal{L}_{ids}
+        }
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        1
+        {
+          $\Delta,\Delta_c\vdash\mathtt{valid}_{opm}(\mathrm{opmap})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{sideconds}
+  \begin{itemize}[label=-]
+  \item $\mathrm{id}_p\notin\mathcal{L}$ checks that the port
+    identifier $\mathrm{id}_p$ is not already mapped (i.e, is not
+    already in the formal part of the port map).
+  \item $\mathrm{id}_s\notin\mathcal{L}_{ids}$ checks that the signal
+    identifier $\mathrm{id}_s$ is not already mapped (i.e, is not
+    already in the actual part of the port map).
+  \item $\Delta_c(\mathrm{id}_p)=\Delta(\mathrm{id}_s)=T$ checks that
+    $\mathrm{id}_p$ and $\mathrm{id}_s$ are exactly of the same type.
+  \end{itemize}
+\end{sideconds}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMSimpleToSimple}} \\
+    {\begin{prooftree}
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        0
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_s\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_p\in{}Outs(\Delta_c)$\\
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_p)=\Delta(\mathrm{id}_s)=T$ \\
+          \end{tabular}
+        }] {
+          $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
+          $\mathrm{id}_p\Rightarrow\mathrm{id}_s$
+          $\xrightarrow{list_{opm}}$
+          $\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}\cup{}\{id_s\}$ }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{sideconds}
+  $Outs_c(\mathrm{id}_p)=T$ and
+  $Sigs(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ checks that the
+  type of $\mathrm{id}_p$ and the type of the elements of
+  $\mathrm{id}_s$ are the same. Note that $\mathrm{id_s}$ must denote
+  an array as $\mathrm{id}_p$ is mapped to one of $\mathrm{id}_s$'s
+  partial.
+\end{sideconds}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMSimpleToPartial}} \\
+    {\begin{prooftree}
+
+        % Static expr e_i and natural.
+        \hypo{SE_l(\mathrm{e}_i)}
+
+        % Evaluates e_i.
+        \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Well-typed v_i (in array bounds).
+        \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]    
+        3
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_s$, $(\mathrm{id}_s, v_i)\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_p)=T$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
+          ~\mathrm{id}_p\Rightarrow\mathrm{id}_s(\mathrm{e}_i)~$
+          $\xrightarrow{list_{opm}}
+          \mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}\cup{}\{(id_s,v_i)\}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMSimpleToOpen}} \\
+    {\begin{prooftree}
+
+        % Conclusion
+        \infer[template={\inserttext}]
+        0
+        [{
+          \begin{tabular}{l}
+            $\mathrm{id}_p\notin\mathcal{L}$ \\
+            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
+          ~\mathrm{id}_p\Rightarrow\mathtt{open}~$
+          $\xrightarrow{list_{opm}}\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+
+% \begin{table}[H]
+%   \begin{tabular}{@{}l}
+%     {\fontsize{8}{11}\selectfont\textsc{ListOPMPartialToOpen}} \\
+%     {\begin{prooftree}
+
+%         % Static expr e_i and natural.
+%         \hypo{SE_l(\mathrm{e}_i)}
+
+%         % Evaluates e_i.
+%         \hypo{\vdash\mathrm{e}_i\xrightarrow{expr}v_i}
+
+%         % Well-typed v_i (in array bounds).
+%         \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        
+%         % Conclusion
+%         \infer[template={\inserttext}]
+%         3
+%         [{
+%           \begin{tabular}{l}
+%             $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$ \\
+%             $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+%             $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+%           \end{tabular}
+%         }]
+%         {
+%           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
+%           $\mathrm{id}_p(e_i)\Rightarrow\mathtt{open}$
+%           $\xrightarrow{list_{opm}}$
+%           $\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}$
+%         }
+%       \end{prooftree}} \\
+%   \end{tabular}
+% \end{table}
+
+\begin{remark}[Unconnected output port.]
+  We forbid the case where an indexed formal part corresponding to the
+  subelement of a composite output port is unconnected, i.e
+  $\mathrm{id}_p(e_i)\Rightarrow\mathtt{open}$, as it could lead to
+  the case where some subelements of a composite output port are
+  connected while others are not (error case in \cite[p.7]{VHDL2000}).
+\end{remark}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMPartialToSimple}} \\
+    {\begin{prooftree}
+
+        % Static expr e_i and natural.
+        \hypo{SE_l(\mathrm{e}_i)}
+
+        % Evaluates e_i.
+        \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Well-typed v_i (in array bounds).
+        \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        3
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$, $\mathrm{id}_s\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_s)=T$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Delta_c,\mathcal{L}\vdash$
+          $\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{id}_s$
+          $\xrightarrow{list_{opm}}$
+          $\mathcal{L}\cup\{(id_p,v_i)\},\mathcal{L}_{ids}\cup\{id_s\}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMPartialToPartial}} \\
+    {\begin{prooftree}
+
+        % Static expr. ei e'i.
+        
+        \hypo{&SE_l(\mathrm{e'}_i)}
+        \infer[no rule]1{&SE_l(\mathrm{e}_i)}
+
+        % Evaluates e_i.
+        \hypo{&\vdash\mathrm{e'}_i\xrightarrow{e}v'_i}
+        \infer[no rule]1{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+
+        % Well-typed v'_i and v_i.
+        \hypo{v'_i&\in_c\mathtt{nat}(n',m')}
+        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        3
+        [{\renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{l}
+            $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$, $\mathrm{id}_s,(\mathrm{id}_s,v'_i)\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n',m'\mathtt{)}$ \\ 
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Delta_c,\mathcal{L}\vdash$
+          $\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{id}_s(\mathrm{e'}_i)$
+          $\xrightarrow{list_{opm}}$
+          $\mathcal{L}\cup\{(id_p,v_i)\},\mathcal{L}_{ids}\cup\{(id_s,v'_i)\}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{ListOPMCons}} \\
+    {\begin{prooftree}
+
+        % Lists assoc.
+        \hypo{
+          \Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
+          \mathrm{assoc}_{po}
+          \xrightarrow{list_{opm}}
+          \mathcal{L}',\mathcal{L}'_{ids}
+        }
+
+        % Lists lassoc.
+        \hypo{
+          \Delta,\Delta_c,\mathcal{L}',\mathcal{L}'_{ids}\vdash
+          \mathrm{opmap}
+          \xrightarrow{list_{opm}}
+          \mathcal{L}'',\mathcal{L}''_{ids}
+        }
+        
+        % Conclusion
+        \infer[template={\inserttext}]
+        2
+        {
+          $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
+          ~\mathrm{assoc}_{po}\mathtt{,}~\mathrm{opmap}~$
+          $\xrightarrow{list_{opm}}$
+          $\mathcal{L}'',\mathcal{L}''_{ids}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsection{Valid sequential statements.}
+\label{subsubsec:valid-ss}
+
+The $\mathtt{valid}_{ss}$ predicate states that a sequential statement
+is well-typed.
+
+\subsubsection{Well-typed signal assignment.}
+
+% Well-typed signal assignment.
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedSigAssign}} \\
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash{}e\xrightarrow{e}v}
+        
+        % Well-typed v.
+        \hypo{v\in_c{}T}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$\\
+            $\Delta(\mathrm{id}_s)=T$\\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{id}_s\Leftarrow\mathrm{e})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  % Well-typed indexed signal assignment.
+  \begin{tabular}{l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedIdxSigAssign}} \\
+    {\begin{prooftree}
+
+        % Evaluates e and e_i.
+        \hypo{\Delta,\sigma,\Lambda&\vdash{}e\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash{}e_i\xrightarrow{e}v_i}
+        
+        % Well-typed v and v_i.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{id}_s(\mathrm{e}_i)\Leftarrow\mathrm{e})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\subsubsection{Well-typed variable assignment.}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedVarAssign}} \\
+    {\begin{prooftree}
+        
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Well-typed v.
+        \hypo{v\in_c{}T}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in\Lambda$\\
+            $\Lambda(\mathrm{id}_v)=(T,val)$\\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{id}_v := \mathrm{e})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedIdxVarAssign}} \\
+    {\begin{prooftree}
+
+        % Evaluates e and e_i.
+        \hypo{\Delta,\sigma,\Lambda&\vdash{}e\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash{}e_i\xrightarrow{e}v_i}
+        
+        % Well-typed v and v_i.
+        \hypo{v&\in_c{}T}
+        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        [{
+          \renewcommand{\arraystretch}{1.5}
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_v\in{}\Lambda$ \\
+            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},val)$ \\
+          \end{tabular}
+        }]
+        {
+          $\Delta,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{id}_v(\mathrm{e}_i) := \mathrm{e})$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\subsubsection{Well-typed if statements.}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedIf}} \\
+    {\begin{prooftree}
+
+        % Eval e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+        
+        % Well-typed v.
+        \hypo{v\in_c\mathtt{bool}}
+
+        % Validss ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|if| \texttt{(}e\texttt{)} ss$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedIfElse}} \\
+    {\begin{prooftree}
+
+        % Eval e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+        
+        % Well-typed v.
+        \hypo{v\in_c\mathtt{bool}}
+
+        % Validss ss and ss'.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+        \infer[no rule]1{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss}')}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|if| \texttt{(}e\texttt{)} ss ss'$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\subsubsection{Well-typed loop statement.}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedLoop}} \\
+    {\begin{prooftree}
+
+        % Eval e and e'.
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
+
+        % Well-typed v and v'.
+        \hypo{v&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        
+        % Well-typed ss.
+        \hypo{\Delta,\sigma,\Lambda'\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]3
+        [$\Lambda'=\Lambda\cup(\mathrm{id}_v,(\mathtt{nat}(v,v'), v))$]
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|for| (id$_v$, e, e') ss$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\subsubsection{Well-typed rising and falling edge blocks}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedRising}} \\
+    {\begin{prooftree}
+        
+        % Well-typed ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|rising| ss$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedFalling}} \\
+    {\begin{prooftree}
+        
+        % Well-typed ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]1
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|falling| ss$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\subsubsection{Well-typed rst blocks}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedRst}} \\
+    {\begin{prooftree}
+        
+        % Well-typed ss.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
+
+        % Well-typed ss'.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}(\mathrm{ss'})}
+        
+        % Conclusion
+        \infer[template={\inserttext}]2
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|rst| ss ss'$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}%
+
+\subsubsection{Well-typed null statement}
+\label{sec:wt-null}
+
+\begin{table}[H]
+  \begin{tabular}{@{}l}
+    {\fontsize{8}{11}\selectfont\textsc{WellTypedNull}} \\
+    {\begin{prooftree}
+                
+        % Conclusion
+        \infer[template={\inserttext}]0
+        {
+          $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|null|$)$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

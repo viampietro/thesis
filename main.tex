@@ -43,9 +43,9 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{mathpazo} % Use the Palatino font by default
 
-\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
-
-\addbibresource{example.bib} % The filename of the bibliography
+\usepackage[backend=bibtex,% style=authoryear,
+natbib=true]{biblatex} 
+\addbibresource{refs.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 \usepackage{pifont}
@@ -92,6 +92,10 @@ headsepline, % Uncomment to get a line under the header
 }
 
 \begin{document}
+
+% Macros to put after the beginning of the document
+
+\input{docmacros}
 
 \frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
 
@@ -267,14 +271,14 @@ headsepline, % Uncomment to get a line under the header
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\include{Chapters/Introduction}
-\include{Chapters/Hilecop}
-\include{Chapters/PrelimNotions}
-\include{Chapters/SITPN} 
-\include{Chapters/H-VHDL}
-\include{Chapters/Transformation} 
+% \include{Chapters/Introduction}
+% \include{Chapters/Hilecop}
+% \include{Chapters/PrelimNotions}
+% \include{Chapters/SITPN} 
+% \include{Chapters/H-VHDL}
+% \include{Chapters/Transformation} 
 \include{Chapters/Proof}
-\include{Chapters/Conclusion} 
+% \include{Chapters/Conclusion} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

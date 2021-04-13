@@ -1,0 +1,355 @@
+\subsection{Proof Notations}
+\label{sec:pf-notations}
+
+\begin{itemize}
+\item Frame box for pending goals:
+  \framebox{$\forall{}n\in\mathbb{N},~n>0\lor{}n=0$}
+\item Red frame box for completed goals: \colorbox{red!20}{$\mathtt{true}=\mathtt{true}$}
+\item Green frame box for induction hypotheses: \begin{ih}$\forall{}n\in\mathbb{N},~n+1>0$\end{ih}
+\item \textbf{CASE} to denote a case during a proof by case analysis.
+\end{itemize}
+
+\subsection{Behavior Preservation Theorem and Proof}
+\label{sec:beh-pres-thm-pf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% BEHAVIOR PRESERVATION THEOREM %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thm}[Behavior Preservation]
+  \label{thm:beh-pres-hyps}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  $\tau\in\mathbb{N}$,
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  $\theta_s\in\mathtt{list}(S(sitpn))$ s.t.
+  \begin{itemize}
+  \item SITPN $sitpn$ translates into design $d$:
+    $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item SITPN $sitpn$ yields the execution trace $\theta_s$ after
+    $\tau$ execution cycles in environment $E_c$:\\
+    $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$.
+  \end{itemize}
+  
+  \noindent{}then there exists
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$ s.t. for all
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$
+  verifying
+  \begin{itemize}
+  \item Simulation/Execution environments are similar:
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$.
+  \end{itemize}
+  then there exists $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$
+  s.t.
+  \begin{itemize}
+  \item Under the \hilecop{} design store $\mathcal{D}_\mathcal{H}$
+    and with an empty generic constant dimensioning function, design d
+    yields the simulation trace $\theta_\sigma$ after $\tau$
+    simulation cycles, starting from its initial state:\\
+    $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
+  \item Traces $\theta_s$ and $\theta_\sigma$ are similar: $\theta_s\sim\theta_\sigma$
+  \end{itemize}
+\end{thm}
+
+\begin{proof}
+  \framebox{$\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma,$
+    $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\land\theta_s\sim\theta_\sigma$}\\
+  
+  \noindent{}By definition of the \hvhdl{} full simulation relation:\\
+  $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\equiv$
+  $\exists\sigma_e,\sigma_0\in\Sigma(\Delta),~\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+  and $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$\\
+  and $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$. \\
+
+  \noindent{}Use \nameref{thm:elab-ex}, \nameref{thm:init-ex} and
+  \nameref{thm:sim-ex} theorems to show that there exists a $\Delta$,
+  $\theta_\sigma$, $\sigma_e$ and $\sigma_0$ such that
+  $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+  and
+  $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  and
+  $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$.\\
+
+  \noindent{}Use \nameref{thm:full-bisim} theorem to show traces similarity.
+  
+\end{proof}
+
+\begin{thm}[Elaboration]
+  \label{thm:elab-ex}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$
+  s.t.
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \end{itemize}
+  \noindent{}then there exists
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_e\in\Sigma(\Delta)$ s.t. 
+  \begin{itemize}
+  \item
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+  \end{itemize}
+\end{thm}
+
+\begin{thm}[Initialization]
+  \label{thm:init-ex}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\sigma_e\in\Sigma(\Delta)$ s.t.
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+  \end{itemize}
+  \noindent{}then there exists $\sigma_0\in\Sigma(\Delta)$ s.t. 
+  \begin{itemize}
+  \item $\sigma_0$ is the initial simulation state:
+    $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \end{itemize}
+\end{thm}
+
+\begin{thm}[Simulation]
+  \label{thm:sim-ex}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\sigma_e,\sigma_0\in\Sigma(\Delta)$ s.t.
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    and
+    $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \end{itemize}
+  
+  \noindent{}then for all
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\tau\in\mathbb{N}$, there exists
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
+  \begin{itemize}
+  \item Design $d$ yields the simulation trace $\theta_\sigma$ after
+    $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
+    $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
+  \end{itemize}
+\end{thm}
+
+\subsection{Bisimulation Theorem and Proof}
+\label{sec:bisim-thm-and-proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FULL BISIMULATION THM %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thm}[Full Bisimulation]
+  \label{thm:full-bisim}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  $\tau\in\mathbb{N}$,
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  $\theta_s\in\mathtt{list}(S(sitpn))$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ 
+  \item $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
+  \item $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
+  \end{itemize}
+  then
+ $\theta_s\sim\theta_\sigma$
+
+\end{thm}
+
+\begin{proof}
+  Case analysis on $\tau$ (2 CASES).
+
+  \begin{itemize}
+  \item \textbf{CASE} $\tau=0$. By definition of the SITPN full execution and
+    the \hvhdl{} full simulation relations:
+    \begin{itemize}
+    \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    \item
+      $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+    \item $\theta_s=[s_0]$ and $\theta_\sigma=[\sigma_0]$
+    \end{itemize}
+    \framebox{$\gamma\vdash{}s_0\sim{}\sigma_0$} (by def. of similar execution trace relation).
+    Solved by applying Lemma~\nameref{lem:sim-init-states}.
+  \item \textbf{CASE} $\tau>0$. By definition of the SITPN full execution and
+    the \hvhdl{} full execution relations:
+    \begin{itemize}
+    \item $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
+    \item $E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$
+    \item $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$
+    \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    \item $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+    \item $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta$
+    \end{itemize}
+    \framebox{$\gamma\vdash{}(s_0 :: s :: \theta_s)\sim{}(\sigma_0 :: \theta)$}\\\\
+    By definition of the \hvhdl{} full simulation relation, we know:
+    \begin{itemize}
+    \item $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma$
+    \item $E_p,\Delta,\tau-1,\sigma\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
+    \end{itemize}
+    where $\theta=\sigma :: \theta_\sigma$.\\
+    
+    Rewriting $\theta$ as $\sigma :: \theta_\sigma$, \fbox{$\gamma\vdash{}(s_0 :: s :: \theta_s)\sim{}(\sigma_0 :: \sigma :: \theta_\sigma)$}\\\\
+    3 subgoals (by def. of \nameref{def:exec-trace-sim}).
+    \begin{enumerate}
+    \item $\gamma\vdash{}s_0\sim\sigma_0$ (solved by applying Lemma~\nameref{lem:sim-init-states}).
+    \item $\gamma\vdash{}s\sim\sigma$ (solved by applying Lemma~\nameref{lem:first-cycle}).
+    \item $\gamma\vdash{}\theta_s\sim\theta_\sigma$ (solved by applying Lemma~\nameref{lem:simulation}).
+    \end{enumerate}
+  \end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% FIRST CYCLE LEMMA %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[First Cycle]
+  \label{lem:first-cycle}
+  For all
+  $sitpn\in{}SITPN,d\in{}design,\gamma\in{}WM(sitpn,d),s\in{}S(sitpn),
+  \Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),$
+  $\sigma_{e},\sigma_0,\sigma\in{}\Sigma(\Delta)$,
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  assume that:
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    and $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
+  \item $\sigma_0$ is the initial state of $\Delta$: 
+    $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \item First execution cycle for $d$: $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma$
+  \item
+    Particular first execution cycle for $sitpn$ (first rising edge is idle):\\
+    $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
+    and
+    $E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$
+  \end{itemize}
+  then $\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.
+\end{lemma}
+
+\begin{proof}
+  Let's show that the first execution cycle leads to two states
+  verifying the \nameref{def:post-fe-state-sim} relation:
+  \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.}\\
+
+  \noindent{}By definition of the \hvhdl{} cycle relation, we have:
+  \begin{itemize}
+  \item $\mathtt{Inject}_\uparrow(\sigma_0, E_p, \tau, \sigma_{injr})$
+    and
+    $\Delta,\sigma_{injr}\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_r$
+    and
+    $\Delta,\sigma_r\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
+  \item
+    $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma_{injf})$
+    and
+    $\Delta,\sigma_{injf}\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_f$
+    and
+    $\Delta,\sigma_f\vdash\mathrm{d.cs}\xrightarrow{\theta'}\sigma$
+  \end{itemize}
+  
+  \noindent{}Then, we can apply the \nameref{lem:fe} lemma to solve \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.}\\
+
+  \noindent{}One premise of the \nameref{lem:fe} lemma remains to be
+  proved:
+  \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}{}\sigma'$.}\\
+
+  \noindent{}Then, we can apply the \nameref{lem:fst-re} lemma to
+  solve \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}{}\sigma'$.}
+  
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% BISIMULATION LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Bisimulation]
+  \label{lem:simulation}
+  For all $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, $s$, $\theta_s$,
+  $\sigma$, $\theta_\sigma$, $\Delta$, $\sigma_e$, assume that:
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$
+  \item Starting states are similar as intended after a falling edge:
+    $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$
+  \item $E_c,\tau\vdash{}sitpn,s\rightarrow\theta_s$
+  \item $E_p,\Delta,\tau,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
+  \end{itemize}
+  then $\gamma\vdash{}\theta_s\sim{}\theta_\sigma$.
+\end{lemma}
+
+\begin{proof}
+  Induction on $\tau$.
+  \begin{itemize}
+  \item Base case, $\tau=0$: traces are empty, trivial.
+  \item Induction case, $\tau > 0$:
+    \begin{ih}
+      $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
+      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ and
+      $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$ and
+      $E_p,\Delta,\tau-1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
+      then
+      $\gamma\vdash{}\theta_s\sim{}\theta_\sigma$.
+    \end{ih}
+    By definition of the SITPN execution and the \hvhdl{} simulation
+    relations for $\tau>0$: 
+    \begin{itemize}
+    \item $E,\tau\vdash{}sitpn,s\xrightarrow{\uparrow,\downarrow}{}s'$ and $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$.
+    \item $E_p,\Delta,\tau,\sigma\vdash{}\mathrm{d.cs}\xrightarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}\sigma'$ and
+      $E_p,\Delta,\tau-1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$.
+    \end{itemize}
+    \framebox{$\gamma\vdash{}(s' :: \theta_s)\sim{}(\sigma' :: \theta_\sigma)$}.\\\\
+    2 subgoals (by def. of \nameref{def:exec-trace-sim}).
+    \begin{enumerate}
+    \item \framebox{$\gamma\vdash{}s'\sim{}\sigma'$} (solved with \nameref{lem:step}).
+    \item \framebox{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$} (solved with
+      \nameref{lem:step} and IH).
+    \end{enumerate}
+    
+  \end{itemize}
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% STEP LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Step]
+  \label{lem:step}
+  For all $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, $s$,
+  $s''$, $\sigma$, $\sigma''$, $\Delta$, $\sigma_e$, assume that:
+  \begin{itemize}
+  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+    $E_p\stackrel{env}{=}E_c$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$
+  \item $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ 
+  \item From state $s$ to $s''$ in one execution cycle:
+    $E_c,\tau\vdash{}sitpn,s\srarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}s''$
+  \item From state $\sigma$ to $\sigma''$ in one simulation cycle:
+    $E_p,\Delta,\tau,\sigma\vdash{}d.cs\srarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}\sigma''$
+  \end{itemize}
+  then $\gamma\vdash{}s''\stackrel{\downarrow}{\sim}{}\sigma''$.
+\end{lemma}
+
+\begin{proof}
+  By def. of the SITPN and \hvhdl{} cycle relations:
+  \begin{itemize}
+  \item $E_c,\tau\vdash{}sitpn,s\xrightarrow{\uparrow}s'$ and
+    $E_c,\tau\vdash{}sitpn,s'\xrightarrow{\downarrow}s''$
+  \item
+    $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_{injr})$
+    and
+    $\Delta,\sigma_{injr}\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_r$
+    and
+    $\Delta,\sigma_r\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
+  \item
+    $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma_{injf})$
+    and
+    $\Delta,\sigma_{injf}\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_f$
+    and
+    $\Delta,\sigma_f\vdash\mathrm{d.cs}\xrightarrow{\theta'}\sigma''$
+  \end{itemize}
+  Solved by applying \nameref{lem:re} and then ``Falling Edge'' lemmas.
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

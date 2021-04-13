@@ -1,0 +1,57 @@
+%%%%%%%%% MDFRAMED ENVIRONMENT DEFINITIONS.
+
+\mdfdefinestyle{framestyle}{
+  linecolor=Black}
+
+\mdfdefinestyle{ihstyle}{
+  linecolor=Green,
+  backgroundcolor=green!10,
+  roundcorner=5pt}
+
+\mdfdefinestyle{qedstyle}{
+  linecolor=Red,
+  backgroundcolor=red!10,
+  roundcorner=5pt}
+
+\mdfdefinestyle{pcommentstyle}{%
+  linewidth=1pt,
+  linecolor=black,
+  bottomline=false,topline=false,rightline=false,
+  innerrightmargin=0pt,innertopmargin=0pt,innerbottommargin=0pt,
+  innerleftmargin=1em,% Distance between vertical rule & proof content
+  skipabove=.5\baselineskip}
+
+\mdfdefinestyle{todostyle}{
+  linecolor=Brown,
+  backgroundcolor=BurntOrange!50,
+  roundcorner=5pt}
+
+\mdfdefinestyle{premisesstyle}{
+  linecolor=Green,
+  backgroundcolor=green!10,
+  roundcorner=10pt}
+
+\mdfdefinestyle{sidecondsstyle}{
+  linecolor=Red,
+  backgroundcolor=red!10,
+  roundcorner=10pt}
+
+\mdfdefinestyle{tablelegendstyle}{
+  linecolor=Blue,
+  backgroundcolor=blue!10,
+  roundcorner=10pt}
+
+\newmdenv[frametitle=Premises,style=premisesstyle]{premises}
+\newmdenv[frametitle={Side conditions}, style=sidecondsstyle]{sideconds}
+\newmdenv[frametitle={Table legend}, style=tablelegendstyle]{tablelegend}
+
+\newmdenv[style=ihstyle]{ih}
+\newmdenv[style=framestyle]{frameb}
+% \newmdenv[style=qedstyle]{qedbox}
+\newmdenv[style=pcommentstyle]{pcomm}
+\newmdenv[style=todostyle]{todobox}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
