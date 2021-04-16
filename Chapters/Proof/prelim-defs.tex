@@ -42,26 +42,23 @@
 
 \begin{definition}[General State Similarity]
   \label{def:state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
-  design store
-  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, and a binder
-  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
-  design state $\sigma\in\Sigma(\Delta)$ are similar, written
-  $\gamma\vdash{}s\sim\sigma$ iff
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  similar, written $\gamma\vdash{}s\sim\sigma$ iff
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
-    $~s.M(p)=\sigma_p("s\_marking")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+    $~s.M(p)=\sigma(id_p)("s\_marking")$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
-    $upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")\land{}$\\
-    $upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
-    $upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
-    $upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")$.
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
-    and $\sigma(id_t)=\sigma_t,$\\
-    $s.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
   \item
     $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
   \item
@@ -74,73 +71,73 @@
 \begin{definition}[Post Rising Edge State Similarity]
   \label{def:post-re-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d)$, and a binder
-  $\gamma\in{}WM(sitpn,d)$, a clock cycle count $\tau\in\mathbb{N}$,
-  and an SITPN execution environment
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle count
+  $\tau\in\mathbb{N}$, and an SITPN execution environment
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
   SITPN state $s\in{}S(sitpn)$ and a design state
   $\sigma\in\Sigma(\Delta)$ are similar after a rising edge happening
   at clock cycle count $\tau$, written
   $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
-    $~s.M(p)=\sigma_p("s\_marking")$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma(id_t)=\sigma_t,$\\
-    $upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")\land{}$\\
-    $upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=lower(I_s(t))\land{}$\\
-    $upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t("s\_tc")=upper(I_s(t))\land{}$\\
-    $upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma_t("s\_tc")$.
+    $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)("s\_marking")$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
-    and $\sigma(id_t)=\sigma_t,$\\
-    $s.reset_t(t)=\sigma_t("s\_reinit\_time\_counter")$.
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
   \item
     $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
   \item
     $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
   \item
-    $\forall{}t\in{}T,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
-    and $\sigma(id_t)=\sigma_t,$\\
-    $t\in{}Sens(s.M)\Leftrightarrow\sigma_t("s\_enabled")=\mathtt{true}$.
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{true}$.
   \item
-    $\forall{}t\in{}T,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
-    and $\sigma(id_t)=\sigma_t,$\\
-    $\sigma_t("s\_condition\_combination")=\prod_{c\in{}conds(t)}E_c(\tau,c)~.~\prod_{c\in{}\overline{conds}(t)}\mathtt{not}(E_c(\tau,c))$\\
-    where $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\}$ and
-    $\overline{conds}(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=-1\}$.
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\sigma(id_t)("s\_condition\_combination")=
+    \prod\limits_{c\in{}conds(t)}
+    \begin{cases}
+      E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+      \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+    \end{cases}$\\
+    where
+    $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
   \end{enumerate}
 \end{definition}
 
 \begin{definition}[Post Falling Edge State Similarity]
   \label{def:post-fe-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d)$, and a binder
-  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
-  design state $\sigma\in\Sigma(\Delta)$ are similar after a falling
-  edge, written $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  similar after a falling edge, written
+  $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
   $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
   similarity) and
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
-    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma_p("s\_output\_token\_sum")$.
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p\in{}\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and $\sigma(id_p)=\sigma_p,$\\
-    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma_p("s\_input\_token\_sum")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t\in{}\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
-    and $\sigma(id_t)=\sigma_t,$\\
-    $t\in{}Fired(s)\Leftrightarrow\sigma_t("fired")$.
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
   \end{enumerate}
 \end{definition}
 
 \begin{definition}[Execution Trace Similarity]
   \label{def:exec-trace-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
-  design store
-  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, and a binder
-  $\gamma\in{}WM(sitpn,d)$, the execution trace
-  $\theta_s\in{}\mathtt{list}(S(sitpn))$, and the simulation trace
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, the execution trace
+  $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
   $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
   $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
   following rules:
@@ -161,11 +158,138 @@
         \hypo{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$}
         \infer2{$\gamma\vdash{}(s :: \theta_s)\sim{}(\sigma :: \theta_\sigma)$}
       \end{prooftree}} 
-  \end{tabular}
-  
+  \end{tabular}  
 \end{definition}
+
+\subsection{Equality between big operator expressions}
+\label{sec:eq-bi-op-expr}
+
+Many times in the proceeding of the following proof, the equality
+between two sum or product expressions must be estbalished; for
+instance:
+
+$\sum\limits_{a\in{}A}f(a)=\sum\limits_{b\in{}B}g(b)$ where $A$ and
+$B$ are finite sets, $f\in\mathbb{A}\rightarrow\mathbb{N}$ and
+$g\in{}B\rightarrow\mathbb{N}$
+
+To prove such an equality, Theorem~\ref{thm:big-op-eq} is used,
+considering that the sum operator used in the above equation is a big
+operator over the triplet ${<}\mathbb{N},0,+{>}$. A big operator is
+defined as follows:
+
+\begin{definition}[Big Operator]
+  Given a triplet ${<}A,*,e{>}$ such that $A$ is a set,
+  $*\in{}A\rightarrow{}A\rightarrow{}A$ is a commutative and
+  associative operator over $A$, and $e\in{}A$ is a neutral element of
+  $*$, then for all finite set $B$, and application
+  $f\in{}B\rightarrow{}A$, a big operator $\Omega$ is recursively
+  defined as follows: $\mathop{\Omega}\limits_{b\in{}B}f(b)=
+  \begin{cases}
+    e & if~B=\emptyset \\
+    f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b') & otherwise
+  \end{cases}
+  $
+\end{definition}
+
+Then, we can prove the following theorem concerning the equality
+between two big operator expressions.
+
+\begin{thm}[Big Operator Equality]
+  \label{thm:big-op-eq}
+  For all a triplet ${<}A,*,e{>}$ such that $A$ is a set,
+  $*\in{}A\rightarrow{}A\rightarrow{}A$ is a commutative and
+  associative operator over $A$, and $e\in{}A$ is a neutral element of
+  $*$, and for all finite sets $B$ and $C$, and applications
+  $f\in{}B\rightarrow{}A$ and $g\in{}C\rightarrow{}A$, assume that:
+  \begin{itemize}
+  \item there exists an injection $\iota\in{}B\rightarrow{}C$
+    s.t. $\forall{}b\in{}B,c\in{}C,~\iota(b)=c\Rightarrow{}f(b)=g(c)$
+  \item $\vert{}B\vert=\vert{}C\vert$
+  \end{itemize}
+  then
+  $\mathop{\Omega}\limits_{b\in{}B}f(b)=\mathop{\Omega}\limits_{c\in{}C}g(c)$.
+\end{thm}
+
+\begin{proof}
+  Let us reason by induction over $\mathop{\Omega}\limits_{b\in{}B}f(b)$:
+
+  \begin{itemize}
+  \item \textbf{BASE CASE} $B=\emptyset$:\\
+    Then $\vert{}C\vert=\vert{}B\vert=0$, and $C=\emptyset$.
+    By definition of $\Omega$:
+    \begin{eqnarray}
+      \mathop{\Omega}\limits_{b\in{}B}f(b)=e\label{eq:bemp} \\
+      \mathop{\Omega}\limits_{c\in{}C}g(c)=e\label{eq:cemp}
+    \end{eqnarray}
+    Rewriting the goal with \eqref{eq:bemp} and \eqref{eq:cemp},
+    \qedbox{tautology}.
+  \item \textbf{INDUCTION CASE} $B\neq\emptyset$:
+    \begin{ih}
+      For all finite set $C'$ verifying:
+      \begin{itemize}
+      \item $\exists{}\iota'\in{}B\setminus\{b\}\rightarrow{}C'~s.t.~$
+        $\iota'$ is injective and
+        $\forall{}b'\in{}B\setminus\{b\},c'\in{}C',~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$
+      \item $\vert{}B\setminus\{b\}\vert=\vert{}C'\vert$
+      \end{itemize}
+      then $f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=f(b)*\mathop{\Omega}\limits_{c'\in{}C'}g(c)$
+    \end{ih}
+    
+    The goal is \fbox{$f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=\mathop{\Omega}\limits_{c\in{}C}g(c)$}
+
+    \noindent{}Let us take $\iota\in{}B\rightarrow{}C$
+    s.t. $\forall{}b\in{}B,c\in{}C,~\iota(b)=c\Rightarrow{}f(b)=g(c)$.
+    As $\iota(b)=\iota(b)$, then:
+    \begin{equation}
+      f(b)=g(\iota(b))\label{eq:b-iota-b}
+    \end{equation}
+    \noindent{}Also, by definition of $\Omega$:
+    \begin{equation}
+      \mathop{\Omega}\limits_{c\in{}C}g(c)=g(\iota(b))*\mathop{\Omega}\limits_{c'\in{}C\setminus\{\iota(b)\}}\label{eq:omega-C}
+    \end{equation}
+    \noindent{}Rewriting the goal with \eqref{eq:omega-C} and
+    \eqref{eq:b-iota-b},\\
+    \fbox{$f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=f(b)*\mathop{\Omega}\limits_{c'\in{}C\setminus\{\iota(b)\}}g(c')$}
+    
+    \noindent{}Let us apply the induction hypothesis with $C'=C\setminus\{\iota(b)\}$; then there are two points to prove:
+    \begin{enumerate}
+    \item \fbox{$\vert{}B\setminus\{b\}\vert=\vert{}C\setminus\{\iota(b)\}\vert$.} Trivial as $\vert{}B\vert=\vert{}C\vert$.
+    \item
+      \fbox{\parbox{\linewidth}{$\exists{}\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}~s.t.~$
+          $\iota'$ is injective and
+          $\forall{}b'\in{}B\setminus\{b\},c'\in{}C\setminus\{\iota(b)\},~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$}}
+    \end{enumerate}
+    Let us define a
+    $\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}$ as
+    follows:
+    $\forall{}b'\in{}B\setminus\{b\},~\iota'(b)=\iota(b)$. Let us show
+    that this definition is correct by proving that\\
+    \fbox{$\forall{}b'\in{}B\setminus\{b\},~\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+
+    \noindent{}Given a $b'\in{}B\setminus\{b\}$, let us show
+    \fbox{$\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+
+    \noindent{}By definition of $\iota(b')$, there are 2 cases:
+    \begin{itemize}
+    \item \textbf{CASE} $\iota(b')=\iota(b)$, then by definition of
+      $\iota$ as an injective function: $b'=b$. Then,
+      \qedbox{$b\in{}B\setminus\{b\}$ is a contradiction.}
+    \item \textbf{CASE} \qedbox{$\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+    \end{itemize}
+
+    \noindent{}Now let us get back to the previous goal. Using
+    $\iota'$ to prove it, there are 2 points to prove:
+    \begin{itemize}
+    \item \fbox{$\iota'$ is injective.} Trivial by definition of $\iota'$.
+    \item
+      \fbox{$\forall{}b'\in{}B\setminus\{b\},c'\in{}C\setminus\{\iota(b)\},~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$.}
+      Trivial by definition of $\iota'$.
+    \end{itemize}
+
+  \end{itemize}
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:
