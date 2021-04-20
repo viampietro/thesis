@@ -279,34 +279,6 @@
   $s_0.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
 \end{lemma}
 
-\begin{table}[h]
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{|c|}{\textbf{Constants and signals reference}} \\
-    \hline
-    \textit{Full name} & \textit{Alias} & \textit{Category} & \textit{Type} \\
-    \hline
-    $"s\_reinit\_time\_counter"$ & $"srtc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"input\_arcs\_number"$ & $"ian"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
-    $"reinit\_time"$ & $"rt"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-    $"reinit\_transition\_time"$ & $"rtt"$ & output port (P) & $\mathbb{B}$ \\
-    \hline
-    $"output\_arcs\_types"$ & $"oat"$ & input port (P) & $\{\mathtt{BASIC},\mathtt{TEST},\mathtt{INHIB}\}$ \\
-    \hline
-    $"s\_marking"$ & $"sm"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"s\_output\_token\_sum"$ & $"sots"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"output\_arcs\_weights"$ & $"oaw"$ & input port (P) & $\mathbb{N}$ \\
-    \hline
-    $"output\_transition\_fired"$ & $"otf"$ & input port (P) & $\mathbb{B}$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
 \begin{proof}
   Given a $t\in{}T$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show that

@@ -48,7 +48,7 @@
   $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
   similar, written $\gamma\vdash{}s\sim\sigma$ iff
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
     $~s.M(p)=\sigma(id_p)("s\_marking")$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
@@ -57,7 +57,7 @@
     $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
     $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
   \item
     $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
@@ -89,15 +89,16 @@
     $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
     $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
   \item
-    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
   \item
     $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
   \item
     $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
-  \item
-    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{false}$.
   \item
     $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
     $\sigma(id_t)("s\_condition\_combination")=
@@ -122,13 +123,18 @@
   $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
   similarity) and
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
     $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
     $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
-  \item
-    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{false}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$.
   \end{enumerate}
 \end{definition}
 
@@ -203,7 +209,7 @@ between two big operator expressions.
   $f\in{}B\rightarrow{}A$ and $g\in{}C\rightarrow{}A$, assume that:
   \begin{itemize}
   \item there exists an injection $\iota\in{}B\rightarrow{}C$
-    s.t. $\forall{}b\in{}B,c\in{}C,~\iota(b)=c\Rightarrow{}f(b)=g(c)$
+    s.t. $\forall{}b\in{}B,~f(b)=g(\iota(b))$
   \item $\vert{}B\vert=\vert{}C\vert$
   \end{itemize}
   then
@@ -227,9 +233,9 @@ between two big operator expressions.
     \begin{ih}
       For all finite set $C'$ verifying:
       \begin{itemize}
-      \item $\exists{}\iota'\in{}B\setminus\{b\}\rightarrow{}C'~s.t.~$
-        $\iota'$ is injective and
-        $\forall{}b'\in{}B\setminus\{b\},c'\in{}C',~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$
+      \item $\exists{}$ an injection
+        $\iota'\in{}B\setminus\{b\}\rightarrow{}C'~s.t.~$
+        $\forall{}b'\in{}B\setminus\{b\},~f(b')=g(\iota(b'))$
       \item $\vert{}B\setminus\{b\}\vert=\vert{}C'\vert$
       \end{itemize}
       then $f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=f(b)*\mathop{\Omega}\limits_{c'\in{}C'}g(c)$
@@ -238,8 +244,7 @@ between two big operator expressions.
     The goal is \fbox{$f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=\mathop{\Omega}\limits_{c\in{}C}g(c)$}
 
     \noindent{}Let us take $\iota\in{}B\rightarrow{}C$
-    s.t. $\forall{}b\in{}B,c\in{}C,~\iota(b)=c\Rightarrow{}f(b)=g(c)$.
-    As $\iota(b)=\iota(b)$, then:
+    s.t. $\forall{}b\in{}B,~f(b)=g(\iota(b))$, then:
     \begin{equation}
       f(b)=g(\iota(b))\label{eq:b-iota-b}
     \end{equation}
@@ -254,10 +259,9 @@ between two big operator expressions.
     \noindent{}Let us apply the induction hypothesis with $C'=C\setminus\{\iota(b)\}$; then there are two points to prove:
     \begin{enumerate}
     \item \fbox{$\vert{}B\setminus\{b\}\vert=\vert{}C\setminus\{\iota(b)\}\vert$.} Trivial as $\vert{}B\vert=\vert{}C\vert$.
-    \item
-      \fbox{\parbox{\linewidth}{$\exists{}\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}~s.t.~$
-          $\iota'$ is injective and
-          $\forall{}b'\in{}B\setminus\{b\},c'\in{}C\setminus\{\iota(b)\},~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$}}
+    \item \fbox{\parbox{\linewidth}{$\exists{}$ an injection
+          $\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}~s.t.~$
+          $\forall{}b'\in{}B\setminus\{b\},f(b')=g(\iota'(b'))$}}
     \end{enumerate}
     Let us define a
     $\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}$ as
@@ -269,7 +273,8 @@ between two big operator expressions.
     \noindent{}Given a $b'\in{}B\setminus\{b\}$, let us show
     \fbox{$\iota(b')\in{}C\setminus\{\iota(b)\}$.}
 
-    \noindent{}By definition of $\iota(b')$, there are 2 cases:
+    \noindent{}By definition of $\iota$, $\iota(b')\in{}C$; then,
+    there are 2 cases:
     \begin{itemize}
     \item \textbf{CASE} $\iota(b')=\iota(b)$, then by definition of
       $\iota$ as an injective function: $b'=b$. Then,
@@ -280,14 +285,20 @@ between two big operator expressions.
     \noindent{}Now let us get back to the previous goal. Using
     $\iota'$ to prove it, there are 2 points to prove:
     \begin{itemize}
-    \item \fbox{$\iota'$ is injective.} Trivial by definition of $\iota'$.
+    \item \fbox{$\iota'$ is injective.} Trivial, by definition of $\iota'$.
     \item
-      \fbox{$\forall{}b'\in{}B\setminus\{b\},c'\in{}C\setminus\{\iota(b)\},~\iota'(b')=c'\Rightarrow{}f(b')=g(c')$.}
-      Trivial by definition of $\iota'$.
+      \fbox{$\forall{}b'\in{}B\setminus\{b\},~f(b')=g(\iota'(b'))$.}
+      Trivial, by definition of $\iota'$.
     \end{itemize}
 
   \end{itemize}
 \end{proof}
+
+\begin{todobox}
+  Add a remark on how to convert a sequence of indexes into a finite
+  set, and what is the cardinality of the finite set:\\
+  $\mathop{\Omega}\limits_{i=n}^m{}f(i)$ then $\vert[n,m]\vert=(m-n)+1$ when $m\ge{}n$
+\end{todobox}
 
 %%% Local Variables:
 %%% mode: latex

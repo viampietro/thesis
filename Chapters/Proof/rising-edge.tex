@@ -60,15 +60,18 @@
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{it:time-count-eq-re}
     \item
-      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
       $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.\label{it:reset-eq-re}
     \item
       $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.\label{it:action-eq-re}
     \item
       $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{it:fun-eq-re}
     \item
-      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.\label{it:sens-eq-re}      
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.\label{it:sens-eq-re}
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{false}$.\label{it:not-sens-eq-re}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $\sigma'(id_t)("s\_condition\_combination")=
@@ -86,11 +89,14 @@
   \begin{itemize}[label=--]
   \item Apply Lemma~\nameref{lem:re-equal-marking} to solve
     \ref{it:marking-eq-re}.
-  \item Apply ``Rising Edge Equal Time Counter'' lemma to solve \ref{it:time-count-eq-re}.
-  \item Apply ``Rising Edge Equal Reset Order'' lemma to solve \ref{it:reset-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-tc} lemma to solve
+    \ref{it:time-count-eq-re}.
+  \item Apply ``Rising Edge Equal Reset Orders'' lemma to solve
+    \ref{it:reset-eq-re}.
   \item Apply ``Rising Edge Equal Action'' lemma to solve \ref{it:action-eq-re}.
   \item Apply ``Rising Edge Equal Function'' lemma to solve \ref{it:fun-eq-re}.
   \item Apply ``Rising Edge Equal Sensitized'' lemma to solve \ref{it:sens-eq-re}.
+  \item Apply ``Rising Edge Equal Not Sensitized'' lemma to solve \ref{it:not-sens-eq-re}.
   \item Apply Lemma~\nameref{lem:re-equal-cond-comb} to solve
     \ref{it:cond-comb-eq-re}.
   \end{itemize}
@@ -108,22 +114,6 @@
   \rehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$ and
   $\sigma'(id_p)=\sigma'_p,~s'.M(p)=\sigma'_p("s\_marking")$.
 \end{lemma}
-
-\begin{table}[h]
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{|c|}{\textbf{Constants and signals reference}} \\
-    \hline
-    \textit{Full name} & \textit{Alias} & \textit{Category} & \textit{Type} \\
-    \hline
-    $"s\_marking"$ & $"sm"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"s\_output\_token\_sum"$ & $"sots"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"s\_input\_token\_sum"$ & $"sits"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-  \end{tabular}
-\end{table}
 
 \begin{proof}
 
@@ -181,24 +171,8 @@
   $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
 \end{lemma}
 
-\begin{table}[h]
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{|c|}{\textbf{Constants and signals reference}} \\
-    \hline
-    \textit{Full name} & \textit{Alias} & \textit{Category} & \textit{Type} \\
-    \hline
-    $"s\_condition\_combination"$ & $"scc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"conditions\_number"$ & $"cn"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
-    $"input\_conditions"$ & $"ic"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
 \begin{proof}
-  Given a $t$, $id_t$, $\sigma_t$ s.t. $\gamma(t)=id_t$, let us show\\
+  Given a $t$ and an $id_t$ s.t. $\gamma(t)=id_t$, let us show\\
   \fbox{$\sigma'(id_t)("s\_condition\_combination")=
     \prod\limits_{c\in{}conds(t)}
     \begin{cases}
@@ -250,7 +224,7 @@
     \begin{equation}
       \Delta(id_t)("cn")=\vert{}conds(t)\vert\label{eq:re-eq-cc-eqcn}
     \end{equation}
-
+    
     Rewriting the goal with \eqref{eq:re-eq-cc-eqcn},\\
     \fbox{$\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
       \prod\limits_{c\in{}conds(t)}
@@ -258,107 +232,399 @@
         E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
         \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
       \end{cases}$.}\\
-    
-    Then, 2 subgoals to prove the equation:
+
+    \noindent{}Applying Theorem~\nameref{thm:big-op-eq}, there are two points to prove:
 
     \begin{enumerate}
-    \item\label{it:re-eq-cond-comb-case-emp}
-      \fbox{\parbox{\linewidth}{$\forall{}c\in{}conds(t),~\exists{}i\in{}[0,\Delta(id_t)("cn")-1]~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}
-      Given a $c\in{}conds(t)$, let us show that\\
-      \fbox{\parbox{\linewidth}{$\exists{}i\in{}[0,\Delta(id_t)("cn")-1]~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}
-      
-      By definition of $c\in{}conds(t)$, there are 2 cases:
-      \begin{itemize}
-      \item \textbf{CASE} $\mathbb{C}(t,c)=1$:\\
-        By construction, there exists $id_c\in{}Ins(\Delta)$
-        s.t. $\gamma(c)=id_c$, and there
-        exists $i\in{}[0,\vert{}conds(t)\vert-1]$ s.t.
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$.
-
-        \noindent{}As $\Delta(id_t)("cn")=\vert{}conds(t)\vert$, then
-        we have $i\in[0,\Delta(id_t)("cn")-1]$. Let us take this $i$
-        to prove the goal,\\
-        \fbox{\parbox{\linewidth}{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
-        
-        The right part of the goal is proved by contradiction, then
-        what is left to prove is:
-        \fbox{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)$.}\\
-
-        Assuming $\mathbb{C}(t,c)=1$, let us show
-        \fbox{$\sigma'(id_t)("ic")[i]=E_c(\tau,c)$.}\\
-
-        \noindent{}By property of the stabilize relation and
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$,
-        then $\sigma'(id_t)("ic")[i]=\sigma(id_c)$.
-
-        \noindent{}By property of the \hvhdl{}
-        $\mathtt{Inject_{\uparrow}}$, the rising edge, the stabilize
-        relations, and $id_c\in{}Ins(\Delta)$, then
-        $\sigma(id_c)=E_p(\tau,\uparrow)(id_c)$.
-
-        \noindent{}By property of
-        $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, then
-        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
-
-        \noindent{}Rewriting the goal with the above equations,
-        \qedbox{$\sigma'(id_t)("ic")[i]=E_c(\tau,c)$.}
-
-      \item \textbf{CASE} $\mathbb{C}(t,c)=-1$:\\
-        By construction, there exists $id_c\in{}Ins(\Delta)$
-        s.t. $\gamma(c)=id_c$, and there exists
-        $i\in{}[0,\vert{}conds(t)\vert-1]$ s.t.
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$.
-
-        \noindent{}As $\Delta(id_t)("cn")=\vert{}conds(t)\vert$, then
-        we have $i\in[0,\Delta(id_t)("cn")-1]$. Let us take this $i$
-        to prove the goal,\\
-        \fbox{\parbox{\linewidth}{$\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
-        
-        The left part of the goal is proved by contradiction, then
-        what is left to prove is:
-        \fbox{$\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}\\
-
-        Assuming $\mathbb{C}(t,c)=-1$, let us show
-        \fbox{$\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}\\
-
-        \noindent{}By property of the stabilize relation and
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$,
-        then $\sigma'(id_t)("ic")[i]=\mathtt{not}~\sigma(id_c)$.
-
-        \noindent{}By property of the \hvhdl{}
-        $\mathtt{Inject_{\uparrow}}$, the rising edge, the stabilize
-        relations, and $id_c\in{}Ins(\Delta)$, then
-        $\sigma(id_c)=E_p(\tau,\uparrow)(id_c)$.
-
-        \noindent{}By property of
-        $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, then
-        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
-
-        \noindent{}Rewriting the goal with the above equations,
-        \qedbox{$\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}
-      \end{itemize}
-      
-    \item
-      \fbox{\parbox{\linewidth}{$\forall{}i\in{}[0,\Delta(id_t)("cn")-1],~\exists{}c\in{}conds(t),~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
-
-      Given a $i\in{}[0,\Delta(id_t)("cn")-1]$, let us show\\
-      \fbox{\parbox{\linewidth}{$\exists{}c\in{}conds(t),~s.t.~\mathbb{C}(t,c)=1\Rightarrow{}\sigma'(id_t)("ic")[i]=E_c(\tau,c)\land{}\mathbb{C}(t,c)=-1\Rightarrow{}\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,c)$.}}\\
-
-      By construction, there exists $c\in{}conds(t)$ and
-      $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$, and
-      $\mathbb{C}(t,c)=1\Rightarrow{<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$
-      and
-      $\mathbb{C}(t,c)=-1\Rightarrow{<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$.
-
-      Let us take such an $c\in{}conds(t)$ to prove the goal. By
-      definition of $c\in{}conds(t)$, there are 2 cases: see
-      \ref{it:re-eq-cond-comb-case-emp} for the remainder of the
-      proof.
+    \item \qedbox{$\vert{}conds(t)\vert=\vert{}conds(t)\vert$}
+    \item $\exists$ an injection
+      $\iota\in[0,\vert{}conds(t)\vert-1]\rightarrow{}conds(t)$ s.t.\\
+      $\forall{}i\in[0,\vert{}conds(t)\vert-1],~
+      \sigma'(id_t)("ic")[i]=
+      \begin{cases}
+        E_c(\tau,\iota(i)) & if~\mathbb{C}(t,\iota(i))=1 \\
+        \mathtt{not}(E_c(\tau,\iota(i))) & if~\mathbb{C}(t,\iota(i))=-1 \\
+      \end{cases}$
     \end{enumerate}
+
+    \noindent{}By construction, there exists a bijection
+    $\beta\in[0,\vert{}conds(t)\vert-1]\rightarrow{}conds(t)$ such
+    that for all $i\in[0,\vert{}conds(t)\vert-1]$, there exists an
+    $id_c\in{}Ins(\Delta)$ and:
+    \begin{itemize}
+    \item $\gamma(\beta(i))=id_c$
+    \item $\mathbb{C}(t,\beta(i))=1$ implies ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$
+    \item $\mathbb{C}(t,\beta(i))=-1$ implies ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$
+    \end{itemize}
+
+    Let us take such a bijection $\beta$ to prove the goal. Then,
+    given an $i\in[0,\vert{}conds(t)\vert-1]$, let us show
+    \fbox{$\sigma'(id_t)("ic")[i]=
+      \begin{cases}
+        E_c(\tau,\beta(i)) & if~\mathbb{C}(t,\beta(i))=1 \\
+        \mathtt{not}(E_c(\tau,\beta(i))) & if~\mathbb{C}(t,\beta(i))=-1 \\
+      \end{cases}$}
+
+    \noindent{}By definition of $\beta(i)\in{}conds(t)$:
+    \begin{equation}
+      \mathbb{C}(t,\beta(i))=1\lor\mathbb{C}(t,\beta(i))=-1\label{eq:cond-or}
+    \end{equation}
+
+    Case analysis on \eqref{eq:cond-or}:
+    \begin{itemize}
+    \item \textbf{CASE} $\mathbb{C}(t,\beta(i))=1$: \fbox{$\sigma'(id_t)("ic")[i]=E_c(\tau,\beta(i))$}\\
+      
+      By property of $\beta$, there exists $id_c\in{}Ins(\Delta)$
+      s.t. $\gamma(\beta(i))=id_c$ and\\
+      ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$.
+
+      \noindent{}By property of the stabilize relation and
+      ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$:
+      \begin{equation}
+        \sigma'(id_t)("ic")[i]=\sigma'(id_c)\label{eq:eq-ic-idc}
+      \end{equation}
+
+      \noindent{}By property of the \hvhdl{} rising edge and stabilize
+      relations, and $id_c\in{}Ins(\Delta)$:
+      \begin{equation}
+        \sigma'(id_c)=\sigma_i(id_c)\label{eq:eq-idc-idc}
+      \end{equation}
+
+      \noindent{}By property of the $\mathtt{Inject}_\uparrow$
+      relation and $id_c\in{}Ins(\Delta)$:
+      \begin{equation}
+        \sigma_i(id_c)=E_p(\tau,\uparrow)(id_c)\label{eq:eq-idc-ep}
+      \end{equation}
+
+      \noindent{}By property of
+      $\gamma\vdash{}E_p\stackrel{env}{=}E_c$:
+      \begin{equation}
+        E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)\label{eq:eq-ep-ec}
+      \end{equation}
+
+      \noindent{}Rewriting the goal with \eqref{eq:eq-ic-idc},
+      \eqref{eq:eq-idc-idc}, \eqref{eq:eq-idc-ep},
+      \eqref{eq:eq-ep-ec}, \qedbox{tautology.}
+
+    \item \textbf{CASE} $\mathbb{C}(t,c)=-1$: \fbox{$\sigma'(id_t)("ic")[i]=\mathtt{not}~E_c(\tau,\beta(i))$}\\
+      By property of $\beta$, there exists $id_c\in{}Ins(\Delta)$
+      s.t. $\gamma(\beta(i))=id_c$ and\\
+      ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$.
+
+      \noindent{}By property of the stabilize relation and
+      ${<}\mathtt{input\_conditions(i)\Rightarrow{}\mathtt{not}~id_c}{>}\in{}ipm_t$:
+      \begin{equation}
+        \sigma'(id_t)("ic")[i]=\mathtt{not}~\sigma'(id_c)\label{eq:eq-ic-not-idc}
+      \end{equation}
+
+      \noindent{}Then, equations \eqref{eq:eq-idc-idc},
+      \eqref{eq:eq-idc-ep} and \eqref{eq:eq-ep-ec} also hold this
+      case.
+      
+      \noindent{}Rewriting the goal with \eqref{eq:eq-ic-not-idc},
+      \eqref{eq:eq-idc-idc}, \eqref{eq:eq-idc-ep} and
+      \eqref{eq:eq-ep-ec}, \qedbox{tautology.}
+    \end{itemize}
   \end{itemize}
-  
 \end{proof}
 
+\subsection{Rising edge and time counters}
+\label{sec:re-tc}
+
+\begin{lemma}[Rising Edge Equal Time Counters]
+  \label{lem:re-equal-tc}
+  \rehyps{} then\\
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
+  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+  $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
+  $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
+  $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+  $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.
+\end{lemma}
+
+\begin{proof}
+  Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
+  \noindent\fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
+
+  \exT\\
+  
+  \noindent{}Then, there are 4 points to show:
+
+  \begin{enumerate}
+  \item\label{it:re-eq-tc-fst}
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$}\\
+    
+    \noindent{}Assuming $upper(I_s(t))=\infty$, let us show \fbox{$\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+
+    \noindent{}By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{}
+    rising edge and stabilize relations, and \\ \InCsCompT:
+    \begin{equation}
+      \sigma'(id_t)("s\_time\_counter")=\sigma(id_t)("s\_time\_counter")\label{eq:eq-stc-stc}
+    \end{equation}
+
+    \noindent{}By property of
+    $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
+    \begin{equation}
+      \sigma(id_t)("s\_time\_counter")=lower(I_s(t))\label{eq:eq-stc-low}
+    \end{equation}
+
+    \noindent{}Rewriting the goal with \eqref{eq:eq-stc-stc} and
+    \eqref{eq:eq-stc-low}, \qedbox{tautology.}
+    
+  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+  \end{enumerate}
+\end{proof}
+
+\subsection{Rising edge and reset orders}
+\label{sec:re-reset-orders}
+
+\begin{lemma}[Rising Edge Equal Reset Orders]
+  \label{lem:re-equal-reset-orders}
+  \rehyps{} then\\
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$
+\end{lemma}
+
+\begin{proof}
+  Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$, let us show\\
+  \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.}
+
+  \exT
+
+  \noindent{}By property of the \hvhdl{} stabilize relation and
+  \InCsCompT{}:
+  \begin{equation}
+    \sigma'(id_t)("srtc")=\sum\limits_{i=0}^{\Delta(id_t)("input\_arcs\_number")-1}\sigma'(id_t)("reinit\_time")[i]\label{eq:eq-srtc-prod}
+  \end{equation}
+
+  \noindent{}Rewriting the goal with \eqref{eq:eq-srtc-prod},
+  \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("rt")[i]$.}\\
+  
+  \noindent{}Case analysis on $input(t)$ (2 CASES):
+
+  \begin{itemize}
+  \item \textbf{CASE} $input(t)=\emptyset$:\\
+
+    By construction,
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_t$, and
+    by property of the elaboration relation:
+    \begin{equation}
+      \Delta(id_t)("ian")=1\label{eq:eq-ian-1}
+    \end{equation}
+
+    By construction, there exists an $id_{ft}\in{}Sigs(\Delta)$ s.t.
+    ${<}\mathtt{reinit\_time(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_t$ and
+    ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$, and by
+    property of the \hvhdl{} stabilize relation and \\ \InCsCompT:
+    \begin{eqnarray}
+      \sigma'(id_t)("rt")[0]&=&\sigma'(id_{ft})\label{eq:eq-rt0-fired} \\
+      \sigma'(id_{ft})&=&\sigma'(id_t)("fired")\label{eq:eq-fired-fired} \\
+      \sigma'(id_t)("fired")&=&\sigma'(id_t)("s\_fired")\label{eq:eq-fired-sfired} \\
+      \sigma'(id_t)("s\_fired")&=&\sigma'(id_t)("s\_firable").\sigma'(id_t)("s\_priority\_combination")\label{eq:eq-sfired-sfirable}
+    \end{eqnarray}
+
+    \noindent{}Rewriting the goal with \eqref{eq:eq-rt0-fired},
+    \eqref{eq:eq-fired-fired}, \eqref{eq:eq-fired-sfired} and
+    \eqref{eq:eq-sfired-sfirable},\\
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable").\sigma'(id_t)("s\_priority\_combination")$.}
+
+    \noindent{}By property of the stabilize relation, and \InCsCompT:
+    \begin{equation}
+      \sigma'(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("priority\_authorizations")[i]\label{eq:eq-spc-sum}
+    \end{equation}
+
+    By construction,
+    ${<}\mathtt{priority\_authorizations(0)\Rightarrow{}true}{>}$, and
+    by property of the stabilize relation and \InCsCompT:
+    \begin{equation}
+      \sigma'(id_t)("priority\_authorizations")[i]=true\label{eq:eq-pauth-0}
+    \end{equation}
+
+    \noindent{}Rewriting the goal with \eqref{eq:eq-ian-1},
+    \eqref{eq:eq-spc-sum} and \eqref{eq:eq-pauth-0}, and simplifying
+    the equation,\\ \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")$.}
+    
+    \noindent{}Case analysis on $t\in{}Fired(s)$ or
+    $t\notin{}Fired(s)$:
+
+    \begin{itemize}
+    \item \textbf{CASE} $t\in{}Fired(s)$:
+      
+      \noindent{}By property of
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:reset-order}):
+      \begin{equation}
+        s'.reset_t(t)=\mathtt{true}\label{eq:eq-reset-fired-true}
+      \end{equation}
+
+      \noindent{}Rewriting the goal with
+      \eqref{eq:eq-reset-fired-true},
+      \fbox{$\sigma'(id_t)("s\_firable")=true$.}
+
+      \noindent{}By property of the stabilize, the \hvhdl{} rising
+      edge and the $\mathtt{Inject}_\uparrow$ relations, and
+      \InCsCompT:
+      \begin{equation}
+        \sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")\label{eq:eq-sfirable}
+      \end{equation}
+
+      \noindent{}Rewriting the goal with \eqref{eq:eq-sfirable},
+      \fbox{$\sigma(id_t)("s\_firable")=true$.}
+
+      \noindent{}By property of
+      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
+      \begin{equation}
+        t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=true\label{eq:eq-firable-sfa}
+      \end{equation}
+
+      Rewriting the goal with \eqref{eq:eq-firable-sfa},
+      \fbox{$t\in{}Firable(s)$.}
+
+      \noindent{}By property of $t\in{}Fired(s)$,
+      \qedbox{$t\in{}Firable(s)$.}
+      
+    \item \textbf{CASE} $t\notin{}Fired(s)$:
+
+      \noindent{}By property of $input(t)=\emptyset$:
+      \begin{equation}
+        t\in{}Sens(M-\sum\limits_{t_i\in{}Fired(s)}pre(t_i))\label{eq:sens-by-trans}
+      \end{equation}
+
+      \noindent{}By property of $t\notin{}Fired(s)$,
+      \eqref{eq:sens-by-trans} and
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:no-reset-order}):
+      \begin{equation}
+        s'.reset_t(t)=false\label{eq:eq-reset-false}
+      \end{equation}
+
+      \noindent{}Rewriting the goal with \eqref{eq:eq-reset-false},
+      \fbox{$\sigma'(id_t)("s\_firable")=false$.}
+
+      \noindent{}By property of the stabilize, the \hvhdl{} rising
+      edge and the $\mathtt{Inject}_\uparrow$ relations, and
+      \InCsCompT, equation \eqref{eq:eq-sfirable} holds.
+
+      \noindent{}Rewriting the goal with \eqref{eq:eq-sfirable},
+      \fbox{$\sigma(id_t)("s\_firable")=false$.}
+      
+      
+    \end{itemize}
+    
+  \item \textbf{CASE} $input(t)\neq{}\emptyset$:\\
+
+    By construction,
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$, and
+    by property of the \hvhdl{} elaboration relation:
+    \begin{equation}
+      \Delta(id_t)("ian")=\vert{}input(t)\vert\label{eq:eq-ian-inputt}
+    \end{equation}
+
+    Rewriting the goal with \eqref{eq:eq-ian-inputt},
+    \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]$.}
+    
+    Case analysis on $t\in{}Fired(s)$ or $t\notin{}Fired(s)$:
+    
+    \begin{itemize}
+    \item \textbf{CASE} $t\in{}Fired(s)$:
+      
+      \noindent{}By property of
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:reset-order}), equation
+      \eqref{eq:eq-reset-fired-true} holds.
+
+      \noindent{}Rewriting the goal with
+      \eqref{eq:eq-reset-fired-true},
+      \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+    \end{itemize}
+    
+    Given a $i\in[0,\vert{}input(t)\vert-1]$, let us show
+    \fbox{$\sigma(id_t)("rt")[i]=false$.}
+    
+    By construction, and $input(t)\neq{}\emptyset$, there exist
+    ${}p\in{}input(t)$ and $id_p\in{}Comps(\Delta)$
+    s.t. $\gamma(p)=id_p$.
+
+    \exP By construction for all $i\in{}[0,\vert{}input(t)\vert-1],$
+    there exist $j\in[0,\vert{}output(p)\vert-1]$ and
+    $id_{ji}\in{}Sigs(\Delta)$ s.t.
+    ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+    and ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$.
+
+    \noindent{}By property of the \hvhdl{} stabilize relation,
+    ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+    and
+    ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
+    then $\sigma(id_t)("rt")[i]=\sigma(id_{ji})=\sigma(id_p)("rtt")[j]$.
+
+    Rewriting $\sigma(id_t)("rt")[i]$ as $\sigma(id_{ji})$ and
+    $\sigma(id_{ji})$ as $\sigma(id_p)("rtt")[j]$,
+    \fbox{$\sigma(id_p)("rtt")[j]=false$.}
+
+    \noindent{}By property of the \hvhdl{} rising edge and stabilize
+    relations,\\
+    \begin{equation*}
+      \begin{split}
+        \sigma(id_p)("rtt")[j]=& ((\sigma_0(id_p)("oat")[j]=\mathtt{BASIC}+\sigma_0(id_p)("oat")[j]=\mathtt{TEST}) \\
+        & .(\sigma_0(id_p)("sm")-\sigma_0(id_p)("sots")<\sigma_0(id_p)("oaw")[j])\\
+        & .(\sigma_0(id_p)("sots")>0))\\
+        & +(\sigma_0(id_p)("otf")[j]) \\
+      \end{split}
+    \end{equation*}
+
+    Rewriting the goal with the above equation,
+    \begin{equation*}
+      \fbox{$\begin{split}
+          false=& ((\sigma_0(id_p)("oat")[j]=\mathtt{BASIC}+\sigma_0(id_p)("oat")[j]=\mathtt{TEST}) \\
+          & .(\sigma_0(id_p)("sm")-\sigma_0(id_p)("sots")<\sigma_0(id_p)("oaw")[j])\\
+          & .(\sigma_0(id_p)("sots")>0))\\
+          & +(\sigma_0(id_p)("otf")[j]) \\
+        \end{split}$}
+    \end{equation*}
+    
+    \begin{todobox}
+      Add a lemma + proof in section initial states for fired = false
+      after initialization.
+    \end{todobox}
+
+    \noindent{}By property of the \hvhdl{} initialization and the
+    $\mathtt{Inject}_{\uparrow}$ relations, then
+    $\sigma_0(id_p)("otf")[j]=false$. Rewriting
+    $\sigma_0(id_p)("otf")[j]$ as $false$ and simplifying the goal,
+    \begin{equation*}
+      \fbox{$\begin{split}
+          false=& ((\sigma_0(id_p)("oat")[j]=\mathtt{BASIC}+\sigma_0(id_p)("oat")[j]=\mathtt{TEST}) \\
+          & .(\sigma_0(id_p)("sm")-\sigma_0(id_p)("sots")<\sigma_0(id_p)("oaw")[j])\\
+          & .(\sigma_0(id_p)("sots")>0))\\
+        \end{split}$}
+    \end{equation*}
+
+    \begin{todobox}
+      Add a lemma + proof in section initial states for output token
+      sum = 0 after initialization.
+    \end{todobox}
+    
+    \noindent{}By property of the \hvhdl{} initialization and the
+    $\mathtt{Inject}_{\uparrow}$ relations, then
+    $\sigma_0(id_p)("sots")=0$. Rewriting
+    $\sigma_0(id_p)("sots")$ as $0$ and simplifying the goal,
+    \qedbox{$false=false$}
+    
+  \end{itemize}
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex

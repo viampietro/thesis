@@ -1,7 +1,3 @@
-% Refs and navigation.
-
-\usepackage[colorlinks=true]{hyperref}
-
 % Item list style.
 
 \usepackage{enumitem}
@@ -75,6 +71,33 @@
 
 \usepackage{hhline}
 \usepackage{multirow}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       EXTERNAL DOCUMENT REFERENCES    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{xr-hyper}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+  \externaldocument{#1}%
+  \addFileDependency{#1.tex}%
+  \addFileDependency{#1.aux}%
+}
+
+\myexternaldocument{../latex-papers/SITPN/main.tex}
+\myexternaldocument{../latex-papers/H-VHDL/main.tex}
+
+% Refs and navigation.
+
+\usepackage[colorlinks=true]{hyperref}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       BIBLIOGRAPHY-RELATED PACKAGES    %
