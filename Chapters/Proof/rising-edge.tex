@@ -367,9 +367,11 @@
 
   \begin{enumerate}
   \item\label{it:re-eq-tc-fst}
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$}\\
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}\\
     
-    \noindent{}Assuming $upper(I_s(t))=\infty$, let us show \fbox{$\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+    \noindent{}Assuming $upper(I_s(t))=\infty$ and
+    $s'.I(t)\le{}lower(I_s(t))$, let us show\\
+    \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
 
     \noindent{}By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{}
     rising edge and stabilize relations, and \\ \InCsCompT:
@@ -380,16 +382,29 @@
     \noindent{}By property of
     $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
     \begin{equation}
-      \sigma(id_t)("s\_time\_counter")=lower(I_s(t))\label{eq:eq-stc-low}
+      s.I(t)=\sigma(id_t)("s\_time\_counter")\label{eq:eq-stc-low}
     \end{equation}
 
     \noindent{}Rewriting the goal with \eqref{eq:eq-stc-stc} and
     \eqref{eq:eq-stc-low}, \qedbox{tautology.}
     
-  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
-  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
-  \item Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+  \item
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow
+      \sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+
+    \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+  \item
+    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow
+      \sigma'(id_t)("s\_time\_counter")=upper(I_s(t)$.}
+
+    \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
+    
+  \item
+    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}
+    
+    \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
   \end{enumerate}
+  
 \end{proof}
 
 \subsection{Rising edge and reset orders}

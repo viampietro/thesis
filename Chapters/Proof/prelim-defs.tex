@@ -123,10 +123,6 @@
   $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
   similarity) and
   \begin{enumerate}
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
-  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -135,6 +131,10 @@
     $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
   \end{enumerate}
 \end{definition}
 

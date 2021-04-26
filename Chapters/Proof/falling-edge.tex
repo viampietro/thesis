@@ -4,30 +4,37 @@
 
 \begin{definition}[Falling Edge Hypotheses]
   \label{def:fe-hyps}
-  Given an $sitpn$, $d$, $\gamma$, $\Delta$, $\sigma_e$, $E_c$, $E_p$,
-  $\tau$, $s$, $s'$, $\sigma$, $\sigma_i$, $\sigma_{\downarrow}$, $\theta$,
-  $\sigma'$, assume that:
+  Given an $sitpn\in{}SITPN$, $d\in{}design$,
+  $\gamma\in{}WM(sitpn,d)$,
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma(\Delta)$,
+  assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$
-  \item $E_c,\tau\vdash{}sitpn,s\srarrow{\downarrow}{\fontsize{5}{7}\selectfont}s'$
+  \item $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$
   \item $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$
     and
     $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
     and
-    $\Delta,\sigma_{\downarrow}\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
+    $\Delta,\sigma_{\downarrow}\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
+  \item State $\sigma$ is a stable design state:
+    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$
   \end{itemize}
 \end{definition}
 
 \def\fehyps{For all $sitpn$, $d$, $\gamma$, $\Delta$, $\sigma_e$,
   $E_c$, $E_p$, $\tau$, $s$, $s'$, $\sigma$, $\sigma_i$,
-  $\sigma_{\downarrow}$, $\theta$, $\sigma'$ that verify the hypotheses of
+  $\sigma_{\downarrow}$, $\sigma'$ that verify the hypotheses of
   Def.~\ref{def:fe-hyps},}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%% RISING EDGE LEMMA %%%%%%%%%%
+%%%%%%%%%% FALLING EDGE LEMMA %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \begin{lemma}[Falling Edge]
@@ -35,938 +42,606 @@
   \fehyps{} then $\gamma\vdash{}s'\stackrel{\downarrow}{\sim}{}\sigma'$.
 \end{lemma}
 
-\subsection{Falling Edge and Marking}
+\begin{proof}
+  By definition of \nameref{def:post-fe-state-sim}, there are 12
+  points to prove.
+  \begin{frameb}
+    \begin{enumerate}
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{item:6}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{item:9}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.
+    \item
+      $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s'.cond(c)=\sigma'(id_c)$.
+    \item
+      $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.
+    \item
+      $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{false}$.
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\notin{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{false}$.
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+      $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.\label{item:7}
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+      $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.\label{item:8}
+    \end{enumerate}
+  \end{frameb}
+
+  Each point is proved by a separate lemma:
+  \begin{itemize}[label=--]
+  \item Apply Lemma~\nameref{lem:fe-equal-marking} to solve
+    \ref{item:6}.
+  \item Apply Lemma~\nameref{lem:fe-equal-tc} to solve \ref{item:9}.
+  \item Apply Lemma~\nameref{lem:fe-equal-ots} to solve \ref{item:7}.
+  \item Apply Lemma~\nameref{lem:fe-equal-its} to solve \ref{item:8}.
+  \end{itemize}
+  
+\end{proof}
+
+\subsection{Falling Edge and marking}
 \label{sec:fe-marking}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FALLING EDGE EQUAL MARKING LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Falling Edge Equal Marking]
+  \label{lem:fe-equal-marking}
+  \fehyps{} then
+  $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+  $~s'.M(p)=\sigma'(id_p)("s\_marking")$.
+\end{lemma}
+
+\begin{proof}
+  Given a $p\in{}P$ and an $id\in{}Comps(\Delta)$
+  s.t. $\gamma(p)=id_p$, let us show\\
+  \fbox{$s'.M(p)=\sigma'(id_p)("s\_marking")$.}
+
+  \noindent{}By definition of
+  $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$:
+  \begin{equation}
+    \label{eq:42}s.M(p)=s'.M(p)
+  \end{equation}
+
+  \noindent{}By property of the $\mathtt{Inject}_\downarrow$ relation,
+  the \hvhdl{} falling edge relation, the stabilize relation and
+  \InCsCompP:
+  \begin{equation}
+    \label{eq:43}\sigma'(id_p)("s\_marking")=\sigma(id_p)("s\_marking")
+  \end{equation}
+
+  \noindent{}Rewriting the goal with \eqref{eq:42} and \eqref{eq:43}:
+  \fbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
+
+  \noindent{}By definition of
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+  \qedbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
+  
+\end{proof}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% FALLING EDGE PREPARE MARKING UPDATE LEMMA %%%%%%%%%%
+%%%%%%%%%% FALLING EDGE EQUAL OUTPUT TOKEN SUM LEMMA %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{lemma}[Falling Edge Prepare Marking Update]
-  \label{lem:fe-prepare-marking}
-  \fehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$ and
-  $\sigma'(id_p)=\sigma'_p$:
-  \begin{itemize}
-  \item
-    $~\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'_p("s\_output\_token\_sum")$
-  \item   
-    $~\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'_p("s\_input\_token\_sum")$
-  \end{itemize}
-  
+\begin{lemma}[Falling Edge Equal Output Token Sum]
+  \label{lem:fe-equal-ots}
+  \fehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$,
+  $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.
 \end{lemma}
 
 \begin{proof}
-  First, by reasoning on the VHDL falling and stabilize relation, and
-  on the VHDL Place component behavior, we can unfold the value of
-  signals ``s\_input\_token\_sum'' and ``s\_output\_token\_sum'' at
-  state $\sigma'_p$.
-  \begin{itemize}
+  Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
+  \fbox{$\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.}
 
-  \item $\sigma'_p("s\_input\_token\_sum")=\sum\limits_{i\in\mathtt{FIIdx}(\sigma'_p)}\sigma'_p("input\_arcs\_weights")(i)$\\
-    where $i\in\mathtt{FIIdx}(\sigma)\equiv{}i\in[0,\sigma("input\_arcs\_number")-1]$
-    
-    \hspace{25ex}$~\land~\sigma("input\_transition\_fired")(i)=\mathtt{true}$.
-  \item $\sigma'_p("s\_output\_token\_sum")=\sum\limits_{i\in\mathtt{FOIdx}(\sigma'_p)}\sigma'_p("output\_arcs\_weights")(i)$\\
-    where $i\in\mathtt{FOIdx}(\sigma)\equiv{}i\in[0,\sigma("output\_arcs\_number")-1]~$
-
-    \hspace{25ex}$\land~\sigma("output\_transition\_fired")(i)=\mathtt{true}$.
-  \end{itemize}
+  \exP{}
   
-\item Then, we need to prove the two following equalities:
-  \begin{itemize}
-  \item $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{i\in\mathtt{FOIdx}(\sigma'_p)}\sigma'_p("output\_arcs\_weights")(i)$.
-  \item $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{i\in\mathtt{FIIdx}(\sigma'_p)}\sigma'_p("input\_arcs\_weights")(i)$.
-  \end{itemize}
+  \noindent{}By property of the stabilize relation and \InCsCompP{}:
+  \begin{equation}
+    \label{eq:16}
+    \sigma'(id_p)("sots")=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+    \begin{cases}
+      \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
+      \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+      0~otherwise \\
+    \end{cases}
+  \end{equation}
 
-  We can deduce that:
+  \noindent{}Rewriting the goal with \eqref{eq:16}:\\
+  \begin{equation*}
+    \fbox{$
+      \sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+      \begin{cases}
+        \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
+        \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+        0~otherwise \\
+      \end{cases}$}
+  \end{equation*}
+
+  \noindent{}Let us unfold the definition of the left sum term:\\
+  \fbox{
+    {\begin{tabular}{c}
+       $\sum\limits_{t\in{}Fired(s')}
+       \begin{cases}
+         \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
+         0~otherwise
+       \end{cases}$ \\
+       $=$ \\
+       $\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+       \begin{cases}
+         \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
+         \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+         0~otherwise \\
+       \end{cases}$ \\
+     \end{tabular}}
+ }\\
+
+ \noindent{}To ease the reading, let us define functions
+ $f\in{}Fired(s')\rightarrow\mathbb{N}$ and
+ $g\in[0,\vert{}output(p)\vert-1]\rightarrow\mathbb{N}$ s.t.
+ $f(t)=\begin{cases}
+   \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
+   0~otherwise
+ \end{cases}$ and $g(i)=\begin{cases}
+   \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
+   \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+   0~otherwise \\
+ \end{cases}$
+
+ \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}g(i)$}\\
+
+ \noindent{}Let us perform case analysis on $output(p)$; there are two cases:
+
+ \begin{enumerate}
+ \item $output(p)=\emptyset$:\\
+   
+   \noindent{}By construction,
+   ${<}\mathtt{output\_arcs\_number\Rightarrow{}1}{>}\in{}gm_p$,
+   ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}\mathtt{BASIC}}{>}\in{}ipm_p$,
+   ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}\mathtt{true}}{>}\in{}ipm_p$,
+   and
+   ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$.
+
+   \noindent{}By property of the elaboration relation and \InCsCompP:
+   \begin{equation}
+     \label{eq:25}\Delta(id_p)("oan")=1
+   \end{equation}
+
+   \noindent{}By property of the stabilize relation and \InCsCompP:
+   \begin{eqnarray}
+     \label{eq:26}\sigma'(id_p)("oat")[0]&=&\mathtt{BASIC}\\
+     \label{eq:27}\sigma'(id_p)("otf")[0]&=&\mathtt{true}\\
+     \label{eq:28}\sigma'(id_p)("oaw")[0]&=&0
+   \end{eqnarray}
+
+   By property of $output(p)=\emptyset$:
+   \begin{equation}\label{eq:29}
+     \sum\limits_{t\in{}Fired(s')}
+     \begin{cases}
+       \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
+       0~otherwise
+     \end{cases}=0
+   \end{equation}
+
+   \noindent{}Rewriting the goal with \eqref{eq:25}, \eqref{eq:26},
+   \eqref{eq:27}, \eqref{eq:28} and \eqref{eq:29}, \qedbox{tautology.}
+   
+ \item $output(p)\neq\emptyset$:\\
+
+   \noindent{}By construction,
+   ${<}\mathtt{output\_arcs\_number\Rightarrow{}}\vert{}output(p)\vert{>}\in{}gm_p$,
+   and by property of the elaboration relation:
+   \begin{equation}
+     \label{eq:30}\Delta(id_p)("oan")=\vert{}output(p)\vert
+   \end{equation}
+   
+   Rewriting the goal with \eqref{eq:30}:
+   \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}output(p)\vert-1}g(i)$.}
+
+   \noindent{}Let us reason by induction on the right sum term of the goal.
+
+   \begin{itemize}
+   \item \textbf{BASE CASE}:\\
+
+     \noindent{}In that case, $0>\vert{}output\vert-1$ and
+     $\sum\limits_{i=0}^{\vert{}output(p)\vert-1}g(i)=0$.
+
+     \noindent{}As $0>\vert{}output\vert-1$, then
+     $\vert{}output(p)\vert=0$, thus \qedbox{contradicting
+       $output(p)\neq\emptyset$.}
+
+   \item \textbf{INDUCTION CASE}:\\
+
+     \noindent{}In that case, $0\le\vert{}output(p)\vert-1$.
+     
+     \begin{ih}
+       $\forall{}F\subseteq{}Fired(s'),$
+       $g(0)+\sum\limits_{t\in{}F}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$
+     \end{ih}
+
+     \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
+
+     By definition of $g$:
+     \begin{equation}
+       \label{eq:31}g(0)=\begin{cases}
+         \sigma'(id_p)("oaw")[0]~\mathtt{if}~(\sigma'(id_p)("otf")[0] \\
+         \hspace{19.5ex}.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC}) \\
+         0~otherwise \\
+       \end{cases}
+     \end{equation}
+
+     \noindent{}Let us perform case analysis on the value of
+     $\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$; there are two cases:
+     \begin{enumerate}
+     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC})=\mathtt{false}$:\\
+       In that case, $g(0)=0$, and then we can apply the induction
+       hypothesis with $F=Fired(s')$ to solve the goal:
+       \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$.}
+
+     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC})=\mathtt{true}$:\\
+       In that case, $g(0)=\sigma'(id_p)("oaw")[0]$,
+       $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and\\
+       $\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$.
+
+       \noindent{}By construction, there exist a $t\in{}output(t)$,
+       $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$. Let us take
+       such a $t\in{}output(p)$.
+
+       \exT{}
+
+       \noindent{}As $t\in{}output(p)$, there exist
+       $\omega\in\mathbb{N}^{*}$ and
+       $a\in\{\mathtt{BASIC},\mathtt{TEST},\mathtt{INHIB}\}$
+       s.t. $pre(p,t)=(\omega,a)$. Let us take an $\omega$ and $a$
+       s.t. $pre(p,t)=(\omega,a)$.
+
+       \noindent{}By construction,
+       ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}}a{>}\in{}ipm_p$,\\
+       ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$,
+       and there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
+       ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$ and
+       ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+
+       \noindent{}By property of the stabilize relation,
+       $\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$ and\\
+       ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}a}{>}\in{}ipm_p$:
+       \begin{equation}
+         \label{eq:32}pre(p,t)=(\omega,\mathtt{basic})
+       \end{equation}
+
+       \noindent{}By property of the stabilize relation,
+       ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$,\\
+       ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+       and $\sigma'(id_p)("otf")[0]=\mathtt{true}$:
+       \begin{equation}
+         \label{eq:33}\sigma'(id_t)("fired")=\mathtt{true}
+       \end{equation}
+
+       \noindent{}Appealing to Lemma~\ref{lem:fe-equal-fired}, we know
+       $t\in{}Fired(s')$.
+
+       \noindent{}As $t\in{}Fired(s')$, we can rewrite the left sum
+       term of the goal as follows:\\
+       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
+
+       \noindent{}We know that $g(0)=\sigma'(id_p)("oaw")[0]$, and by
+       property of the stabilize relation and
+       ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow}\omega{>}\in{}ipm_p$:
+       \begin{equation}
+         \label{eq:21}\sigma'(id_p)("oaw")[0]=\omega
+       \end{equation}
+
+       Rewriting the goal with \eqref{eq:21}:\\
+       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
+
+       By definition of $f$, and as $pre(p,t)=(\omega,\mathtt{basic})$, then $f(t)=\omega$; thus, rewriting the goal:\\
+       \fbox{$\omega+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
+
+       Then, knowing that $g(0)=\omega$, we can apply the induction
+       hypothesis with $F=Fired(s')\setminus\{t\}$:
+       \qedbox{$g(0)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$.}
+     \end{enumerate}
+     
+   \end{itemize}
+   
+
+ \end{enumerate}
+ 
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FALLING EDGE EQUAL INPUT TOKEN SUM LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Falling Edge Equal Input Token Sum]
+  \label{lem:fe-equal-its}
+  \fehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$,
+  $~\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'_p("s\_input\_token\_sum")$.
+\end{lemma}
+
+\begin{proof}
+  Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
+  \fbox{$\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.}\\
+
+  \exP{}
   
-  \begin{itemize}
-  \item $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{t\in{}FI(s',p)}pre(p,t)$\\
-    where
-    $t\in{}FI(s',p)\equiv{}t\in{}Fired(s')\land\exists\omega~s.t.~pre(p,t)=(\omega,\mathtt{basic})$.
-  \item $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{t\in{}FO(s',p)}post(t,p)$\\
-    where
-    $t\in{}FO(s',p)\equiv{}t\in{}Fired(s')\land\exists\omega~s.t.~post(t,p)=\omega$.
-  \end{itemize}
+  \noindent{}By property of the stabilize relation and \InCsCompP{}:
+  \begin{equation}
+    \label{eq:34}
+    \sigma'(id_p)("sits")=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+    \begin{cases}
+      \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+      0~otherwise \\
+    \end{cases}
+  \end{equation}
 
-  \noindent{}Then, we have
-  $\vert{}FI(s',p)\vert=\vert\mathtt{FIIdx(\sigma'_p)}\vert$
-  and
-  $\vert{}FO(s',p)\vert=\vert\mathtt{FOIdx(\sigma'_p)}\vert$.
+  \noindent{}Rewriting the goal with \eqref{eq:34}:\\
+  \begin{equation*}
+    \fbox{$
+      \sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+      \begin{cases}
+        \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("otf")[i]\\
+        0~otherwise \\
+      \end{cases}$}
+  \end{equation*}
+
+  \noindent{}Let us unfold the definition of the left sum term:\\
+  \fbox{
+    {\begin{tabular}{c}
+       $\sum\limits_{t\in{}Fired(s')}
+       \begin{cases}
+         \omega~\mathtt{if}~post(t,p)=\omega \\
+         0~otherwise
+       \end{cases}$ \\
+       $=$ \\
+       $\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+       \begin{cases}
+         \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+         0~otherwise \\
+       \end{cases}$ \\
+     \end{tabular}}
+ }\\
+
+ \noindent{}Let us perform case analysis on $input(p)$; there are two cases:
+
+ \begin{enumerate}
+ \item $input(p)=\emptyset$:\\
+   
+   \noindent{}By construction,
+   ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_p$,
+   ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}\mathtt{true}}{>}\in{}ipm_p$,
+   and
+   ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$.
+
+   \noindent{}By property of the elaboration relation and \InCsCompP:
+   \begin{equation}
+     \label{eq:35}\Delta(id_p)("ian")=1
+   \end{equation}
+
+   \noindent{}By property of the stabilize relation and \InCsCompP:
+   \begin{eqnarray}
+     \label{eq:36}\sigma'(id_p)("itf")[0]&=&\mathtt{true}\\
+     \label{eq:37}\sigma'(id_p)("iaw")[0]&=&0
+   \end{eqnarray}
+
+   By property of $input(p)=\emptyset$:
+   \begin{equation}\label{eq:23}
+     \sum\limits_{t\in{}Fired(s')}
+     \begin{cases}
+       \omega~\mathtt{if}~post(t,p)=\omega \\
+       0~otherwise
+     \end{cases}=0
+   \end{equation}
+
+   \noindent{}Rewriting the goal with \eqref{eq:35}, \eqref{eq:36},
+   \eqref{eq:37}, and \eqref{eq:23}, and simplifying the goal,
+   \qedbox{tautology.}
+   
+ \item $input(p)\neq\emptyset$:\\
+
+   \noindent{}By construction,
+   ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(p)\vert{>}\in{}gm_p$,
+   and by property of the elaboration relation:
+   \begin{equation}
+     \label{eq:24}\Delta(id_p)("ian")=\vert{}input(p)\vert
+   \end{equation}
+
+   \noindent{}To ease the reading, let us define functions
+   $f\in{}Fired(s')\rightarrow\mathbb{N}$ and
+   $g\in[0,\vert{}input(p)\vert-1]\rightarrow\mathbb{N}$ s.t.
+   $f(t)=\begin{cases}
+     \omega~\mathtt{if}~post(t,p)=\omega \\
+     0~otherwise
+   \end{cases}$ and \\ $g(i)=\begin{cases}
+     \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+     0~otherwise \\
+   \end{cases}$
+
+   \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}g(i)$}\\
+   
+   Rewriting the goal with \eqref{eq:24}:
+   \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)$.}
+
+   \noindent{}Let us reason by induction on the right sum term of the goal.
+
+   \begin{itemize}
+   \item \textbf{BASE CASE}:\\
+     \noindent{}In that case, $0>\vert{}input(p)\vert-1$ and
+     $\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)=0$.
+
+     \noindent{}As $0>\vert{}input(p)\vert-1$, then
+     $\vert{}input(p)\vert=0$, thus \qedbox{contradicting
+       $input(p)\neq\emptyset$.}
+
+   \item \textbf{INDUCTION CASE}:\\
+     \noindent{}In that case, $0\le\vert{}input(p)\vert-1$.
+     
+     \begin{ih}
+       $\forall{}F\subseteq{}Fired(s'),~$
+       $g(0)+\sum\limits_{t\in{}F}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$
+     \end{ih}
+
+     \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}\\
+
+     By definition of $g$:
+     \begin{equation}
+       \label{eq:38}g(0)=\begin{cases}
+         \sigma'(id_p)("iaw")[0]~\mathtt{if}~\sigma'(id_p)("itf")[0]\\
+         0~otherwise \\
+       \end{cases}
+     \end{equation}
+
+     \noindent{}Let us perform case analysis on the value of
+     $\sigma'(id_p)("itf")[0]$; there are two cases:
+     \begin{enumerate}
+     \item $\sigma'(id_p)("itf")[0]=\mathtt{false}$:\\
+       In that case, $g(0)=0$, and then we can apply the induction
+       hypothesis with $F=Fired(s')$ to solve the goal:
+       \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
+
+     \item $\sigma'(id_p)("itf")[0]=\mathtt{true}$:\\
+       In that case, $g(0)=\sigma'(id_p)("iaw")[0]$ and
+       $\sigma'(id_p)("itf")[0]=\mathtt{true}$ .
+
+       \noindent{}By construction, there exist a $t\in{}input(t)$,
+       $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$. Let us take
+       such a $t\in{}input(p)$.
+
+       \exT{}
+
+       \noindent{}As $t\in{}input(p)$, there exist
+       $\omega\in\mathbb{N}^{*}$ s.t. $post(t,p)=\omega$. Let us take
+       an $\omega$ s.t. $post(t,p)=\omega$.
+
+       \noindent{}By construction,
+       ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$,
+       and there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
+       ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$ and
+       ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+
+       \noindent{}By property of the stabilize relation and
+       ${<}\mathtt{input\_arcs\_types(0)\Rightarrow{}a}{>}\in{}ipm_p$:
+       \begin{equation}
+         \label{eq:39}post(t,p)=\omega
+       \end{equation}
+
+       \noindent{}By property of the stabilize relation,
+       ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$,\\
+       ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+       and $\sigma'(id_p)("itf")[0]=\mathtt{true}$:
+       \begin{equation}
+         \label{eq:40}\sigma'(id_t)("fired")=\mathtt{true}
+       \end{equation}
+
+       \noindent{}Appealing to Lemma~\ref{lem:fe-equal-fired} and
+       \eqref{eq:40}, we know $t\in{}Fired(s')$.
+
+       \noindent{}As $t\in{}Fired(s')$, we can rewrite the left sum
+       term of the goal as follows:\\
+       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
+
+       \noindent{}We know that $g(0)=\sigma'(id_p)("iaw")[0]$, and by
+       property of the stabilize relation and
+       ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow}\omega{>}\in{}ipm_p$:
+       \begin{equation}
+         \label{eq:41}\sigma'(id_p)("iaw")[0]=\omega
+       \end{equation}
+
+       Rewriting the goal with \eqref{eq:41}:\\
+       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
+
+       By definition of $f$, and as $post(t,p)=\omega$, then $f(t)=\omega$; thus, rewriting the goal:\\
+       \fbox{$\omega+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
+
+       Then, knowing that $g(0)=\omega$, we can apply the induction
+       hypothesis with $F=Fired(s')\setminus\{t\}$:
+       \qedbox{$g(0)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
+     \end{enumerate}
+     
+   \end{itemize}
+   
+ \end{enumerate}
+ 
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FALLING EDGE EQUAL TIME COUNTERS %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Falling edge and time counters}
+\label{sec:fe-equal-tc}
+
+\begin{lemma}[Falling Edge Equal Time Counters]
+  \label{lem:fe-equal-tc}
+  \fehyps{} then $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.
+\end{lemma}
+
+\begin{proof}
+  Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
+  \noindent\fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
+
+  \exT\\
   
-  \noindent{}Then, it easier to show the two equalities by showing
-  that the sets $FI(s',p)$ (resp. $FO(s',p)$) and
-  $\mathtt{FIIdx}(\sigma'_p)$ (resp. $\mathtt{FOIdx}(\sigma'_p)$) are
-  in bijection.
-
-  \noindent{}There are 4 subgoals to prove.
+  \noindent{}Then, there are 4 points to show:
 
   \begin{enumerate}
+  \item\label{it:re-eq-tc-fst}
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}\\
+    
+    \noindent{}Assuming $upper(I_s(t))=\infty$ and
+    $s'.I(t)\le{}lower(I_s(t))$, let us show
+    \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
+
+    \noindent{}By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{}
+    rising edge and stabilize relations, and \\ \InCsCompT:
+    \begin{equation}
+      \sigma'(id_t)("s\_time\_counter")=\sigma(id_t)("s\_time\_counter")\label{eq:eq-stc-stc}
+    \end{equation}
+    
   \item
-    $\forall{}t\in{}FI(s',p),\exists{}i\in\mathtt{FOIdx}(\sigma'_p)~s.t.~pre(p,t)=\sigma'_p("output\_arcs\_weights")(i)$.
-
-    Given a transition $t\in{}FI(s',p)$, by definition:
-
-    \begin{itemize}
-    \item $\exists\omega~s.t.~pre(p,t)=(\omega,\mathtt{basic})$.
-
-      Then, by construction, there exists a Transition component
-      $id_t\in{}Comps(\Delta)$ implementing transition $t$, and there
-      exists an index
-      $j\in[0,\vert{}output(p)\vert-1]$, and a signal $sig\in{}Sigs(\Delta)$ such that\\
-      $\mathtt{id_t.fired\Rightarrow{}sig\Rightarrow{}id_p.output\_transitions\_fired(j)}$\\
-      and $\mathtt{id_p.output\_arcs\_weights(j)\Rightarrow\omega}$\\
-      and
-      $\mathtt{id_p.output\_arcs\_number\Rightarrow\vert{}output(p)\vert}$.
-
-      Then, by reasoning on the VHDL stabilize relation, we can deduce
-      $j\in[0,\sigma'_p("output\_arcs\_number")-1]$\\
-      and $\sigma'_p("output\_arcs\_weights")(j)=\omega$.
-      
-    \item $t\in{}Fired(s')$.
-
-      Thanks to Lemma~\nameref{lem:fe-equal-fired}, we know that
-      $\sigma'_t("fired")=\mathtt{true}$.
-
-      Then, by reasoning on the VHDL stabilize relation, we can deduce
-      $\sigma'_p("output\_transitions\_fired")(j)=\sigma'(sig)=\sigma'_t("fired")=\mathtt{true}$.
-    \end{itemize}
-
-    Then, choose index $j$ to solve the goal.
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
   \item
-    $\forall{}i\in\mathtt{FOIdx}(\sigma'_p),\exists{}t\in{}FI(s',p)~s.t.~pre(p,t)=\sigma'_p("output\_arcs\_weights")(i)$.
+    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))$.}
   \item
-    $\forall{}t\in{}FO(s',p),\exists{}i\in\mathtt{FIIdx}(\sigma'_p)~s.t.~post(t,p)=\sigma'_p("input\_arcs\_weights")(i)$.
-  \item
-    $\forall{}i\in\mathtt{FIIdx}(\sigma'_p),\exists{}t\in{}FO(s',p)~s.t.~post(t,p)=\sigma'_p("input\_arcs\_weights")(i)$.
+    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
   \end{enumerate}
 \end{proof}
 
-\begin{lemma}[Falling Edge Computes Output Token Sum]
-  \label{lem:fe-computes-out-tok-sum}
-  \fehyps{} then\\
-  $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
-  $\sigma'(id_p)("s\_output\_token\_sum")=$
-  $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("out\_t\_fired")[i]~\mathtt{then}~\sigma'(id_p)("out\_arcs\_weights")[i]~\mathtt{else}~0\big)$\\
-  where $n=\Delta(id_p)("output\_arcs\_number")-1$
-\end{lemma}
-
-\begin{proof}
-  Given a $p\in{}P$ and a $id_p\in{}Comps(\Delta)$ s.t. $\gamma(p)=id_p$, let us show that\\
-  \fbox{\parbox{\linewidth}{$\sigma'(id_p)("s\_output\_token\_sum")=$
-      $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("out\_t\_fired")[i]~\mathtt{then}~\sigma'(id_p)("out\_arcs\_weights")[i]~\mathtt{else}~0\big)$
-      where $n=\Delta(id_p)("output\_arcs\_number")-1$}}\\\\
-
-  \noindent{}Applying the \nameref{lem:stab-computes-out-tok-sum}
-  lemma,
-
-  \noindent{}\qedbox{$\sigma'(id_p)("s\_output\_token\_sum")=$
-    $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("out\_t\_fired")[i]~\mathtt{then}~\sigma'(id_p)("out\_arcs\_weights")[i]~\mathtt{else}~0\big)$
-    where $n=\Delta(id_p)("output\_arcs\_number")-1$}
-  
-\end{proof}
-
-\begin{lemma}[Stabilize Computes Output Token Sum]
-  \label{lem:stab-computes-out-tok-sum}
-  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  $\sigma_e,\sigma,\sigma'\in{}\Sigma(\Delta)$, $\tau\in\mathbb{N}$,
-  $\theta\in\mathtt{list}(\Sigma(\Delta))$, assume that:
-  \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
-  \item $\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
-  \end{itemize}
-  then\\
-  $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
-  $\sigma'(id_p)("s\_output\_token\_sum")=$
-  $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("output\_transition\_fired")[i]~\mathtt{then}~$
-  
-  \hspace{41ex}$\sigma'(id_p)("output\_arcs\_weights")[i]~\mathtt{else}~0\big)$\\
-  
-  where $n=\Delta(id_p)("output\_arcs\_number")-1$
-\end{lemma}
-
-\begin{table}[h]
-  \begin{tabular}{|c|c|}
-    \hline
-    \textbf{Full signal name} & \textbf{Alias} \\
-    \hline
-    $"s\_output\_token\_sum"$ & $"sots"$ \\
-    \hline
-    $"output\_transition\_fired"$ & $"otf"$ \\
-    \hline
-    $"output\_arcs\_weights"$ & $"oaw"$ \\
-    \hline
-    $"output\_arcs\_number"$ & $"oan"$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\begin{proof}  
-  Given a $p\in{}P$ and a $id_p\in{}Comps(\Delta)$ s.t. $\gamma(p)=id_p$, let us show that\\
-  \fbox{\parbox{\linewidth}{$\sigma'(id_p)("sots")=$
-      $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("otf")[i]~\mathtt{then}~\sigma'(id_p)("oaw")[i]~\mathtt{else}~0\big)$
-      where $n=\Delta(id_p)("oan")-1$}}\\
-  
-  \noindent{}Induction on $\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$.
-
-  \begin{itemize}
-  \item \textbf{BASE CASE:}
-    \begin{itemize}
-    \item $\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{[~]}\sigma$
-    \item $\mathcal{E}(\sigma)=\emptyset$
-    \item $\sigma=\sigma'$
-    \end{itemize}
-    
-    \fbox{\parbox{\linewidth}{$\sigma(id_p)("sots")=$
-        $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma(id_p)("otf")[i]~\mathtt{then}~\sigma(id_p)("oaw")[i]~\mathtt{else}~0\big)$
-        where $n=\Delta(id_p)("oan")-1$}}\\
-    
-    \rnote{first pb, what's the value of $\sigma(id_p)("sots")$?}
-    \bnote{let's have it as an hypothesis that\\
-      \fbox{\parbox{\linewidth}{$\sigma(id_p)("sots")=$
-          $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma(id_p)("otf")[i]~\mathtt{then}~\sigma(id_p)("oaw")[i]~\mathtt{else}~0\big)$
-          where $n=\Delta(id_p)("oan")-1$}}}
-    
-  \item \textbf{INDUCTION CASE:}
-    \begin{itemize}
-    \item $\Delta,\sigma\vdash\mathrm{d.cs}\rightarrow\sigma_1$ and
-      $\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma$
-    \item $\mathcal{E}(\sigma)\neq\emptyset$ and
-      $\mathcal{E}(\sigma')=\emptyset$
-    \end{itemize}
-
-    \rnote{Problem: our hypothesis is taken in the induction process.}
-    
-    \begin{ih}
-      $\Big(\sigma_1(id_p)("sots")=\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma_1(id_p)("otf")[i]~\mathtt{then}~\sigma_1(id_p)("oaw")[i]~\mathtt{else}~0\big)\Big)\Rightarrow$\\
-      $\sigma'(id_p)("sots")=\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("otf")[i]~\mathtt{then}~\sigma'(id_p)("oaw")[i]~\mathtt{else}~0\big)$
-    \end{ih}
-
-    \fbox{\parbox{\linewidth}{$\sigma'(id_p)("sots")=$
-        $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma'(id_p)("otf")[i]~\mathtt{then}~\sigma'(id_p)("oaw")[i]~\mathtt{else}~0\big)$}}
-
-    Applying the induction hypothesis to prove the goal,\\
-    \fbox{\parbox{\linewidth}{$\sigma_1(id_p)("sots")=$
-        $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma_1(id_p)("otf")[i]~\mathtt{then}~\sigma_1(id_p)("oaw")[i]~\mathtt{else}~0\big)$}}\\
-
-    \noindent{}By property of
-    $\Delta,\sigma\vdash\mathrm{d.cs}\rightarrow\sigma_1$,\\
-    \parbox{\linewidth}{$\sigma_1(id_p)("sots")=$
-      $\sum\limits_{i=0}^n\big(\mathtt{if}~\sigma(id_p)("otf")[i]~\mathtt{then}~\sigma(id_p)("oaw")[i]~\mathtt{else}~0\big)$}
-
-    \rnote{We can only prove the goal if we know that
-      $\sigma(id_p)("otf")=\sigma_1(id_p)("otf")$ and $\sigma(id_p)("oaw")=\sigma_1(id_p)("oaw")$.}
-    
-    
-    
-    
-  \end{itemize}
-
-
-  
-\end{proof}
-
-\subsection{Falling Edge and Fired}
-\label{sec:fe-fired}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% FALLING EDGE EQUAL FIRED LEMMA %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Falling Edge Equal Fired]
-  \label{lem:fe-equal-fired}
-  \fehyps{} then\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and
-  $\sigma'(id_t)=\sigma'_t,~t\in{}Fired(s')\Leftrightarrow\sigma'_t("fired")=true$.
-\end{lemma}
-
-\begin{proof}
-  Given a $t\in{}T$, and an $id_t$, prove both senses of the equivalence.
-
-  \begin{enumerate}
-  \item $t\in{}Fired(s')\Rightarrow\sigma'_t("fired")=true$.
-    
-    By definition of $t\in{}Fired(s')$.
-    
-    \begin{itemize}
-    \item
-      $t\in{}Fired(s')\equiv\exists{}fset\subseteq{}T,~s.t.,~IsFiredSet(s',fset)~\land~t\in{}fset$.
-    \end{itemize}
-
-    Then, apply Lemma~\nameref{lem:fe-equal-fset}.    
-  \end{enumerate}
-
-  \begin{enumerate}[resume]
-  \item $\sigma'_t("fired")=true\Rightarrow{}t\in{}Fired(s')$
-
-    We can prove that
-    $\forall{}sitpn,s,\exists{}fset~s.t.~IsFiredSet(s,fset)$.
-
-    Then, by specializing the above lemma, we can apply
-    Lemma~\nameref{lem:fe-equal-fset} to complete the goal.
-  \end{enumerate}
-
-
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% FALLING EDGE EQUAL FIRED SET LEMMA %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\begin{lemma}[Falling Edge Equal Fired Set]
-  \label{lem:fe-equal-fset}
-  \fehyps{} then\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$
-  and
-  $\forall{}fset\subseteq{}T,$\\
-  $~IsFiredSet(s',fset)\Rightarrow{}t\in{}fset\Leftrightarrow\sigma'_t("fired")=true$.
-\end{lemma}
-
-\begin{proof}
-  Given a $t\in{}T$, a $fset\subseteq{}T$ and a proof of
-  $IsFiredSet(s',fset)$. Unfold the definition of the $IsFiredSet$
-  relation:
-  \begin{itemize}
-  \item $IsFiredSet(s',fset)\equiv{}IsFiredSetAux(s',\emptyset,T,fset)$.
-  \end{itemize}
-  Then, apply Lemma~\nameref{lem:fe-equal-fset-aux}.
-
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% FALLING EDGE EQUAL FIRED SET AUX LEMMA %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Falling Edge Equal Fired Set Aux]
-  \label{lem:fe-equal-fset-aux}
-  \fehyps{} and\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$
-  and $\forall{}fired\subseteq{}T,~T_i\subseteq{}T,~fset\subseteq{}T,$
-  assume that:
-  \begin{itemize}
-  \item $IsFiredSetAux(s',fired,T_i,fset)$
-  \item EH (Extra. Hypothesis):\\
-    $\forall{}t',id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    
-    \hspace{13ex}$\land$
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.
-  \end{itemize}
-  then $t\in{}fset\Leftrightarrow\sigma'_t("fired")=\mathtt{true}$.
-\end{lemma}
-
-\begin{proof}
-  Given a $t,id_t,fired,T_i,fset$, reason by induction on
-  $IsFiredSetAux$.
-
-  \begin{itemize}
-  \item BASE CASE. Trivial.
-  \item IND. CASE.
-    \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)$
-    \item $ElectFired(s',fired,tp,fired')$
-    \item $FiredAux(s',fired',T_i\setminus{}tp,fset)$
-    \item IH: 
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired'\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$\\
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_i\setminus{}tp)\big)\Rightarrow$\\
-      $t\in{}fset\Leftrightarrow\sigma'_t("fired")=true$.
-    \end{itemize}
-    Apply IH, then, the new goal is:\\
-    $\forall{}t',id_{t'},~(t'\in{}fired'\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$\\
-    $\land$
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_i\setminus{}tp)$
-
-    Apply Lemma~\nameref{lem:elect-fired-equal-fired} to solve the goal.
-    
-  \end{itemize}
-  
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% ELECT FIRED EQUAL FIRED %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Elect Fired Equal Fired]
-  \label{lem:elect-fired-equal-fired}
-  \fehyps and\\
-  $\forall{}t,id_t,~fired,fired'\subseteq{}T,~T_i,~tp\subseteq{}T_i,~fset,$
-  assume that:
-  \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)$
-  \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont $\forall{}t',id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$}
-  \end{itemize}
-  then\\
-  {\fontsize{9}{11}\selectfont$\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$
-  $\land\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$}.
-\end{lemma}
-
-\begin{proof}
-  Reason by induction on the $ElectFired$ relation.
-
-  BASE CASE. Trivial.
-  
-  2 INDUCTIVE CASES.
-
-  \begin{enumerate}
-  \item CASE $t_0$ is elected to be fired.
-    \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t_0\}\cup{}tp)$
-    \item $ElectFired(s',fired\cup\{t_0\},tp,fired')$
-    \item $t_0\in{}Firable(s')$
-    \item $t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t_0,fired)}pre(t_i))$
-    \item $Pr(t_0,fired)=\{t_i\vert{}t_i\succ{}t_0\land{}t_i\in{}fired\}$
-    \item EH: $\forall{}t'\in{}T,id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    
-      \hspace{13ex}$\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$
-    \item IH:\\
-      $\forall{}T_i\subseteq{}T,~$
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$\\
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i)\big)\Rightarrow$\\
-      $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)\Rightarrow$\\
-      $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-      $\land$
-      $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$\\
-    \end{itemize}
-    GOAL:\\
-    $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-    $\land$
-    $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}\{t_0\}\cup{}tp\big)$\\
-    
-    Apply IH with $T_i\setminus\{t_0\}$, then, the hard case to prove is:\\
-    $\forall{}t'\in{}T,id_{t'},~$
-    $(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    $\land$\\
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i\setminus\{t_0\})$
-    \begin{enumerate}
-    \item Assume $t'\in{}fired\cup\{t_0\}$, prove $\sigma'_{t'}("fired")=\mathtt{true}$.
-      \begin{itemize}
-      \item If $t'\in{}fired$, then assumption.
-      \item If $t'=t_0$, then, introduce the expression qualifying
-        ``fired'':
-        $\sigma_{t'}("fired")=\sigma_{t'}("s\_firable").\sigma_{t'}("s\_priority\_combination")$\\\\
-        Then, we can show that: 
-        \begin{itemize}
-        \item $\sigma_{t'}("s\_firable")=\mathtt{true}$ by applying
-          Lemma~\nameref{lem:fe-equal-firable}
-        \item $\sigma_{t'}("s\_priority\_combination")=\mathtt{true}$
-          by applying Lemma~\nameref{lem:stab-compute-pcomb}.
-        \end{itemize}
-
-        Then, it is trivial to show that $\sigma_{t'}("fired")=\mathtt{true}$.
-      \end{itemize}
-      
-    \item Assume $\sigma'_{t'}("fired")=\mathtt{true}$, prove $t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i\setminus{}\{t_0\}$.\\
-
-      Thanks to EH, we know that: $t'\in{}fired\lor{}t'\in{}T_i$.
-      \begin{itemize}
-      \item CASE $t'\in{}fired$, trivial to show $t'\in{}fired\cup\{t_0\}$.
-      \item CASE $t'\in{}T_i$. We know that $t_0\in{}T_i$, therefore,
-        either $t'\in{}T_i\setminus{}\{t_0\}$ (assumption) or $t'=t_0$
-        (then, $t'\in{}fired\cup\{t_0\}$).
-      \end{itemize}
-    \end{enumerate}
-  \end{enumerate}
-
-  \begin{enumerate}[resume]
-  \item CASE $t_0$ is not elected to be fired.
-    \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t_0\}\cup{}tp)$
-    \item $ElectFired(s',fired,tp,fired')$
-    \item $\neg\big(t_0\in{}Firable(s')\land{}t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t_0,fired)}pre(t_i))\big)$
-    \item $Pr(t_0,fired)=\{t_i\vert{}t_i\succ{}t_0\land{}t_i\in{}fired\}$
-    \item EH:\\
-      {\fontsize{9}{11}\selectfont$\forall{}t'\in{}T,id_{t'},$\\
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-    \item IH:\\
-      {\fontsize{9}{11}\selectfont$\forall{}T_i\subseteq{}T,~$\\
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$\\
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)\big)\Rightarrow$\\
-      $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)\Rightarrow$\\
-      $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-      $\land$
-      $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$}
-    \end{itemize}
-    GOAL:\\
-    $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-    $\land$
-    $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}\{t_0\}\cup{}tp\big)$\\
-    
-    Apply IH with $T_i\setminus\{t_0\}$, then, the hard case to prove is:\\
-    $\forall{}t'\in{}T,id_{t'},~$
-    $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    $\land$\\
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i\setminus\{t_0\})$
-    \begin{enumerate}
-    \item Prove $t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true}$ (assumption).      
-    \item Assume $\sigma'_{t'}("fired")=\mathtt{true}$, prove $t'\in{}fired~\lor~{}t'\in{}T_i\setminus{}\{t_0\}$.\\
-
-      Thanks to EH, we know that: $t'\in{}fired\lor{}t'\in{}T_i$.
-      \begin{itemize}
-      \item CASE $t'\in{}fired$ (assumption).
-      \item CASE $t'\in{}T_i$. We know that $t_0\in{}T_i$, therefore,
-        either $t'\in{}T_i\setminus{}\{t_0\}$ (assumption) or $t'=t_0$.\\
-
-        Then, we need to show a contradiction by proving\\
-        $t'\in{}Firable(s')\land{}t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t',fired)}pre(t_i))$\\
-        based on $\sigma'_{t'}("fired")=\mathtt{true}$.
-
-        We know
-        \begin{eqnarray*}
-          \sigma'_{t'}("fired")=&\sigma'_{t'}("s\_firable").\sigma'_{t'}("s\_priority\_combination")\\
-                               =&\mathtt{true}\\
-        \end{eqnarray*}
-        \begin{itemize}
-        \item Show $t'\in{}Firable(s')$ by applying Lemma~\nameref{lem:fe-equal-firable}.
-        \item Show
-          $t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t',fired)}pre(t_i))$
-          by applying Lemma~\nameref{lem:stab-compute-pcomb} (needs a
-          proof of $t\in{}Firable(s')$ to be applied).
-        \end{itemize}
-      \end{itemize}
-    \end{enumerate}
-  \end{enumerate}
-  
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% STABILIZE COMPUTE PRIORITY COMBINATION AFTER FALLING EDGE %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Stabilize Compute Priority Combination After Falling Edge]
-  \label{lem:stab-compute-pcomb}
-  \fehyps{} and\\
-  $\forall{}t,id_t,\sigma'_t$ s.t. $\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,$ assume that:
-  \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
-  \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont
-      $\forall{}t'\in{}T,id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-  \item $t\in{}Firable(s')$
-  \end{itemize}
-  then\\
-  {\fontsize{9}{11}\selectfont$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))
-    \Leftrightarrow\sigma'_t("s\_priority\_combination")=\mathtt{true}$}
-\end{lemma}
-
-\begin{proof}
-  We know
-  $\sigma'_t("s\_priority\_combination")=\prod\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'_t("pauths")(i)$.
-  Then, apply Lemma~\nameref{lem:stab-compute-pauths} to solve the goal.
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% STABILIZE COMPUTE PRIORITY AUTHORIZATIONS AFTER FALLING EDGE %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Stabilize Compute Priority Authorizations After Falling Edge]
-  \label{lem:stab-compute-pauths}
-  \fehyps{} and\\
-  $\forall{}t,id_t,\sigma'_t$ s.t. $\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,$ assume that:
-  \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
-  \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont
-      $\forall{}t'\in{}T,id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-    
-  \item $t\in{}Firable(s')$
-  \end{itemize}
-  then\\
-  {\fontsize{8}{11}\selectfont$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))
-    \Leftrightarrow$\\
-    $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$}\\
-\end{lemma}
-
-\begin{proof}
-  Show the two sides of the equivalence.
-  
-  \begin{enumerate}
-  \item
-    Assume $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$,\\
-    show $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$.\\
-
-    Reason on the cardinality of the set of input places of $t$. 2
-    CASES.
-    \begin{itemize}
-    \item CASE $\vert{}input(t)\vert=0$.
-
-      Then $\sigma'_t("input\_arcs\_number")=1$ and $i=0$.
-
-      Then, by construction, $\mathtt{id_t.pauths(0)}$ is connected to
-      the $\mathtt{true}$ constant in the input map of Transition
-      component $id_t$.
-
-      Then, $\sigma'_t("pauths")(0)=\mathtt{true}$.
-    \item CASE $\vert{}input(t)\vert>0$.
-
-      Then, for all $i\in[0,\sigma'_t("input\_arcs\_number")-1]$,
-      exists a place $p$ and an arc $a$ such that $pre(p,t)=a$.
-
-      Then, by construction, there exists a Place component $id_p$
-      implementing place $p$.
-
-      Reason on $a$.
-
-      \begin{itemize}
-      \item CASE $a=(\omega,\mathtt{test})$ or $a=(\omega,\mathtt{inhib})$.
-
-        Then, by construction, $\mathtt{id_t.pauths(i)}$ is connected to
-        the $\mathtt{true}$ constant in the input map of Transition
-        component $id_t$. 
-
-        Then, $\sigma'_t("pauths")(i)=\mathtt{true}$.
-      \item CASE $a=(\omega,\mathtt{basic})$, then 2 CASES.
-
-        \begin{itemize}
-        \item CASE For all pair of transitions in $output_c(p)$, all
-          conflicts are solved by mutual exclusion.
-
-          Then, by construction, $\mathtt{id_p.pauths}$ is an unconnected
-          (i.e, $\mathtt{open}$) port, and $\mathtt{id_t.pauths(i)}$ is
-          connected to the \texttt{true} constant.
-
-          Then, $\sigma'_t("pauths")(i)=\mathtt{true}$.
-        \item CASE The priority relation is a strict total order over
-          the set $output_c(p)$.
-
-          Then, by construction, there exists an index $j$ and a
-          signal $sig$ connecting $\mathtt{id_p.pauths(j)}$ to $\mathtt{id_t.pauths(i)}$.
-
-          Then, we can deduce that $\sigma'_t("pauths")(i)=\sigma'("sig")=\sigma'_p("pauths")(j)$.
-
-          Then, we can specialize the definition of
-          $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$
-          with place $p$, and $pre(p,t)=(\omega,\mathtt{basic})$ to
-          get
-          $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
-          
-          Then, we can show that
-          $\sigma'_p("pauths")(j)=\mathtt{true}$ by applying
-          Lemma~\nameref{lem:stab-compute-ind-pauth}.
-
-          Then, the goal is trivially solved by rewriting.
-        \end{itemize}
-        
-      \end{itemize}
-    \end{itemize}
-    
-  \item Assume $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$,\\
-    show $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$.\\
-
-    Then, unfold the definition of the $Sens$ relation.
-
-    $\forall{}p\in{}P,\omega\in\mathbb{N}^{*},~$\\
-    $\big(pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test})\Rightarrow$\\
-    ${}s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega\big)$\\
-    $\land{}$
-    $\big(pre(p,t)=(\omega,\mathtt{inhib}))\Rightarrow$
-    ${}s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)<\omega\big)$
-
-    Then, treat the 3 different cases.
-
-    \begin{enumerate}
-    \item Assume $pre(p,t)=(\omega,\mathtt{test})$,\\
-      show $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
-
-      Then, by assuming that the priority relation is well-defined,
-      there exists no transition $t_i$ connected by a $\mathtt{basic}$
-      arc to $p$ that verified $t_i\succ{}t$. This is because $t$ is
-      connected to $p$ by a $\mathtt{test}$ arc; thus, $t$ is not in
-      conflict with the other output transitions of $p$; thus, there
-      is no relation of priority between $t$ and the output of $p$.
-
-      Then, we can deduce that
-      $\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)=0$.
-
-      Then, the new goal is $s'.M(p)\ge\omega$.
-
-      That we can prove because we know $t\in{}Firable(s')$, thus,
-      $t\in{}Sens(s'.M)$, thus, $s'.M(p)\ge\omega$.
-      
-    \item Assume $pre(p,t)=(\omega,\mathtt{inhib})$,\\
-      show $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)<\omega$.
-
-      Use the same strategy as above.
-      
-    \item Assume $pre(p,t)=(\omega,\mathtt{basic})$,\\
-      show
-      $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
-
-      Then, there are 2 CASES.
-
-      \begin{enumerate}
-      \item CASE For all pair of transitions in $output_c(p)$, all
-        conflicts are solved by mutual exclusion.
-
-        Then, assuming that the priority relation is well-defined, it
-        must not be defined over the set $output_c(t)$, and we know
-        that $t\in{}output_c(p)$ since
-        $pre(p,t)=(\omega,\mathtt{basic})$.
-
-        Then, there exists no transition $t_i$ connected to $p$ by a
-        $\mathtt{basic}$ arc that verifies $t_i\succ{}t$.
-
-        Then, we can deduce $\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)=0$.
-        
-        Then, the new goal is $s'.M(p)\ge\omega$.
-
-        We know $t\in{}Firable(s')$, thus, $t\in{}Sens(s'.M)$, thus,
-        $s'.M(p)\ge\omega$.
-        
-      \item CASE The priority relation is a strict total order over
-        the set $output_c(p)$.
-
-        Assuming $pre(p,t)=(\omega,\mathtt{basic})$, then, by
-        construction, there exist:
-        \begin{itemize}
-        \item a Place component $id_p$
-          implementing place $p$
-          
-        \item two indexes
-          $i\in{}[0,\sigma'_t("input\_arcs\_number")-1]$ and
-          $j\in{}[0,\sigma'_p("output\_arcs\_number")-1]$
-          
-        \item a signal $sig$ connecting $\mathtt{id_p.pauths(j)}$ to
-          $\mathtt{id_t.pauths(i)}$
-        \end{itemize}
-
-        Then, we can deduce that $\sigma'_t("pauths")(i)=\sigma'("sig")=\sigma'_p("pauths")(j)$.
-        
-        Then, by specializing
-        $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$
-        with $i$, we can deduce
-        $\sigma'_t("pauths")(i)=\sigma'("sig")=\sigma'_p("pauths")(j)=true$.
-
-        Then, we have all the premises necessary to apply
-        Lemma~\nameref{lem:stab-compute-ind-pauth}, and thus to solve
-        the goal.
-      \end{enumerate}
-      
-    \end{enumerate}
-  \end{enumerate}
-  
-\end{proof}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% STABILIZE COMPUTE INDIVIDUAL PRIORITY AUTHORIZATION AFTER %%%%%%%%%%
-%%%%%%%%%% FALLING EDGE                                              %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Stabilize Compute Individual Priority Authorization
-  After Falling Edge]
-  \label{lem:stab-compute-ind-pauth}
-  \fehyps{} and\\
-  $\forall{}t,id_t,\sigma'_t,$ s.t. $\gamma(t)=id_t$ and
-  $\sigma'(id_t)=\sigma'_t$,\\
-  $\forall{}p,id_p,\sigma'_p,$ s.t. $\gamma(p)=id_p$ and
-  $\sigma'(id_p)=\sigma'_p$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,~sig\in{}Sigs(\Delta),~i,j\in\mathbb{N},~\omega\in\mathbb{N}$,
-  assume that:
-  \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
-  \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont
-      $\forall{}t'\in{}T,id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-  \item $\mathtt{id_p.pauths(j)\Rightarrow{}sig\Rightarrow{}id_t.pauths(i)}$
-  \item $pre(p,t)=(\omega,\mathtt{basic})$
-  \end{itemize}
-  then
-  {\fontsize{8}{11}\selectfont$\sigma'_p("pauths")(j)=\mathtt{true}$
-    $\Leftrightarrow{}s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$}.
-\end{lemma}
-
-\begin{proof}
-  From the behavior of the VHDL Place component, we can deduce:\\
-  {\fontsize{8}{11}\selectfont$\sigma'_p("pauths")(j)=true\Leftrightarrow$
-    $\sigma'_p("s\_marking")-\sum\limits_{k\in{}HPF(\sigma'_p,j)}\sigma'_p("out\_arc\_w")(k)\ge\sigma'_p("out\_arc\_w")(j)$
-    where
-    $k\in{}HPF(\sigma'_p,j)\equiv{}k\in[0,j-1]\land\sigma'_p("out\_arc\_t")(k)=\mathtt{basic}\land\sigma'_p("out\_t\_fired")(k)=\mathtt{true}$}
-
-  \noindent{}Then, the new goal is:\\
-  $\sigma'_p("s\_marking")-\sum\limits_{k\in{}HPF(\sigma'_p,j)}\sigma'_p("out\_arc\_w")(k)\ge\sigma'_p("out\_arc\_w")(j)$
-  $\Leftrightarrow{}s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
-
-  \noindent{}Proof by reflexivity. 3 subgoals.
-  \begin{enumerate}
-  \item Show $s'.M(p)=\sigma'_p("s\_marking")$.
-
-    From $\gamma\vdash{}s\sim\sigma$, we know $s.M(p)=\sigma_p("s\_marking")$.
-
-    From
-    $E_c,\tau\vdash{}sitpn,s\srarrow{\downarrow}{\fontsize{5}{7}\selectfont}s'$,
-    we know $s.M(p)=s'.M(p)$.
-
-    By reasoning on the VHDL falling and stabilize relations, and on
-    the Place component behavior, we know that the ``s\_marking'' is
-    idle from state $\sigma_p$ to state $\sigma'_p$; thus,
-    $\sigma_p("s\_marking")=\sigma'_p("s\_marking")$.
-
-    Then, the goal is trivially proved by using the rewriting rules.
-    
-  \item Show $\omega=\sigma'_p("out\_arc\_w")(j)$.
-
-    We know that $pre(p,t)=(\omega,\mathtt{basic})$ and
-    $\mathtt{id_p.pauths(j)\Rightarrow{}sig\Rightarrow{}id_t.pauths(i)}$.
-    
-    Then, by construction, $\mathtt{id_p.output\_arcs\_weights(j)}$ is
-    connected to the constant $\omega$ in the input map of Place
-    component $id_p$.
-
-    Then, the goal is trivially solved by showing that ports that are
-    mapped to constant are idle during the simulation of a VHDL
-    design.
-    
-  \item Show
-    $\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)=\sum\limits_{k\in{}HPF(\sigma'_p,j)}\sigma'_p("out\_arc\_w")(k)$.
-
-    We can show $\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)=\sum\limits_{t_i\in{}Pr(p,t,fired)}pre(p,t_i)$\\
-    where
-    $t_i\in{}Pr(p,t,fired)\equiv{}t_i\succ{}t\land{}t_i\in{}fired\land\exists\omega\in\mathbb{N},~s.t.,~pre(p,t_i)=(\omega,\mathtt{basic})$.
-
-    Then, we can show that the sets $Pr(p,t,fired)$ and
-    $HPF(\sigma'_p,j)$ are in bijection, and that for each
-    $t_i\in{}Pr(p,t,fired)$ mapped to a $k\in{}HPF(\sigma'_p,j)$, we
-    have $pre(p,t_i)=\sigma'_p("out\_arc\_w")(k)$.
-
-    2 subgoals to solve.
-    
-    \begin{enumerate}
-    \item
-      $\forall{}t_i\in{}Pr(p,t,fired),\exists{}k\in{}HPF(\sigma'_p,j)~s.t.~pre(p,t_i)=\sigma'_p("out\_arc\_w")(k)$.
-
-      Given a transition $t_i\in{}Pr(p,t,fired)$, show
-      $\exists{}k\in{}HPF(\sigma'_p,j)~s.t.~pre(p,t_i)=\sigma'_p("out\_arc\_w")(k)$.
-
-      Unfold the definition of $t_i\in{}Pr(p,t,fired)$:
-      \begin{itemize}
-      \item $\exists\omega\in\mathbb{N}~s.t.~pre(p,t_i)=(\omega,\mathtt{basic})$.
-
-        Let us call $\omega'$ the element of $\mathbb{N}^{*}$
-        verifying $pre(p,t_i)=(\omega',\mathtt{basic})$.
-
-        Then, by construction, there exists a Transition component
-        $id_{t_i}$ implementing transition $t_i$ and an index
-        $n\in\mathbb{N}^{*}$ such that $\mathtt{id_p.}$
-        $\mathtt{output\_arcs\_weights(n)}$ is connected to $\omega'$
-        and\\ $\mathtt{output\_arcs\_types(n)}$ is connected to
-        $\mathtt{basic}$.
-
-        Then, by reasoning on the VHDL falling and stabilize relation,
-        we can show that
-        $\sigma'_p("output\_arcs\_weights")(n)=\omega'$.
-        
-      \item $t_i\succ{}t$.
-
-        By construction, there exists an index $m\in\mathbb{N}^{*}$
-        and a signal $sig'\in\mathtt{Declared}(\Delta)$ such that
-        $\mathtt{id_p.pauths(n)\Rightarrow{}sig'\Rightarrow{}id_{t_i}.pauths(m)}$
-        
-        Then, by construction, and since $t_i\succ{}t$, we know that
-        $n<j$. Then, $n\in[0,j-1]$.
-        
-      \item $t_i\in{}fired$.
-
-        Thanks to the EH, we know that $\sigma'_{t_i}("fired")=\mathtt{true}$.
-        
-        By construction, there exists a signal
-        $sig''\in{}\mathtt{Declared}(\Delta)$ such that
-        $\mathtt{id_{t_i}.fired\Rightarrow{}sig''\Rightarrow{}id_{p}.output\_transitions\_fired(n)}$.
-        
-        Then, by reasoning on the VHDL stabilize relation, we can
-        deduce
-        $\sigma'_p("output\_transitions\_fired")(n)=\sigma'_{t_i}("fired")=\mathtt{true}$.
-        
-      \end{itemize}
-
-      Then, we have $n\in{}HPF(\sigma'_p,j)$ and
-      $pre(p,t_i)=\sigma'_p("output\_arcs\_weights")(n)$.
-
-      Thus, let us take $n$ to prove the goal by assumption.
-      
-    \item
-      $\forall{}k\in{}HPF(\sigma'_p,j),\exists{}t_i\in{}Pr(p,t,fired)~s.t.~pre(p,t_i)=\sigma'_p("out\_arc\_w")(k)$.
-
-      Given an index $k\in{}HPF(\sigma'_p,j)$, show
-      $\exists{}t_i\in{}Pr(p,t,fired)~s.t.~pre(p,t_i)=\sigma'_p("out\_arc\_w")(k)$.
-
-      Unfold the definition of $k\in{}HPF(\sigma'_p,j)$:
-
-      \begin{itemize}
-      \item $k\in[0,j-1]$.
-
-        By construction, there exists a $t_i\in{}T$ and an
-        $\omega'\in\mathbb{N}^{*}$ such that
-        $pre(p,t_i)=(\omega',\mathtt{basic})$ and $t_i\succ{}t$ and
-        $\mathtt{id_p.output\_arcs\_weights(k)\Rightarrow\omega'}$ and
-        $\mathtt{id_p.output\_arcs\_types(k)\Rightarrow\mathtt{basic}}$.
-        
-      \item $\sigma'_p("output\_transitions\_fired")(k)=\mathtt{true}$.
-        
-        By construction, there exists a Transition component
-        $id_{t_i}$ implementing transition $t_i$ such that
-        $\mathtt{id_{t_i}.fired\Rightarrow{}id_p.output\_transitions\_fired(k)}$.
-
-        Then, by reasoning on the VHDL falling and stabilize
-        relations, we can deduce
-        $\sigma'_p("output\_transitions\_fired")(k)=\sigma'_{t_i}("fired")=\mathtt{true}$.
-
-        Then, thanks to EH, we know that $t_i\in{}fired$ or
-        $t_i\in{}T_i$.
-
-        \begin{itemize}
-        \item CASE $t_i\in{}fired$. Then, take $t_i$ to prove the goal
-          by assumption.
-        \item CASE $t_i\in{}T_i$.
-
-          Since $t$ is a \emph{top-priority} transition of set $T_i$
-          (given by
-          $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp$),
-          then there exists no transition $t'\in{}T_i$ such that
-          $t'\succ{}t$. Since $t_i\in{}T_i$, then we have
-          $t_i\nsucc{}t$ contradicting $t_i\succ{}t$.
-        \end{itemize}
-      \end{itemize}
-         
-    \end{enumerate}
-  \end{enumerate}
-
-\end{proof}
-
-\subsection{Falling Edge and Firable}
+\subsection{Falling edge and firable transitions}
 \label{sec:fe-firable}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -986,5 +661,5 @@
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:
