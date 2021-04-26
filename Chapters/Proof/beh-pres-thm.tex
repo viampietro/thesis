@@ -21,10 +21,6 @@
     \hline
     \textit{Full name} & \textit{Alias} & \textit{Category} & \textit{Type} \\
     \hline
-    $"s\_condition\_combination"$ & $"scc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"conditions\_number"$ & $"cn"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
     $"input\_conditions"$ & $"ic"$ & input port (T) & $\mathbb{B}$ \\
     \hline
     $"input\_conditions"$ & $"ic"$ & input port (T) & $\mathbb{B}$ \\
@@ -34,6 +30,8 @@
     $"input\_arcs\_valid"$ & $"iav"$ & input port (T) & $\mathbb{B}$ \\
     \hline
     $"fired"$ & $"f"$ & output port (T) & $\mathbb{B}$ \\
+    \hline
+    $"s\_condition\_combination"$ & $"scc"$ & internal signal (T) & $\mathbb{B}$ \\
     \hline
     $"s\_reinit\_time\_counter"$ & $"srtc"$ & internal signal (T) & $\mathbb{B}$ \\
     \hline
@@ -46,6 +44,13 @@
     $"s\_enabled"$ & $"se"$ & internal signal (T) & $\mathbb{B}$ \\
     \hline
     $"input\_arcs\_number"$ & $"ian"$ & generic constant (T) & $\mathbb{N}$ \\
+    \hline
+    $"transition\_type"$ & $"tt"$ & generic constant (T) & $\{\mathtt{NOT\_TEMP},\mathtt{TEMP\_A\_B},$ \\
+                       & & & $\mathtt{TEMP\_A\_A},\mathtt{TEMP\_A\_INF}\}$ \\
+    \hline
+    $"conditions\_number"$ & $"cn"$ & generic constant (T) & $\mathbb{N}$ \\
+    \hline
+    $"maximal\_time\_counter"$ & $"mtc"$ & generic constant (T) & $\mathbb{N}$ \\
     \hline
     $"s\_marking"$ & $"sm"$ & internal signal (P) & $\mathbb{N}$ \\
     \hline
@@ -60,6 +65,10 @@
     $"output\_arcs\_weights"$ & $"oaw"$ & input port (P) & $\mathbb{N}$ \\
     \hline
     $"output\_transition\_fired"$ & $"otf"$ & input port (P) & $\mathbb{B}$ \\
+    \hline
+    $"input\_arcs\_weights"$ & $"iaw"$ & input port (P) & $\mathbb{N}$ \\
+    \hline
+    $"input\_transition\_fired"$ & $"itf"$ & input port (P) & $\mathbb{B}$ \\
     \hline
   \end{tabular}
 \end{table}

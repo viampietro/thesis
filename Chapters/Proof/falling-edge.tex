@@ -17,7 +17,7 @@
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$
-  \item $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$
+  \item $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
   \item $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$
     and
     $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
@@ -133,7 +133,7 @@
   \fbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
 
   \noindent{}By definition of
-  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
   \qedbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
   
 \end{proof}
@@ -612,6 +612,46 @@
       $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
 
   \exT\\
+
+  \noindent{}By property of the elaboration,
+  $\mathtt{Inject}_\downarrow$, \hvhdl{} rising edge and stabilize
+  relations, and \InCsCompT:
+  \begin{equation}
+    \begin{split}
+      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}
+      \land\sigma(id_t)("srtc")=\mathtt{false}\\
+      \land\sigma(id_t)("stc")<\Delta(id_t)("mtc")\Rightarrow
+      \sigma'(id_t)("stc")=\sigma(id_t)("stc")+1
+    \end{split}
+    \label{eq:44}
+  \end{equation}
+
+  \begin{equation}
+    \begin{split}
+      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}
+      \land\sigma(id_t)("srtc")=\mathtt{false}\\
+      \land\sigma(id_t)("stc")\ge\Delta(id_t)("mtc")\Rightarrow
+      \sigma'(id_t)("stc")=\sigma(id_t)("stc")
+    \end{split}
+    \label{eq:47}
+  \end{equation}
+
+  \begin{equation}
+    \begin{split}
+      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}\\
+      \land\sigma(id_t)("srtc")=\mathtt{true}\Rightarrow
+      \sigma'(id_t)("stc")=1
+    \end{split}
+    \label{eq:48}
+  \end{equation}
+
+  \begin{equation}
+    \begin{split}
+      \sigma(id_t)("se")=\mathtt{false}\lor\Delta(id_t)("tt")=\mathtt{NOT\_TEMPORAL}\Rightarrow
+      \sigma'(id_t)("stc")=0
+    \end{split}
+    \label{eq:49}
+  \end{equation}
   
   \noindent{}Then, there are 4 points to show:
 
@@ -620,21 +660,316 @@
     \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}\\
     
     \noindent{}Assuming $upper(I_s(t))=\infty$ and
-    $s'.I(t)\le{}lower(I_s(t))$, let us show
+    $s'.I(t)\le{}lower(I_s(t))$, let us show\\
     \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
 
-    \noindent{}By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{}
-    rising edge and stabilize relations, and \\ \InCsCompT:
-    \begin{equation}
-      \sigma'(id_t)("s\_time\_counter")=\sigma(id_t)("s\_time\_counter")\label{eq:eq-stc-stc}
-    \end{equation}
+    Case analysis on $t\in{}Sens(s.M)$; there are two cases:
+
+    \begin{enumerate}
+    \item $t\notin{}Sens(s.M)$:\\
+      By definition of
+      $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
+      \begin{equation}
+        \label{eq:50}\sigma(id_t)("se")=\mathtt{false}
+      \end{equation}
+
+      Thanks to \eqref{eq:49} and \eqref{eq:50}:
+      \begin{equation}
+        \label{eq:45}\sigma'(id_t)("stc")=0
+      \end{equation}
+
+      By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$:
+      \begin{equation}
+        \label{eq:46}s'.I(t)=0
+      \end{equation}
+
+      Rewriting the goal with \eqref{eq:45} and \eqref{eq:46}:
+      \qedbox{tautology.}
+      
+    \item $t\in{}Sens(s.M)$:\\
+      By definition of $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+      \begin{equation}
+        \label{eq:51}\sigma(id_t)("se")=\mathtt{true}
+      \end{equation}
+
+      By construction, and as $upper(I_s(t))=\infty$,
+      ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}gm_t$. By
+      property of the elaboration relation:
+      \begin{equation}
+        \label{eq:52}\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}
+      \end{equation}
+
+      Case analysis on $s.reset_t(t)$; there are two cases:
+      \begin{enumerate}
+      \item $s.reset_t(t)=\mathtt{true}$:\\
+        By definition of
+        $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+        \begin{equation}
+          \label{eq:53}\sigma(id_t)("srtc")=\mathtt{true}
+        \end{equation}
+
+        Thanks to \eqref{eq:48}, \eqref{eq:51}, \eqref{eq:52} and
+        \eqref{eq:53}:
+        \begin{equation}
+          \label{eq:54}\sigma'(id_t)("stc")=1
+        \end{equation}
+
+        By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$:
+        \begin{equation}
+          \label{eq:55}s'.I(t)=1
+        \end{equation}
+
+        Rewriting the goal with \eqref{eq:54} and \eqref{eq:55}:
+        \qedbox{tautology.}
+
+      \item $s.reset_t(t)=\mathtt{false}$:
+        By definition of
+        $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+        \begin{equation}\label{eq:56}
+          \sigma(id_t)("srtc")=\mathtt{false}
+        \end{equation}
+
+        As $upper(I_s(t))=\infty$, there exists an
+        $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,\infty]$. Let us take
+        such an $a\in\mathbb{N}^{*}$. By construction,
+        ${<}\mathtt{maximal\_time\_counter\Rightarrow}a{>}\in{}gm_t$,
+        and by property of the elaboration relation:
+        \begin{equation}
+          \label{eq:57}\Delta(id_t)("mtc")=a
+        \end{equation}
+
+        By definition of
+        $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, and knowing
+        that $t\in{}Sens(s.M)$ and $s.reset_t(t)=\mathtt{false}$ and
+        $upper(I_s(t))=\infty$:
+        \begin{equation}
+          \label{eq:58}s'.I(t)=s.I(t)+1
+        \end{equation}
+
+        Rewriting the goal with \eqref{eq:58}:
+        \fbox{$s.I(t)+1=\sigma'(id_t)("stc")$.}
+        
+        We assumed that $s'.I(t)\le{}lower(I_s(t))$, and as
+        $s'.I(t)=s.I(t)+1$, then $s.I(t)+1\le{}lower(I_s(t))$, then
+        $s.I(t)<lower(I_s(t))$, then $s.I(t)<a$ since
+        $a=lower(I_s(t))$.
+
+        \noindent{}By definition of
+        $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$, and
+        knowing that $s.I(t)<lower(I_s(t))$ and $upper(I_s(t))=\infty$:
+        \begin{equation}
+          \label{eq:59}s.I(t)=\sigma(id_t)("stc")
+        \end{equation}
+
+        Thanks to \eqref{eq:57}, \eqref{eq:59} and $s.I(t)<a$:
+        \begin{equation}
+          \label{eq:60}\sigma(id_t)("stc")<\Delta(id_t)("mtc")
+        \end{equation}
+        
+        Thanks to \eqref{eq:44}, \eqref{eq:60}, \eqref{eq:56} and
+        \eqref{eq:51}:
+        \begin{equation}
+          \label{eq:61}\sigma'(id_t)("stc")=\sigma(id_t)("stc")+1
+        \end{equation}
+
+        Rewriting the goal with \eqref{eq:61} and \eqref{eq:59}: \qedbox{tautology.}        
+      \end{enumerate}
+    \end{enumerate}
     
   \item
     \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
       $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+
+    Assuming that $upper(I_s(t))=\infty$ and
+    $s'.I(t)>{}lower(I_s(t))$, let us show\\
+    \fbox{$\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))$.}
+
+    As $upper(I_s(t))=\infty$, there exists an $a\in\mathbb{N}^{*}$
+    s.t. $I_s(t)=[a,\infty]$. Let us take such an
+    $a\in\mathbb{N}^{*}$. By construction,
+    ${<}\mathtt{maximal\_time\_counter\Rightarrow}a{>}\in{}gm_t$, and
+    ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}gm_t$
+    by property of the elaboration relation:
+    \begin{eqnarray}
+      \label{eq:62}\Delta(id_t)("mtc")&=&a\\
+      \label{eq:63}\Delta(id_t)("tt")&=&\mathtt{TEMP\_A\_INF}
+    \end{eqnarray}
+    
+    Case analysis on $t\in{}Sens(s.M)$:
+    \begin{enumerate}
+    \item $t\notin{}Sens(s.M)$:\\
+      \noindent{}By definition of
+      $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, and knowing that
+      $t\in{}Sens(s.M)$, then $s'.I(t)=0$. Since
+      $lower(I_s(t))\in\mathbb{N}^{*}$, then $lower(I_s(t))>0$.
+      
+      \qedbox{Contradicts $s'.I(t)>lower(I_s(t))$.}
+      
+    \item $t\in{}Sens(s.M)$:\\
+      By definition of
+      $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ and
+      $t\in{}Sens(s.M)$:
+      \begin{equation}
+        \label{eq:64}\sigma(id_t)("se")=\mathtt{true}
+      \end{equation}
+
+      Case analysis on $s.reset_t(t)$; there are two cases:
+      \begin{enumerate}
+      \item $s.reset_t(t)=\mathtt{true}$:\\
+        By definition of
+        $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$: $s'.I(t)=1$.
+
+        \noindent{}We assumed that $s'.I(t)>lower(I_s(t))$, then
+        $1>lower(I_s(t))$.
+
+        \qedbox{Contradicts $lower(I_s(t))>0$.}
+
+      \item $s.reset_t(t)=\mathtt{false}$:\\
+        \noindent{}By property of
+        $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ and
+        $s.reset_t(t)=\mathtt{false}$:
+        \begin{equation}
+          \sigma(id_t)("srtc")=\mathtt{false}\label{eq:68}
+        \end{equation}
+
+        By definition of
+        $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, and knowing
+        that $s'.I(t)>lower(I_s(t))$:
+        \begin{equation}
+          \begin{split}
+            s'.I(t)=s.I(t)+1&\Rightarrow{}s.I(t)+1>lower(I_s(t))\\
+            & \Rightarrow{}s.I(t)\ge{}lower(I_s(t))\\
+          \end{split}
+        \end{equation}
+
+        Case analysis on $s.I(t)\ge{}lower(I_s(t))$:
+        \begin{enumerate}
+        \item $s.I(t)>lower(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=lower(I_s(t))$.}\\
+          By definition of
+          $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+          \begin{equation}
+            \label{eq:69}\sigma(id_t)("stc")=lower(I_s(t))
+          \end{equation}
+
+          Thanks to \eqref{eq:47}:
+          \begin{equation}
+            \label{eq:70}\sigma'(id_t)("stc")=\sigma(id_t)("stc")
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:69} and \eqref{eq:70}:
+          \qedbox{tautology.}
+          
+        \item $s.I(t)=lower(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=lower(I_s(t))$.}\\
+          By definition of
+          $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+          \begin{equation}
+            \label{eq:65}s.I(t)=\sigma(id_t)("stc")
+          \end{equation}
+
+          Thanks to \eqref{eq:47}:
+          \begin{equation}
+            \label{eq:66}\sigma'(id_t)("stc")=\sigma(id_t)("stc")
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:66}, \eqref{eq:65} and
+          $s.I(t)=lower(I_s(t))$: \qedbox{tautology.}
+        \end{enumerate}
+      \end{enumerate}
+    \end{enumerate}
   \item
     \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
       $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))$.}
+
+    Assuming that $upper(I_s(t))\neq\infty$ and
+    $s'.I(t)>{}upper(I_s(t))$, let us show \\
+    \fbox{$\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))$.}
+
+    As $upper(I_s(t))\neq\infty$, there exists an
+    $a\in\mathbb{N}^{*}$, and a $b\in\mathbb{N}^{*}$
+    s.t. $I_s(t)=[a,b]$. Let us take such an $a$ and $b$. By
+    construction, there exists
+    $tt\in\{\mathtt{TEMP\_A\_A,TEMP\_A\_B\}$ s.t.
+      ${<}\mathtt{maximal\_time\_counter\Rightarrow}b{>}\in{}gm_t$,
+      and ${<}\mathtt{transition\_type\Rightarrow{}}tt{>}\in{}gm_t$;
+      by property of the elaboration relation:
+    \begin{eqnarray}
+      \label{eq:67}\Delta(id_t)("mtc")&=&b\\
+      \label{eq:71}\Delta(id_t)("tt")&\neq&\mathtt{NOT\_TEMP}
+    \end{eqnarray}
+
+    Case analysis on $t\in{}Sens(s.M)$:
+    \begin{enumerate}
+    \item $t\notin{}Sens(s.M)$:\\
+      \noindent{}By definition of
+      $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, and knowing that
+      $t\in{}Sens(s.M)$, then $s'.I(t)=0$. Since
+      $upper(I_s(t))\in\mathbb{N}^{*}$, then $upper(I_s(t))>0$.
+      
+      \qedbox{Contradicts $s'.I(t)>upper(I_s(t))$.}
+      
+    \item $t\in{}Sens(s.M)$:\\
+      By definition of
+      $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ and
+      $t\in{}Sens(s.M)$:
+      \begin{equation}
+        \label{eq:72}\sigma(id_t)("se")=\mathtt{true}
+      \end{equation}
+
+      Case analysis on $s.reset_t(t)$; there are two cases:
+      \begin{enumerate}
+      \item $s.reset_t(t)=\mathtt{true}$:\\
+        By definition of
+        $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$: $s'.I(t)=1$.
+
+        \noindent{}We assumed that $s'.I(t)>upper(I_s(t))$, then
+        $1>upper(I_s(t))$.
+
+        \qedbox{Contradicts $upper(I_s(t))>0$.}
+
+      \item $s.reset_t(t)=\mathtt{false}$:\\
+        \noindent{}By property of
+        $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ and
+        $s.reset_t(t)=\mathtt{false}$:
+        \begin{equation}
+          \sigma(id_t)("srtc")=\mathtt{false}\label{eq:73}
+        \end{equation}
+        
+        Case analysis on $s.I(t)>{}upper(I_s(t))$ or
+        $s.I(t)\le{}upper(I_s(t))$:
+        \begin{enumerate}
+        \item $s.I(t)>upper(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=upper(I_s(t))$.}\\
+          By definition of
+          $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$:
+          \begin{equation}
+            \label{eq:75}s'.I(t)=s.I(t)
+          \end{equation}
+          
+          By definition of
+          $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$:
+          \begin{equation}
+            \label{eq:74}\sigma(id_t)("stc")=upper(I_s(t))
+          \end{equation}
+
+          Thanks to \eqref{eq:47}:
+          \begin{equation}
+            \label{eq:70}\sigma'(id_t)("stc")=\sigma(id_t)("stc")
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:70} and \eqref{eq:74}:
+          \qedbox{tautology.}
+          
+        \item $s.I(t)\le{}upper(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=upper(I_s(t))$.}\\
+          Case analysis on $s.I(t)\le{}upper(I_s(t))$; there are two
+          cases:
+          \begin{enumerate}
+          \item $s.I(t)=upper(I_s(t))$:\\
+          \item $s.I(t)<upper(I_s(t))$:\\
+          \end{enumerate}
+        \end{enumerate}
+      \end{enumerate}
+    \end{enumerate}
+    
+    
   \item
     \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
