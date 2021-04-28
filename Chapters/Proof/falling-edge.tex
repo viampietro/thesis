@@ -1382,16 +1382,42 @@
   s.t. $\gamma(t)=id_t$, let us show that\\
   \fbox{$t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.}\\
 
+  The proof is in two parts:
+  \begin{enumerate}
+  \item Assuming that $t\in{}Firable(s')$, let us show
+    \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}
+    
+    Apply Lemma~\nameref{lem:fe-equal-firable-1} to solve the goal.
+  \item Assuming that $\sigma'(id_t)("s\_firable")=\mathtt{true}$, let
+    us show \fbox{$t\in{}Firable(s')$.}
+    
+    Apply Lemma~\nameref{lem:fe-equal-firable-2} to solve the goal.
+  \end{enumerate}
+  
+\end{proof}
+
+\begin{lemma}[Falling Edge Equal Firable 1]
+  \label{lem:fe-equal-firable-1}
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $t\in{}Firable(s')\Rightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.
+\end{lemma}
+
+\begin{niproof}
+  Given a $t\in{}T$ and $id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$, and assuming that $t\in{}Firable(s')$, let us
+  show \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}\\
+  
   \exT{}
 
-  By property of the $Inject_\downarrow$, the \hvhdl{} falling edge,
-  the stabilize relations and \InCsCompT:
+  By property of the $Inject_\downarrow$, the \hvhdl{}
+  falling edge, the stabilize relations and \InCsCompT:
   \begin{equation}
     \label{eq:fe-eq-sfa}
     \sigma'(id_t)("sfa")=\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))
   \end{equation}
 
-  \noindent{}Let us define term
+  Let us define term
   $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as follows:
   \begin{equation}
     \label{eq:checktc}
@@ -1408,8 +1434,797 @@
       & +\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\\
     \end{split}
   \end{equation}
+
+  Rewriting the goal with \eqref{eq:fe-eq-sfa}:
+  \fbox{$\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$.}
+
+  Then, there are three points to prove:
+  \begin{enumerate}
+  \item \fbox{$\sigma(id_t)("se")=\mathtt{true}$}:\\
+
+    From $t\in{}Firable(s')$, we can deduce
+    $t\in{}Sens(s'.M)$. By definition of \dwSitpn, we have $s.M=s'.M$,
+    and thus, we can deduce $t\in{}Sens(s.M)$.
+
+    By definition of \upSim, we know that $t\in{}Sens(s.M)$
+    implies \qedbox{$\sigma(id_t)("se")=\mathtt{true}$.}
+    
+  \item \fbox{$\sigma(id_t)("scc")=\mathtt{true}$}:\\
+
+    By definition of \upSim:
+    \begin{equation}
+      \sigma(id_t)("scc")=\prod\limits_{c\in{}conds(t)}
+      \begin{cases}
+        E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+        \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+      \end{cases}
+      \label{eq:fe-eq-scc-prod}
+    \end{equation}
+    where
+    $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+
+    Rewriting the goal with \eqref{eq:fe-eq-scc-prod}:
+    \fbox{$\prod\limits_{c\in{}conds(t)}
+      \begin{cases}
+        E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+        \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+      \end{cases}=\mathtt{true}$.}
+
+    To ease the reading, let us define $f(c)=\begin{cases}
+          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+        \end{cases}$.
+    
+    Let us reason by induction on the left term of the
+    goal:
+
+    \begin{itemize}
+    \item \textbf{BASE CASE}: \qedbox{$true=true$.}
+    \item \textbf{INDUCTION CASE}:
+      \begin{ih}
+        $\prod\limits_{c'\in{}conds(t)\setminus\{c\}}f(c')=\mathtt{true}$
+      \end{ih}
+
+      \fbox{$f(c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}f(c')=\mathtt{true}$.}
+
+      Rewriting the goal with the induction hypothesis, and
+      simplifying the goal, and unfolding the definition of $f(c)$:
+      \fbox{$\begin{cases}
+          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+        \end{cases}=\mathtt{true}$.}
+
+      As $c\in{}conds(t)$, let us perform case analysis on
+      $\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1$:
+      \begin{enumerate}
+      \item $\mathbb{C}(t,c)=1$: \fbox{$E_c(\tau,c)=\mathtt{true}$.}\\
+        
+        By definition of $t\in{}Firable(s')$, we can deduce
+        that $s'.cond(c)=\mathtt{true}$. By definition of \dwSitpn, we
+        have $s'.cond(c)=E_c(\tau,c)$. Thus,
+        \qedbox{$E_c(\tau,c)=\mathtt{true}$.}
+        
+      \item $\mathbb{C}(t,c)=-1$: \fbox{$\mathtt{not}~E_c(\tau,c)=\mathtt{true}$.}\\
+
+        By definition of $t\in{}Firable(s')$, we can deduce
+        that $s'.cond(c)=\mathtt{false}$. By definition of \dwSitpn,
+        we have $s'.cond(c)=E_c(\tau,c)$. Thus,
+        \qedbox{$\mathtt{not}~E_c(\tau,c)=\mathtt{true}$.}
+      \end{enumerate}
+    \end{itemize}
+
+  \item \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}:\\
+
+    By definition of $t\in{}Firable(s')$, we have
+    $t\notin{}T_i\lor{}s'.I(t)\in{}I_s(t)$. Let us perform case
+    analysis on $t\notin{}T_i\lor{}s'.I(t)\in{}I_s(t)$:\\
+
+    \begin{enumerate}
+    \item $t\notin{}T_i$:\\
+
+      By construction,
+      ${<}\mathtt{transition\_type\Rightarrow{}NOT\_TEMP}{>}\in{}gm_t$,
+      and by property of the elaboration relation, we have
+      $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$.
+
+      From $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$, and the
+      definition of $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$, we
+      can deduce
+      \qedbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$.}
+
+    \item $s'.I(t)\in{}I_s(t)$:\\
+
+      From $s'.I(t)\in{}I_s(t)$, we can deduce that $t\in{}T_i$. Thus,
+      by construction, there exists
+      $tt\in\{\mathtt{TEMP\_A\_B},\mathtt{TEMP\_A\_A},\mathtt{TEMP\_A\_INF}\}$
+      s.t. ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}gm_t$. By
+      property of the elaboration relation, we have
+      $\Delta(id_t)("tt")=tt$, and thus, we know
+      $\Delta(id_t)("tt")\neq{}\mathtt{NOT\_TEMP}$. Therefore, we can
+      simplfy the term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$
+      as follows:
+      \begin{equation}        
+        \label{eq:eq-checktc-minus-not-temp}
+        \begin{split}
+          \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)("srtc")~.~\\
+          & \quad\begin{split}
+            \big[\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~\\
+            &.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)\\
+          \end{split} \\
+          & \quad{\begin{array}{l}
+                    +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.\\
+                    \quad~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1)) \\
+                  \end{array}}\\
+          &
+          \quad{\begin{array}{l}
+                  +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~. \\
+                  \quad~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))\big]\bigg) \\
+                \end{array}}\\
+          & +\big(\sigma(id_t)("srtc")~.~\sigma(id_t)("A")=1\big)\\
+        \end{split}
+      \end{equation}
+      
+      By definition of \upSim, we have
+      $s.reset_t(t)=\sigma(id_t)("srtc")$.
+
+      Let us perform case analysis on the value
+      $s.reset_t(t)$:
+
+      \begin{enumerate}
+      \item $s.reset_t(t)=\mathtt{true}$:\\
+
+        Then, from $s.reset_t(t)=\sigma(id_t)("srtc")$, we can deduce
+        that $\sigma(id_t)("srtc")=\mathtt{true}$.
+
+        From $\sigma(id_t)("srtc")=\mathtt{true}$, we can
+        simplify the term
+        $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as follows:
+        \begin{equation}
+          \label{eq:eq-checktc-a-eq-1}
+            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\big(\sigma(id_t)("A")=1\big)
+        \end{equation}
+
+        Rewriting the goal with \eqref{eq:eq-checktc-a-eq-1}, and
+        simplifying the goal: \fbox{$\sigma(id_t)("A")=1$.}
+
+        By definition of \dwSitpn, from $t\in{}Sens(s.M)$ and
+        $s.reset_t(t)=\mathtt{true}$, we can deduce $s'.I(t)=1$. We
+        know that $s'.I(t)\in{}I_s(t)$, and thus, we have
+        $1\in{}I_s(t)$. By definition of $1\in{}I_s(t)$, there exist
+        an $a\in\mathbb{N}^{*}$ and a
+        $ni\in{}\mathbb{N}^{*}\sqcup\{\infty\}$ s.t. $I_s(t)=[a,ni]$
+        and $1\in[a,ni]$.
+
+        By definition of $1\in[a,ni]$, we have $a\le{}1$, and
+        since $a\in\mathbb{N}^{*}$, we can deduce $a=1$.
+
+        By construction,
+        ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$, and
+        by property of stable $\sigma$, we have
+        \qedbox{$\sigma(id_t)("A")=a=1$.}
+
+      \item $s.reset_t(t)=\mathtt{false}$:\\
+
+        Then, from $s.reset_t(t)=\sigma(id_t)("srtc")$, we can deduce
+        that $\sigma(id_t)("srtc")=\mathtt{false}$.
+
+        From $\sigma(id_t)("srtc")=\mathtt{false}$, we can simplify
+        the term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as
+        follows:
+        \begin{equation}
+          \label{eq:eq-checktc-srtc-false}
+          \begin{array}{l}
+            \multicolumn{1}{c}{\mathtt{checktc}(\Delta(id_t),\sigma(id_t))}\\
+            \multicolumn{1}{c}{=}\\
+            \begin{array}{ll}
+              \big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~\\
+                                                          &.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)\\
+            \end{array}\\
+            +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))\\
+            +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)) \\
+          \end{array}
+        \end{equation}
+
+        Let us perform case analysis on $I_s(t)$; there are two cases:
+        \begin{itemize}
+        \item $I_s(t)=[a,b]$ where $a,b\in\mathbb{N}^{*}$; then, either $a=b$ or $a\neq{}b$:
+          \begin{itemize}
+          \item $a=b$:\\
+            Then, we have $I_s(t)=[a,a]$, and by construction
+            ${<}\mathtt{transition\_type\Rightarrow{}}$
+            $\mathtt{TEMP\_A\_A}{>}\in{}gm_t$. By property of the
+            elaboration relation, we have\\
+            $\Delta(id_t)$$("tt")=\mathtt{TEMP\_A\_A}$; thus we can
+            simplify the term $\mathtt{checktc}$ as follows:
+            \begin{equation}
+              \label{eq:eq-checktc-temp-a-a}
+              \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1)
+            \end{equation}
+
+            Rewriting the goal with \eqref{eq:eq-checktc-temp-a-a},
+            and simplifying the goal:\\
+            \fbox{$\sigma(id_t)("stc")={}\sigma(id_t)("A")-1$.}
+            
+            From $s'.I(t)\in[a,a]$, we can deduce that
+            $s'.I(t)=a$. Let us perform case analysis on
+            $s.I(t)<upper(I_s(t))$ or $s.I(t)\ge{}upper(I_s(t))$:
+            \begin{itemize}
+            \item $s.I(t)<upper(I_s(t))$:\\
+              By definition of \upSim, we have
+              $s.I(t)=\sigma(id_t)("stc")$. By definition of \dwSitpn,
+              we have $s'.I(t)=s.I(t)+1$. From $s'.I(t)=a$ and
+              $s'.I(t)=s.I(t)+1$, we can deduce $a-1=s.I(t)$.
+
+              By construction,
+              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+              and by property of stable $\sigma$, we have
+              $\sigma(id_t)("A")=a$.
+
+              Rewriting the goal with $\sigma(id_t)("A")=a$ and
+              $s.I(t)=\sigma(id_t)("stc")$:\\
+              \qedbox{$\sigma(id_t)("stc")={}\sigma(id_t)("A")-1$.}
+              
+            \item $s.I(t)\ge{}upper(I_s(t))$:\\
+              In the case where $s.I(t)>upper(I_s(t))$, then
+              $s.I(t)>a$. By definition of \dwSitpn, we have
+              $s.I(t)=s'.I(t)=a$. Then, \qedbox{$a>a$ is a
+                contradiction.}\\
+
+              In the case where $s.I(t)=upper(I_s(t))$, then
+              $s.I(t)=a$. By definition of \dwSitpn, we have
+              $s'.I(t)=s.I(t)+1$. Then, we have $s'.I(t)=a$ and
+              $s'.I(t)=a+1$. Then, \qedbox{$a=a+1$ is a
+                contradiction.}
+            \end{itemize}
+            
+          \item $a\neq{}b$:\\
+            Then, we have $I_s(t)=[a,b]$, and by construction
+            ${<}\mathtt{transition\_type\Rightarrow{}}$
+            $\mathtt{TEMP\_A\_B}{>}\in{}gm_t$. By property of the
+            elaboration relation, we have\\
+            $\Delta(id_t)$$("tt")=\mathtt{TEMP\_A\_B}$; thus we can
+            simplify the term $\mathtt{checktc}$ as follows:
+            \begin{equation}
+              \label{eq:eq-checktc-temp-a-b}
+              \begin{array}{c}
+                \multicolumn{1}{c}{\mathtt{checktc}(\Delta(id_t),\sigma(id_t))}\\
+                \multicolumn{1}{c}{=}\\
+                (\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\\
+              \end{array}\\
+            \end{equation}
+
+            Rewriting the goal with \eqref{eq:eq-checktc-temp-a-b},
+            and simplifying the goal:\\
+            \fbox{$(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)\land(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)$.}\\
+            
+            Let us perform case analysis on $s.I(t)<upper(I_s(t))$ or
+            $s.I(t)\ge{}upper(I_s(t))$:
+            \begin{itemize}
+            \item $s.I(t)<upper(I_s(t))$:\\
+              By definition of \upSim, we have
+              $s.I(t)=\sigma(id_t)("stc")$. By definition of \dwSitpn,
+              we have $s'.I(t)=s.I(t)+1$. By definition of
+              $s'.I(t)\in[a,b]$:
+              
+              $\Rightarrow{}a\le{}s'.I(t)\le{}b$.
+              
+              $\Rightarrow{}a\le{}s'.I(t)\land{}s'.I(t)\le{}b$
+
+              $\Rightarrow{}a\le{}s.I(t)+1\land{}s.I(t)+1\le{}b$
+
+              $\Rightarrow{}a-1\le{}s.I(t)\land{}s.I(t)\le{}b-1$
+
+              By construction,
+              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$
+              and
+              ${<}\mathtt{time\_B\_value\Rightarrow}{}b{>}\in{}ipm_t$,
+              and by property of stable $\sigma$, we have
+              $\sigma(id_t)("A")=a$ and
+              $\sigma(id_t)("B")=b$.
+
+              Rewriting the goal with
+              $\sigma(id_t)("A")=a$, $\sigma(id_t)("B")=b$ and
+              $s.I(t)=\sigma(id_t)("stc")$:
+              \qedbox{$a-1\le{}s.I(t)\land{}s.I(t)\le{}b-1$.}
+              
+            \item $s.I(t)\ge{}upper(I_s(t))$:\\
+              In the case where $s.I(t)>upper(I_s(t))$, then
+              $s.I(t)>b$. By definition of \dwSitpn, we have
+              $s.I(t)=s'.I(t)=b$. Then, \qedbox{$b>b$ is a
+                contradiction.}\\
+
+              In the case where $s.I(t)=upper(I_s(t))$, then
+              $s.I(t)=b$. By definition of \dwSitpn, we have
+              $s'.I(t)=s.I(t)+1$.
+
+              By definition of $s'.I(t)\in[a,b]$, we have
+              $s'.I(t)\le{}b$:
+
+              $\Rightarrow{}s.I(t)+1\le{}b$
+
+              $\Rightarrow{}$ \qedbox{$b+1\le{}b$ is contradiction.}
+            \end{itemize}
+          \end{itemize}
+          
+        \item $I_s(t)=[a,\infty]$ where $a\in{}\mathbb{N}^{*}$:
+
+          By construction ${<}\mathtt{transition\_type\Rightarrow{}}$
+          $\mathtt{TEMP\_A\_INF}{>}\in{}gm_t$. By property of the
+          elaboration relation, we have
+          $\Delta(id_t)$$("tt")=\mathtt{TEMP\_A\_INF}$; thus we can
+          simplify the term $\mathtt{checktc}$ as follows:
+          \begin{equation}
+            \label{eq:eq-checktc-temp-a-inf}
+            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:eq-checktc-temp-a-inf},
+          and simplifying the goal:\\
+          \fbox{$\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1$.}
+
+          From $s'.I(t)\in[a,\infty]$, we can deduce
+          $a\le{}s'.I(t)$. Then, let us perform case analysis on
+          $s.I(t)\le{}lower(I_s(t))$ or $s.I(t)>lower(I_s(t))$:
+          \begin{itemize}
+          \item $s.I(t)\le{}lower(I_s(t))$:
+
+            By definition of \upSim, we have
+            $s.I(t)=\sigma(id_t)("stc")$.
+
+            By definition of \dwSitpn, we have $s'.I(t)=s.I(t)+1$:
+
+            $\Rightarrow{}a\le{}s'.I(t)$
+
+            $\Rightarrow{}a\le{}s.I(t)+1$
+
+            $\Rightarrow{}a-1\le{}s.I(t)$
+
+            By construction,
+            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+            and by property of stable $\sigma$, we have
+            $\sigma(id_t)("A")=a$.
+
+            Rewriting the goal with $\sigma(id_t)("A")=a$ and
+            $s.I(t)=\sigma(id_t)("stc")$:\\ \qedbox{$a-1\le{}s.I(t)$.}
+            
+          \item $s.I(t)>lower(I_s(t))$:
+
+            By definition of \upSim, we have
+            $\sigma(id_t)("stc")=lower(I_s(t))=a$.
+
+            By construction,
+            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+            and by property of stable $\sigma$, we have
+            $\sigma(id_t)("A")=a$.
+
+            Rewriting the goal with $\sigma(id_t)("stc")=a$ and
+            $\sigma(id_t)("A")=a$: \qedbox{$a-1\le{}a$.}
+          \end{itemize}
+          
+        \end{itemize}
+      \end{enumerate}
+    \end{enumerate}
+  \end{enumerate}
+\end{niproof}
+
+\begin{lemma}[Falling Edge Equal Firable 2]
+  \label{lem:fe-equal-firable-2}
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $\sigma'(id_t)("s\_firable")=\mathtt{true}\Rightarrow{}t\in{}Firable(s')$.
+\end{lemma}
+
+\begin{niproof}
+
+  Given a $t\in{}T$ and $id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$, and assuming that
+  $\sigma'(id_t)("s\_firable")=\mathtt{true}$, let us
+  show \fbox{$t\in{}Firable(s')$.}\\
   
-\end{proof}
+  \exT{}
+
+  By property of the $Inject_\downarrow$, the \hvhdl{}
+  falling edge, the stabilize relations and \InCsCompT:
+  \begin{equation}
+    \label{eq:fe-eq-sfa-true}
+    \sigma'(id_t)("sfa")=\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
+  \end{equation}
+
+  From \eqref{eq:fe-eq-sfa-true}, we can deduce:
+  \begin{eqnarray}
+    \label{eq:fe-eq-se-true}\sigma(id_t)("se")=\mathtt{true}\\
+    \label{eq:fe-eq-scc-true}\sigma(id_t)("scc")=\mathtt{true}\\
+    \label{eq:fe-eq-checktc-true}\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
+  \end{eqnarray}
+
+  Term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as the same
+  definition as in Lemma~\nameref{lem:fe-equal-firable-1}.
+
+  By definition of $t\in{}Firable(s')$, there are three points to prove:
+  \begin{enumerate}
+  \item \fbox{$t\in{}Sens(s'.M)$}
+  \item \fbox{$t\notin{}T_i\lor{}s'.I(t)\in{}I_s(t)$}
+  \item
+    \fbox{\parbox{\lwidth}{$\forall{}c\in{}\mathcal{C},~\mathbb{C}(t,c)=1\Rightarrow{}s'.cond(c)=\mathtt{true}$
+    and $\mathbb{C}(t,c)=-1\Rightarrow{}s'.cond(c)=\mathtt{false}$}}
+  \end{enumerate}
+
+  Let us prove these three points:
+  \begin{enumerate}
+  \item \fbox{$t\in{}Sens(s'.M)$}:
+
+    By definition of \dwSitpn, we have $s.M=s'.M$. Rewriting the goal
+    with $s.M=s'.M$: \fbox{$t\in{}Sens(s.M)$.}
+
+    By definition of \upSim, we have
+    $\sigma(id_t)("se")=\mathtt{true}\Leftrightarrow{}t\in{}Sens(s.M)$.
+
+    \qedbox{$t\in{}Sens(s.M)$.}
+    
+  \item
+    \fbox{\parbox{\lwidth}{$\forall{}c\in{}\mathcal{C},~\mathbb{C}(t,c)=1\Rightarrow{}s'.cond(c)=\mathtt{true}$
+        and
+        $\mathbb{C}(t,c)=-1\Rightarrow{}s'.cond(c)=\mathtt{false}$}}
+
+    Given a $c\in\mathcal{C}$, there are two points to prove:
+    \begin{enumerate}
+    \item
+      \fbox{$\mathbb{C}(t,c)=1\Rightarrow{}s'.cond(c)=\mathtt{true}$.}
+    \item
+      \fbox{$\mathbb{C}(t,c)=-1\Rightarrow{}s'.cond(c)=\mathtt{false}$.}
+    \end{enumerate}
+
+    Let us prove these two points:
+    \begin{enumerate}
+    \item Assuming that $\mathbb{C}(t,c)=1$, let us show
+      \fbox{$s'.cond(c)=\mathtt{true}$.}
+
+      By definition of \upSim, we have:
+      \begin{equation}
+        \sigma(id_t)("scc")=\prod\limits_{c\in{}conds(t)}
+        \begin{cases}
+          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+        \end{cases}=\mathtt{true}
+        \label{eq:fe-eq-scc-prod-true}
+      \end{equation}
+      where
+      $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+
+      As $c\in{}conds(t)$ and $\mathbb{C}(t,c)=1$, and by definition
+      of the product expression, we have:
+      \begin{equation}
+        \label{eq:fe-eq-scc-prod-true-decomp}
+        E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
+        \begin{cases}
+          E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
+          \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
+        \end{cases}=\mathtt{true}
+      \end{equation}
+
+      From \eqref{eq:fe-eq-scc-prod-true-decomp}, we can deduce that
+      $E_c(\tau,c)=\mathtt{true}$.
+
+      By definition of \dwSitpn, we have $s'.cond(c)=E_c(\tau,c)$.
+      
+      Rewriting the goal with $s'.cond(c)=E_c(\tau,c)$ and
+      $E_c(\tau,c)=\mathtt{true}$: \qedbox{tautology.}
+      
+    \item Assuming that $\mathbb{C}(t,c)=-1$, let us show
+      \fbox{$s'.cond(c)=\mathtt{false}$.}
+
+      By definition of \upSim, we have:
+      \begin{equation}
+        \sigma(id_t)("scc")=\prod\limits_{c\in{}conds(t)}
+        \begin{cases}
+          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+        \end{cases}=\mathtt{true}
+        \label{eq:fe-eq-scc-prod-false}
+      \end{equation}
+      where
+      $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+
+      As $c\in{}conds(t)$ and $\mathbb{C}(t,c)=-1$, and by definition
+      of the product expression, we have:
+      \begin{equation}
+        \label{eq:fe-eq-scc-prod-false-decomp}
+        \mathtt{not}~E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
+        \begin{cases}
+          E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
+          \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
+        \end{cases}=\mathtt{true}
+      \end{equation}
+
+      From \eqref{eq:fe-eq-scc-prod-false-decomp}, we can deduce that
+      $E_c(\tau,c)=\mathtt{false}$.
+
+      By definition of \dwSitpn, we have $s'.cond(c)=E_c(\tau,c)$.
+      
+      Rewriting the goal with $s'.cond(c)=E_c(\tau,c)$ and
+      $E_c(\tau,c)=\mathtt{false}$: \qedbox{tautology.}
+    \end{enumerate}
+    
+  \item \fbox{$t\notin{}T_i\lor{}s'.I(t)\in{}I_s(t)$}
+
+    Reasoning on
+    $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$, there
+    are 3 cases:
+    \begin{enumerate}
+    \item
+      $\bigg(\mathtt{not}~\sigma(id_t)("srtc")~.~[\dots]\bigg)=\mathtt{true}$\footnote{See
+        equation~\eqref{eq:checktc} for the full definition}
+    \item
+      $\big(\sigma(id_t)("srtc")~.~\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)("A")=1\big)=\mathtt{true}$
+    \item
+      $\big(\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
+    \end{enumerate}
+    
+    \begin{enumerate}
+    \item $\bigg(\mathtt{not}~\sigma(id_t)("srtc")~.~[\dots]\bigg)=\mathtt{true}$:
+
+      Then, we can deduce
+      $\mathtt{not}~\sigma(id_t)("srtc")=\mathtt{true}$ and
+      $[\dots]=\mathtt{true}$. From
+      $\mathtt{not}~\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
+      $\sigma(id_t)("srtc")=\mathtt{false}$, and from
+      $[\dots]=\mathtt{true}$, we have three other cases:
+
+      \begin{enumerate}
+      \item
+        $\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)=\mathtt{true}$
+      \item
+        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))=\mathtt{true}$
+      \item
+        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))=\mathtt{true}$
+      \end{enumerate}
+
+      Let us prove the goal is these three contexts:
+      \begin{enumerate}
+      \item
+        $\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)=\mathtt{true}$:
+
+        Then, converting boolean equalities into intuitionistic
+        predicates, we have:
+        \begin{itemize}
+        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}$
+        \item $\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1$
+        \item $\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$
+        \end{itemize}
+
+        By property of the elaboration relation, and
+        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}$, there exist
+        $a,b\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,b]$. Let us take such
+        an $a$ and $b$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
+
+        Rewriting the goal with $I_s(t)=[a,b]$:
+        \fbox{$s'.I(t)\in[a,b]$.}
+        
+        By construction, ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$
+        and ${<}\mathtt{time\_B\_value\Rightarrow}{}b{>}$, and by
+        property of stable $\sigma$, we have $\sigma(id_t)("A")=a$ and
+        $\sigma(id_t)("B")=b$.
+
+        Rewriting the goal with $\sigma(id_t)("A")=a$ and
+        $\sigma(id_t)("B")=b$, and by definition of $\in$:
+        \fbox{$\sigma(id_t)("A")\le{}s'.I(t)\le{}\sigma(id_t)("B")$.}
+
+        Now, let us perform case analysis on
+        $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
+        \begin{itemize}
+        \item $s.I(t)\le{}upper(I_s(t))$:
+          
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+
+          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          $t\in{}Sens(s.M)$, and from
+          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $s.reset_t(t)=\mathtt{false}$. Then, by definition of
+          \dwSitpn, we have $s'.I(t)=s.I(t)+1$.
+
+          $\Rightarrow{}$
+          \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1\le{}\sigma(id_t)("B")$}
+          (by $s'.I(t)=s.I(t)+1$)
+
+          $\Rightarrow{}$
+          \fbox{$\sigma(id_t)("A")\le{}\sigma(id_t)("stc")+1\le{}\sigma(id_t)("B")$}
+          (by $s.I(t)=\sigma(id_t)("stc")$)
+
+          $\Rightarrow{}$
+          \qedbox{$\sigma(id_t)("A")-1\le{}\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$}
+          
+        \item $s.I(t)>upper(I_s(t))$:
+
+          By definition of \upSim, we have
+          $\sigma(id_t)("stc")=upper(I_s(t))=b$.
+
+          Then, from $\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$,
+          $\sigma(id_t)("stc")=upper(I_s(t))=b$ and
+          $\sigma(id_t)("B")=b$, we can deduce the following
+          contradiction:\\
+          \qedbox{$\sigma(id_t)("B")\le{}\sigma(id_t)("B")-1$.}
+        \end{itemize}
+      \item
+        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))=\mathtt{true}$:
+
+        Then, converting boolean equalities into intuitionistic
+        predicates, we have:
+        \begin{itemize}
+        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}$
+        \item $\sigma(id_t)("stc")=\sigma(id_t)("A")-1$
+        \end{itemize}
+
+        By property of the elaboration relation, and
+        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}$, there exist
+        $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,a]$. Let us take such an
+        $a$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
+
+        Rewriting the goal with $I_s(t)=[a,a]$:
+        \fbox{$s'.I(t)\in[a,a]$.}
+        
+        By construction,
+        ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$, and by property
+        of stable $\sigma$, we have $\sigma(id_t)("A")=a$.
+
+        Rewriting the goal with $\sigma(id_t)("A")=a$, unfolding the
+        definition of $\in$, and simplifying the goal:
+        \fbox{$s'.I(t)=\sigma(id_t)("A")$.}
+
+        Now, let us perform case analysis on
+        $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
+        \begin{itemize}
+        \item $s.I(t)\le{}upper(I_s(t))$:
+          
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+
+          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          $t\in{}Sens(s.M)$, and from
+          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $s.reset_t(t)=\mathtt{false}$. Then, by definition of
+          \dwSitpn, we have $s'.I(t)=s.I(t)+1$.
+
+          $\Rightarrow{}$
+          \fbox{$s.I(t)+1=\sigma(id_t)("A")$} (by $s'.I(t)=s.I(t)+1$)
+
+          $\Rightarrow{}$
+          \fbox{$\sigma(id_t)("stc")+1=\sigma(id_t)("A")$}
+          (by $s.I(t)=\sigma(id_t)("stc")$)
+
+          $\Rightarrow{}$
+          \qedbox{$\sigma(id_t)("stc")=\sigma(id_t)("A")-1$}
+          
+        \item $s.I(t)>upper(I_s(t))$:
+
+          By definition of \upSim, we have
+          $\sigma(id_t)("stc")=upper(I_s(t))=a$.
+
+          Then, from $\sigma(id_t)("stc")={}\sigma(id_t)("A")-1$,
+          $\sigma(id_t)("stc")=upper(I_s(t))=a$,
+          $\sigma(id_t)("A")=a$, and $a\in\mathbb{N}^{*}$, we can
+          deduce the following
+          contradiction:\\
+          \qedbox{$\sigma(id_t)("A")=\sigma(id_t)("A")-1$.}
+        \end{itemize}
+        
+      \item
+        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge\sigma(id_t)("A")-1))=\mathtt{true}$:
+
+        Then, converting boolean equalities into intuitionistic
+        predicates, we have:
+        \begin{itemize}
+        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$
+        \item $\sigma(id_t)("stc")\ge\sigma(id_t)("A")-1$
+        \end{itemize}
+
+        By property of the elaboration relation, and
+        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$, there exist
+        $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,\infty]$. Let us take
+        such an $a$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
+
+        Rewriting the goal with $I_s(t)=[a,\infty]$:
+        \fbox{$s'.I(t)\in[a,\infty]$.}
+        
+        By construction,
+        ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$, and by property
+        of stable $\sigma$, we have $\sigma(id_t)("A")=a$.
+
+        Rewriting the goal with $\sigma(id_t)("A")=a$, unfolding the
+        definition of $\in$, and simplifying the goal:
+        \fbox{$\sigma(id_t)("A")\le{}s'.I(t)$.}
+
+        Now, let us perform case analysis on
+        $s.I(t)\le{}lower(I_s(t))$ or $s.I(t)>lower(I_s(t))$:
+        \begin{itemize}
+        \item $s.I(t)\le{}lower(I_s(t))$:
+          
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+
+          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          $t\in{}Sens(s.M)$, and from
+          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $s.reset_t(t)=\mathtt{false}$. Then, by definition of
+          \dwSitpn, we have $s'.I(t)=s.I(t)+1$.
+
+          $\Rightarrow{}$
+          \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1$} (by $s'.I(t)=s.I(t)+1$)
+
+          $\Rightarrow{}$
+          \fbox{$\sigma(id_t)("A")\le\sigma(id_t)("stc")+1$} (by
+          $s.I(t)=\sigma(id_t)("stc")$)
+
+          $\Rightarrow{}$
+          \qedbox{$\sigma(id_t)("A")-1\le\sigma(id_t)("stc")$}
+          
+        \item $s.I(t)>lower(I_s(t))$:
+
+          By definition of \upSim, we have
+          $\sigma(id_t)("stc")=lower(I_s(t))=a$.
+
+          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          $t\in{}Sens(s.M)$, and from
+          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $s.reset_t(t)=\mathtt{false}$. Then, by definition of
+          \dwSitpn, we have $s'.I(t)=s.I(t)+1$.
+
+          $\Rightarrow{}$ \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1$} (by
+          $s'.I(t)=s.I(t)+1$)
+
+          $\Rightarrow{}$ \fbox{$a\le{}s.I(t)+1$} (by
+          $\sigma(id_t)("A")=a$)
+          
+          $\Rightarrow{}$ \fbox{$a<s.I(t)$}
+
+          $\Rightarrow{}$ \qedbox{$lower(I_s(t))<s.I(t)$}
+        \end{itemize}
+      \end{enumerate}
+
+    \item
+      $\big(\sigma(id_t)("srtc")~.~\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)("A")=1\big)=\mathtt{true}$
+
+      Then, converting boolean equalities into intuitionistic predicates, we have:
+      \begin{itemize}
+      \item $\sigma(id_t)("srtc")=\mathtt{true}$
+      \item $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$
+      \item $\sigma(id_t)("A")=1$
+      \end{itemize}
+
+      By property of the elaboration relation, and
+      $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$, there exist an
+      $a\in\mathbb{N}^{*}$ and a $ni\in\mathbb{N}^{*}\sqcup\{\infty\}$
+      s.t. $I_s(t)=[a,ni]$. Let us take such an $a$ and $ni$.
+
+      By construction,
+      ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$, and by
+      property of stable $\sigma$, we have
+      $\sigma(id_t)("A")=a$. Thus, we can deduce $a=1$ and
+      $I_s(t)=[1,ni]$.
+
+      By definition of \upSim, from
+      $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+      $t\in{}Sens(s.M)$, and from
+      $\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
+      $s.reset_t(t)=\mathtt{true}$.
+
+      By definition of \dwSitpn, $t\in{}Sens(s.M)$ and
+      $s.reset_t(t)=\mathtt{true}$, we have $s'.I(t)=1$.
+
+      Now, let us show \fbox{$s'.I(t)\in{}I_s(t)$}.
+
+      Rewriting the goal with $s'.I(t)=1$ and $I_s(t)=[1,ni]$:
+      \qedbox{$1\in[1,ni]$.}
+    \item
+      $\big(\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
+
+      Let us show \fbox{$t\notin{}T_i$.}
+      
+      By property of the elaboration relation and
+      $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$, we have
+      \qedbox{$t\notin{}T_i$.}
+    \end{enumerate}
+  \end{enumerate}
+\end{niproof}
+
+
 
 %%% Local Variables:
 %%% mode: latex
