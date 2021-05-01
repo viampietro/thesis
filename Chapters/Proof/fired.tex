@@ -4,38 +4,53 @@
 
 \begin{lemma}[Falling Edge Equal Fired]
   \label{lem:fe-equal-fired}
-  \fehyps{} then\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and
-  $\sigma'(id_t)=\sigma'_t,~t\in{}Fired(s')\Leftrightarrow\sigma'_t("fired")=true$.
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
+\end{lemma}
+
+\begin{niproof}
+  Given a $t\in{}T$ and an $id_t$ s.t. $\gamma(t)=id_t$, let us show
+  \fbox{$t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
+
+  The proof is in two parts:
+  \begin{enumerate}
+  \item Assuming that $t\in{}Fired(s')$, let us show
+    \fbox{$\sigma'(id_t)("fired")=\texttt{true}$.}
+    
+    By definition of $t\in{}Fired(s')$, there exists
+    $fset\subseteq{}T$ s.t. $IsFiredSet(s',fset)~\land~t\in{}fset$.
+    
+    Let us take such an $fset$, and apply
+    Lemma~\nameref{lem:fe-equal-fset} to solve the goal.
+  \item Assuming that $\sigma'(id_t)("fired")=\mathtt{true}$, let us
+    show \fbox{$t\in{}Fired(s')$.}
+
+    By definition of $t\in{}Fired(s')$, let us show that
+    \fbox{$\exists{}fset\subseteq{}T$
+      s.t. $IsFiredSet(s',fset)~\land~t\in{}fset$}
+
+    Assuming that $sitpn$ is a well-defined $SITPN$ (see Section
+    \todo{Add ref. to well-defined SITPN}), we can always find an
+    $fset\subseteq{}T$ such that
+    $\forall{}s\in{}S(sitpn),~IsFiredSet(s,fset)$ is derivable.  Let
+    us take an $fset\subseteq{}T$ s.t. $IsFiredSet(s',fset)$, and use
+    it to prove the goal by applying
+    Lemma~\nameref{lem:fe-equal-fset}.
+    
+  \end{enumerate}
+\end{niproof}
+
+\begin{lemma}[Falling Edge Equal Not Fired]
+  \label{lem:fe-equal-not-fired}
+  \fehyps{} then $\forall{}t,id_t~s.t.~\gamma(t)=id_t,$
+  $~t\notin{}Fired(s')\Leftrightarrow\sigma'_t("fired")=\mathtt{false}$.
 \end{lemma}
 
 \begin{proof}
-  Given a $t\in{}T$, and an $id_t$, prove both senses of the equivalence.
-
-  \begin{enumerate}
-  \item $t\in{}Fired(s')\Rightarrow\sigma'_t("fired")=true$.
-    
-    By definition of $t\in{}Fired(s')$.
-    
-    \begin{itemize}
-    \item
-      $t\in{}Fired(s')\equiv\exists{}fset\subseteq{}T,~s.t.,~IsFiredSet(s',fset)~\land~t\in{}fset$.
-    \end{itemize}
-
-    Then, apply Lemma~\nameref{lem:fe-equal-fset}.    
-  \end{enumerate}
-
-  \begin{enumerate}[resume]
-  \item $\sigma'_t("fired")=true\Rightarrow{}t\in{}Fired(s')$
-
-    We can prove that
-    $\forall{}sitpn,s,\exists{}fset~s.t.~IsFiredSet(s,fset)$.
-
-    Then, by specializing the above lemma, we can apply
-    Lemma~\nameref{lem:fe-equal-fset} to complete the goal.
-  \end{enumerate}
-
-
+  Proving the above lemma is trivial by appealing to
+  Lemma~\nameref{lem:fe-equal-fired} and by reasoning on
+  contrapositives.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,23 +60,52 @@
 
 \begin{lemma}[Falling Edge Equal Fired Set]
   \label{lem:fe-equal-fset}
-  \fehyps{} then\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$
-  and
-  $\forall{}fset\subseteq{}T,$\\
-  $~IsFiredSet(s',fset)\Rightarrow{}t\in{}fset\Leftrightarrow\sigma'_t("fired")=true$.
+  \fehyps{} then
+  $\forall{}t\in{}T,~id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,
+  $\forall{}fset\subseteq{}T,~s.t.~IsFiredSet(s',fset),~t\in{}fset\Leftrightarrow\sigma'(id_t)("fired")=true$.
 \end{lemma}
 
-\begin{proof}
-  Given a $t\in{}T$, a $fset\subseteq{}T$ and a proof of
-  $IsFiredSet(s',fset)$. Unfold the definition of the $IsFiredSet$
-  relation:
-  \begin{itemize}
-  \item $IsFiredSet(s',fset)\equiv{}IsFiredSetAux(s',\emptyset,T,fset)$.
-  \end{itemize}
-  Then, apply Lemma~\nameref{lem:fe-equal-fset-aux}.
+\begin{niproof}
+  Given a $t\in{}T$, and $id_t\in{}Comps(\Delta)$, and a
+  $fset\subseteq{}T$ s.t. $IsFiredSet(s',fset)$, let us show
+  \fbox{$t\in{}fset\Leftrightarrow\sigma'(id_t)("fired")=true$.}\\
 
-\end{proof}
+  By definition of $IsFiredSet(s',fset)$, we have
+  $IsFiredSetAux(s',\emptyset,T,fset)$.
+
+  Then, we can appeal to Lemma~\nameref{lem:fe-equal-fset-aux} to
+  solve the goal, but first we must prove the following \emph{extra
+    hypothesis} (i.e, one of the premise of
+  Lemma~\nameref{lem:fe-equal-fset-aux}):
+
+  \fbox{\parbox{\lwidth}{$\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'},$\\
+      $(t'\in{}\emptyset\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$
+      $\land$
+      $(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}\emptyset~\lor~{}t'\in{}T)$.}}\\
+
+  Given a $t'\in{}T$ and an $id_{t'}\in{}Comps(\Delta)$
+  s.t. $\gamma(t')=id_{t'}$, there are two points to prove:
+  \begin{enumerate}
+  \item
+    \fbox{$t'\in{}\emptyset\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true}$}
+  \item
+    \fbox{$\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}\emptyset~\lor~{}t'\in{}T$}
+  \end{enumerate}
+
+  Let us show these two points:
+  \begin{enumerate}
+  \item Assuming $t'\in{}\emptyset$, let us show
+    \fbox{$\sigma'(id_{t'})("fired")=\mathtt{true}$.}
+
+    \qedbox{$t'\in{}\emptyset$ is a contradiction.}
+  \item Assuming $\sigma'(id_{t'})("fired")=\mathtt{true}$, let us
+    show \fbox{$t'\in{}\emptyset~\lor~{}t'\in{}T$.}
+
+    By definition, \qedbox{$t'\in{}T$.}
+  \end{enumerate}
+  
+\end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% FALLING EDGE EQUAL FIRED SET AUX LEMMA %%%%%%%%%%
@@ -69,48 +113,76 @@
 
 \begin{lemma}[Falling Edge Equal Fired Set Aux]
   \label{lem:fe-equal-fset-aux}
-  \fehyps{} and\\
-  $\forall{}t,id_t~s.t.~\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$
-  and $\forall{}fired\subseteq{}T,~T_i\subseteq{}T,~fset\subseteq{}T,$
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,
+  $\forall{}fired\subseteq{}T,~T_s\subseteq{}T,~fset\subseteq{}T,$
   assume that:
   \begin{itemize}
-  \item $IsFiredSetAux(s',fired,T_i,fset)$
+  \item $IsFiredSetAux(s',fired,T_s,fset)$
   \item EH (Extra. Hypothesis):\\
-    $\forall{}t',id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    
-    \hspace{13ex}$\land$
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.
+    $\forall{}t'\in{}T,~id_{t'}\in{}Comps(\Delta)$
+    s.t. $\gamma(t')=id_{t'}$,\\
+    $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$
+    $\land$
+    $(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$.
   \end{itemize}
-  then $t\in{}fset\Leftrightarrow\sigma'_t("fired")=\mathtt{true}$.
+  then
+  $t\in{}fset\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
 \end{lemma}
 
-\begin{proof}
-  Given a $t,id_t,fired,T_i,fset$, reason by induction on
-  $IsFiredSetAux$.
+\begin{niproof}
+  Given a $t\in{}T$, an $id_t\in{}Comps(\Delta)$, a
+  $fired,T_s,fset\subseteq{}T$, and assuming\\
+  $IsFiredSetAux(s',fired,T_s,fset)$ and EH, let us show
+  \fbox{$t\in{}fset\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
+
+  Let us reason by induction on $IsFiredSetAux(s',fired,T_s,fset)$.
 
   \begin{itemize}
-  \item BASE CASE. Trivial.
-  \item IND. CASE.
-    \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)$
-    \item $ElectFired(s',fired,tp,fired')$
-    \item $FiredAux(s',fired',T_i\setminus{}tp,fset)$
-    \item IH: 
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired'\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$\\
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_i\setminus{}tp)\big)\Rightarrow$\\
-      $t\in{}fset\Leftrightarrow\sigma'_t("fired")=true$.
-    \end{itemize}
-    Apply IH, then, the new goal is:\\
-    $\forall{}t',id_{t'},~(t'\in{}fired'\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$\\
-    $\land$
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_i\setminus{}tp)$
+  \item \textbf{BASE CASE}:
+    \fbox{$t\in{}fired\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
 
+    In that case, $fired=fset$ and $T_s=\emptyset$, EH looks like
+    this:
+
+    \parbox{\lwidth}{$\forall{}t'\in{}T,~id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'}$,\\
+      $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$
+      $\land$
+      $(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}\emptyset)$.}
+
+    From EH, we can deduce
+    \qedbox{$t\in{}fired\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
+    
+  \item \textbf{INDUCTION CASE}:
+    \fbox{$t\in{}fset\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
+
+    In that case, we have:
+    \begin{itemize}
+    \item $IsTopPrioritySet(T_s,tp)$
+    \item $ElectFired(s',fired,tp,fired')$
+    \item $FiredAux(s',fired',T_s\setminus{}tp,fset)$
+    \end{itemize}
+
+    \begin{ih}
+      $\big(\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)~s.t.~\gamma(t')=id_{t'},$\\
+      $(t'\in{}fired'\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$
+      $\land(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_s\setminus{}tp)\big)\Rightarrow$\\
+      $t\in{}fset\Leftrightarrow\sigma'_t("fired")=true$.
+    \end{ih}
+    
+    Applying the induction hypothesis, then, the new goal is:
+    \begin{frameb}
+      $\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)~s.t.~\gamma(t')=id_{t'},$\\
+      $(t'\in{}fired'\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$\\
+      $\land(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired'~\lor~{}t'\in{}T_s\setminus{}tp)$
+    \end{frameb}
+    
     Apply Lemma~\nameref{lem:elect-fired-equal-fired} to solve the goal.
     
   \end{itemize}
   
-\end{proof}
+\end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% ELECT FIRED EQUAL FIRED %%%%%%%%%%
@@ -118,157 +190,341 @@
 
 \begin{lemma}[Elect Fired Equal Fired]
   \label{lem:elect-fired-equal-fired}
-  \fehyps and\\
-  $\forall{}t,id_t,~fired,fired'\subseteq{}T,~T_i,~tp\subseteq{}T_i,~fset,$
+  \fehyps{} then
+  $\forall{}fired,fired',T_s,tp,~fset\subseteq{}T,$
   assume that:
   \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)$
+  \item $IsTopPrioritySet(T_s,tp)$
   \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}tp,fset)$
+  \item $FiredAux(s',fired',T_s\setminus{}tp,fset)$
   \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont $\forall{}t',id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$}
+    $\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)~s.t.~\gamma(t')=id_{t'}$,\\
+    $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("fired")=\mathtt{true})$
+    $\land$
+    $(\sigma'(id_{t'})("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$
   \end{itemize}
-  then\\
-  {\fontsize{9}{11}\selectfont$\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$
-  $\land\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$}.
+  then $\forall{}t\in{}T,id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$,\\
+  $\big(t\in{}fired'\Rightarrow\sigma'(id_t)("fired")=\mathtt{true}\big)$
+  $\land\big(\sigma'(id_t)("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_s\setminus{}tp\big)$.
 \end{lemma}
 
-\begin{proof}
-  Reason by induction on the $ElectFired$ relation.
-
-  BASE CASE. Trivial.
+\begin{niproof}
+  Given a $t\in{}T$ and an $id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$, let us show\\
+  \fbox{$\big(t\in{}fired'\Rightarrow\sigma'(id_t)("fired")=\mathtt{true}\big)$
+    $\land\big(\sigma'(id_t)("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_s\setminus{}tp\big)$.}\\
   
-  2 INDUCTIVE CASES.
+  Let us reason by induction on $ElectFired(s',fired,tp,fired')$;
+  there are three cases:
 
   \begin{enumerate}
-  \item CASE $t_0$ is elected to be fired.
+  \item \textbf{BASE CASE}: $tp=\emptyset$ and $fired=fired'$.
+  \item \textbf{INDUCTIVE CASE}: $tp=\{t_0\}\cup{}tp_0$ and $t_0$ is
+    elected to be fired.
+  \item \textbf{INDUCTIVE CASE}: $tp=\{t_0\}\cup{}tp_0$ and $t_0$ is
+    not elected to be fired.
+  \end{enumerate}
+
+  Let us prove the goal in these three contexts:
+
+  \begin{enumerate}
+  \item \textbf{BASE CASE}:
+    
+    \fbox{\parbox{\lwidth}{$\big(t\in{}fired\Rightarrow\sigma'(id_t)("fired")=\mathtt{true}\big)$
+        $\land\big(\sigma'(id_t)("fired")=\mathtt{true}\Rightarrow{}t\in{}fired\lor{}t\in{}T_s\big)$.}}
+    
+    \qedbox{Apply EH to solve the goal.}
+    
+  \item \textbf{INDUCTIVE CASE}: $tp=\{t_0\}\cup{}tp_0$ and $t_0$ is
+    elected to be fired.
+
+    In that case, we have:
     \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t_0\}\cup{}tp)$
-    \item $ElectFired(s',fired\cup\{t_0\},tp,fired')$
+    \item
+      $IsTopPrioritySet(T_s,\{t_0\}\cup{}tp_0)$
+    \item $ElectFired(s',fired\cup\{t_0\},tp_0,fired')$
+    \item
+      $IsFiredSetAux(s',fired',T_s\setminus\{t_0\}\cup{}tp_0,fset)$
     \item $t_0\in{}Firable(s')$
-    \item $t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t_0,fired)}pre(t_i))$
-    \item $Pr(t_0,fired)=\{t_i\vert{}t_i\succ{}t_0\land{}t_i\in{}fired\}$
-    \item EH: $\forall{}t'\in{}T,id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    
-      \hspace{13ex}$\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$
-    \item IH:\\
-      $\forall{}T_i\subseteq{}T,~$
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$\\
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i)\big)\Rightarrow$\\
-      $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)\Rightarrow$\\
-      $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
+    \item $t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))$
+    \item EH: $\forall{}t'\in{}T,~id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'}$,\\
+      $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
       $\land$
-      $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$\\
+      $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$
     \end{itemize}
-    GOAL:\\
-    $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-    $\land$
-    $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}\{t_0\}\cup{}tp\big)$\\
+
+    \begin{ih}
+      $\forall{}T'_s\subseteq{}T,~$\\
+      $IsTopPrioritySet(T'_s,tp_0)\Rightarrow$\\
+      $IsFiredSetAux(s',fired',T'_s\setminus{}tp_0,fset)\Rightarrow$\\
+      $\big(\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$ s.t. $\gamma(t')=id_{t'}$,\\
+      $(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("f")=\mathtt{true})$
+      $\land$
+      $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T'_s)\big)\Rightarrow$\\
+      $\forall{}t\in{}T,~id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
+      $~\big(t\in{}fired'\Rightarrow\sigma'(id_t)("f")=\mathtt{true}\big)$
+      $\land$
+      $\big(\sigma'(id_t)("f")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T'_s\setminus{}tp_0\big)$
+    \end{ih}
     
-    Apply IH with $T_i\setminus\{t_0\}$, then, the hard case to prove is:\\
-    $\forall{}t'\in{}T,id_{t'},~$
-    $(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    $\land$\\
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i\setminus\{t_0\})$
+    \begin{frameb}
+      $\forall{}t\in{}T,~id_t\in{}Comps(\Delta)$
+      s.t. $\gamma(t)=id_t$,\\
+      $~\big(t\in{}fired'\Rightarrow\sigma'_t("f")=\mathtt{true}\big)$
+      $\land$
+      $\big(\sigma'_t("f")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_s\setminus{}\{t_0\}\cup{}tp_0\big)$
+    \end{frameb}
+    
+    To solve the goal, we can apply the induction hypothesis with
+    $T'_s=T_s\setminus\{t_0\}$; then, there are three points to prove:
     \begin{enumerate}
-    \item Assume $t'\in{}fired\cup\{t_0\}$, prove $\sigma'_{t'}("fired")=\mathtt{true}$.
-      \begin{itemize}
-      \item If $t'\in{}fired$, then assumption.
-      \item If $t'=t_0$, then, introduce the expression qualifying
-        ``fired'':
-        $\sigma_{t'}("fired")=\sigma_{t'}("s\_firable").\sigma_{t'}("s\_priority\_combination")$\\\\
-        Then, we can show that: 
+    \item
+      \fbox{$IsTopPrioritySet(T_s\setminus\{t_0\},tp_0)$}
+    \item
+      \fbox{$IsFiredSetAux(s',fired',(T_s\setminus\{t_0\})\setminus{}tp_0,fset)$}
+    \item \fbox{\parbox{\lwidth}{$\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$ s.t. $\gamma(t')=id_{t'}$,\\
+          $(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'_{t'}("f")=\mathtt{true})$
+          $\land$
+          $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_s\setminus\{t_0\})$}}
+    \end{enumerate}
+
+    Let us prove these three points:
+    \begin{enumerate}
+    \item
+      \fbox{$IsTopPrioritySet(T_s\setminus\{t_0\},tp_0)$}
+      \begin{todobox}
+        Not possible to prove right now.
+      \end{todobox}
+    \item
+      \fbox{$IsFiredSetAux(s',fired',(T_s\setminus\{t_0\})\setminus{}tp_0,fset)$}.
+      
+      We know that
+      $(T_s\setminus\{t_0\})\setminus{}tp_0=T_s\setminus{}(\{t_0\}\cup{}tp_0)$,
+      and thus\\
+      \qedbox{$IsFiredSetAux(s',fired',T_s\setminus{}(\{t_0\}\cup{}tp_0),fset)$
+        is an assumption.}
+      
+    \item \fbox{\parbox{\lwidth}{$\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$ s.t. $\gamma(t')=id_{t'}$,\\
+          $(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+          $\land$
+          $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_s\setminus\{t_0\})$}}\\
+
+      Given a $t'\in{}T$ and an $id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'}$, let us show\\
+      \fbox{\parbox{\lwidth}{$(t'\in{}fired\cup\{t_0\}\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$\\
+          $\land$
+          $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_s\setminus\{t_0\})$.}}
+      
+      The proof is in two parts.
+      
+      \begin{enumerate}
+      \item Assuming that $t'\in{}fired\cup\{t_0\}$, let us show
+        \fbox{$\sigma'(id_{t'})("f")=\mathtt{true}$.}
+
+        Case analysis on $t'\in{}fired\cup\{t_0\}$; there are two cases:
         \begin{itemize}
-        \item $\sigma_{t'}("s\_firable")=\mathtt{true}$ by applying
-          Lemma~\nameref{lem:fe-equal-firable}
-        \item $\sigma_{t'}("s\_priority\_combination")=\mathtt{true}$
-          by applying Lemma~\nameref{lem:stab-compute-pcomb}.
+        \item $t'\in{}fired$
+        \item $t'=t_0$
         \end{itemize}
 
-        Then, it is trivial to show that $\sigma_{t'}("fired")=\mathtt{true}$.
-      \end{itemize}
-      
-    \item Assume $\sigma'_{t'}("fired")=\mathtt{true}$, prove $t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_i\setminus{}\{t_0\}$.\\
+        Let us prove the goal in these two contexts.
+        
+        \begin{itemize}
+        \item \textbf{CASE} $t'\in{}fired$: Thanks to EH, we can
+          deduce \qedbox{$\sigma'_{t'}("f")=\mathtt{true}$.}
+          
+        \item \textbf{CASE} $t'=t_0$:
+          
+          By definition of $id_{t'}$, there exist a $gm_{t'}$,
+          $ipm_{t'}$, $opm_{t'}$ s.t.
+          $\mathtt{comp}(id_{t'},"transition",$ $gm_{t'},$ $ipm_{t'}$,
+          $opm_{t'})\in{}d.cs$.
 
-      Thanks to EH, we know that: $t'\in{}fired\lor{}t'\in{}T_i$.
-      \begin{itemize}
-      \item CASE $t'\in{}fired$, trivial to show $t'\in{}fired\cup\{t_0\}$.
-      \item CASE $t'\in{}T_i$. We know that $t_0\in{}T_i$, therefore,
-        either $t'\in{}T_i\setminus{}\{t_0\}$ (assumption) or $t'=t_0$
-        (then, $t'\in{}fired\cup\{t_0\}$).
-      \end{itemize}
+          By property of the stabilize relation and
+          $\mathtt{comp}(id_{t'},"transition",$ $gm_{t'},$ $ipm_{t'}$,
+          $opm_{t'})\in{}d.cs$:
+          \begin{equation}
+            \label{eq:frd-eq-frd}
+            \sigma(id_{t'})("f")=\sigma(id_{t'})("sfa")~.~\sigma(id_{t'})("spc")
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:frd-eq-frd}:
+          \fbox{$\sigma(id_{t'})("sfa")~.~\sigma(id_{t'})("spc")=\mathtt{true}$.}
+          
+          Then, we can show that: 
+          \begin{itemize}
+          \item $\sigma(id_{t'})("sfa")=\mathtt{true}$ by applying
+            Lemma~\nameref{lem:fe-equal-firable}
+          \item $\sigma(id_{t'})("spc")=\mathtt{true}$ by applying
+            Lemma~\nameref{lem:stab-compute-pcomb}.
+          \end{itemize}
+        \end{itemize}
+        
+      \item Assuming that $\sigma'(id_{t'})("f")=\mathtt{true}$, let
+        us show
+        \fbox{$t'\in{}fired\cup\{t_0\}~\lor~{}t'\in{}T_s\setminus{}\{t_0\}$.}
+
+        From $\sigma'(id_{t'})("f")=\mathtt{true}$ and EH, we can
+        deduce that $t'\in{}fired\lor{}t'\in{}T_s$.
+
+        Case analysis on $t'\in{}fired\lor{}t'\in{}T_s$.
+        
+        \begin{itemize}
+        \item \textbf{CASE} $t'\in{}fired$: then, it is trivial to
+          show \qedbox{$t'\in{}fired\cup\{t_0\}$.}
+        \item \textbf{CASE} $t'\in{}T_s$: We know that $t_0\in{}T_s$.
+          Therefore, either \qedbox{$t'\in{}T_s\setminus{}\{t_0\}$},
+          or $t'=t_0$, and then, \qedbox{$t'\in{}fired\cup\{t_0\}$.}
+        \end{itemize}
+      \end{enumerate}
     \end{enumerate}
   \end{enumerate}
 
   \begin{enumerate}[resume]
-  \item CASE $t_0$ is not elected to be fired.
+  \item \textbf{INDUCTIVE CASE}: $tp=\{t_0\}\cup{}tp_0$ and $t_0$ is
+    not elected to be fired.
     \begin{itemize}
-    \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t_0\}\cup{}tp)$
-    \item $ElectFired(s',fired,tp,fired')$
-    \item $\neg\big(t_0\in{}Firable(s')\land{}t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t_0,fired)}pre(t_i))\big)$
-    \item $Pr(t_0,fired)=\{t_i\vert{}t_i\succ{}t_0\land{}t_i\in{}fired\}$
+    \item $IsTopPrioritySet(T_s,\{t_0\}\cup{}tp_0)$
+    \item $ElectFired(s',fired,tp_0,fired')$
+    \item $IsFiredSetAux(s',fired',T_s\setminus\{t_0\}\cup{}tp_0,fset)$
+    \item $\neg\big(t_0\in{}Firable(s')\land{}t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\big)$
     \item EH:\\
-      {\fontsize{9}{11}\selectfont$\forall{}t'\in{}T,id_{t'},$\\
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
+      $\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$ s.t. $\gamma(t')=id_{t'}$,\\
+      $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
       $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-    \item IH:\\
-      {\fontsize{9}{11}\selectfont$\forall{}T_i\subseteq{}T,~$\\
-      $\big(\forall{}t'\in{}T,id_{t'},(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$\\
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)\big)\Rightarrow$\\
-      $IsTopPriorityList(T_i,\emptyset,\emptyset,tp)\Rightarrow$\\
-      $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-      $\land$
-      $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}tp\big)$}
+      $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$
     \end{itemize}
-    GOAL:\\
-    $\forall{}t\in{}T,~\big(t\in{}fired'\Rightarrow\sigma'_t("fired")=\mathtt{true}\big)$\\
-    $\land$
-    $\big(\sigma'_t("fired")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_i\setminus{}\{t_0\}\cup{}tp\big)$\\
+
+    \begin{ih}
+      $\forall{}T'_s\subseteq{}T,~$\\
+      $IsTopPrioritySet(T'_s,tp_0)\Rightarrow$\\
+      $IsFiredSetAux(s',fired',T'_s\setminus{}tp_0,fset)\Rightarrow$\\
+      $\big(\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'},$\\
+      $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+      $\land$
+      $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T'_s)\big)\Rightarrow$\\
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
+      $~\big(t\in{}fired'\Rightarrow\sigma'(id_t)("f")=\mathtt{true}\big)$
+      $\land$
+      $\big(\sigma'(id_t)("f")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T'_s\setminus{}tp_0\big)$
+    \end{ih}
     
-    Apply IH with $T_i\setminus\{t_0\}$, then, the hard case to prove is:\\
-    $\forall{}t'\in{}T,id_{t'},~$
-    $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-    $\land$\\
-    $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i\setminus\{t_0\})$
+    \fbox{\parbox{\lwidth}{$\forall{}t\in{}T,id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
+        $~\big(t\in{}fired'\Rightarrow\sigma'(id_t)("f")=\mathtt{true}\big)$
+        $\land$
+        $\big(\sigma'(id_t)("f")=\mathtt{true}\Rightarrow{}t\in{}fired'\lor{}t\in{}T_s\setminus{}\{t_0\}\cup{}tp_0\big)$.}}
+    
+    Then, we can apply the induction hypothesis with
+    $T'_s=T_s\setminus\{t_0\}$, then, there are three points to prove:
+
     \begin{enumerate}
-    \item Prove $t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true}$ (assumption).      
-    \item Assume $\sigma'_{t'}("fired")=\mathtt{true}$, prove $t'\in{}fired~\lor~{}t'\in{}T_i\setminus{}\{t_0\}$.\\
+    \item
+      \fbox{$IsTopPrioritySet(T_s\setminus\{t_0\},tp_0)$}
+    \item
+      \fbox{$IsFiredSetAux(s',fired',(T_s\setminus\{t_0\})\setminus{}tp_0,fset)$}
+    \item \fbox{\parbox{\lwidth}{$\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$
+          s.t. $\gamma(t')=id_{t'}$,\\
+          $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+          $\land$
+          $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s\setminus\{t_0\})$}}
+    \end{enumerate}
 
-      Thanks to EH, we know that: $t'\in{}fired\lor{}t'\in{}T_i$.
-      \begin{itemize}
-      \item CASE $t'\in{}fired$ (assumption).
-      \item CASE $t'\in{}T_i$. We know that $t_0\in{}T_i$, therefore,
-        either $t'\in{}T_i\setminus{}\{t_0\}$ (assumption) or $t'=t_0$.\\
+    Let us prove these three points:
 
-        Then, we need to show a contradiction by proving\\
-        $t'\in{}Firable(s')\land{}t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t',fired)}pre(t_i))$\\
-        based on $\sigma'_{t'}("fired")=\mathtt{true}$.
+    \begin{enumerate}
+    \item \fbox{$IsTopPrioritySet(T_s\setminus\{t_0\},tp_0)$}
+      \begin{todobox}
+        Not provable right now.
+      \end{todobox}
+    \item
+      \fbox{$IsFiredSetAux(s',fired',(T_s\setminus\{t_0\})\setminus{}tp_0,fset)$}
 
-        We know
-        \begin{eqnarray*}
-          \sigma'_{t'}("fired")=&\sigma'_{t'}("s\_firable").\sigma'_{t'}("s\_priority\_combination")\\
-                               =&\mathtt{true}\\
-        \end{eqnarray*}
+      We know that
+      $(T_s\setminus\{t_0\})\setminus{}tp_0=T_s\setminus{}(\{t_0\}\cup{}tp_0)$,
+      and thus\\
+      \qedbox{$IsFiredSetAux(s',fired',T_s\setminus{}(\{t_0\}\cup{}tp_0),fset)$
+        is an assumption.}
+      
+    \item
+      \fbox{\parbox{\lwidth}{$\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$
+          s.t. $\gamma(t')=id_{t'}$,\\
+          $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+          $\land$
+          $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s\setminus\{t_0\})$}}
+
+      Given a $t'\in{}T$ and an $id_{t'}\in{}Comps(\Delta)$
+      s.t. $\gamma(t')=id_{t'}$, let us show
+
+      \begin{frameb}
+        $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+        $\land$
+        $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s\setminus\{t_0\})$
+      \end{frameb}
+
+      The proof is in two parts:
+      
+      \begin{enumerate}
+      \item Assuming that $t'\in{}fired$, let us show
+        \fbox{$\sigma'(id_{t'})("f")=\mathtt{true}$.}
+
+        From $t'\in{}fired$ and EH,
+        \qedbox{$\sigma'(id_{t'})("f")=\mathtt{true}$.}
+        
+      \item Assuming that $\sigma'(id_{t'})("f")=\mathtt{true}$, let
+        us show
+        \fbox{$t'\in{}fired~\lor~{}t'\in{}T_s\setminus{}\{t_0\}$.}
+
+        Thanks to $\sigma'(id_{t'})("f")=\mathtt{true}$ and EH, we
+        know that: $t'\in{}fired\lor{}t'\in{}T_s$.
+
+        Case analysis on $t'\in{}fired\lor{}t'\in{}T_s$; there are two
+        cases:
         \begin{itemize}
-        \item Show $t'\in{}Firable(s')$ by applying Lemma~\nameref{lem:fe-equal-firable}.
-        \item Show
-          $t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t',fired)}pre(t_i))$
-          by applying Lemma~\nameref{lem:stab-compute-pcomb} (needs a
-          proof of $t\in{}Firable(s')$ to be applied).
+        \item \textbf{CASE} \qedbox{$t'\in{}fired$.}
+        \item \textbf{CASE} $t'\in{}T_s$:
+
+          From $IsTopPrioritySet(T_s,\{t_0\}\cup{}tp_0)$, we can
+          deduce that $t_0\in{}T_s$. Therefore, either
+          \qedbox{$t'\in{}T_s\setminus{}\{t_0\}$} or $t'=t_0$.
+
+          In the case where $t'=t_0$, we need to show a contradiction by proving\\
+          $t'\in{}Firable(s')$ and
+          $t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))$
+          based on $\sigma'(id_{t'})("f")=\mathtt{true}$.
+
+          By definition of $id_{t'}$, there exist a $gm_{t'}$,
+          $ipm_{t'}$, $opm_{t'}$ s.t.
+          $\mathtt{comp}(id_{t'},"transition",$ $gm_{t'},$ $ipm_{t'}$,
+          $opm_{t'})\in{}d.cs$.
+
+          By property of the stabilize relation and
+          $\mathtt{comp}(id_{t'},$ $"transition",$ $gm_{t'},$
+          $ipm_{t'}$, $opm_{t'})\in{}d.cs$:
+          \begin{equation}
+            \label{eq:frd-eq-frd-true}
+            \sigma(id_{t'})("f")=\sigma(id_{t'})("sfa")~.~\sigma(id_{t'})("spc")=\mathtt{true}
+          \end{equation}
+
+          From $\sigma(id_{t'})("sfa")=\mathtt{true}$, and appealing
+          to Lemma~\nameref{lem:fe-equal-firable}, we can deduce
+          $t'\in{}Firable(s')$.
+
+          From $\sigma(id_{t'})("spc")=\mathtt{true}$, and appealing
+          to Lemma~\nameref{lem:stab-compute-pcomb}, we can deduce
+          $t'\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}$ $pre(t_i))$.
+
+          Then, as $t'=t_0$,
+          $\neg\big(t_0\in{}Firable(s')\land{}t_0\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\big)$
+          is a \qedbox{contradiction.}
         \end{itemize}
-      \end{itemize}
+      \end{enumerate}      
     \end{enumerate}
   \end{enumerate}
   
-\end{proof}
+\end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% STABILIZE COMPUTE PRIORITY COMBINATION AFTER FALLING EDGE %%%%%%%%%%
@@ -276,130 +532,233 @@
 
 \begin{lemma}[Stabilize Compute Priority Combination After Falling Edge]
   \label{lem:stab-compute-pcomb}
-  \fehyps{} and\\
-  $\forall{}t,id_t,\sigma'_t$ s.t. $\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,$ assume that:
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
+  $\forall{}fired,fired',~T_s,~tp,~fset\subseteq{}T$ assume that:
   \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
+  \item $IsTopPrioritySet(T_s,\{t\}\cup{}tp)$
   \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont
-      $\forall{}t'\in{}T,id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
+  \item $FiredAux(s',fired',T_s\setminus{}\{t\}\cup{}tp,fset)$
+  \item EH: $\forall{}t'\in{}T,id_{t'}\in{}Comps(\Delta)$
+    s.t. $\gamma(t')=id_{t'}$,\\
+    $(t'\in{}fired\Rightarrow\sigma'(id_{t'})("f")=\mathtt{true})$
+    $\land$
+    $(\sigma'(id_{t'})("f")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$.
   \item $t\in{}Firable(s')$
   \end{itemize}
-  then\\
-  {\fontsize{9}{11}\selectfont$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))
-    \Leftrightarrow\sigma'_t("s\_priority\_combination")=\mathtt{true}$}
+  then
+  $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\Leftrightarrow\sigma'(id_t)("spc")=\mathtt{true}$
 \end{lemma}
 
-\begin{proof}
-  We know
-  $\sigma'_t("s\_priority\_combination")=\prod\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'_t("pauths")(i)$.
-  Then, apply Lemma~\nameref{lem:stab-compute-pauths} to solve the goal.
-\end{proof}
+\begin{niproof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% STABILIZE COMPUTE PRIORITY AUTHORIZATIONS AFTER FALLING EDGE %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  Given a $t\in{}T$ and an $id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$, a $fired$, $fired'$, $T_s$, $tp$,
+  $fset\subseteq{}T$ and assuming all the above hypotheses, let us
+  show\\
+  \fbox{$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\Leftrightarrow\sigma'(id_t)("spc")=\mathtt{true}$.}\\
 
-\begin{lemma}[Stabilize Compute Priority Authorizations After Falling Edge]
-  \label{lem:stab-compute-pauths}
-  \fehyps{} and\\
-  $\forall{}t,id_t,\sigma'_t$ s.t. $\gamma(t)=id_t$ and $\sigma'(id_t)=\sigma'_t$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,$ assume that:
-  \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
-  \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
-  \item EH (Extra. Hypothesis):\\
-    {\fontsize{8}{11}\selectfont
-      $\forall{}t'\in{}T,id_{t'},$
-      
-      $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
-      $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
-    
-  \item $t\in{}Firable(s')$
-  \end{itemize}
-  then\\
-  {\fontsize{8}{11}\selectfont$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))
-    \Leftrightarrow$\\
-    $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$}\\
-\end{lemma}
-
-\begin{proof}
-  Show the two sides of the equivalence.
+  \exT{}
   
+  By property of the stabilize relation and \InCsCompT:  
+  \begin{equation}
+    \sigma'(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\label{eq:frd-eq-spc-prod-pauths}
+  \end{equation}
+
+  Rewriting the goal with \eqref{eq:frd-eq-spc-prod-pauths}:
+  
+  \fbox{$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\Leftrightarrow\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}\\
+  
+  Then, the proof is in two parts:
   \begin{enumerate}
   \item
-    Assume $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$,\\
-    show $\forall{}i\in[0,\sigma'_t("input\_arcs\_number")-1],~\sigma'_t("pauths")(i)=\mathtt{true}$.\\
+    $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))\Rightarrow\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\mathtt{true}$
+  \item
+    $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\mathtt{true}\Rightarrow{}t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))$
+  \end{enumerate}
 
-    Reason on the cardinality of the set of input places of $t$. 2
-    CASES.
+  Let us prove both sides of the equivalence:
+  \begin{enumerate}
+  \item Assuming
+    $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))$, let us
+    show\\
+    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
+
+    Let us perform case analysis on $input(t)$; there are 2 cases:
     \begin{itemize}
-    \item CASE $\vert{}input(t)\vert=0$.
+    \item \textbf{CASE} $input(t)=\emptyset$:
 
-      Then $\sigma'_t("input\_arcs\_number")=1$ and $i=0$.
+      By construction,
+      ${<}\mathtt{input\_arcs\_number\Rightarrow}{}1{>}\in{}gm_t$ and\\
+      ${<}\mathtt{priority\_authorizations(0)\Rightarrow{}true}{>}\in{}ipm_t$.
 
-      Then, by construction, $\mathtt{id_t.pauths(0)}$ is connected to
-      the $\mathtt{true}$ constant in the input map of Transition
-      component $id_t$.
+      By property of the elaboration relation, we have
+      $\Delta(id_t)("ian")=1$, and by property of the stabilize
+      relation, we have $\sigma'(id_t)("pauths")[0]=\mathtt{true}$.
+      
+      Rewriting the goal with $\Delta(id_t)("ian")=1$ and
+      $\sigma'(id_t)("pauths")[0]=\mathtt{true}$, and simplifying the
+      goal: \qedbox{tautology.}
+      
+    \item \textbf{CASE} $input(t)\neq{}\emptyset$:
 
-      Then, $\sigma'_t("pauths")(0)=\mathtt{true}$.
-    \item CASE $\vert{}input(t)\vert>0$.
+      Then, let us show an equivalent goal:\\
+      \fbox{$\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
 
-      Then, for all $i\in[0,\sigma'_t("input\_arcs\_number")-1]$,
-      exists a place $p$ and an arc $a$ such that $pre(p,t)=a$.
+      Given an $i\in{}[0,\Delta(id_t)("ian")-1]$, let us show
+      \fbox{$\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
 
-      Then, by construction, there exists a Place component $id_p$
-      implementing place $p$.
+      By construction,
+      ${<}\mathtt{input\_arcs\_number\Rightarrow}{}\vert{}input(t)\vert{>}\in{}gm_t$.
 
-      Reason on $a$.
+      By property of the elaboration relation, we have
+      $\Delta(id_t)("ian")=\vert{}input(t)\vert$. Then, we can deduce
+      $i\in{}[0,\vert{}input(t)\vert-1]$.
+      
+      By construction, for all $i\in{}[0,\vert{}input(t)\vert-1]$,
+      there exist a $p\in{}input(t)$ and an $id_p\in{}Comps(\Delta)$
+      s.t. $\gamma(p)=id_p$, there exist a $gm_p$, $ipm_p$, $opm_p$
+      s.t. $\mathtt{comp}(id_p,$ $"place",$ $gm_p,$ $ipm_p,$
+      $opm_p)\in{}d.cs$, and there exist a
+      $j\in{}[0,\vert{}output(p)\vert]$ and an
+      $id_{ji}\in{}Sigs(\Delta)$ s.t.\\
+      ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$
+      and
+      ${<}\mathtt{output\_arcs\_valid(j)\Rightarrow{}id_{ji}}{>}\in{}opm_t$.
+      Let us take such a $p\in{}input(t)$, $id_p\in{}Comps(\Delta)$,
+      $gm_p$, $ipm_p$, $opm_p$, $j\in{}[0,$ $\vert{}output(p)\vert]$ and
+      $id_{ji}\in{}Sigs(\Delta)$.
 
+      Now, let us perform case analysis on the nature of the arc
+      connecting $p$ and $t$; there are 2 cases:
+      
       \begin{itemize}
-      \item CASE $a=(\omega,\mathtt{test})$ or $a=(\omega,\mathtt{inhib})$.
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{test})$ or
+        $pre(p,t)=(\omega,\mathtt{inhib})$:
 
-        Then, by construction, $\mathtt{id_t.pauths(i)}$ is connected to
-        the $\mathtt{true}$ constant in the input map of Transition
-        component $id_t$. 
+        By construction,
+        ${<}\mathtt{priority\_authorizations(i)\Rightarrow{}true}{>}\in{}ipm_t$,
+        and by property of the stabilize relation:
+        \qedbox{$\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
 
-        Then, $\sigma'_t("pauths")(i)=\mathtt{true}$.
-      \item CASE $a=(\omega,\mathtt{basic})$, then 2 CASES.
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{basic})$:
+
+        Let us define
+        $output_c(p)=\{t\in{}T~\vert~\exists{}\omega,~pre(p,t)=(\omega,\mathtt{basic})\}$,
+        the set of output transitions of $p$ that are in
+        conflict. Then, there are two cases, one for each way to solve
+        the conflicts between the output transitions of $p$:
 
         \begin{itemize}
-        \item CASE For all pair of transitions in $output_c(p)$, all
-          conflicts are solved by mutual exclusion.
+        \item \textbf{CASE} For all pair of transitions in
+          $output_c(p)$, all conflicts are solved by mutual exclusion:
 
-          Then, by construction, $\mathtt{id_p.pauths}$ is an unconnected
-          (i.e, $\mathtt{open}$) port, and $\mathtt{id_t.pauths(i)}$ is
-          connected to the \texttt{true} constant.
+          By construction,
+          ${<}\mathtt{priority\_authorizations(i)\Rightarrow{}true}{>}\in{}ipm_t$,
+          and by property of the stabilize relation:
+          \qedbox{$\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
+        \item \textbf{CASE} The priority relation is a strict total
+          order over the set $output_c(p)$:
 
-          Then, $\sigma'_t("pauths")(i)=\mathtt{true}$.
-        \item CASE The priority relation is a strict total order over
-          the set $output_c(p)$.
+          By construction, there exists an $id'_{ji}\in{}Sigs(\Delta)$
+          s.t.\\
+          ${<}\mathtt{priority\_authorizations(i)\Rightarrow{}id'_{ji}}{>}\in{}ipm_t$
+          and\\
+          ${<}\mathtt{priority\_authorizations(j)\Rightarrow{}id'_{ji}}{>}\in{}opm_p$.
 
-          Then, by construction, there exists an index $j$ and a
-          signal $sig$ connecting $\mathtt{id_p.pauths(j)}$ to $\mathtt{id_t.pauths(i)}$.
+          By property of the stabilize relation, \InCsCompT{} and
+          \InCsCompP:
+          \begin{equation}
+            \label{eq:frd-eq-tpauthsi-ppauthsj}\sigma'(id_t)("pauths")[i]=\sigma'(id'_{ji})=\sigma'(id_p)("pauths")[j]\\
+          \end{equation}
 
-          Then, we can deduce that $\sigma'_t("pauths")(i)=\sigma'("sig")=\sigma'_p("pauths")(j)$.
+          Rewriting the goal with \eqref{eq:frd-eq-tpauthsi-ppauthsj}:
+          \fbox{$\sigma'(id_p)("pauths")[j]=\mathtt{true}$.}
 
-          Then, we can specialize the definition of
-          $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$
-          with place $p$, and $pre(p,t)=(\omega,\mathtt{basic})$ to
-          get
-          $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
+          By property of the stabilize relation and \InCsCompP:
+          \begin{equation}
+            \label{eq:frd-eq-pauthsj}
+            \sigma'(id_p)("pauths")[j]=(\sigma'(id_p)("sm")\ge{}\mathtt{rsum}+\sigma'(id_p)("oaw")[j])
+          \end{equation}
+
+          Let us define the $\mathtt{rsum}$ term as follows:
+          \begin{equation}
+            \label{eq:frd-rsum}
+            \mathtt{rsum}=\sum\limits_{i=0}^{j-1}
+            \begin{cases}
+              \sigma'(id_p)("oaw")[i]~\mathtt{if}~\sigma'(id_p)("otf")[i].\\
+              \hspace{19ex}\sigma'(id_p)("oat")[i]=\mathtt{basic}\\
+              0~otherwise\\
+            \end{cases}
+          \end{equation}
+
+          Rewriting the goal with \eqref{eq:frd-eq-pauthsj}:
+          \fbox{$\sigma'(id_p)("sm")\ge{}\mathtt{rsum}+\sigma'(id_p)("oaw")[j]$}
+
+          By definition of
+          $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}fired}pre(t_i))$, we
+          have
+          $s'.M(p)\ge{}\sum\limits_{t_i\in{}fired}pre(p,t_i)+\omega$.
+
+          Then, there are three points to prove:
+          \begin{enumerate}
+          \item \fbox{$s'.M(p)=\sigma'(id_p)("sm")$}
+          \item \fbox{$\omega=\sigma'(id_p)("oaw")[j]$}
+          \item \fbox{$\sum\limits_{t_i\in{}fired}pre(p,t_i)=\mathtt{rsum}$}
+          \end{enumerate}
+
+          Let us prove these three points:
+          \begin{enumerate}
+          \item \fbox{$s'.M(p)=\sigma'(id_p)("sm")$}
+
+            Appealing to Lemma~\nameref{lem:fe-equal-marking}:
+            \qedbox{$s'.M(p)=\sigma'(id_p)("sm")$.}
+          \item \fbox{$\omega=\sigma'(id_p)("oaw")[j]$}
+
+            By construction, and as
+            $pre(p,t)=(\omega,\mathtt{basic})$, we have\\
+            ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow}{}\omega{>}\in{}ipm_p$.
+
+            By property of the stabilize relation and \InCsCompP:
+            \qedbox{$\omega=\sigma'(id_p)("oaw")[j]$.}
+            
+          \item
+            \fbox{$\sum\limits_{t_i\in{}fired}pre(p,t_i)=\mathtt{rsum}$}\\
+            
+            Let us replace the left and right term of the equality by
+            their full definition:
+
+            \begin{frameb}
+              \begin{tabular}{c}
+                $\sum\limits_{t_i\in{}fired}
+                \begin{cases}
+                  \omega~\mathtt{if}~pre(p,t_i)=(\omega,\mathtt{basic})\\
+                  0~otherwise
+                \end{cases}$ \\
+                $=$ \\
+                $\sum\limits_{i=0}^{j-1}
+                \begin{cases}
+                  \sigma'(id_p)("oaw")[i]~\mathtt{if}~\sigma'(id_p)("otf")[i].\\
+                  \hspace{19ex}\sigma'(id_p)("oat")[i]=\mathtt{basic}\\
+                  0~otherwise\\
+                \end{cases}$ \\
+              \end{tabular}
+            \end{frameb}
+            
+          \end{enumerate}
           
-          Then, we can show that
-          $\sigma'_p("pauths")(j)=\mathtt{true}$ by applying
-          Lemma~\nameref{lem:stab-compute-ind-pauth}.
+          
+          % Then, we can specialize the definition of
+          % $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,fired)}pre(t_i))$
+          % with place $p$, and $pre(p,t)=(\omega,\mathtt{basic})$ to
+          % get
+          % $s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$.
+          
+          % Then, we can show that
+          % $\sigma'_p("pauths")(j)=\mathtt{true}$ by applying
+          % Lemma~\nameref{lem:stab-compute-ind-pauth}.
 
-          Then, the goal is trivially solved by rewriting.
+          % Then, the goal is trivially solved by rewriting.
         \end{itemize}
         
       \end{itemize}
@@ -500,7 +859,7 @@
     \end{enumerate}
   \end{enumerate}
   
-\end{proof}
+\end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% STABILIZE COMPUTE INDIVIDUAL PRIORITY AUTHORIZATION AFTER %%%%%%%%%%
@@ -515,19 +874,19 @@
   $\sigma'(id_t)=\sigma'_t$,\\
   $\forall{}p,id_p,\sigma'_p,$ s.t. $\gamma(p)=id_p$ and
   $\sigma'(id_p)=\sigma'_p$,\\
-  $\forall{}fired,fired',~T_i,~tp,~fset,~sig\in{}Sigs(\Delta),~i,j\in\mathbb{N},~\omega\in\mathbb{N}$,
+  $\forall{}fired,fired',~T_s,~tp,~fset,~sig\in{}Sigs(\Delta),~i,j\in\mathbb{N},~\omega\in\mathbb{N}$,
   assume that:
   \begin{itemize}
-  \item $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp)$
+  \item $IsTopPrioritySet(T_s,\emptyset,\emptyset,\{t\}\cup{}tp)$
   \item $ElectFired(s',fired,tp,fired')$
-  \item $FiredAux(s',fired',T_i\setminus{}\{t\}\cup{}tp,fset)$
+  \item $FiredAux(s',fired',T_s\setminus{}\{t\}\cup{}tp,fset)$
   \item EH (Extra. Hypothesis):\\
     {\fontsize{8}{11}\selectfont
       $\forall{}t'\in{}T,id_{t'},$
       
       $(t'\in{}fired\Rightarrow\sigma'_{t'}("fired")=\mathtt{true})$
       $\land$
-      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_i)$.}
+      $(\sigma'_{t'}("fired")=\mathtt{true}\Rightarrow{}t'\in{}fired~\lor~{}t'\in{}T_s)$.}
   \item $\mathtt{id_p.pauths(j)\Rightarrow{}sig\Rightarrow{}id_t.pauths(i)}$
   \item $pre(p,t)=(\omega,\mathtt{basic})$
   \end{itemize}
@@ -536,7 +895,7 @@
     $\Leftrightarrow{}s'.M(p)-\sum\limits_{t_i\in{}Pr(t,fired)}pre(p,t_i)\ge\omega$}.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   From the behavior of the VHDL Place component, we can deduce:\\
   {\fontsize{8}{11}\selectfont$\sigma'_p("pauths")(j)=true\Leftrightarrow$
     $\sigma'_p("s\_marking")-\sum\limits_{k\in{}HPF(\sigma'_p,j)}\sigma'_p("out\_arc\_w")(k)\ge\sigma'_p("out\_arc\_w")(j)$
@@ -672,18 +1031,18 @@
         $\sigma'_p("output\_transitions\_fired")(k)=\sigma'_{t_i}("fired")=\mathtt{true}$.
 
         Then, thanks to EH, we know that $t_i\in{}fired$ or
-        $t_i\in{}T_i$.
+        $t_i\in{}T_s$.
 
         \begin{itemize}
         \item CASE $t_i\in{}fired$. Then, take $t_i$ to prove the goal
           by assumption.
-        \item CASE $t_i\in{}T_i$.
+        \item CASE $t_i\in{}T_s$.
 
-          Since $t$ is a \emph{top-priority} transition of set $T_i$
+          Since $t$ is a \emph{top-priority} transition of set $T_s$
           (given by
-          $IsTopPriorityList(T_i,\emptyset,\emptyset,\{t\}\cup{}tp$),
-          then there exists no transition $t'\in{}T_i$ such that
-          $t'\succ{}t$. Since $t_i\in{}T_i$, then we have
+          $IsTopPrioritySet(T_s,\emptyset,\emptyset,\{t\}\cup{}tp$),
+          then there exists no transition $t'\in{}T_s$ such that
+          $t'\succ{}t$. Since $t_i\in{}T_s$, then we have
           $t_i\nsucc{}t$ contradicting $t_i\succ{}t$.
         \end{itemize}
       \end{itemize}
@@ -691,4 +1050,9 @@
     \end{enumerate}
   \end{enumerate}
 
-\end{proof}
+\end{niproof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

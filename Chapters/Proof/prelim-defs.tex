@@ -1,10 +1,9 @@
 \begin{definition}[SITPN-to-\hvhdl{} Design Binder]
   Given a $sitpn\in{}SITPN$ and a \hvhdl{} design $d\in{}design$, a
-  SITPN-to-\hvhdl{} design binder $\gamma\in{}WM(sitpn,d)$ is a tuple
+  SITPN-to-\hvhdl{} design binder $\gamma\in{}WM(sitpn,d)$ is a tuple\\
   ${<}PMap,TMap,\mathcal{C}_{id},\mathcal{A}_{id},\mathcal{F}_{id},CMap,AMap,FMap{>}$
   where:
   \begin{itemize}
-    \fontsize{9}{10}\selectfont
   \item
     $sitpn={<}P,T,pre,test,inhib,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
     \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$
@@ -151,14 +150,14 @@
   \begin{tabular}{@{}l}
     {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
     
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]        
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]        
         \infer0{$\gamma\vdash{}[~]\sim{}[~]$}
       \end{prooftree}} 
   \end{tabular}
   \begin{tabular}{@{}l}
     {\fontsize{9}{11}\selectfont\textsc{SimTraceCons}} \\
     
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
 
         \hypo{$\gamma\vdash{}s\sim\sigma$}
         \hypo{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$}

@@ -49,13 +49,13 @@
     \begin{enumerate}
     \item
       $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{item:6}
+      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{item:fe-equal-marking}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
       $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{item:9}
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{item:fe-equal-tc}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
       $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.\label{item:fe-equal-reset-orders}
@@ -70,27 +70,28 @@
       $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.\label{item:fe-equal-firable}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{false}$.
+      $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{false}$.\label{item:fe-equal-not-firable}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
+      $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.\label{item:fe-equal-fired}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\notin{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{false}$.
+      $t\notin{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{false}$.\label{item:fe-equal-not-fired}
     \item
       $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.\label{item:7}
+      $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.\label{item:fe-equal-ots}
     \item
       $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.\label{item:8}
+      $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.\label{item:fe-equal-its}
     \end{enumerate}
   \end{frameb}
 
   Each point is proved by a separate lemma:
   \begin{itemize}[label=--]
   \item Apply Lemma~\nameref{lem:fe-equal-marking} to solve
-    \ref{item:6}.
-  \item Apply Lemma~\nameref{lem:fe-equal-tc} to solve \ref{item:9}.
+    \ref{item:fe-equal-marking}.
+  \item Apply Lemma~\nameref{lem:fe-equal-tc} to solve
+    \ref{item:fe-equal-tc}.
   \item Apply Lemma~\nameref{lem:fe-equal-reset-orders} to solve
     \ref{item:fe-equal-reset-orders}.
   \item Apply Lemma~\nameref{lem:fe-equal-cond-values} to solve
@@ -101,10 +102,17 @@
     \ref{item:fe-equal-fun-exec}.
   \item Apply Lemma~\nameref{lem:fe-equal-firable} to solve
     \ref{item:fe-equal-firable}.
-  \item Apply Lemma~\nameref{lem:fe-equal-ots} to solve \ref{item:7}.
-  \item Apply Lemma~\nameref{lem:fe-equal-its} to solve \ref{item:8}.
+  \item Apply Lemma~\nameref{lem:fe-equal-not-firable} to solve
+    \ref{item:fe-equal-not-firable}.
+  \item Apply Lemma~\nameref{lem:fe-equal-fired} to solve
+    \ref{item:fe-equal-fired}.
+  \item Apply Lemma~\nameref{lem:fe-equal-not-fired} to solve
+    \ref{item:fe-equal-not-fired}.
+  \item Apply Lemma~\nameref{lem:fe-equal-ots} to solve
+    \ref{item:fe-equal-ots}.
+  \item Apply Lemma~\nameref{lem:fe-equal-its} to solve
+    \ref{item:fe-equal-its}.
   \end{itemize}
-  
 \end{proof}
 
 \subsection{Falling Edge and marking}
@@ -2224,7 +2232,18 @@
   \end{enumerate}
 \end{niproof}
 
+\begin{lemma}[Falling Edge Equal Not Firable]
+  \label{lem:fe-equal-not-firable}
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.
+\end{lemma}
 
+\begin{proof}
+  Proving the above lemma is trivial by appealing to
+  Lemma~\nameref{lem:fe-equal-firable} and by reasoning on
+  contrapositives.
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex
