@@ -1,0 +1,107 @@
+In this section, we present the review of the work done in the
+literature pertaining to transformation functions with a focus in the
+context of formal verification. Here, a transformation function is
+understood as any kind of mapping from a source representation to a
+target representation, where the source and target representation
+possess a behavior of their own (i.e, they are
+executable). Especially, we are interested in two things:
+
+\begin{enumerate}
+\item Is there a proper way to build a transformation function? Do
+  standards exist to do this depending on the application domain? How
+  can we build a modular, extensible transformation function? How can
+  we build a transformation function that will ease the proof of
+  semantic preservation?
+\item In the context of formal verification, how are expressed the
+  semantic preservation theorems? Are there usual proof strategies?
+\end{enumerate}
+
+Here, the goal is to inspire ourselves with the work of the
+literature, and to see how far the correspondence holds between our
+specific case of transformation, and other cases of transformations.
+The results of the literature review are presented in two parts. The
+two parts have been prepared based on the same material. The first
+part will be focusing on the expression of the transformation
+functions in the literature, and the second part will be focusing on
+the proof that these transformations are semantic preserving ones.
+
+The material we used for the literature review is divided in three
+categories. Each category covers a specific case of transformation
+function, always taken in the context of formal verification. Thus,
+the three categories are:
+
+\begin{itemize}
+\item Compilers for generic programming languages
+\item Compilers for hardware description languages
+\item Model-to-model and model-to-text transformations
+\end{itemize}
+
+\subsection{Building transformation functions}
+\label{sec:build-transf}
+
+As the authors state in \cite{Tan2016}, ``Although theoretically
+possible, verifying a compiler that is not designed for verification
+would be a prohibitive amount of work in practice.'' The question is
+to know how to design such a compiler? How to anticipate the fact that
+we will have to prove that the compiler is semantic preserving?
+
+\paragraph{Compilers for generic programming languages} In the context
+of formally verified compilers for generic programming languages,
+translation from a source program to a target program mostly straight
+forward. Not surprisingly, each construct of the source program is
+mapped to one or many constructs of the target
+program. Figure~\ref{fig:java-expr-to-java-bytecode} gives an example
+of the translation from \java{} program expressions to \java{} bytecode
+expressions, set in the context of a compiler for \java{} programs
+written within the \isa{} theorem prover \cite{Strecker2002}. Here,
+the mapping between source and target constructs is clearly defined.
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\linewidth]{Figures/Proof/java-exprs-transl}
+  \caption{Translation from \java{} expressions to \java{} bytecode expressions}
+  \label{fig:java-expr-to-java-bytecode}
+\end{figure}
+In the works pertaining to the well-known \ccert project
+\cite{Leroy2009, Blazy2006}, the many passes building the compiler
+from C programs to assembly languages are also clearly mapping each
+construct of source program to target program constructs. This is all
+the more natural, since the languages like \coq, \isa, \hol and other
+interactive theorem provers permit to perform pattern matching on the
+abstract syntax tree of the source programs.
+
+The cases of optimizing compilers, like \cite{Leroy2009} and
+\cite{Tan}, show that to avoid to write too complex functions when
+passing from source to target program, that would too difficult to
+handle during the semantic preservation proof, the compilation is
+decomposed into many passes. No more than 12 passes for the CakeML
+compiler, and up to 7 passes for \ccert. This is a way to keep
+translation functions simple in order to ease reasoning
+afterwards. Indeed, the more the gap is important between the source
+representation and the target one, the more the translation function
+will be complex.
+
+Another point that is noticeable is the expression of translation
+function is the necessity to keep a binding between source and target
+representations. For instance, in \ccert, when passing from
+transformed C programs to an RTL representation (based on registers
+and control flow graphs), a binding function $\gamma$ links the
+variables found in C programs to the registers generated in the RTL
+representation. The binding is important for the translation
+(replacing variables by their corresponding registers in the RTL
+code), and for the proof when values from the source program will be
+compared to values in the target program. This is a thing that should
+be anticipated when writing a translation function, i.e what is the
+correspondence between source and target elements.
+
+In \cite{Leroy2009}, and \cite{Chlipala2010}, compilers are written
+within the \coq{} proof assistant. Compilers are expressed using the
+state-and-error monad, thus mimicking the traits of imperative
+languages into a functional programming language setting.
+
+\paragraph{Compilers for hardware description languages}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
