@@ -1,0 +1,195 @@
+Before stating the behavior preservation theorem, we must clarify the
+meaning of semantic preservation between an SITPN and a \hvhdl{}
+design. To do so, we must define:
+
+\begin{enumerate}
+\item what does semantical matching means between an SITPN state and an \hvhdl{} state?
+\item when, in the course of the execution of an SITPN and an \hvhdl{}
+  design, does this semantical matching must hold?
+\end{enumerate}
+
+We must relate the elements that constitute the execution state of an
+SITPN to the elements that constitute the execution state of an
+\hvhdl{} design. An SITPN state is an abstract structure relating the
+places, transitions, actions, functions and conditions of a given
+SITPN to the values of certain domains. A \hvhdl{} design state is
+composed a signal store mapping signals to values, and of a component
+store mapping component instances to their own internal states. Thanks
+to the binder function $\gamma$ generated alongside the transformation
+from an SITPN to a \hvhdl{} design, we are able to relate the elements
+of the SITPN structure to the component instances and signals on the
+\hvhdl side. Thus, the state similarity relation expressing a
+semantical match between an SITPN state and an \hvhdl{} design is
+defined as follows:
+
+\begin{definition}[General State Similarity]
+  \label{def:state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  similar, written $\gamma\vdash{}s\sim\sigma$ iff
+  \begin{enumerate}
+  \item\label{item:sim-mark} $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $~s.M(p)=\sigma(id_p)("s\_marking")$.
+  \item\label{item:sim-tc}
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+  \item\label{item:sim-reset}
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
+  \item\label{item:sim-cond}
+    $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
+  \item\label{item:sim-act}
+    $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
+  \item\label{item:sim-fun}
+    $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \end{enumerate}
+\end{definition}
+
+In Item~\ref{item:sim-mark}, based on the $\gamma$ binder, we relate
+the marking value of a place $p$ to the value of the $s\_marking$
+signal inside the internal state of the place component instance
+$id_p$. Items~\ref{item:sim-tc} and \ref{item:sim-reset} similarly
+relate the value of time counters (resp. reset orders) of transitions
+to the value of the signals $s\_time\_counter$
+(resp. $s\_reinit\_time\_counter$) in the internal state of the
+corresponding transition component instances. In item
+\ref{item:sim-cond} (resp. \ref{item:sim-act} and \ref{item:sim-fun}),
+the boolean value of conditions (resp. actions and functions) are
+compared to the value of input (resp. output) ports of the \hvhdl{}
+design, also based on the $\gamma$ binder.
+
+\begin{todobox}
+  Explain the time counter particular relation.
+\end{todobox}
+
+The second question that we asked above was: when does this state
+similarity relation must hold in the course of the execution? The
+source and target representations are both synchronously
+executed. Thus, we find it natural to check that the state similarity
+relation holds at the end of a clock cycle. However, due to
+modifications resulting after a bug detection and correction (see
+Section~\ref{sec:detailled-proof}), the state similarity relation of
+Definition~\ref{sec:state-sim-relation} does not hold at the end of a
+clock cycle. The equality between reset orders
+(Item~\ref{item:sim-reset}) is not verified. However, this semantic
+divergence is without effect. New reset orders are computed at the
+beginning of a clock cycle such that the relation of
+Item~\ref{item:sim-reset} holds in the middle of the clock cycle (i.e,
+just before the falling edge of the clock). This is the only moment
+during the clock cycle where the $s\_reinit\_time\_counter$ signal is
+actually involved in the computation of other signals value. Thus, it
+is sufficient that Item~\ref{item:sim-reset} holds only in the middle
+of the clock cycle. However, we must now defined two state similarity
+relation; one that checks the semantic matching after the rising edge
+of the clock signal (i.e, in the middle of the clock cycle), and one
+that checks the semantic matching after the falling edge of the clock
+signal (i.e, at the end of the clock cycle).
+
+\begin{definition}[Post Rising Edge State Similarity]
+  \label{def:post-re-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle count
+  $\tau\in\mathbb{N}$, and an SITPN execution environment
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
+  SITPN state $s\in{}S(sitpn)$ and a design state
+  $\sigma\in\Sigma(\Delta)$ are similar after a rising edge happening
+  at clock cycle count $\tau$, written
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
+  \begin{enumerate}
+  \item
+    $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)("s\_marking")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
+  \item
+    $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
+  \item
+    $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{false}$.
+  \item
+    $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\sigma(id_t)("s\_condition\_combination")=
+    \prod\limits_{c\in{}conds(t)}
+    \begin{cases}
+      E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+      \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+    \end{cases}$\\
+    where
+    $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}[Post Falling Edge State Similarity]
+  \label{def:post-fe-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  similar after a falling edge, written
+  $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
+  $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
+  similarity) and
+  \begin{enumerate}
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{false}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
+  \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+    $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}[Execution Trace Similarity]
+  \label{def:exec-trace-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, the execution trace
+  $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
+  $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
+  following rules:
+
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]        
+        \infer0{$\gamma\vdash{}[~]\sim{}[~]$}
+      \end{prooftree}} 
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTraceCons}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
+
+        \hypo{$\gamma\vdash{}s\sim\sigma$}
+        \hypo{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$}
+        \infer2{$\gamma\vdash{}(s :: \theta_s)\sim{}(\sigma :: \theta_\sigma)$}
+      \end{prooftree}} 
+  \end{tabular}  
+\end{definition}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

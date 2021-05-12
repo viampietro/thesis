@@ -134,4 +134,138 @@ between two big operator expressions.
 
   \end{itemize}
 \end{proof}
+
+\subsection{Equality between big operator expressions}
+\label{sec:eq-bi-op-expr}
+
+Many times in the proceeding of the following proof, the equality
+between two sum or product expressions must be estbalished; for
+instance:
+
+$\sum\limits_{a\in{}A}f(a)=\sum\limits_{b\in{}B}g(b)$ where $A$ and
+$B$ are finite sets, $f\in\mathbb{A}\rightarrow\mathbb{N}$ and
+$g\in{}B\rightarrow\mathbb{N}$
+
+To prove such an equality, Theorem~\ref{thm:big-op-eq} is used,
+considering that the sum operator used in the above equation is a big
+operator over the triplet ${<}\mathbb{N},0,+{>}$. A big operator is
+defined as follows:
+
+\begin{definition}[Big Operator]
+  Given a triplet ${<}A,*,e{>}$ such that $A$ is a set,
+  $*\in{}A\rightarrow{}A\rightarrow{}A$ is a commutative and
+  associative operator over $A$, and $e\in{}A$ is a neutral element of
+  $*$, then for all finite set $B$, and application
+  $f\in{}B\rightarrow{}A$, a big operator $\Omega$ is recursively
+  defined as follows: $\mathop{\Omega}\limits_{b\in{}B}f(b)=
+  \begin{cases}
+    e & if~B=\emptyset \\
+    f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b') & otherwise
+  \end{cases}
+  $
+\end{definition}
+
+Then, we can prove the following theorem concerning the equality
+between two big operator expressions.
+
+\begin{thm}[Big Operator Equality]
+  \label{thm:big-op-eq}
+  For all a triplet ${<}A,*,e{>}$ such that $A$ is a set,
+  $*\in{}A\rightarrow{}A\rightarrow{}A$ is a commutative and
+  associative operator over $A$, and $e\in{}A$ is a neutral element of
+  $*$, and for all finite sets $B$ and $C$, and applications
+  $f\in{}B\rightarrow{}A$ and $g\in{}C\rightarrow{}A$, assume that:
+  \begin{itemize}
+  \item there exists an injection $\iota\in{}B\rightarrow{}C$
+    s.t. $\forall{}b\in{}B,~f(b)=g(\iota(b))$
+  \item $\vert{}B\vert=\vert{}C\vert$
+  \end{itemize}
+  then
+  $\mathop{\Omega}\limits_{b\in{}B}f(b)=\mathop{\Omega}\limits_{c\in{}C}g(c)$.
+\end{thm}
+
+\begin{proof}
+  Let us reason by induction over $\mathop{\Omega}\limits_{b\in{}B}f(b)$:
+
+  \begin{itemize}
+  \item \textbf{BASE CASE} $B=\emptyset$:\\
+    Then $\vert{}C\vert=\vert{}B\vert=0$, and $C=\emptyset$.
+    By definition of $\Omega$:
+    \begin{eqnarray}
+      \mathop{\Omega}\limits_{b\in{}B}f(b)=e\label{eq:bemp} \\
+      \mathop{\Omega}\limits_{c\in{}C}g(c)=e\label{eq:cemp}
+    \end{eqnarray}
+    Rewriting the goal with \eqref{eq:bemp} and \eqref{eq:cemp},
+    \qedbox{tautology}.
+  \item \textbf{INDUCTION CASE} $B\neq\emptyset$:
+    \begin{ih}
+      For all finite set $C'$ verifying:
+      \begin{itemize}
+      \item $\exists{}$ an injection
+        $\iota'\in{}B\setminus\{b\}\rightarrow{}C'~s.t.~$
+        $\forall{}b'\in{}B\setminus\{b\},~f(b')=g(\iota(b'))$
+      \item $\vert{}B\setminus\{b\}\vert=\vert{}C'\vert$
+      \end{itemize}
+      then $f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=f(b)*\mathop{\Omega}\limits_{c'\in{}C'}g(c)$
+    \end{ih}
+    
+    The goal is \fbox{$f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=\mathop{\Omega}\limits_{c\in{}C}g(c)$}
+
+    \noindent{}Let us take $\iota\in{}B\rightarrow{}C$
+    s.t. $\forall{}b\in{}B,~f(b)=g(\iota(b))$, then:
+    \begin{equation}
+      f(b)=g(\iota(b))\label{eq:b-iota-b}
+    \end{equation}
+    \noindent{}Also, by definition of $\Omega$:
+    \begin{equation}
+      \mathop{\Omega}\limits_{c\in{}C}g(c)=g(\iota(b))*\mathop{\Omega}\limits_{c'\in{}C\setminus\{\iota(b)\}}\label{eq:omega-C}
+    \end{equation}
+    \noindent{}Rewriting the goal with \eqref{eq:omega-C} and
+    \eqref{eq:b-iota-b},\\
+    \fbox{$f(b)*\mathop{\Omega}\limits_{b'\in{}B\setminus\{b\}}f(b')=f(b)*\mathop{\Omega}\limits_{c'\in{}C\setminus\{\iota(b)\}}g(c')$}
+    
+    \noindent{}Let us apply the induction hypothesis with $C'=C\setminus\{\iota(b)\}$; then there are two points to prove:
+    \begin{enumerate}
+    \item \fbox{$\vert{}B\setminus\{b\}\vert=\vert{}C\setminus\{\iota(b)\}\vert$.} Trivial as $\vert{}B\vert=\vert{}C\vert$.
+    \item \fbox{\parbox{\linewidth}{$\exists{}$ an injection
+          $\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}~s.t.~$
+          $\forall{}b'\in{}B\setminus\{b\},f(b')=g(\iota'(b'))$}}
+    \end{enumerate}
+    Let us define a
+    $\iota'\in{}B\setminus\{b\}\rightarrow{}C\setminus\{\iota(b)\}$ as
+    follows:
+    $\forall{}b'\in{}B\setminus\{b\},~\iota'(b)=\iota(b)$. Let us show
+    that this definition is correct by proving that\\
+    \fbox{$\forall{}b'\in{}B\setminus\{b\},~\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+
+    \noindent{}Given a $b'\in{}B\setminus\{b\}$, let us show
+    \fbox{$\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+
+    \noindent{}By definition of $\iota$, $\iota(b')\in{}C$; then,
+    there are 2 cases:
+    \begin{itemize}
+    \item \textbf{CASE} $\iota(b')=\iota(b)$, then by definition of
+      $\iota$ as an injective function: $b'=b$. Then,
+      \qedbox{$b\in{}B\setminus\{b\}$ is a contradiction.}
+    \item \textbf{CASE} \qedbox{$\iota(b')\in{}C\setminus\{\iota(b)\}$.}
+    \end{itemize}
+
+    \noindent{}Now let us get back to the previous goal. Using
+    $\iota'$ to prove it, there are 2 points to prove:
+    \begin{itemize}
+    \item \fbox{$\iota'$ is injective.} Trivial, by definition of $\iota'$.
+    \item
+      \fbox{$\forall{}b'\in{}B\setminus\{b\},~f(b')=g(\iota'(b'))$.}
+      Trivial, by definition of $\iota'$.
+    \end{itemize}
+
+  \end{itemize}
+\end{proof}
+
+\begin{todobox}
+  Add a remark on how to convert a sequence of indexes into a finite
+  set, and what is the cardinality of the finite set:\\
+  $\mathop{\Omega}\limits_{i=n}^m{}f(i)$ then $\vert[n,m]\vert=(m-n)+1$ when $m\ge{}n$
+\end{todobox}
+
 \end{document}

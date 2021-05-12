@@ -1,3 +1,20 @@
+\begin{definition}[Similar Environments]
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
+  design store
+  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
+  elaborated version $\Delta\in{}ElDesign(d,\mathcal{D})$ of design
+  $d$, and a binder $\gamma\in{}WM(sitpn,d)$, the environment
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  that yields the value of the primary input ports of $\Delta$ at a
+  given simulation cycle and a given clock event, and the environment
+  $E_c$, that yields the value of conditions of $sitpn$ at a given
+  execution cycle, are similar, noted
+  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, iff for all
+  $\tau\in{}\mathbb{N}$, $clk\in\{\uparrow,\downarrow\}$,
+  $c\in\mathcal{C}$, $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$,
+  $E_p(\tau,clk)(id_c)=E_c(\tau)(c)$.
+\end{definition}
+
 \subsection{Proof Notations}
 \label{sec:pf-notations}
 
@@ -14,7 +31,7 @@
   and their related aliases.
 \end{todobox}
 
-\begin{table}[h]
+\begin{table}[H]
   \begin{tabular}{|c|c|c|c|}
     \hline
     \multicolumn{4}{|c|}{\textbf{Constants and signals reference}} \\

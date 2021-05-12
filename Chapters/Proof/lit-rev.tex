@@ -1,34 +1,21 @@
-In this section, we present the review of the work done in the
-literature pertaining to transformation functions with a focus in the
-context of formal verification. Here, a transformation function is
-understood as any kind of mapping from a source representation to a
-target representation, where the source and target representations
-possess a behavior of their own (i.e, they are
-executable). Especially, we are interested in two things:
+In this section, we present the review of the literature pertaining to
+the verification of transformation functions. A transformation
+function is understood here as any kind of mapping from a source
+representation to a target representation, where the source and target
+representations possess a behavior of their own (i.e, they are
+executable). Here, we will focus on verification techniques based on
+the proof of semantic preservation theorems.  We are interested in how
+to prove that transformation functions are semantic
+preserving. Especially, we are interested in the expression of
+semantic preservation theorems, i.e, what does one mean by semantic
+preservation, and in seeking usual proof strategies.
 
-\begin{enumerate}
-\item Is there a proper way to build a transformation function? Do
-  standards exist to do this depending on the application domain? How
-  can we build a modular, extensible transformation function? How can
-  we build a transformation function that will ease the proof of
-  semantic preservation?
-\item In the context of formal verification, how are expressed the
-  semantic preservation theorems? Are there usual proof strategies?
-\end{enumerate}
-
-Here, the goal is to inspire ourselves with the work of the
-literature, and to see how far the correspondence holds between our
-specific case of transformation, and other cases of transformations.
-The results of the literature review are presented in two parts. The
-two parts have been prepared based on the same material. The first
-part will be focusing on the expression of the transformation
-functions in the literature, and the second part will be focusing on
-the proof that these transformations are semantic preserving ones.
-
-The material we used for the literature review is divided in three
-categories. Each category covers a specific case of transformation
-function, always taken in the context of formal verification. Thus,
-the three categories are:
+The goal is to draw our inspiration from the literature, and to see
+how far the correspondence holds between our specific case of
+transformation, and other cases of transformations.  The material we
+used for the literature review is divided in three categories. Each
+category covers a specific case of transformation function; the three
+categories are:
 
 \begin{itemize}
 \item Compilers for generic programming languages
@@ -39,10 +26,6 @@ the three categories are:
 \subsection{Transformations and proofs of semantic preservation }
 \label{sec:lit-rev-trans-and-proof}
 
-In this section, we are interested in how to prove that transformation
-functions are semantic preserving. Especially, we are interested in
-the expression of semantic preservation theorems, i.e, what does one
-mean by semantic preservation, and in seeking usual proof strategies.
 
 In the introduction of his article about \ccert{} \cite{Leroy2009},
 X.Leroy presents the two points of major importance to express
