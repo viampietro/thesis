@@ -1,0 +1,32 @@
+\begin{definition}[SITPN-to-\hvhdl{} Design Binder]
+  Given a $sitpn\in{}SITPN$ and a \hvhdl{} design $d\in{}design$, a
+  SITPN-to-\hvhdl{} design binder $\gamma\in{}WM(sitpn,d)$ is a tuple\\
+  ${<}PMap,TMap,\mathcal{C}_{id},\mathcal{A}_{id},\mathcal{F}_{id},CMap,AMap,FMap{>}$
+  where:
+  \begin{itemize}
+  \item
+    $sitpn={<}P,T,pre,test,inhib,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
+    \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$
+  \item $d=$ \vhdle|design| \textit{$id_{ent}$ $id_{arch}$ gens ports sigs behavior}
+  \item $PMap\in{}P\rightarrow{}P_{id}$ where $P_{id}=\{id~|~\mathtt{comp}(id,"place",gm,ipm,opm)\in{}behavior\}$
+  \item $TMap\in{}T\rightarrow{}T_{id}$ where $T_{id}=\{id~|~\mathtt{comp}(id,"transition",gm,ipm,opm)\in{}behavior\}$
+  \item $\mathcal{C}_{id}\subseteq\{id~|~(\mathtt{in}, id, t)\in{}ports\wedge{}id\notin\{"clk","rst"\}\}$
+  \item $\mathcal{A}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
+  \item $\mathcal{F}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
+  \item $CMap\in\mathcal{C}\rightarrow\mathcal{C}_{id}$
+  \item $AMap\in\mathcal{A}\rightarrow\mathcal{A}_{id}$
+  \item $FMap\in\mathcal{F}\rightarrow\mathcal{F}_{id}$        
+  \end{itemize}
+\end{definition}
+
+Afterwards, for a given binder $\gamma$ and an element of an SITPN
+structure
+$e\in{}P\sqcup{}T\sqcup\mathcal{C}\sqcup\mathcal{A}\sqcup\mathcal{F}$,
+we write $\gamma(e)$ where $e$ is looked up in the appropriate
+function. For instance, for a given $f\in\mathcal{F}$, $\gamma(f)$ is
+a shorthand for $FMap(f)$ where $\gamma={<}\dots,FMap{>}$.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

@@ -12,17 +12,18 @@ We must relate the elements that constitute the execution state of an
 SITPN to the elements that constitute the execution state of an
 \hvhdl{} design. An SITPN state is an abstract structure relating the
 places, transitions, actions, functions and conditions of a given
-SITPN to the values of certain domains. A \hvhdl{} design state is
-composed a signal store mapping signals to values, and of a component
-store mapping component instances to their own internal states. Thanks
-to the binder function $\gamma$ generated alongside the transformation
-from an SITPN to a \hvhdl{} design, we are able to relate the elements
-of the SITPN structure to the component instances and signals on the
-\hvhdl side. Thus, the state similarity relation expressing a
-semantical match between an SITPN state and an \hvhdl{} design is
-defined as follows:
+SITPN to the values of certain domains (see Section~\todo{Add
+  ref.}). A \hvhdl{} design state is composed a signal store mapping
+signals to values, and of a component store mapping component
+instances to their own internal states. Thanks to the binder function
+$\gamma$ generated alongside the transformation from an SITPN to a
+\hvhdl{} design, we are able to relate the elements of the SITPN
+structure to the component instances and signals on the \hvhdl{}
+side. Thus, the state similarity relation expressing a semantical
+match between an SITPN state and an \hvhdl{} design is defined as
+follows:
 
-\begin{definition}[General State Similarity]
+\begin{definition}[General state similarity]
   \label{def:state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
@@ -88,9 +89,10 @@ of the clock cycle. However, we must now defined two state similarity
 relation; one that checks the semantic matching after the rising edge
 of the clock signal (i.e, in the middle of the clock cycle), and one
 that checks the semantic matching after the falling edge of the clock
-signal (i.e, at the end of the clock cycle).
+signal (i.e, at the end of the clock cycle). The state similarity
+relation after a rising edge is defined as follows:
 
-\begin{definition}[Post Rising Edge State Similarity]
+\begin{definition}[Post rising edge state similarity]
   \label{def:post-re-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
@@ -117,6 +119,56 @@ signal (i.e, at the end of the clock cycle).
     $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
   \item
     $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \end{enumerate}
+\end{definition}
+
+Definition~\ref{def:post-re-state-sim} is similar to
+Definition~\ref{def:state-sim} in all points, except for the value of
+conditions. A condition of an SITPN is implemented by an primary input
+port in the resulting \hvhdl{} design. In \hvhdl{} semantics, the
+value of primary input ports (i.e, the input ports of the top-level
+design) are updated at each clock edge. In the SITPN semantics, the
+value of conditions are updated only at the falling edge of the
+clock. Consider that a given SITPN is executed at clock cycle $\tau$;
+after the rising edge of the clock, the value of conditions are equal
+to their value at clock cycle $\tau-1$, whereas the value primary
+input ports have been updated to fresh values. Thus, we will have to
+wait for the next falling edge to reach the equality between condition
+values and input port values.
+
+The state similarity relation draws out a correspondence between the
+values hold by an SITPN state and the values of the signals declared
+in an \hvhdl{} design state. However, to complete the proof of
+semantic preservation, we sometimes have to relate the value of
+signals to the value of expressions or predicates involved in the
+SITPN semantics. For instance, consider a given SITPN state $s$ and a
+given \hvhdl{} design state $\sigma$, and consider a transition $t$
+and its corresponding transition component instance $id_t$. It is
+useful to show that, after a rising edge, the value of signal
+$s\_enabled$ at state $\sigma(id_t)$, where $\sigma(id_t)$ denotes the
+internal state of component instance $id_t$ at state $\sigma$, is
+equal to the predicate $t\in{}Sens(s.M)$ stating that the transition
+$t$ is sensitized (or \textit{enabled}) by the marking at state $s$
+(i.e, $s.M$). Thus, for the convenience of the proof, we enrich our
+definitions of the state similiraty relations with formulas relating
+\hvhdl{} signals to SITPN semantics predicates and
+expressions. Consequently, the \textit{full} post rising edge state
+similarity relation is defined as follows:
+
+\begin{definition}[Full post rising edge state similarity]
+  \label{def:full-post-re-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle count
+  $\tau\in\mathbb{N}$, and an SITPN execution environment
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
+  SITPN state $s\in{}S(sitpn)$ and a design state
+  $\sigma\in\Sigma(\Delta)$ are fully similar after a rising edge
+  happening at clock cycle count $\tau$, written
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$ iff
+  $\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$
+  (Definition~\ref{def:post-re-state-sim}) and
+  \begin{enumerate}
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -134,7 +186,16 @@ signal (i.e, at the end of the clock cycle).
   \end{enumerate}
 \end{definition}
 
-\begin{definition}[Post Falling Edge State Similarity]
+Definition~\ref{def:full-post-re-state-sim} extends
+Definition~\ref{def:post-re-state-sim} with the correspondence of the
+sensitization of transitions and the value of signal $s\_enabled$, and
+the computation of the boolean product of condition values and the
+value of signal $s\_condition\_combination$.
+
+The state similarity relation after a falling edge is defined as
+follows:
+
+\begin{definition}[Post falling edge state similarity]
   \label{def:post-fe-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
@@ -142,8 +203,41 @@ signal (i.e, at the end of the clock cycle).
   $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
   similar after a falling edge, written
   $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
-  $\gamma\vdash{}s\sim\sigma$ (Def.~\ref{def:state-sim}, general state
-  similarity) and
+  \begin{enumerate}
+  \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
+    $~s.M(p)=\sigma(id_p)("s\_marking")$.
+  \item
+    $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+  \item
+    $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
+  \item
+    $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
+  \item
+    $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s.ex(f)=\sigma(id_f)$.
+  \end{enumerate}
+\end{definition}
+
+As explained above, Definition~\ref{def:post-fe-state-sim} is similar
+to Definition~\ref{def:state-sim} except for the equality between
+reset orders and the value of signal $s\_reinit\_time\_counter$.
+
+The extended version of the post falling edge state similarity
+relation is as follows:
+
+\begin{definition}[Full Post falling edge state similarity]
+  \label{def:full-post-fe-state-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  fully similar after a falling edge, written
+  $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ iff
+  $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$
+  (Definition~\ref{def:post-fe-state-sim}) and
   \begin{enumerate}
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{true}$.
@@ -160,34 +254,20 @@ signal (i.e, at the end of the clock cycle).
   \end{enumerate}
 \end{definition}
 
-\begin{definition}[Execution Trace Similarity]
-  \label{def:exec-trace-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, the execution trace
-  $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
-  $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
-  following rules:
+\noindent{}Definition~\ref{def:post-fe-state-sim} extends
+Definition~\ref{def:post-fe-state-sim} by drawing out a correspondence
+between:
+\begin{itemize}
+\item the firability of transitions and the value of the signal $s\_firable$
+\item the firing status of transitions (i.e, transitions are fired or
+  not) and the value of the output port $fired$
+\item the sum of tokens consumed by the firing process and the value
+  of the signal $s\_output\_token\_sum$
+\item the sum of tokens produced by the firing process and the value
+  of the signal $s\_input\_token\_sum$
+\end{itemize}
 
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
-    
-    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]        
-        \infer0{$\gamma\vdash{}[~]\sim{}[~]$}
-      \end{prooftree}} 
-  \end{tabular}
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{SimTraceCons}} \\
-    
-    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
 
-        \hypo{$\gamma\vdash{}s\sim\sigma$}
-        \hypo{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$}
-        \infer2{$\gamma\vdash{}(s :: \theta_s)\sim{}(\sigma :: \theta_\sigma)$}
-      \end{prooftree}} 
-  \end{tabular}  
-\end{definition}
 
 %%% Local Variables:
 %%% mode: latex

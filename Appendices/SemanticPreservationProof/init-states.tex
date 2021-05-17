@@ -1,0 +1,452 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% SIMILAR INITIAL STATES HYPOTHESES %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}[Initial State Hypotheses]
+  \label{def:init-states-hyps}
+  Given an $sitpn\in{}SITPN$, $d\in{}design$,
+  $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_{e},\sigma_0\in{}\Sigma(\Delta)$,
+  assume that:
+  \begin{itemize}
+  \item SITPN $sitpn$ translates into design $d$:
+    $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item $\Delta$ is the elaborated version of $d$, $\sigma_e$ is the
+    default state of $\Delta$, i.e, state of $\Delta$ where all signals have their default value:\\
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    
+  \item $\sigma_0$ is the initial state of $\Delta$: 
+    $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \end{itemize}
+\end{definition}
+
+\def\inithyps{For all $sitpn\in{}SITPN$, $d\in{}design$,
+  $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_{e},\sigma_0\in{}\Sigma(\Delta)$
+  that verify the hypotheses of Def.~\ref{def:init-states-hyps},}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% SIMILAR INITIAL STATES LEMMA %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Similar Initial States]
+  \label{lem:sim-init-states}
+  \inithyps{} then $\gamma\vdash{}s_0\sim\sigma_0$.
+\end{lemma}
+
+\begin{proof}
+  By definition of \nameref{sec:state-sim}, 6 subgoals.
+  \begin{frameb}
+    \begin{enumerate}
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p^0\in\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$
+      and $\sigma_0(id_p)=\sigma_p^0,$
+      $~s_0.M(p)=\sigma_p^0("s\_marking")$.\label{it:marking-eq}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma_0(id_t)=\sigma_t^0,$\\
+      $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")\land{}$\\
+      $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=lower(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=upper(I_s(t))\land{}$\\
+      $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")$.\label{it:tc-eq}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+      and
+      $\sigma_0(id_t)=\sigma_t^0,~$\\
+      $s_0.reset_t(t)=\sigma_t^0("s\_reinit\_time\_counter")$.\label{it:reset-eq}
+    \item
+      $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s_0.cond(c)=\sigma_0(id_c)$.\label{it:cond-eq}
+    \item
+      $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s_0.ex(a)=\sigma_0(id_a)$.\label{it:action-eq}
+    \item
+      $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s_0.ex(f)=\sigma_0(id_f)$.\label{it:fun-eq}
+    \end{enumerate}
+  \end{frameb}
+
+  \begin{itemize}
+  \item Apply Lemma~\nameref{lem:init-states-eq-marking} to solve \ref{it:marking-eq}.
+  \item Apply Lemma~\nameref{lem:init-states-eq-tc} to solve \ref{it:tc-eq}.
+  \item Apply Lemma~\nameref{lem:init-states-eq-rorders} to solve \ref{it:reset-eq}.
+  \item Apply Lemma~\nameref{lem:init-states-cond-vals} to solve \ref{it:cond-eq}.
+  \item Apply Lemma~\nameref{lem:init-states-act-exec} to solve \ref{it:action-eq}.
+  \item Apply Lemma~\nameref{lem:init-states-fun-exec} to solve \ref{it:fun-eq}.
+  \end{itemize}
+\end{proof}
+
+\subsection{Initial states and marking}
+\label{sec:init-states-marking}
+
+\begin{lemma}[Initial States Equal Marking]
+  \label{lem:init-states-eq-marking}
+  \inithyps{} then
+  $\forall{}p\in{}P,id_p\in{}Comps(\Delta),\sigma_p^0\in\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$
+  and $\sigma_0(id_p)=\sigma_p^0,$
+  $~s_0.M(p)=\sigma_p^0("s\_marking")$.
+\end{lemma}
+
+\begin{proof}
+  Given a $p\in{}P$, an $id_p\in{}Comps(\Delta)$ and a
+  $\sigma_p^0\in\Sigma(\Delta(id_p))~s.t.~\gamma(p)=id_p$ and
+  $\sigma_0(id_p)=\sigma_p^0,$ let's show that\\
+  \framebox{$s_0.M(p)=\sigma_p^0("s\_marking")$.}\\
+
+  \noindent{}By definition of $id_p$, there exist
+  $gm_p,ipm_p,opm_p~s.t.~\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$.\\
+
+  \noindent By property of the \hvhdl{} initialization relation, the P
+  design behavior (process ``\texttt{marking}''), and\\
+  $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, then
+  $\sigma_p^0("s\_marking")=\sigma_p^0("initial\_marking")$.\\
+
+  \noindent{}Rewriting $\sigma_p^0("s\_marking")$ as $\sigma_p^0("initial\_marking")$,
+  \framebox{$\sigma_p^0("initial\_marking")=s_0.M(p)$.}\\
+  
+  \noindent By construction,
+  ${<}\mathtt{id_p.initial\_marking\Rightarrow}M_0(p){>}\in{}ipm_p$. By
+  property of the \hvhdl{} initialization relation, and
+  $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$,
+  then $\sigma_p^0("initial\_marking")=M_0(p)$.\\
+
+  \noindent{}By definition of $s_0$, rewriting $s_0.M(p)$ as $M_0(p)$,
+  \colorbox{red!20}{$\sigma_p^0("initial\_marking")=s_0.M(p)$.}
+  
+\end{proof}
+
+\subsection{Initial states and time counters}
+\label{sec:init-states-tc}
+
+\begin{lemma}[Initial States Equal Time Counters]
+  \label{lem:init-states-eq-tc}
+  \inithyps{} then
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and $\sigma_0(id_t)=\sigma_t^0,$\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")\land{}$\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=lower(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=upper(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")$.
+\end{lemma}
+
+\begin{proof}
+  \noindent{}Given a $t\in{}T_i$, an $id_t\in{}Comps(\Delta)$ and a
+  $\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$ and
+  $\sigma_0(id_t)=\sigma_t^0$, let's show that:
+  \begin{enumerate}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")$}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=lower(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_t^0("s\_tc")=upper(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_t^0("s\_tc")$}
+  \end{enumerate}
+
+  \noindent{}By definition of $id_t$, there exist $gm_t,ipm_t,opm_t$
+  s.t.
+  $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$.\\
+
+  \noindent{}Then, let's show the 4 previous subgoals.
+  
+  \begin{enumerate}
+  \item Assume $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))$, then show \framebox{${}s_0.I(t)=\sigma_t^0("s\_tc")$.}\\
+    Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$, \framebox{$\sigma_t^0("s\_tc")=0$.}
+
+    \noindent By property of the \hvhdl{} initialization relation, the
+    T design behavior (process ``\texttt{time\_counter}''), and
+    $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$, then
+    \colorbox{red!20}{$\sigma_t^0("s\_tc")=0$.}
+  \item Assume $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))$,
+    then show \framebox{$\sigma_t^0("s\_tc")=lower(I_s(t))$}.  By
+    definition, $lower(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \colorbox{red!20}{$lower(I_s(t)){}<0$ is a
+      contradiction.}
+  \item Assume
+    $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))$, then
+    show \framebox{$\sigma_t^0("s\_tc")=upper(I_s(t))$}.  By definition,
+    $upper(I_s(t))\in\mathbb{N}^{*}$ and $s_0.I(t)=0$. Then,
+    \colorbox{red!20}{$upper(I_s(t)){}<0$ is a contradiction.}
+  \item Assume
+    $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))$, then
+    show \framebox{$s_0.I(t)=\sigma_t^0("s\_tc")$}.\\
+ 
+    Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,
+    \framebox{$\sigma_t^0("s\_tc")=0$.}
+
+    \noindent By property of the \hvhdl{} initialization relation, the
+    T design behavior (process ``\texttt{time\_counter}''), and
+    $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$, then
+    \colorbox{red!20}{$\sigma_t^0("s\_tc")=0$.}
+  \end{enumerate}
+\end{proof}
+
+\subsection{Initial states and reset orders}
+\label{sec:init-states-rorders}
+
+\begin{lemma}[Initial States Equal Reset Orders]
+  \label{lem:init-states-eq-rorders}
+  \inithyps{} then
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta),\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$
+  and
+  $\sigma_0(id_t)=\sigma_t^0,~s_0.reset_t(t)=\sigma_t^0("s\_reinit\_time\_counter")$.
+\end{lemma}
+
+\begin{proof}
+  Given a $t\in{}T_i$, an $id_t\in{}Comps(\Delta)$ and a
+  $\sigma_t^0\in\Sigma(\Delta(id_t))~s.t.~\gamma(t)=id_t$, let's show
+  that\\
+  \framebox{$s_0.reset_t(t)=\sigma_t^0("s\_reinit\_time\_counter")$}.\\
+  
+  \noindent{}Rewriting $s_0.reset_t(t)$ as $false$, by definition of
+  $s_0$,
+  \framebox{$\sigma_t^0("s\_reinit\_time\_counter")=false$.}\\
+  
+  \noindent{}By definition of $id_t$, there exist
+  $gm_t,ipm_t,opm_t~s.t.$
+  $~\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$.\\
+  
+  \noindent By property of the \hvhdl{} initialization relation, the T
+  design behavior (process \texttt{reinit\_time\_counter}
+  \texttt{\_evaluation}), and
+  $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$,\\
+  we know
+  $\sigma_t^0("s\_reinit\_time\_counter")=\prod\limits_{i=0}^{\Delta(id_t)("in\_arcs\_nb")-1}\sigma_t^0("rt")(i)$,
+  where $\Delta(id_t)("in\_arcs\_nb")$ is the value of the generic
+  constant $"in\_arcs\_nb"$ stored in the elaborated design
+  $\Delta(id_t)$ (which, by property of the \hvhdl{} elaboration
+  relation, is an elaborated version of the T design).\\
+
+  \noindent{}Rewriting
+  $\sigma_t^0("s\_reinit\_time\_counter")$ as $\prod\limits_{i=0}^{\Delta(id_t)("in\_arcs\_nb")-1}\sigma_t^0("rt")(i)$,\\
+  \framebox{$\prod\limits_{i=0}^{\Delta(id_t)("in\_arcs\_nb")-1}\sigma_t^0("rt")(i)=false$.}\\
+  
+  \noindent{}For all $t\in{}T$ (resp. $p\in{}P$), let $input(t)$
+  (resp. $input(p)$) be the set of input places of $t$ (resp. input
+  transitions of $p$), and let $output(t)$ (resp. $output(p)$) be the
+  set of output places of $t$ (resp. output transitions of $p$).\\
+
+  \noindent{}Case analysis on $input(t)$ (2 CASES).
+
+  \begin{itemize}
+  \item \textbf{CASE} $input(t)=\emptyset$.
+
+    By construction,
+    ${<}\mathtt{id_t.in\_arcs\_nb\Rightarrow}1{>}\in{}gm_t$, and by
+    property of the elaboration relation,\\
+    $\Delta(id_t)("in\_arcs\_nb")=1$.  By construction,
+    $<\mathtt{id_t.rt(0)\Rightarrow}false>\in{}ipm_t$,
+    and by property of the initialization relation, $\sigma_t^0("rt")(0)=false$.\\
+
+    \noindent{}Rewriting $\Delta(id_t)("in\_arcs\_nb")$ as $1$ and
+    $\sigma_t^0("rt")(0)$ as $false$,\\
+    \colorbox{red!20}{$\prod\limits_{i=0}^{\Delta("in\_arcs\_nb")-1}\sigma_t^0("rt")(i)=\sigma_t^0("rt")(0)=false$.}
+    
+  \item \textbf{CASE} $input(t)\neq\emptyset$.
+
+    We know
+    $\prod\limits_{i=0}^{\Delta(id_t)("in\_arcs\_nb")-1}\sigma_t^0("rt")(i)=false\equiv$
+    $\exists{}i\in[0,\Delta(id_t)("in\_arcs\_nb")-1]~s.t.~\sigma_t^0("rt")(i)=false$.\\
+    \framebox{$\exists{}i\in[0,\Delta(id_t)("in\_arcs\_nb")-1]~s.t.~\sigma_t^0("rt")(i)=false$.}\\
+    \noindent{}Since $input(t)\neq\emptyset,~\exists{}p~s.t.~p\in{}input(t)$. Let's take such a $p\in{}input(t)$.\\
+    
+    \noindent{}By construction, for all $p\in{}P$, there exist $id_p~s.t.~\gamma(p)=id_p$.
+
+    \noindent{}By definition of $id_p$, there exist
+    $gm_p,ipm_p,opm_p~s.t.~\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$.\\
+
+    \noindent{}By construction, for all $p\in{}P$, $t\in{}T$
+    s.t. $p\in{}input(t)$ and $t\in{}output(p)$, for all $id_p,id_t$
+    s.t. $\gamma(p)=id_p$ and $\gamma(t)=id_t$, for all
+    $gm_p,ipm_p,opm_p$
+    s.t. $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$ and
+    $gm_t,ipm_t,opm_t$
+    s.t. $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$,
+    there exist $i\in[0,\vert{}input(t)\vert{}-1]$,
+    $j\in[0,\vert{}output(p)\vert{}-1]$, $id_{ji}$
+    s.t. ${<}\mathtt{id_p.rtt(j)\Rightarrow}id_{ji}{>}\in{}opm_p$ and
+    ${<}\mathtt{id_t.rt(i)\Rightarrow}id_{ji}{>}\in{}ipm_t$. Let's take such a $i$, $j$ and $id_{ji}$.\\
+
+    \noindent{}By construction, for all $t\in{}T$
+    s.t. $input(t)\neq{}\emptyset$, $id_t,gm_t,ipm_t,opm_t$
+    s.t. $\gamma(t)=id_t$ and\\
+    $\mathtt{comp}(id_t,"transition",gm_t,ipm_t,opm_t)\in{}d.cs$, then
+    ${<}\mathtt{id_t.in\_arcs\_nb\Rightarrow}\vert{}input(t)\vert{}{>}\in{}gm_t$.\\
+
+    \noindent{}By property of the \hvhdl{} elaboration relation and
+    ${<}\mathtt{id_t.in\_arcs\_nb\Rightarrow}\vert{}input(t)\vert{}{>}\in{}gm_t$,
+    we know $\Delta(id_t)("in\_arcs\_nb)=\vert{}input(t)\vert$.\\
+
+    \noindent{}Rewriting $\Delta(id_t)("in\_arcs\_nb)$ as
+    $\vert{}input(t)\vert$, we have
+    $i\in[0, \Delta(id_t)("in\_arcs\_nb)-1]$. Let's take that i to
+    prove the goal.\\
+
+    \framebox{$\sigma_t^0("rt")(i)=false$.}\\
+
+    \noindent{}By property of the \hvhdl{} initialization relation and
+    ${<}\mathtt{id_t.rt(i)\Rightarrow}id_{ji}{>}\in{}ipm_t$, we know
+    $\sigma_t^0("rt")(i)=\sigma_0("id_{ji}")$.\\
+
+    \noindent{}Rewriting $\sigma_t^0("rt")(i)$ as $\sigma_0("id_{ji}")$, \framebox{$\sigma_0("id_{ji}")=false$.}\\
+
+    \noindent{}By property of the \hvhdl{} elaboration and initialization
+    relations, and
+    $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, there
+    exists a $\sigma_p^0\in{}\Sigma(\Delta(id_p))$
+    s.t. $\sigma_0(id_p)=\sigma_p^0$.\\
+
+    \noindent{}By property of the \hvhdl{} initialization relation and
+    $<\mathtt{id_p.rtt(j)\Rightarrow}id_{ji}>\in{}opm_p$, we know
+    $\sigma_0("id_{ji}")=\sigma_p^0("rtt")(j)$.\\
+
+    \noindent{}Rewriting $\sigma_0("id_{ji}")$ as
+    $\sigma_p^0("rtt")(j)$, \framebox{$\sigma_p^0("rtt")(j)=false$.}\\
+
+    \noindent{}By property of the \hvhdl{} initialization relation,
+    the P design behavior (process
+    $\mathtt{reinit\_transitions\_ti}$-\\$\mathtt{me\_evaluation}$), and
+    $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$, we know
+    that\\ for all $j\in{}[0,\Delta(id_p)("out\_arcs\_nb")-1]$,
+    $\sigma_p^0("rtt")(j)=false$.\\
+
+    \noindent{}By construction, for all $p\in{}P$
+    s.t. $output(p)\neq{}\emptyset$,
+    $id_p\in{}Comps(\Delta),gm_p,ipm_p,opm_p$ s.t. $\gamma(p)=id_p$
+    and $\mathtt{comp}(id_p,"transition",gm_p,ipm_p,opm_p)\in{}d.cs$,
+    then
+    ${<}\mathtt{id_p.out\_arcs\_nb\Rightarrow}\vert{}output(p)\vert{}{>}\in{}gm_p$.\\
+
+    \noindent{}By property of the \hvhdl{} elaboration relation and
+    ${<}\mathtt{id_p.out\_arcs\_nb\Rightarrow}\vert{}output(p)\vert{}{>}\in{}gm_p$,
+    we know $\Delta(id_p)("out\_arcs\_nb")=\vert{}output(p)\vert$.\\
+
+    \noindent{}Rewriting $\vert{}output(p)\vert$ as
+    $\Delta(id_p)("out\_arcs\_nb)$, we have
+    $j\in[0, \Delta(id_p)("out\_arcs\_nb)-1]$.
+    Then, we can deduce
+    \colorbox{red!20}{$\sigma_p^0("rtt")(j)=false$}.
+  \end{itemize}
+  
+\end{proof}
+
+\subsection{Initial states and condition values}
+\label{sec:init-states-cond-vals}
+
+\begin{lemma}[Initial States Equal Condition Values]
+  \label{lem:init-states-cond-vals}
+  \inithyps{} 
+  then
+  $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s_0.cond(c)=\sigma_0(id_c)$.
+\end{lemma}
+
+\begin{proof}
+  Given a $c\in\mathcal{C}$ and an
+  $id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c$, let's show that
+  \fbox{$s_0.cond(c)=\sigma_0(id_c)$.}\\
+
+  \noindent{}Rewriting $s_0.cond(c)$ as $false$, by definition of
+  $s_0$, \fbox{$\sigma_0(id_c)=false$.}
+
+  \noindent{}By construction, $id_c$ is an input port identifier of
+  boolean type in the \hvhdl{} design $d$.
+
+  \noindent{}By property, of the \hvhdl{} elaboration relation,
+  $\sigma_e(id_c)=false$, where $false$ is the default value
+  associated to signals of the boolean type during the elaboration
+  (see definition of default value in chapter \hvhdl{} semantics).
+
+  \noindent{}By property of the \hvhdl{} initialization relation, we
+  have $\sigma_e(id_c)=\sigma_0(id_c)$ (i.e, input ports are not
+  assigned during the initialization phase).
+
+  \noindent{}Rewriting $\sigma_e(id_c)$ as $false$,
+  \colorbox{red!20}{$\sigma_0(id_c)=false$.}
+  
+\end{proof}
+
+\subsection{Initial states and action executions}
+\label{sec:init-states-act-exec}
+
+\begin{todobox}
+  Correction: $id_f$ is assigned by the reset block of the function process
+\end{todobox}
+
+\begin{lemma}[Initial States Equal Action Executions]
+  \label{lem:init-states-act-exec}
+  \inithyps{} 
+  then
+  $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s_0.ex(a)=\sigma_0(id_a)$.
+\end{lemma}
+
+\begin{proof}
+  Given a $a\in\mathcal{A}$ and an
+  $id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a$, let's show that
+  \fbox{$s_0.ex(a)=\sigma_0(id_a)$.}\\
+
+  \noindent{}Rewriting $s_0.ex(a)$ as $false$, by definition of
+  $s_0$, \fbox{$\sigma_0(id_a)=false$.}
+
+  \noindent{}By construction, $id_a$ is an output port identifier of
+  boolean type in the \hvhdl{} design $d$.
+
+  \noindent{}By property, of the \hvhdl{} elaboration relation,
+  $\sigma_e(id_a)=false$, where $false$ is the default value
+  associated to signals of the boolean type during the elaboration
+  (see definition of default value in chapter \hvhdl{} semantics).
+
+  \noindent{}By construction, we know that the output port identifier
+  $id_a$ is assigned in the generated \texttt{action} process, only at
+  the falling edge phase of the simulation cycle (i.e, the assignment
+  takes place in a \texttt{falling} statement block).
+  
+  \noindent{}By property of the \hvhdl{} initialization relation, and
+  we have $\sigma_e(id_a)=\sigma_0(id_a)$ (i.e, process
+  \texttt{action} is idle during the initialization phase).
+
+  \noindent{}Rewriting $\sigma_e(id_a)$ as $false$,
+  \colorbox{red!20}{$\sigma_0(id_a)=false$.}
+  
+\end{proof}
+
+\subsection{Initial states and function executions}
+\label{sec:init-states-fun-exec}
+
+\begin{todobox}
+  Correction: $id_f$ is assigned by the reset block of the function process
+\end{todobox}
+
+\begin{lemma}[Initial States Equal Function Executions]
+  \label{lem:init-states-fun-exec}
+  \inithyps{} 
+  then
+  $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s_0.ex(f)=\sigma_0(id_f)$.
+\end{lemma}
+
+\begin{proof}
+  Given a $f\in\mathcal{F}$ and an
+  $id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f$, let's show that
+  \fbox{$s_0.ex(f)=\sigma_0(id_f)$.}\\
+
+  \noindent{}Rewriting $s_0.ex(f)$ as $false$, by definition of $s_0$,
+  \fbox{$\sigma_0(id_f)=false$.}
+
+  \noindent{}By construction, $id_f$ is an output port identifier of
+  boolean type in the \hvhdl{} design $d$.
+
+  \noindent{}By property, of the \hvhdl{} elaboration relation,
+  $\sigma_e(id_f)=false$, where $false$ is the default value
+  associated to signals of the boolean type during the elaboration
+  (see definition of default value in chapter \hvhdl{} semantics).
+
+  \noindent{}By construction, we know that the output port identifier
+  $id_f$ is assigned in the generated \texttt{function} process (i.e,
+  \texttt{function} is the process identifier), only at the rising
+  edge phase of the simulation cycle (i.e, the assignment takes place
+  in a \texttt{rising} statement block).
+  
+  \noindent{}By property of the \hvhdl{} initialization relation, and
+  we have $\sigma_e(id_f)=\sigma_0(id_f)$ (i.e, process
+  \texttt{function} is idle during the initialization phase).
+
+  \noindent{}Rewriting $\sigma_e(id_f)$ as $false$,
+  \colorbox{red!20}{$\sigma_0(id_f)=false$.}
+  
+\end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

@@ -1,4 +1,55 @@
-\begin{definition}[Similar Environments]
+In this section, we will lay out the major theorems and lemmas stating
+that the \hilecop{} transformation function is semantic preserving. We
+will also present the written proofs for these theorems and lemmas. 
+
+\subsection{Proof notations}
+\label{sec:pf-notations}
+
+To add some readability to our proofs, we use the following notations:
+
+\begin{itemize}
+\item Following the sense of reading, the most recent framed box
+  denotes the current pending goal (what we are currently trying to
+  prove): \framebox{$\forall{}n\in\mathbb{N},~n>0\lor{}n=0$}
+\item A red framed box denotes a completed goal (i.e, equivalent to
+  qed): \colorbox{red!20}{$\mathtt{true}=\mathtt{true}$}
+\item A green framed box denotes the current induction
+  hypothesis: \begin{ih}$\forall{}n\in\mathbb{N},~n+1>0$\end{ih}
+\item The mention \textbf{CASE} directly follows an item bullet to
+  denote a case during a proof by case analysis.
+\end{itemize}
+
+During a proof, we constantly refer to the names of the constants and
+signals declared in the \hvhdl{} place and transition designs. Some
+constants and signals have very long names, and therefore we use
+aliases to refer to them in the following
+proofs. Table~\ref{tab:consts-and-sigs-ref} gives the full
+correspondence between constants and signals, and their aliases.
+
+\subsection{Preliminary definitions}
+\label{sec:beh-pres-prelim-defs}
+
+We define here some relations that are necessary to formalize the
+theorem of behavior preservation.
+
+In an SITPN, the conditions associated to transitions receive fresh
+boolean values from an execution environment at each falling edge of
+the clock.  During the simulation of a top-level design, the input
+ports of the design receive fresh values from a simulation environment
+at each clock event. The transformation function generates an input
+port in the top-level design that will mimick the behavior of a given
+SITPN condition. The binder $\gamma$, generated alongside the
+top-level design, relates a given condition $c$ to its corresponding
+input port identifier $id_c$. To compare the execution/simulation
+traces of an SITPN and a \hvhdl{} design, we must assume that the
+execution/simulation environments assign similar values to conditions
+and to their corresponding input ports at a given clock
+cycle. Definition~\ref{def:sim-env} states that the execution
+environment for a given SITPN and the simulation environment for a
+given \hvhdl{} design are similar.
+
+\begin{definition}[Similar environments]
+  \label{def:sim-env}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
   design store
   $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
@@ -15,144 +66,225 @@
   $E_p(\tau,clk)(id_c)=E_c(\tau)(c)$.
 \end{definition}
 
-\subsection{Proof Notations}
-\label{sec:pf-notations}
+Definition~\ref{def:sim-env} also states that every input port of the
+top-level design related to a SITPN condition by the $\gamma$ binder
+has a stable boolean value during a whole clock cycle. That is to say,
+in the context of Definition~\ref{def:sim-env}, there exists no $id_c$
+such that $E_p(\tau,\uparrow)(id_c)\neq{}E_p(\tau,\downarrow)(id_c)$.
 
-\begin{itemize}
-\item Frame box for pending goals:
-  \framebox{$\forall{}n\in\mathbb{N},~n>0\lor{}n=0$}
-\item Red frame box for completed goals: \colorbox{red!20}{$\mathtt{true}=\mathtt{true}$}
-\item Green frame box for induction hypotheses: \begin{ih}$\forall{}n\in\mathbb{N},~n+1>0$\end{ih}
-\item \textbf{CASE} to denote a case during a proof by case analysis.
-\end{itemize}
+To prove that the behavior of an SITPN and a \hvhdl{} design are
+similar, we want to compare the states composing their
+execution/simulation traces.  The relation presented in
+Definition~\ref{def:exec-trace-sim} permits to compare such traces.
 
-\begin{todobox}
-  Make a list of all signals and constants of the T and P components,
-  and their related aliases.
-\end{todobox}
+\begin{definition}[Execution trace similarity]
+  \label{def:exec-trace-sim}
+  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  and a binder $\gamma\in{}WM(sitpn,d)$, the execution trace
+  $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
+  $\gamma\vdash{}\theta_s\stackrel{clk}{\sim}\theta_\sigma$, where
+  $clk\in\{\uparrow,\downarrow\}$, according to the following rules:
 
-\begin{table}[H]
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{|c|}{\textbf{Constants and signals reference}} \\
-    \hline
-    \textit{Full name} & \textit{Alias} & \textit{Category} & \textit{Type} \\
-    \hline
-    $"input\_conditions"$ & $"ic"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-    $"input\_conditions"$ & $"ic"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-    $"reinit\_time"$ & $"rt"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-    $"input\_arcs\_valid"$ & $"iav"$ & input port (T) & $\mathbb{B}$ \\
-    \hline
-    $"fired"$ & $"f"$ & output port (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_condition\_combination"$ & $"scc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_reinit\_time\_counter"$ & $"srtc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_priority\_combination"$ & $"spc"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_fired"$ & $"sf"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_firable"$ & $"sfa"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"s\_enabled"$ & $"se"$ & internal signal (T) & $\mathbb{B}$ \\
-    \hline
-    $"input\_arcs\_number"$ & $"ian"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
-    $"transition\_type"$ & $"tt"$ & generic constant (T) & $\{\mathtt{NOT\_TEMP},\mathtt{TEMP\_A\_B},$ \\
-                       & & & $\mathtt{TEMP\_A\_A},\mathtt{TEMP\_A\_INF}\}$ \\
-    \hline
-    $"conditions\_number"$ & $"cn"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
-    $"maximal\_time\_counter"$ & $"mtc"$ & generic constant (T) & $\mathbb{N}$ \\
-    \hline
-    $"s\_marking"$ & $"sm"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"s\_output\_token\_sum"$ & $"sots"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"s\_input\_token\_sum"$ & $"sits"$ & internal signal (P) & $\mathbb{N}$ \\
-    \hline
-    $"reinit\_transition\_time"$ & $"rtt"$ & output port (P) & $\mathbb{B}$ \\
-    \hline
-    $"output\_arcs\_types"$ & $"oat"$ & input port (P) & $\{\mathtt{BASIC},\mathtt{TEST},\mathtt{INHIB}\}$ \\
-    \hline
-    $"output\_arcs\_weights"$ & $"oaw"$ & input port (P) & $\mathbb{N}$ \\
-    \hline
-    $"output\_transition\_fired"$ & $"otf"$ & input port (P) & $\mathbb{B}$ \\
-    \hline
-    $"input\_arcs\_weights"$ & $"iaw"$ & input port (P) & $\mathbb{N}$ \\
-    \hline
-    $"input\_transition\_fired"$ & $"itf"$ & input port (P) & $\mathbb{B}$ \\
-    \hline
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]        
+        \infer0[$clk\in{}\{\uparrow,\downarrow\}$]{$\gamma\vdash{}[~]\stackrel{clk}{\sim}{}[~]$}
+      \end{prooftree}} 
   \end{tabular}
-\end{table}
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTrace$\uparrow$}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
 
-\subsection{Behavior Preservation Theorem and Proof}
+        \hypo{$\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$}
+        \hypo{$\gamma\vdash{}\theta_s\stackrel{\downarrow}{\sim}{}\theta_\sigma$}
+        \infer2{$\gamma\vdash{}(s :: \theta_s)\stackrel{\uparrow}{\sim}{}(\sigma :: \theta_\sigma)$}
+      \end{prooftree}} 
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{SimTrace$\downarrow$}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
+
+        \hypo{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$}
+        \hypo{$\gamma\vdash{}\theta_s\stackrel{\uparrow}{\sim}{}\theta_\sigma$}
+        \infer2{$\gamma\vdash{}(s :: \theta_s)\stackrel{\downarrow}{\sim}{}(\sigma :: \theta_\sigma)$}
+      \end{prooftree}} 
+  \end{tabular}
+\end{definition}
+
+In Definition~\ref{def:exec-trace-sim}, the clock event symbol on top
+of the $\sim$ sign indicates the kind of clock event that led to the
+production of the states at the head of the traces. The execution
+trace similarity relation expects that the states composing the traces
+have been alternatively produced by a rising edge and then by a
+falling edge. By construction, the traces must have the same length to
+respect the execution trace similarity relation.
+
+To handle the case of an execution/simulation trace beginning by a
+initial state, that is, a state neither reached after a rising nor
+after falling edge, we give a slightly different definition of the
+execution trace similarity relation in
+Definition~\ref{def:full-exec-trace-sim}.
+
+\begin{definition}[Full execution trace similarity]
+  \label{def:full-exec-trace-sim} For a given $sitpn\in{}SITPN$, a
+  \hvhdl{} design $d\in{}design$, an elaborated design
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, the execution trace
+  $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are fully similar,
+  written $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
+  following rules:
+
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{FullSimTraceNil}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
+        \infer0{$\gamma\vdash{}[~]\sim{}[~]$}
+      \end{prooftree}}
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{9}{11}\selectfont\textsc{FullSimTraceCons}} \\
+    
+    {\begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
+
+        \hypo{$\gamma\vdash{}s\sim\sigma$}
+        \hypo{$\gamma\vdash{}\theta_s\stackrel{\uparrow}{\sim}{}\theta_\sigma$}
+        \infer2{$\gamma\vdash{}(s :: \theta_s)\sim{}(\sigma ::
+          \theta_\sigma)$}
+      \end{prooftree}}
+  \end{tabular}
+\end{definition}
+
+The full execution trace similarity relation indicates that the head
+states of traces must verify the general state similarity relation,
+and that the tail of the traces must respect the execution state
+similarity relation starting a rising edge. 
+
+\subsection{The behavior preservation theorem}
 \label{sec:beh-pres-thm-pf}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% BEHAVIOR PRESERVATION THEOREM %%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Theorem~\ref{thm:beh-pres} states that the \hilecop{} transformation
+is semantic preserving when the input model is a well-defined
+SITPN. As a complementary task, we could show that if the
+transformation function returns a couple design and binder, and not an
+error, then the input SITPN is well-defined. 
+
 \begin{thm}[Behavior Preservation]
-  \label{thm:beh-pres-hyps}
-  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
-  $\tau\in\mathbb{N}$,
-  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
-  $\theta_s\in\mathtt{list}(S(sitpn))$ s.t.
+  \label{thm:beh-pres}
+  For all well-defined $sitpn\in{}SITPN$, an \hvhdl{} design
+  $d\in{}design$, a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle
+  count $\tau\in\mathbb{N}$, a execution environment
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
+  and an execution trace $\theta_s\in\mathtt{list}(S(sitpn))$ s.t.
   \begin{itemize}
-  \item SITPN $sitpn$ translates into design $d$:
-    $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item SITPN $sitpn$ translates into design $d$ and yields a binder
+    $\gamma$: $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
   \item SITPN $sitpn$ yields the execution trace $\theta_s$ after
     $\tau$ execution cycles in environment $E_c$:\\
-    $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$.
+    $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
   \end{itemize}
   
-  \noindent{}then there exists
+  \noindent{}then there exists an elaborated design
   $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$ s.t. for all
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$
+  simulation environment
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   verifying
   \begin{itemize}
   \item Simulation/Execution environments are similar:
-    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$.
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
   \end{itemize}
-  then there exists $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$
-  s.t.
+  then there exists a simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
   \begin{itemize}
   \item Under the \hilecop{} design store $\mathcal{D}_\mathcal{H}$
-    and with an empty generic constant dimensioning function, design d
-    yields the simulation trace $\theta_\sigma$ after $\tau$
-    simulation cycles, starting from its initial state:\\
+    and with an empty generic constant dimensioning function
+    ($\emptyset$), design d yields the simulation trace
+    $\theta_\sigma$ after $\tau$
+    simulation cycles:\\
     $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
-  \item Traces $\theta_s$ and $\theta_\sigma$ are similar: $\theta_s\sim\theta_\sigma$
+  \item Traces $\theta_s$ and $\theta_\sigma$ are fully similar:
+    $\theta_s\sim\theta_\sigma$
   \end{itemize}
 \end{thm}
 
-\begin{proof}
-  \framebox{$\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma,$
+\begin{niproof}
+  Given a $sitpn\in{}SITPN$, a $d\in{}design$, a
+  $\gamma\in{}WM(sitpn,d)$, a $\tau\in\mathbb{N}$, an
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
+  and a $\theta_s\in\mathtt{list}(S(sitpn))$, let us show that\\
+  \framebox{$\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma$
+    s.t.
     $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\land\theta_s\sim\theta_\sigma$}\\
-  
-  \noindent{}By definition of the \hvhdl{} full simulation relation:\\
-  $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\equiv$
-  $\exists\sigma_e,\sigma_0\in\Sigma(\Delta),~\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
-  and $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$\\
-  and $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$. \\
 
-  \noindent{}Use \nameref{thm:elab-ex}, \nameref{thm:init-ex} and
-  \nameref{thm:sim-ex} theorems to show that there exists a $\Delta$,
-  $\theta_\sigma$, $\sigma_e$ and $\sigma_0$ such that
-  $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
-  and
-  $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
-  and
-  $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$.\\
-
-  \noindent{}Use \nameref{thm:full-bisim} theorem to show traces similarity.
+  Appealing to Theorems~\nameref{thm:elab-ex}, \nameref{thm:init-ex}
+  and \nameref{thm:sim-ex}, let us take an elaborated design $\Delta$,
+  two design states $\sigma_e,\sigma_0\in\Sigma(\Delta)$, and a
+  simulation trace $\theta_\sigma\in{}$ such that:
+  \begin{itemize}
+  \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+  \item $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+  \item $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
+  \end{itemize}
   
-\end{proof}
+  
+  \noindent{}By definition of the \hvhdl{} full simulation relation,
+  we have:
+  \begin{equation}
+    \begin{split}
+      \mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\equiv
+      \exists\sigma_e,\sigma_0\in\Sigma(\Delta),~\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})\\
+      \land\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0\\
+      \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma
+    \end{split}
+  \label{eq:full-sim}
+  \end{equation}
+  
+  Rewriting the goal with \eqref{eq:full-sim}:
+  \begin{frameb}
+    $\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma,\sigma_e,\sigma_0$
+    s.t.
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})
+    \land\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0
+    \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma\land\theta_s\sim\theta_\sigma$
+  \end{frameb}
+
+  Let us use $\Delta$, $\sigma_e$, $\sigma_0\in\Sigma(\Delta)$ and
+  $\theta_\sigma$ to prove the goal:
+  \begin{frameb}
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})
+    \land\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0
+    \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma\land\theta_s\sim\theta_\sigma$
+  \end{frameb}
+  
+  We assumed the three first points of the goal, and the last point,
+  i.e $\theta_s\sim\theta_\sigma$, is proved by appealing to
+  Theorem~\nameref{thm:full-bisim}.
+
+\end{niproof}
+
+To prove Theorem~\ref{thm:beh-pres}, we must first prove that for all
+\hvhdl{} design returned by the transformation function, there exists
+an elaborated version of it (Theorem~\nameref{thm:elab-ex}); then, we
+must prove that we can always build a simulation trace respecting the
+\hvhdl{} simulation relation over $\tau$ simulation cycles
+(Theorem~\nameref{thm:init-ex} and \nameref{thm:sim-ex}). Finally, we
+can establish that the behaviors are similar by comparing the
+respective SITPN execution and \hvhdl{} simulation traces. In this
+thesis, we are focusing on the proof that the execution/simulation
+traces are similar. For now, we choose to disregard the proof of
+theorems \nameref{thm:elab-ex}, \nameref{thm:init-ex} and
+\nameref{thm:sim-ex} stating the existence of an elaborated design and
+of a simulation trace for all \hvhdl{} design returned by the
+\hilecop{} transformation function.
 
 \begin{thm}[Elaboration]
   \label{thm:elab-ex}
@@ -161,10 +293,12 @@
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
   \end{itemize}
-  \noindent{}then there exists
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_e\in\Sigma(\Delta)$ s.t. 
+  \noindent{}then there exists an elaborated design
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$ and a design state
+  $\sigma_e\in\Sigma(\Delta)$ s.t.
   \begin{itemize}
-  \item
+  \item $\Delta$ is the elaborated version of design $d$, and
+    $\sigma_e$ is the default design state of $\Delta$:
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
   \end{itemize}
 \end{thm}
@@ -178,7 +312,8 @@
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
   \end{itemize}
-  \noindent{}then there exists $\sigma_0\in\Sigma(\Delta)$ s.t. 
+  \noindent{}then there exists a design state
+  $\sigma_0\in\Sigma(\Delta)$ s.t.
   \begin{itemize}
   \item $\sigma_0$ is the initial simulation state:
     $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
@@ -197,10 +332,11 @@
     $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
   \end{itemize}
   
-  \noindent{}then for all
+  \noindent{}then for all simulation environment
   $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  $\tau\in\mathbb{N}$, there exists
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
+  and simulation cycle count $\tau\in\mathbb{N}$, there exists s
+  simulation trace $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$
+  s.t.
   \begin{itemize}
   \item Design $d$ yields the simulation trace $\theta_\sigma$ after
     $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
@@ -208,7 +344,7 @@
   \end{itemize}
 \end{thm}
 
-\subsection{Bisimulation Theorem and Proof}
+\subsection{The bisimulation theorem}
 \label{sec:bisim-thm-and-proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
