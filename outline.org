@@ -28,7 +28,7 @@
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
-** TODO the semantic preservation theorem [50%]
+** TODO the semantic preservation theorem [90%]
 ** TODO a detailled proof: equivalence of fired transitions [40%]
 ** TODO mechanized verification of the proof [0%]
 ** TODO conclusion [0%]

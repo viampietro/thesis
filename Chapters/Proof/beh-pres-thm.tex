@@ -8,9 +8,9 @@ will also present the written proofs for these theorems and lemmas.
 To add some readability to our proofs, we use the following notations:
 
 \begin{itemize}
-\item Following the sense of reading, the most recent framed box
-  denotes the current pending goal (what we are currently trying to
-  prove): \framebox{$\forall{}n\in\mathbb{N},~n>0\lor{}n=0$}
+\item At the point of reading, the most recent framed box denotes the
+  current pending goal (what we are currently trying to prove):
+  \framebox{$\forall{}n\in\mathbb{N},~n>0\lor{}n=0$}
 \item A red framed box denotes a completed goal (i.e, equivalent to
   qed): \colorbox{red!20}{$\mathtt{true}=\mathtt{true}$}
 \item A green framed box denotes the current induction
@@ -163,7 +163,7 @@ Definition~\ref{def:full-exec-trace-sim}.
 The full execution trace similarity relation indicates that the head
 states of traces must verify the general state similarity relation,
 and that the tail of the traces must respect the execution state
-similarity relation starting a rising edge. 
+similarity relation starting with a rising edge.
 
 \subsection{The behavior preservation theorem}
 \label{sec:beh-pres-thm-pf}
@@ -347,11 +347,23 @@ of a simulation trace for all \hvhdl{} design returned by the
 \subsection{The bisimulation theorem}
 \label{sec:bisim-thm-and-proof}
 
+Here, we present the bisimulation theorem. The bisimulation theorem
+states that if an SITPN and its corresponding \hvhdl{} design are
+executed/simulated over $\tau$ execution/simulation cycles, then the
+produced traces are semantically similar, i.e they verify the full
+execution trace similarity relation of
+Definition~\ref{def:full-exec-trace-sim}. In this thesis, we proved
+this particular theorem, and as said before, we left the proofs of
+Theorems~\nameref{thm:elab-ex}, \nameref{thm:init-ex} and
+\nameref{thm:sim-ex}) to later. We chose to focus our work on the
+bisimulation theorem, because it directly adresses the semantic
+preservation property of \hilecop{}'s transformation function.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% FULL BISIMULATION THM %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{thm}[Full Bisimulation]
+\begin{thm}[Full bisimulation]
   \label{thm:full-bisim}
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $\tau\in\mathbb{N}$,
@@ -366,116 +378,151 @@ of a simulation trace for all \hvhdl{} design returned by the
   \item $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
   \item $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
   \end{itemize}
-  then
- $\theta_s\sim\theta_\sigma$
+  then $\gamma\vdash\theta_s\sim\theta_\sigma$
 
 \end{thm}
 
-\begin{proof}
-  Case analysis on $\tau$ (2 CASES).
+\begin{niproof}
+  Given all the above variables and assuming the above hypotheses, let
+  us show \framebox{$\gamma\vdash\theta_s\sim\theta_\sigma$}.
+  
+  Let us perform case analysis on $\tau$; there are two cases:
 
   \begin{itemize}
-  \item \textbf{CASE} $\tau=0$. By definition of the SITPN full execution and
-    the \hvhdl{} full simulation relations:
+  \item \textbf{CASE} $\tau=0$. By definition of the SITPN full
+    execution and the \hvhdl{} full simulation relations, we have:
     \begin{itemize}
-    \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+    \item $E_c,0\vdash{}sitpn\xrightarrow{full}[s_0]$ and $\theta_s=[s_0]$
     \item
+      $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+      and
       $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
-    \item $\theta_s=[s_0]$ and $\theta_\sigma=[\sigma_0]$
+      and
+      $\mathcal{D}_\mathcal{H},E_p,\Delta,0,\sigma_0\vdash{}d.cs\rightarrow{}[~]$
+      and $\theta_\sigma=[\sigma_0]$
     \end{itemize}
-    \framebox{$\gamma\vdash{}s_0\sim{}\sigma_0$} (by def. of similar execution trace relation).
-    Solved by applying Lemma~\nameref{lem:sim-init-states}.
-  \item \textbf{CASE} $\tau>0$. By definition of the SITPN full execution and
-    the \hvhdl{} full execution relations:
-    \begin{itemize}
-    \item $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
-    \item $E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$
-    \item $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$
-    \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
-    \item $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
-    \item $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta$
-    \end{itemize}
-    \framebox{$\gamma\vdash{}(s_0 :: s :: \theta_s)\sim{}(\sigma_0 :: \theta)$}\\\\
-    By definition of the \hvhdl{} full simulation relation, we know:
-    \begin{itemize}
-    \item $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma$
-    \item $E_p,\Delta,\tau-1,\sigma\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
-    \end{itemize}
-    where $\theta=\sigma :: \theta_\sigma$.\\
+
     
-    Rewriting $\theta$ as $\sigma :: \theta_\sigma$, \fbox{$\gamma\vdash{}(s_0 :: s :: \theta_s)\sim{}(\sigma_0 :: \sigma :: \theta_\sigma)$}\\\\
-    3 subgoals (by def. of \nameref{def:exec-trace-sim}).
+    
+    Rewriting $\theta_s$ as $[s_0]$, and $\theta_\sigma$ as
+    $[\sigma_0]$, and by definition of the full execution trace
+    similarity relation, what is left to prove is:
+    \framebox{$\gamma\vdash{}s_0\sim{}\sigma_0$}
+
+    Appealing to Lemma~\nameref{lem:sim-init-states}, we can show
+    \qedbox{$\gamma\vdash{}s_0\sim{}\sigma_0$.}
+    
+  \item \textbf{CASE} $\tau>0$. By definition of the SITPN full
+    execution relation (i.e,
+    $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$) and the
+    \hvhdl{} full simulation relation (i.e,
+    $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$),
+    we have:
+    \begin{itemize}
+    \item
+      $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
+      and
+      $E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$
+      and $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta$
+      and $\theta_s=s_0 :: s_0 :: s :: \theta$
+    \item
+      $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
+      and
+      $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
+      and
+      $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta'$
+      and $\theta_\sigma=\sigma_0 :: \theta'$
+    \end{itemize}
+    
+    Rewriting $\theta_s$ and $\theta_\sigma$, the new goal is: \framebox{$\gamma\vdash{}(s_0 :: s_0 :: s :: \theta)\sim{}(\sigma_0 :: \theta')$}\\
+    
+    By definition of the \hvhdl{} simulation relation (i.e,
+    $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta'$),
+    we have:
+    
+    $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma,\sigma'$
+    and
+    $E_p,\Delta,\tau-1,\sigma'\vdash{}\mathrm{d.cs}\rightarrow\theta''$
+    and $\theta'=\sigma :: \sigma' :: \theta''$
+    
+    Rewriting $\theta'$, the new goal is: \fbox{$\gamma\vdash{}(s_0 :: s_0 :: s :: \theta)\sim{}(\sigma_0 :: \sigma :: \sigma' :: \theta'')$}\\
+    
+    By definition of the full execution trace similarity relation,
+    there are four points to prove:
     \begin{enumerate}
-    \item $\gamma\vdash{}s_0\sim\sigma_0$ (solved by applying Lemma~\nameref{lem:sim-init-states}).
-    \item $\gamma\vdash{}s\sim\sigma$ (solved by applying Lemma~\nameref{lem:first-cycle}).
-    \item $\gamma\vdash{}\theta_s\sim\theta_\sigma$ (solved by applying Lemma~\nameref{lem:simulation}).
+    \item \framebox{$\gamma\vdash{}s_0\sim\sigma_0$.}
+
+      Appealing to Lemma~\nameref{lem:sim-init-states}, we can show
+      \qedbox{$\gamma\vdash{}s_0\sim\sigma_0$}.
+      
+    \item
+      \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}\sigma$.}
+
+      Appealing to Lemma~\nameref{lem:fst-re}, we have
+      $\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\approx}\sigma$.
+
+      By definition of
+      $\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\approx}\sigma$,
+      we can show
+      \qedbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}\sigma$.}
+      
+    \item \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma'$.}
+      
+      Appealing to Lemma~\nameref{lem:fst-re} and
+      Lemma~\nameref{lem:fe}, we have
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma'$.
+
+      By definition of
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma'$, we can
+      show
+      \qedbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma'$.}
+      
+    \item
+      \fbox{$\gamma\vdash{}\theta\stackrel{\uparrow}{\sim}\theta''$.}
+      
+      Appealing to Lemma~\nameref{lem:fst-re} and
+      Lemma~\nameref{lem:fe}, we have
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma'$.
+
+      Then, we can appeal to Lemma~\nameref{lem:simulation} to show
+      \qedbox{$\gamma\vdash{}\theta\stackrel{\uparrow}{\sim}\theta''$.}
+      
     \end{enumerate}
   \end{itemize}
-\end{proof}
+\end{niproof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% FIRST CYCLE LEMMA %%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[First Cycle]
-  \label{lem:first-cycle}
-  For all
-  $sitpn\in{}SITPN,d\in{}design,\gamma\in{}WM(sitpn,d),s\in{}S(sitpn),
-  \Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),$
-  $\sigma_{e},\sigma_0,\sigma\in{}\Sigma(\Delta)$,
-  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  assume that:
-  \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
-    and $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
-  \item $\sigma_0$ is the initial state of $\Delta$: 
-    $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
-  \item First execution cycle for $d$: $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma$
-  \item
-    Particular first execution cycle for $sitpn$ (first rising edge is idle):\\
-    $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
-    and
-    $E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$
-  \end{itemize}
-  then $\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.
-\end{lemma}
-
-\begin{proof}
-  Let's show that the first execution cycle leads to two states
-  verifying the \nameref{def:post-fe-state-sim} relation:
-  \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.}\\
-
-  \noindent{}By definition of the \hvhdl{} cycle relation, we have:
-  \begin{itemize}
-  \item $\mathtt{Inject}_\uparrow(\sigma_0, E_p, \tau, \sigma_{injr})$
-    and
-    $\Delta,\sigma_{injr}\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_r$
-    and
-    $\Delta,\sigma_r\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
-  \item
-    $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma_{injf})$
-    and
-    $\Delta,\sigma_{injf}\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_f$
-    and
-    $\Delta,\sigma_f\vdash\mathrm{d.cs}\xrightarrow{\theta'}\sigma$
-  \end{itemize}
-  
-  \noindent{}Then, we can apply the \nameref{lem:fe} lemma to solve \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}{}\sigma$.}\\
-
-  \noindent{}One premise of the \nameref{lem:fe} lemma remains to be
-  proved:
-  \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}{}\sigma'$.}\\
-
-  \noindent{}Then, we can apply the \nameref{lem:fst-re} lemma to
-  solve \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}{}\sigma'$.}
-  
-\end{proof}
+In the proof of Theorem~\ref{thm:full-bisim}, in the case where
+$\tau>0$, we must show that the state similarity relation holds
+between the states produced by the first execution cycle, and then use
+Lemma~\ref{lem:simulation} to complete the proof of similarity between
+the tail traces. First, we must show that the initial states of both
+SITPN and \hvhdl{} design verify the general state similarity relation
+(Definition \ref{def:state-sim}); this is done by appealing to
+Lemma~\nameref{lem:sim-init-states}.  The first execution cycle is
+particular because, by definition of the SITPN full execution
+relation, no transitions are fired during the first rising
+edge. Therefore, after the first rising edge, the SITPN state is still
+equal to its initial state $s_0$. We prove that the post rising edge
+similarity relation is verified after the first rising edge by
+appealing to Lemma~\nameref{lem:fst-re}. The detailled proofs for
+Lemmas~\nameref{lem:sim-init-states} and \nameref{lem:fst-re} are
+given in Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% BISIMULATION LEMMA %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Lemma~\ref{lem:simulation} is similar to Theorem~\ref{thm:full-bisim}
+excepts that the execution/simulation traces are not produced starting
+from the initial states, but starting from two states verifying the
+full post falling edge state similarity relation (i.e,
+$\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$). The SITPN
+execution relation and the \hvhdl{} simulation relation execute one
+computational step at clock count $\tau$ and then decrement the clock
+count and call themselves recursively to produce the rest of the
+execution/simulation traces. Therefore, the proof of
+Lemma~\ref{lem:simulation} is naturally done by induction over the
+clock count $\tau$.
 
 \begin{lemma}[Bisimulation]
   \label{lem:simulation}
@@ -485,86 +532,222 @@ of a simulation trace for all \hvhdl{} design returned by the
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$
-  \item Starting states are similar as intended after a falling edge:
-    $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$
+  \item Starting states are fully similar as intended after a falling
+    edge: $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
   \item $E_c,\tau\vdash{}sitpn,s\rightarrow\theta_s$
   \item $E_p,\Delta,\tau,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
   \end{itemize}
-  then $\gamma\vdash{}\theta_s\sim{}\theta_\sigma$.
+  then
+  $\gamma\vdash{}\theta_s\stackrel{\uparrow}{\sim}{}\theta_\sigma$.
 \end{lemma}
 
-\begin{proof}
-  Induction on $\tau$.
+\begin{niproof}
+  Given all the above variables and assuming the above hypotheses, let
+  us show
+  \framebox{$\gamma\vdash\theta_s\stackrel{\uparrow}{\sim}\theta_\sigma$}.
+
+  Let us reason by induction on $\tau$.
+  
   \begin{itemize}
-  \item Base case, $\tau=0$: traces are empty, trivial.
-  \item Induction case, $\tau > 0$:
+  \item \textbf{Base case}: $\tau=0$. Then,
+    $\sigma_s=\sigma_\sigma=[~]$ and by definition of the execution
+    trace similarity relation, we can show
+    \qedbox{$\gamma\vdash[~]\stackrel{\uparrow}{\approx}[~]$.}
+    
+  \item \textbf{Induction case}: $\tau > 0$.
     \begin{ih}
       $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
-      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ and
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ and
       $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$ and
       $E_p,\Delta,\tau-1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
       then
-      $\gamma\vdash{}\theta_s\sim{}\theta_\sigma$.
+      $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
     \end{ih}
     By definition of the SITPN execution and the \hvhdl{} simulation
-    relations for $\tau>0$: 
+    relations for $\tau>0$, we have:
     \begin{itemize}
-    \item $E,\tau\vdash{}sitpn,s\xrightarrow{\uparrow,\downarrow}{}s'$ and $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$.
-    \item $E_p,\Delta,\tau,\sigma\vdash{}\mathrm{d.cs}\xrightarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}\sigma'$ and
-      $E_p,\Delta,\tau-1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$.
+    \item $E_c,\tau\vdash{}s\xrightarrow{\uparrow}{}s'$ and
+      $E_c,\tau\vdash{}s'\xrightarrow{\downarrow}{}s''$ and
+      $E_c,\tau-1\vdash{}sitpn,s''\rightarrow\theta$.
+    \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_i)$ and
+      $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
+      and
+      $\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
+    \item $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma'_i)$
+      and
+      $\Delta,\sigma'_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_\downarrow$
+      and
+      $\Delta,\sigma_\downarrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma''$
+    \item $E_p,\Delta,\tau-1,\sigma''\vdash{}d.cs\rightarrow\theta'$.
     \end{itemize}
-    \framebox{$\gamma\vdash{}(s' :: \theta_s)\sim{}(\sigma' :: \theta_\sigma)$}.\\\\
-    2 subgoals (by def. of \nameref{def:exec-trace-sim}).
+    and $\theta_s=s' :: s'' :: \theta$ and
+    $\theta_\sigma=\sigma' :: \sigma'' :: \theta'$.
+    
+    Then, the new goal is: \framebox{$\gamma\vdash{}(s' :: s'' :: \theta)\stackrel{\uparrow}{\sim}(\sigma' :: \sigma'' :: \theta')$}.\\
+    
+    By definition of the execution trace similarity relation, there
+    are three points to prove:
     \begin{enumerate}
-    \item \framebox{$\gamma\vdash{}s'\sim{}\sigma'$} (solved with \nameref{lem:step}).
-    \item \framebox{$\gamma\vdash{}\theta_s\sim{}\theta_\sigma$} (solved with
-      \nameref{lem:step} and IH).
+    \item
+      \framebox{$\gamma\vdash{}s'\stackrel{\uparrow}{\sim}\sigma'$}
+
+      Appealing to Lemma~\nameref{lem:fe}, we have
+      $\gamma\vdash{}s'\stackrel{\uparrow}{\approx}\sigma'$.
+
+      By definition of
+      $\gamma\vdash{}s'\stackrel{\uparrow}{\approx}\sigma'$, we can
+      show
+      \qedbox{$\gamma\vdash{}s'\stackrel{\uparrow}{\sim}\sigma'$.}
+      
+    \item \framebox{$\gamma\vdash{}s''\stackrel{\downarrow}{\sim}\sigma''$}
+
+      Appealing to Lemmas~\nameref{lem:fe} and \nameref{lem:re}, we
+      have
+      $\gamma,E_c,\tau\vdash{}s'\stackrel{\downarrow}{\approx}\sigma'$.
+
+      By definition of
+      $\gamma,E_c,\tau\vdash{}s'\stackrel{\downarrow}{\approx}\sigma'$,
+      we can show
+      \qedbox{$\gamma\vdash{}s'\stackrel{\downarrow}{\sim}\sigma'$.}
+      
+    \item
+      \framebox{$\gamma\vdash{}\theta\stackrel{\uparrow}{\sim}\theta'$}
+
+      We can apply the induction hypothesis with $s=s''$,
+      $\sigma=\sigma''$, $\theta_s=\theta$ and
+      $\theta_\sigma=\theta'$. Then, what is left to prove is:
+      \framebox{$\gamma\vdash{}s''\stackrel{\downarrow}{\approx}\sigma''$}
+
+      Appealing to Lemmas~\nameref{lem:fe} and \nameref{lem:re}, we
+      can show
+      \qedbox{$\gamma\vdash{}s''\stackrel{\downarrow}{\approx}\sigma''$.}
     \end{enumerate}
     
   \end{itemize}
-\end{proof}
+\end{niproof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% STEP LEMMA %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In the same manner as the bisimulation diagrams of
+Figure~\ref{fig:sim-diagrams}, Figure~\ref{fig:bisim-diagram} gives
+the kind of bisimulation diagram followed by the execution of an SITPN
+and its corresponding \hvhdl{} design over one clock cycle. It informs
+about the moments during the clock cycle when the SITPN state and the
+\hvhdl{} design state are compared, and the kind of similarity that
+relates the states at these moments. In
+Figure~\ref{fig:bisim-diagram}, the states are compared with the full
+state similarity relations. This is because the use of the full state
+similarity relations are mandatory to prove Lemmas~\nameref{lem:re}
+and \nameref{lem:fe}. However, the \textit{simple} state similarity
+relations are sufficient, in relation to our standards, to state the
+semantic preservation property. The proof of the upper part of diagram
+is given by Lemma~\nameref{lem:fe}, and the proof of the lower part is
+given by Lemma~\nameref{lem:re}.
 
-\begin{lemma}[Step]
-  \label{lem:step}
-  For all $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, $s$,
-  $s''$, $\sigma$, $\sigma''$, $\Delta$, $\sigma_e$, assume that:
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/Proof/beh-preser-details}
+  \caption{Bisimulation diagram over one clock cycle for a source
+    SITPN and a target \hvhdl{} design.}
+  \label{fig:bisim-diagram}
+\end{figure}
+
+Here, we present Lemma~\nameref{lem:re} and Lemma~\nameref{lem:fe},
+along with their proofs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% RISING EDGE LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{lemma}[Rising Edge]
+  \label{lem:re}
+  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma(\Delta)$,
+  assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
-    $E_p\stackrel{env}{=}E_c$ and
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$
-  \item $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ 
-  \item From state $s$ to $s''$ in one execution cycle:
-    $E_c,\tau\vdash{}sitpn,s\srarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}s''$
-  \item From state $\sigma$ to $\sigma''$ in one simulation cycle:
-    $E_p,\Delta,\tau,\sigma\vdash{}d.cs\srarrow{\uparrow,\downarrow}{\fontsize{7}{9}\selectfont}\sigma''$
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{7}{7}\selectfont}\Delta,\sigma_e$
+  \item $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
+  \item
+    $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+  \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_i)$ and
+    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
+    and
+    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
+  \item State $\sigma$ is a stable design state:
+    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$
   \end{itemize}
-  then $\gamma\vdash{}s''\stackrel{\downarrow}{\sim}{}\sigma''$.
+  then
+  $\gamma,E_c,\tau\vdash{}s'\stackrel{\uparrow}{\approx}{}\sigma'$.
 \end{lemma}
 
-\begin{proof}
-  By def. of the SITPN and \hvhdl{} cycle relations:
-  \begin{itemize}
-  \item $E_c,\tau\vdash{}sitpn,s\xrightarrow{\uparrow}s'$ and
-    $E_c,\tau\vdash{}sitpn,s'\xrightarrow{\downarrow}s''$
-  \item
-    $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_{injr})$
-    and
-    $\Delta,\sigma_{injr}\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_r$
-    and
-    $\Delta,\sigma_r\vdash\mathrm{d.cs}\xrightarrow{\theta}\sigma'$
-  \item
-    $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma_{injf})$
-    and
-    $\Delta,\sigma_{injf}\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_f$
-    and
-    $\Delta,\sigma_f\vdash\mathrm{d.cs}\xrightarrow{\theta'}\sigma''$
+\begin{niproof}
+  By definition of \nameref{def:full-post-re-state-sim} relation,
+  there are 7 points to prove.
+  \begin{frameb}
+    \begin{enumerate}
+    \item
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s'.t.~\gamma(p)=id_p,$
+      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{it:marking-eq-re}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
+      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
+      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{it:time-count-eq-re}
+    \item
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.\label{it:reset-eq-re}
+    \item
+      $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.\label{it:action-eq-re}
+    \item
+      $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{it:fun-eq-re}
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.\label{it:sens-eq-re}
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{false}$.\label{it:not-sens-eq-re}
+    \item
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
+      $\sigma'(id_t)("s\_condition\_combination")=
+      \prod\limits_{c\in{}conds(t)}
+      \begin{cases}
+        E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+        \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+      \end{cases}$\\
+      where
+      $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.\label{it:cond-comb-eq-re}
+    \end{enumerate}
+  \end{frameb}
+  
+  Each point is proved by a separate lemma:
+  \begin{itemize}[label=--]
+  \item Apply Lemma~\nameref{lem:re-equal-marking} to solve
+    \ref{it:marking-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-tc} lemma to solve
+    \ref{it:time-count-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-reset-orders} to solve
+    \ref{it:reset-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-action-exec} to solve \ref{it:action-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-fun-exec} to solve
+    \ref{it:fun-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-sens} to solve
+    \ref{it:sens-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-not-sens} to solve
+    \ref{it:not-sens-eq-re}.
+  \item Apply Lemma~\nameref{lem:re-equal-cond-comb} to solve
+    \ref{it:cond-comb-eq-re}.
   \end{itemize}
-  Solved by applying \nameref{lem:re} and then ``Falling Edge'' lemmas.
-\end{proof}
+\end{niproof}
+
 
 %%% Local Variables:
 %%% mode: latex

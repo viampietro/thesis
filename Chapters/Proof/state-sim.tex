@@ -96,13 +96,10 @@ relation after a rising edge is defined as follows:
   \label{def:post-re-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle count
-  $\tau\in\mathbb{N}$, and an SITPN execution environment
-  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
-  SITPN state $s\in{}S(sitpn)$ and a design state
-  $\sigma\in\Sigma(\Delta)$ are similar after a rising edge happening
-  at clock cycle count $\tau$, written
-  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
+  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
+  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
+  similar after a rising edge happening, written
+  $\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
   \begin{enumerate}
   \item
     $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)("s\_marking")$.
@@ -254,7 +251,7 @@ relation is as follows:
   \end{enumerate}
 \end{definition}
 
-\noindent{}Definition~\ref{def:post-fe-state-sim} extends
+\noindent{}Definition~\ref{def:full-post-fe-state-sim} extends
 Definition~\ref{def:post-fe-state-sim} by drawing out a correspondence
 between:
 \begin{itemize}
@@ -266,6 +263,9 @@ between:
 \item the sum of tokens produced by the firing process and the value
   of the signal $s\_input\_token\_sum$
 \end{itemize}
+
+
+
 
 
 
