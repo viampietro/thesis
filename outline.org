@@ -15,7 +15,7 @@
 ** TODO presentation of the VHDL language [%]
 ** TODO choosing a semantics for VHDL [95%]
 ** TODO a natural semantics for H-VHDL [75%]
-** TODO Coq implementation of H-VHDL [%]
+** TODO Coq implementation of H-VHDL syntax and semantics [%]
 ** TODO conclusion [%]
 * TODO The HILECOP model-to-text transformation [%]
 ** TODO introduction [%]
@@ -24,11 +24,11 @@
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
-* TODO Proving semantic preservation in HILECOP [42%]
+* TODO Proving semantic preservation in HILECOP [57%]
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
-** TODO the semantic preservation theorem [90%]
+** DONE the semantic preservation theorem [100%]
 ** TODO a detailled proof: equivalence of fired transitions [40%]
 ** TODO mechanized verification of the proof [0%]
 ** TODO conclusion [0%]

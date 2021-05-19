@@ -49,6 +49,7 @@
 % to use colors
 
 \usepackage{xcolor}
+\usepackage{MnSymbol}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                  BEGIN DOCUMENT                %
@@ -102,12 +103,12 @@
   \node[anchor=east] at ($(spoint)!0.5!(sppoint)$) {$\uparrow$};
   \node[anchor=east] at ($(sppoint)!0.5!(sspoint)$) {$\downarrow$};
 
-  \node[anchor=west] at ($(sigpoint)!0.5!(siginjrpoint)$) {\fontsize{4}{6}\selectfont $\mathtt{Inject_\uparrow}$};
-  \node[anchor=west] at ($(siginjrpoint)!0.5!(sigrepoint)$) {\fontsize{4}{6}\selectfont $\uparrow$};
-  \node[anchor=west] at ($(sigrepoint)!0.5!(sigppoint)$) {\fontsize{4}{6}\selectfont $stabilize$};
-  \node[anchor=west] at ($(sigppoint)!0.5!(siginjfpoint)$) {\fontsize{4}{6}\selectfont $\mathtt{Inject_\downarrow}$};
-  \node[anchor=west] at ($(siginjfpoint)!0.5!(sigfepoint)$) {\fontsize{4}{6}\selectfont $\downarrow$};
-  \node[anchor=west] at ($(sigfepoint)!0.5!(sigspoint)$) {\fontsize{4}{6}\selectfont $stabilize$};
+  \node[anchor=west] at ($(sigpoint)!0.5!(siginjrpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject_\uparrow}$};
+  \node[anchor=west] at ($(siginjrpoint)!0.5!(sigrepoint)$) {\fontsize{6}{8}\selectfont $\uparrow$};
+  \node[anchor=west] at ($(sigrepoint)!0.5!(sigppoint)$) {\fontsize{6}{8}\selectfont $\downlsquigarrow$};
+  \node[anchor=west] at ($(sigppoint)!0.5!(siginjfpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject_\downarrow}$};
+  \node[anchor=west] at ($(siginjfpoint)!0.5!(sigfepoint)$) {\fontsize{6}{8}\selectfont $\downarrow$};
+  \node[anchor=west] at ($(sigfepoint)!0.5!(sigspoint)$) {\fontsize{6}{8}\selectfont $\downlsquigarrow$};
   
   
   % SQUIGGY PATHS
