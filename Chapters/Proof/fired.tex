@@ -1,8 +1,150 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The goal of this section is to present the overall proof strategy to
+establish the semantic preservation property. We use the proof of
+Lemma~\nameref{lem:fe-equal-fired}, involved in the proof of
+Lemma~\nameref{lem:fe}, to illustrate our demonstration technics. The
+proof of Lemma~\nameref{lem:fe-equal-fired} has been one tricky part
+of the proof, and therefore, it is worth to be mentioned. Also, it has
+led to a bug detection. We give a full account on this bug detection,
+and on how we manage to correct it, at the end of the section.
+
+\subsection{Informal presentation of the proof}
+\label{sec:informal-fired-proof}
+
+The proof we will detail here pertains to the set of fired
+transitions. In an SITPN, the firing process is involved in the
+computation of the new marking, the reset orders, and the execution of
+functions during the rising edge phase. Therefore, to prove the
+semantic preservation property, we must have the equivalence between
+the set of fired transitions as defined on the SITPN side and the set
+of fired transitions as defined on the \hvhdl{} side. The equivalence
+must hold at the beginning of the rising edge phase, i.e, when the set
+of fired transitions will be used to compute a new SITPN state.  To
+prove the equivalence, we must first look at the definition of the set
+of fired transitions on the SITPN and the \hvhdl{} side, and then
+think of a way to relate the two definitions.
+
+On the SITPN side, the set of fired transitions receives an
+intentional and recursive definition (see Definition~\ref{def:fired})
+depending on a given SITPN state. In Lemma~\ref{lem:fe-equal-fired},
+we are interested in the definition of the set of fired transitions at
+state $s'$, i.e the state at the end of the falling edge phase (which
+will also be the state at the beginning of the next rising edge
+phase). A transition belongs to the set of fired transitions if it is
+\emph{firable} (see Definition~\ref{def:firable}) and sensitized by
+the \emph{residual} marking at the considered SITPN state.
+Figure~\ref{fig:example-fired-trans} gives the set of fired
+transitions, i.e $Fired(s)$, for an example SITPN at a given state
+$s$. Here, transitions $t_a$, $t_b$ and $t_c$ are all firable at state
+$s$; however, only transition $t_c$ is sensitized by the residual
+marking.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Proof/example-fired-trans}
+  \caption[An example of fired transitions set]{The set of fired
+    transitions for an example SITPN at a given SITPN state $s$; on
+    the right side, the dotted arrows indicates the priority relation
+    between the three transitions ($t_c$ is the top-priority
+    transition); on the left side, each transition is associated to
+    its $Pr$ set which are necessary to compute the residual marking.
+  }
+  \label{fig:example-fired-trans}
+\end{figure}
+
+The computation of the residual marking involves the $Pr$ sets, which
+are, for a given transition $t$ and a state $s$, the set of
+transitions with a higher firing priority than $t$ which are actually
+fired at $s$. This is where the recursive definition of the set of
+fired transitions begins. The definition is correct, i.e the recursion
+ends, if the priority relation is a strict order over the set of
+transitions, and therefore, there are always transitions of
+top-priority (e.g, $t_c$ in Figure~\ref{fig:example-fired-trans}). The
+condition of the priority relation being a strict order over the set
+of transitions is part of the definition of a well-defined SITPN (see
+Definition~\ref{def:wd-sitpn}). By definition, top-priority
+transitions have an empty $Pr$ set. Indeed, there exist no transition
+with a higher firing priority than a top-priority transition. Thus, a
+top-priority transition that is firable is also fired. Note that one
+can not determine the $Pr$ set of a transition before having
+determined the firing status of all the transitions with a higher
+firing priority. For instance, in
+Figure~\ref{fig:example-fired-trans}, it is impossible to know the
+content of $Pr(t_a)$ before having determined if transition $t_b$ is
+fired or not. To know if $t_b$ is fired or not, we must determine the
+content of $Pr(t_b)$. To do so, we must first determine the firing
+status of $t_c$. Even though the definition of the set of fired
+transitions is very declarative, this hints at a natural way to
+establish an algorithm to build the set of fired transitions at a
+given SITPN state.
+
+On the \hvhdl{} side, the set of fired transitions is defined through
+the value of the \texttt{fired} port of transition component
+instances. The transition design declares an output port of boolean
+type with the identifier \texttt{fired}. What we want to prove in
+Lemma~\ref{lem:fe-equal-fired} is that, at the end of the falling edge
+phase (i.e at state $\sigma'$), the value of the \texttt{fired} port
+of a transition component instance reflects the firing status of the
+corresponding transition. The \texttt{fired} port is a combinational
+signal. This means that its value depends on an equation that is
+verified when all signals are stable, i.e at the end of the
+stabilization phases happening during the simulation. In the point of
+view of the circuit synthesis, this equation reflects the wiring of
+the port on the described hardware
+circuit. Figure~\ref{fig:fired-port} shows a part of the transition
+design architecture describing how the \texttt{fired} port is
+connected with to the other internal signals.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Proof/fired-port}
+  \caption[The fired port of the transition design]{Wiring of the
+    \texttt{fired} output port in the transition design architecture;
+    on the left side is the input interface of the transition design;
+    on the right side is the output interface of the transition
+    design, with the \texttt{fired} port; in red are the parts of the
+    architecture that depend on synchronous logic and in black are the
+    parts that are purely combinational.}
+  \label{fig:fired-port}
+\end{figure}
+
+In Figure~\ref{fig:fired-port}, the labels underneath the and ports
+and inside the block denote the names of the processes defined in the
+transition design architecture as VHDL code. As a matter of fact,
+Figure~\ref{fig:fired-port} is a transcription of the code defining
+the transition design architecture. Therefore, by looking at the VHDL
+code, we are able to determine the combinational equation associated
+to the \texttt{fired} port. Considering a transition component
+instance $id_t$ at a given stable state $\sigma$, the \texttt{fired}
+port equation is:
+
+\begin{equation}
+  \label{eq:fired-port-comb-eq}
+  \sigma(id_t)("fired")=\sigma(id_t)("s\_firable")~.~\sigma(id_t)("s\_priority\_combination")
+\end{equation}
+
+In Equation~\eqref{eq:fired-port-comb-eq}, $\sigma(id_t)$ denotes the
+internal state of the transition component instance $id_t$. From
+$\sigma(id_t)$, we have access to the values of the input ports, the
+outport ports and the internal signals of the
+component. Equation~\eqref{eq:fired-port-comb-eq} states that the
+value of the \texttt{fired} port is a simple and expression between
+the value of the internal signal \texttt{s\_firable} and
+\texttt{s\_priority\_combination}. To differentiate the formulas of
+the intuitionistic logic from the expressions of the boolean logic, we
+use (``$.$'', ``+'') to denote the \emph{and} and \emph{or} operators
+in boolean expressions, and ($\land$,$\lor$) to denote the conjunction
+and the disjunction in the intuitionistic formulas.
+
+
+
+\subsection{Formal presentation of the proof}
+\label{sec:formal-fired-proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%% FALLING EDGE HYPOTHESES %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{definition}[Falling Edge Hypotheses]
+\begin{definition}[Falling edge hypotheses]
   \label{def:fe-hyps}
   Given an $sitpn\in{}SITPN$, $d\in{}design$,
   $\gamma\in{}WM(sitpn,d)$,
@@ -16,7 +158,7 @@
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
-  \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$
+  \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
   \item $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
   \item $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$
     and
@@ -37,7 +179,7 @@
 %%%%%%%%%% FALLING EDGE EQUAL FIRED LEMMA %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{lemma}[Falling Edge Equal Fired]
+\begin{lemma}[Falling edge equal fired]
   \label{lem:fe-equal-fired}
   \fehyps{} then
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$

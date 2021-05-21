@@ -1,0 +1,118 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+\usepackage{MnSymbol}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{circuitikz}
+
+  \node[draw,rectangle] (tarch) {
+    \begin{circuitikz}
+      \draw node [and port] (firedps) {}
+      node (firedpslabel) [below = 5pt of firedps, font=\ssmall] {
+        \begin{tabular}{@{}c@{}}
+          fired \\
+          evaluation \\
+        \end{tabular}
+      }
+      
+      node [and port,
+      number inputs=5, no input leads,
+      ] at ($(firedps)-(3,-2)$) (pauthsps) {}
+      (pauthsps.in 1) -- (pauthsps.bin 1)
+      (pauthsps.in 5) -- (pauthsps.bin 5)
+      node[rotate=90] at ($(pauthsps.in 3)+(6pt,0)$) {\dots}
+      
+      node[below = 5pt of pauthsps, font=\ssmall] {
+        \begin{tabular}{@{}c@{}}
+          priority authorizations \\
+          evaluation \\
+        \end{tabular}
+      }
+      node[above right, font=\ssmall] at ($(pauthsps.out)$) {\texttt{s\_priority\_combination}}
+      
+      node [dipchip, color=red, num pins=8, hide numbers, no topmark, external pins width=0]
+      at ($(firedps)-(3,2)$)
+      (faps) {
+        \begin{tabular}{@{}c@{}}
+          firable \\
+          evaluation \\
+        \end{tabular}
+      }
+      node[below right, color=red, font=\ssmall] at ($(faps.e)$) {\texttt{s\_firable}};
+      \draw [color=red] (faps.e) -| (firedps.in 2) -- (firedps.bin 2);
+      \draw (pauthsps.out) -| (firedps.in 1);
+    \end{circuitikz}
+  };
+
+  \coordinate (fired) at ($(firedps.out)+(10pt,0)$);
+  \draw (firedps.out) -- (fired);
+  \node[below right, xshift=-5pt, font=\ssmall] (firedlabel) at (fired) {\texttt{fired}};
+
+  \coordinate (pauthsn) at ($(pauthsps.in 1)-(20pt,0)$);
+  \coordinate (pauthsz) at ($(pauthsps.in 5)-(20pt,0)$);
+  \draw (pauthsn) -- (pauthsps.in 1)
+  (pauthsz) -- (pauthsps.in 5);
+  
+  \node[anchor=east, font=\ssmall] at (pauthsn) {n};
+  \node[anchor=east, font=\ssmall] at (pauthsz) {0};
+  \node[font=\ssmall, yshift=30pt] at ($(pauthsz)!.5!(pauthsn)$) {
+    \begin{tabular}{@{}c@{}}
+      \texttt{priority} \\
+      \texttt{authorizations} \\
+    \end{tabular}
+  };
+  
+  \node[rotate=90,yshift=-3pt] at ($(pauthsz)!.5!(pauthsn)$) {\dots};
+  
+\end{circuitikz}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

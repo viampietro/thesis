@@ -1,0 +1,113 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+\usepackage{MnSymbol}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{circuitikz}
+
+  \node[draw,rectangle] (parch) {
+    \begin{circuitikz}
+      \draw       
+      node [dipchip, num pins=8, hide numbers, no topmark, external pins width=0]
+      (pauthsevps) {
+        \begin{tabular}{@{}c@{}}
+          priority \\
+          evaluation \\
+        \end{tabular}
+      };
+
+      \draw       
+      node [dipchip, anchor=east, color=red, num pins=4, hide numbers, no topmark, external pins width=0]
+      (markingps) at ($(pauthsevps.west)-(2,-1)$) {marking}
+      node[red, below right, font=\tiny] at (markingps.e) {\texttt{s\_marking}};
+
+      \draw[red] (markingps.e) -- ($(markingps.e)+(2,0)$);
+      
+    \end{circuitikz}
+  };
+
+  
+  \coordinate (otfm) at ($(parch.west)-(.2,0)$);
+  \coordinate (otfz) at ($(parch.west)-(.2,.9)$);
+  \draw (otfm) -| ($(pauthsevps.west)$);
+  \draw (otfz) -| ($(pauthsevps.west)-(0,.9)$);
+  \node[rotate=90, yshift=-3pt] at ($(otfm)!.5!(otfz)$) {\dots};
+  \node[font=\tiny, anchor=east] at (otfm) {0};
+  \node[font=\tiny, anchor=east] at (otfz) {m};
+  \node[font=\tiny, xshift=-30pt] at ($(otfz)!.5!(otfm)$) {
+    \begin{tabular}{@{}c@{}}
+      output \\
+      transitions \\
+      fired \\
+    \end{tabular}
+  };
+  
+  \node[rotate=90, yshift=-3pt] at ($(otfm)!.5!(otfz)$) {};
+
+  \coordinate (pauthsm) at ($(pauthsevps.pin 8)+(.3,0)$);
+  \coordinate (pauthsz) at ($(pauthsevps.pin 5)+(.3,0)$);
+  \draw (pauthsevps.pin 8) -- (pauthsm);
+  \draw (pauthsevps.pin 5) -- (pauthsz);
+  \node[font=\tiny, anchor=west] at (pauthsm) {0};
+  \node[font=\tiny, anchor=west] at (pauthsz) {m};
+  \node[rotate=90] at ($(pauthsm)!.5!(pauthsz)$) {\dots};
+  \node[font=\tiny, xshift=+25pt] at ($(pauthsz)!.5!(pauthsm)$) {
+    \begin{tabular}{@{}c@{}}
+      priority \\
+      authorizations \\
+    \end{tabular}
+  };
+
+  
+\end{circuitikz}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
