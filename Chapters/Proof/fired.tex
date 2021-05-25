@@ -7,21 +7,100 @@ of the proof, and therefore, it is worth to be mentioned. Also, it has
 led to a bug detection. We give a full account on this bug detection,
 and on how we manage to correct it, at the end of the section.
 
-\subsection{Informal presentation of the proof}
+\subsection{An accompanied journey along the proof}
 \label{sec:informal-fired-proof}
 
-The proof we will detail here pertains to the set of fired
-transitions. In an SITPN, the firing process is involved in the
-computation of the new marking, the reset orders, and the execution of
-functions during the rising edge phase. Therefore, to prove the
-semantic preservation property, we must have the equivalence between
-the set of fired transitions as defined on the SITPN side and the set
-of fired transitions as defined on the \hvhdl{} side. The equivalence
-must hold at the beginning of the rising edge phase, i.e, when the set
-of fired transitions will be used to compute a new SITPN state.  To
-prove the equivalence, we must first look at the definition of the set
-of fired transitions on the SITPN and the \hvhdl{} side, and then
-think of a way to relate the two definitions.
+The proof of Lemma~\ref{lem:fe-equal-fired} pertains to the set of
+fired transitions. In an SITPN, the firing process, based on the set
+of fired transitions, is responsible for the computation of the new
+marking, the reset orders, and the execution of functions during the
+rising edge phase. Therefore, to prove the semantic preservation
+property, we must have the equivalence between the set of fired
+transitions as defined on the SITPN side and the set of fired
+transitions as defined on the \hvhdl{} side. The equivalence must hold
+at the end of the falling edge phase, or at the beginning of the
+rising edge phase, i.e, when the set of fired transitions will be used
+to compute a new SITPN state. To express
+Lemma~\ref{lem:fe-equal-fired}, we must first define the hypotheses
+stating that a falling edge phase happened in the course of the
+execution of an SITPN and its corresponding \hvhdl{} design, plus some
+hypotheses about the similarity of the states at the beginning of the
+falling edge phase:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%% FALLING EDGE HYPOTHESES %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}[Falling edge hypotheses]
+  \label{def:fe-hyps}
+  Given an $sitpn\in{}SITPN$, $d\in{}design$,
+  $\gamma\in{}WM(sitpn,d)$,
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
+  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma(\Delta)$,
+  assume that:
+  \begin{itemize}
+  \item SITPN $sitpn$ translates into \hvhdl{} design $d$ and yields a
+    binder $\gamma$: $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item Simulation/Execution environments are similar:
+    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
+  \item $\Delta$ is the elaborated version of design $d$, and
+    $\sigma_e$ is the default design state of $\Delta$:
+    $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
+  \item Starting states are similar according to the full post rising
+    edge similarity relation:
+    $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
+  \item On the SITPN side, the execution of a falling edge phase
+    starting from state $s$ leads to state $s'$:\\
+    $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
+  \item On the \hvhdl{} side, the simulation of a falling edge phase
+    starting from state $\sigma$ leads to state $\sigma'$:
+    $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$ and
+    $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
+    and
+    $\Delta,\sigma_{\downarrow}\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
+  \item State $\sigma$ is a stable design state:
+    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$
+  \end{itemize}
+\end{definition}
+
+\def\fehyps{For all $sitpn$, $d$, $\gamma$, $\Delta$, $\sigma_e$,
+  $E_c$, $E_p$, $\tau$, $s$, $s'$, $\sigma$, $\sigma_i$,
+  $\sigma_{\downarrow}$, $\sigma'$ that verify the hypotheses of
+  Def.~\ref{def:fe-hyps},}
+
+The hypotheses of Definition~\ref{def:fe-hyps} are used in all the
+lemmas expressing some properties about the falling edge
+phase. Therefore, Definition~\ref{def:fe-hyps} enables the conciser
+expression of these lemmas. Then, we can express
+Lemma~\nameref{lem:fe-equal-fired}:
+
+\begin{lemma}[Falling edge equal fired]
+  \label{lem:fe-equal-fired}
+  \fehyps{} then
+  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+  $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
+\end{lemma}
+
+Then, let us detail the proof of Lemma~\ref{lem:fe-equal-fired}. To
+prove Lemma~\ref{lem:fe-equal-fired}, we must reason on a given
+transition $t$ of the input SITPN $sitpn$ and a transition component
+instance $id_t$ in the output \hvhdl{} design $d$. Transition $t$ and
+transition component instance $id_t$ are bound together through the
+$\gamma$ binder returned by the transformation function. This means
+that the component instance $id_t$ structurally represents the
+transition $t$ in the output \hvhdl{} design $d$. In this setting, we
+want to prove that $t$ is in the set of fired transitions at the end
+of the falling edge phase if and only if the \texttt{fired} port of
+$id_t$ equals $\mathtt{true}$ at the end of the falling edge
+phase. Formally, we want to prove:
+\fbox{$t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
+
+To prove the equivalence, we must first look at the definition of the
+set of fired transitions on the SITPN side and on the \hvhdl{} side,
+and then think of a way to relate the two definitions.
 
 On the SITPN side, the set of fired transitions receives an
 intentional and recursive definition (see Definition~\ref{def:fired})
@@ -89,10 +168,10 @@ signal. This means that its value depends on an equation that is
 verified when all signals are stable, i.e at the end of the
 stabilization phases happening during the simulation. In the point of
 view of the circuit synthesis, this equation reflects the wiring of
-the port on the described hardware
+the port in the described hardware
 circuit. Figure~\ref{fig:fired-port} shows a part of the transition
 design architecture describing how the \texttt{fired} port is
-connected with to the other internal signals.
+connected to the other internal signals.
 
 \begin{figure}[H]
   \centering
@@ -107,122 +186,200 @@ connected with to the other internal signals.
   \label{fig:fired-port}
 \end{figure}
 
-In Figure~\ref{fig:fired-port}, the labels underneath the and ports
-and inside the block denote the names of the processes defined in the
-transition design architecture as VHDL code. As a matter of fact,
-Figure~\ref{fig:fired-port} is a transcription of the code defining
-the transition design architecture. Therefore, by looking at the VHDL
-code, we are able to determine the combinational equation associated
-to the \texttt{fired} port. Considering a transition component
-instance $id_t$ at a given stable state $\sigma$, the \texttt{fired}
-port equation is:
+In Figure~\ref{fig:fired-port}, the labels underneath the \emph{and}
+logic ports and inside the block denote the names of the processes
+defined in the transition design architecture as VHDL code. As a
+matter of fact, Figure~\ref{fig:fired-port} is a transcription of the
+code defining the transition design architecture. Therefore, by
+looking at the VHDL code, we are able to determine the combinational
+equation associated to the \texttt{fired} port. Considering a
+transition component instance $id_t$ in a top-level design $d$; a
+state $\sigma$ denotes the current stable state of $d$ (remember that
+combinational equation hold when the signal values are stable); state
+$\sigma(id_t)$ denotes the internal state of the transition component
+instance $id_t$ at state $\sigma$; thus, the \texttt{fired} port
+equation at $\sigma$ is:
 
 \begin{equation}
   \label{eq:fired-port-comb-eq}
   \sigma(id_t)("fired")=\sigma(id_t)("s\_firable")~.~\sigma(id_t)("s\_priority\_combination")
 \end{equation}
 
-In Equation~\eqref{eq:fired-port-comb-eq}, $\sigma(id_t)$ denotes the
-internal state of the transition component instance $id_t$. From
-$\sigma(id_t)$, we have access to the values of the input ports, the
-outport ports and the internal signals of the
-component. Equation~\eqref{eq:fired-port-comb-eq} states that the
-value of the \texttt{fired} port is a simple and expression between
-the value of the internal signal \texttt{s\_firable} and
-\texttt{s\_priority\_combination}. To differentiate the formulas of
-the intuitionistic logic from the expressions of the boolean logic, we
-use (``$.$'', ``+'') to denote the \emph{and} and \emph{or} operators
-in boolean expressions, and ($\land$,$\lor$) to denote the conjunction
-and the disjunction in the intuitionistic formulas.
+Equation~\eqref{eq:fired-port-comb-eq} states that the value of the
+\texttt{fired} port is a simple ``and'' expression\footnote{To
+  differentiate the formulas of the intuitionistic logic from the
+  expressions of the boolean logic, we use (``$.$'', ``+'') to denote
+  the \emph{and} and \emph{or} operators in boolean expressions, and
+  ($\land$,$\lor$) to denote the conjunction and the disjunction in
+  the intuitionistic formulas.} between the value of the internal
+signal \texttt{s\_firable} and \texttt{s\_priority\_combination}.
 
+\begin{remark}[Signals and combinational equations]
+  \label{rmk:comb-eqs}
+  In the proceeding of the proof, a lot of combinational equations are
+  established (e.g, Equation~\eqref{eq:fired-port-comb-eq}). These
+  equations link the value of a given signal to the value of other
+  signals or expressions . All these equations are deduced by running
+  the \hvhdl{} semantics rules on the internal behavior (i.e, the
+  processes) of the transition and the place designs. A combinational
+  equation is always the result of a signal assignment statement
+  happening inside the statement body of a process. For instance, in
+  the transition design, the \texttt{fired\_evaluation} process,
+  presented in Listing~\ref{lst:fired-eval-ps}, assigns the
+  \texttt{fired} output port.  Reasoning on the
+  \texttt{fired\_evaluation} process statement body and on the
+  \hvhdl{} semantics rules permits us to deduce
+  Equation~\eqref{eq:fired-port-comb-eq}.
 
+\begin{lstlisting}[language=VHDL,label={lst:fired-eval-ps},caption={The \texttt{fired\_evaluation} process in the transition design architecture; its body statement assigns the \texttt{fired} output port; symbol $\Leftarrow$ is the signal assignment operator}.]
+fired_evaluation : process (s_firable, s_priority_combination)
+begin
+   fired <= s_firable and s_priority_combination;
+end process fired_evaluation;
+\end{lstlisting}
 
-\subsection{Formal presentation of the proof}
-\label{sec:formal-fired-proof}
+  Listing~\ref{lst:pauths-eval-ps} presents the
+  \texttt{priority\_}\texttt{authorizations\_}\texttt{evaluation}
+  process, responsible for the assignment of the
+  \texttt{s\_priority\_combination} in the transition
+  design. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%% FALLING EDGE HYPOTHESES %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{definition}[Falling edge hypotheses]
-  \label{def:fe-hyps}
-  Given an $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$,
-  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma(\Delta)$,
-  assume that:
-  \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
-    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
-  \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
-  \item $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
-  \item $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$
-    and
-    $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
-    and
-    $\Delta,\sigma_{\downarrow}\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
-  \item State $\sigma$ is a stable design state:
-    $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$
-  \end{itemize}
-\end{definition}
-
-\def\fehyps{For all $sitpn$, $d$, $\gamma$, $\Delta$, $\sigma_e$,
-  $E_c$, $E_p$, $\tau$, $s$, $s'$, $\sigma$, $\sigma_i$,
-  $\sigma_{\downarrow}$, $\sigma'$ that verify the hypotheses of
-  Def.~\ref{def:fe-hyps},}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%% FALLING EDGE EQUAL FIRED LEMMA %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{lemma}[Falling edge equal fired]
-  \label{lem:fe-equal-fired}
-  \fehyps{} then
-  $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.
-\end{lemma}
-
-\begin{niproof}
-  Given a $t\in{}T$ and an $id_t$ s.t. $\gamma(t)=id_t$, let us show
-  \fbox{$t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.}
-
-  The proof is in two parts:
-  \begin{enumerate}
-  \item Assuming that $t\in{}Fired(s')$, let us show
-    \fbox{$\sigma'(id_t)("fired")=\texttt{true}$.}
+\begin{lstlisting}[language=VHDL,label={lst:pauths-eval-ps},caption={The \texttt{priority\_authorizations\_evaluation} process in the transition design's architecture. The local variable \texttt{v\_priority\_combination} accumulates the product of the \texttt{priority\_authorizations} input ports in the \texttt{for} loop; then the last statement assigns the value of \texttt{v\_priority\_combination} to the \texttt{s\_priority\_combination} internal signal.}]
+priority_authorization_evaluation : process(priority_authorizations)
+   variable v_priority_combination : std_logic;
+begin
+   v_priority_combination := '1';
     
-    By definition of $t\in{}Fired(s')$, there exists
-    $fset\subseteq{}T$ s.t. $IsFiredSet(s',fset)~\land~t\in{}fset$.
+   for i in 0 to input_arcs_number $-$ 1 loop
+     v_priority_combination := v_priority_combination and priority_authorizations(i);
+   end loop;
     
-    Let us take such an $fset$, and apply
-    Lemma~\nameref{lem:fe-equal-fset} to solve the goal.
-  \item Assuming that $\sigma'(id_t)("fired")=\mathtt{true}$, let us
-    show \fbox{$t\in{}Fired(s')$.}
+   s_priority_combination <= v_priority_combination; -- Assignment of the result
+end process priority_authorization_evaluation;
+\end{lstlisting}
 
-    By definition of $t\in{}Fired(s')$, let us show that
-    \fbox{$\exists{}fset\subseteq{}T$
-      s.t. $IsFiredSet(s',fset)~\land~t\in{}fset$}
+  Equation~\eqref{eq:spc-comb-eq} gives the combinational equation
+  deduced from the execution of the
+  \texttt{priority\_}\texttt{authorizations\_}\texttt{evaluation}
+  process for a given transition component instance $id_t$ in a
+  top-level design $d$. State $\sigma$ denotes the current state of
+  $d$, and $\sigma(id_t)$ denotes the internal state of $id_t$ at
+  state $\sigma$. The elaborated design $\Delta$ is the elaborated
+  version of design $d$, and $\Delta(id_t)$ is the elaborated version
+  of $id_t$.
+  
+  \begin{equation}
+    \label{eq:spc-comb-eq}
+    \sigma(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)("input\_arcs\_number")-1}\sigma(id_t)("priority\_authorizations")[i]
+  \end{equation}
 
-    Assuming that $sitpn$ is a well-defined $SITPN$ (see Section
-    \todo{Add ref. to well-defined SITPN}), we can always find an
-    $fset\subseteq{}T$ such that
-    $\forall{}s\in{}S(sitpn),~IsFiredSet(s,fset)$ is derivable.  Let
-    us take an $fset\subseteq{}T$ s.t. $IsFiredSet(s',fset)$, and use
-    it to prove the goal by applying
-    Lemma~\nameref{lem:fe-equal-fset}.
-    
-  \end{enumerate}
-\end{niproof}
+  In Equation~\eqref{eq:spc-comb-eq}, ``spc'' is an alias\footnote{We
+    will be using a lot of aliases for the names of signals in the
+    proofs to come. Table~\ref{tab:consts-and-sigs-ref} gives the
+    correspondence between signals and constants names and their
+    aliases.} for the \texttt{s\_priority\_combination} signal.  The
+  \texttt{for} loop of the
+  \texttt{priority\_authorization\_evaluation} process has been
+  converted into a product expression where the index $i$ follows the
+  bounds of the loop. The \texttt{priority\_authorizations} signal is
+  an input port of type \texttt{array}, thus we use the bracketed
+  notation $a[i]$ to access the element of index $i$ in array
+  $a$. Also, we know that \texttt{input\_arcs\_number} identifies a
+  generic constant of the transition design, thus, we can retrieve its
+  value in the elaborated design $\Delta(id_t)$.
+  
+  In the proofs laid out in Appendix~\ref{app:sem-preserv-proof} and
+  in this chapter, we do not detail how the execution of processes's
+  statement body permit to deduce combinational equations. We find
+  that the proofs are easier to follow without entering in so much
+  details. We let aside the task of proving that these equations hold
+  until the time of the mechanization with the \coq{} proof
+  assistant. For now, the reader can convince himself/herself that an
+  equation holds by looking at the code of the place and the
+  transition designs (see Appendix\todo{Add ref.}).
+\end{remark}
+
+Now that we know which combinational equation is attached to the value
+of the output port \texttt{fired} for a given transition component
+instance, we must relate this equation to the definition of the set of
+fired transitions on the SITPN side. By definition of the set of fired
+transitions, we know that $t\in{}Fired(s')$ is equivalent to
+$t\in{}Firable(s')\land{}t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$
+where $Pr(t,s')=\{t'~\vert~t'\succ{}t\land{}t'\in{}Fired(s')\}$. By
+definition of the \texttt{fired} port equation, we know that
+$\sigma'(id_t)("fired")=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")$.
+Using these definitions to rewrite the terms of the current goal, the
+new goal to prove is:
+
+\begin{frameb}
+  $t\in{}Firable(s')\land{}t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))\Leftrightarrow$\\
+  $\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")=\mathtt{true}$
+\end{frameb}
+
+Thanks to Lemma~\ref{lem:fe-equal-firable}, we know that
+$t\in{}Firable(s')$ iff
+$\sigma'(id_t)("s\_firable")=\mathtt{true}$. Then, we can get rid of
+these two terms in the current goal; then, what is left to prove is:
+
+\begin{frameb}
+  $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))\Leftrightarrow$\\
+  $\big(\prod\limits_{i=0}^{\Delta(id_t)("input\_arcs\_number")-1}\sigma'(id_t)("priority\_authorizations")[i]\big)=\mathtt{true}$
+\end{frameb}
+
+Then, the proof is in two parts:
+
+\begin{enumerate}
+\item Assuming
+  $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$, let us
+  show that\\
+  \fbox{$\big(\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\big)=\mathtt{true}$.}
+\item Assuming
+  $\big(\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\big)=\mathtt{true}$,
+  let us show that\\
+  \fbox{$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$.}
+\end{enumerate}
+
+\noindent{}Let us prove the first point. Assuming that
+$t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$, let us
+show\\
+\fbox{$\big(\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\big)=\mathtt{true}$.}\\
+
+\noindent{}To prove the current goal, we can equivalently show that:\\
+\fbox{$\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
+
+\noindent{}For a given $i\in[0,\Delta(id_t)("ian")-1]$, let us show
+that \fbox{$\sigma'(id_t)("pauths")[i]=\mathtt{true}$.} As shown in
+Figure~\ref{fig:fired-port}, the signal
+\texttt{priority\_authorizations} is an input port of the transition
+design. Therefore, to know what is the value of the element $i$-th
+element of port \texttt{priority\_authorizations} at state
+$\sigma'(id_t)$, we must know how the
+\texttt{priority\_authorizations} port is connected in the top-level
+design. Basing ourselves on the transformation function, the
+connection of the \texttt{priority\_authorizations} port for the
+transition component instance $id_t$ depends on the set of input
+places of the transition $t$. If the set of input places of $t$ is
+empty, then, all elements of the \texttt{priority\_authorizations}
+port are connected to the constant \texttt{true}, and proving the goal
+is trivial. If the set of input places of $t$ is not empty, then, the
+connection of the $i$-th element of the
+\texttt{priority\_authorizations} port reflects the connection of some
+place $p$ to the transition $t$ by an input arc. Then, we must reason
+on the nature of the input arc connecting $p$ to $t$. The interested
+case happens when $p$ and $t$ are connected by a \texttt{basic} arc,
+and when the conflicts in the output transitions of $p$ are handled by
+the priority relation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% FALLING EDGE NOT EQUAL FIRED LEMMA %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{lemma}[Falling Edge Equal Not Fired]
   \label{lem:fe-equal-not-fired}
   \fehyps{} then $\forall{}t,id_t~s.t.~\gamma(t)=id_t,$
   $~t\notin{}Fired(s')\Leftrightarrow\sigma'_t("fired")=\mathtt{false}$.
 \end{lemma}
+
 
 \begin{proof}
   Proving the above lemma is trivial by appealing to
