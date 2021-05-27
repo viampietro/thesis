@@ -52,7 +52,8 @@
   \node[draw,rectangle] (parch) {
     \begin{circuitikz}
       \draw       
-      node [dipchip, num pins=8, hide numbers, no topmark, external pins width=0]
+      node [dipchip, num pins=14, hide numbers,
+      no topmark, external pins width=0]
       (pauthsevps) {
         \begin{tabular}{@{}c@{}}
           priority \\
@@ -61,47 +62,74 @@
       };
 
       \draw       
-      node [dipchip, anchor=east, color=red, num pins=4, hide numbers, no topmark, external pins width=0]
-      (markingps) at ($(pauthsevps.west)-(2,-1)$) {marking}
+      node [dipchip, anchor=east, color=red, num pins=4, hide numbers,
+      no topmark, external pins width=0]
+      (markingps) at ($(pauthsevps.west)-(2,-2)$) {marking}
       node[red, below right, font=\tiny] at (markingps.e) {\texttt{s\_marking}};
 
-      \draw[red] (markingps.e) -- ($(markingps.e)+(2,0)$);
+      \draw[red] (markingps.bpin 3) -- ($(pauthsevps.bpin 1)$);
       
     \end{circuitikz}
   };
 
-  
-  \coordinate (otfm) at ($(parch.west)-(.2,0)$);
-  \coordinate (otfz) at ($(parch.west)-(.2,.9)$);
-  \draw (otfm) -| ($(pauthsevps.west)$);
-  \draw (otfz) -| ($(pauthsevps.west)-(0,.9)$);
+  \coordinate (otfm) at ($(pauthsevps.bpin 2)-(4,0)$);
+  \coordinate (otfz) at ($(pauthsevps.bpin 3)-(4,0)$);
+  \draw (otfm) -| ($(pauthsevps.bpin 2)$);
+  \draw (otfz) -| ($(pauthsevps.bpin 3)$);
   \node[rotate=90, yshift=-3pt] at ($(otfm)!.5!(otfz)$) {\dots};
-  \node[font=\tiny, anchor=east] at (otfm) {0};
-  \node[font=\tiny, anchor=east] at (otfz) {m};
-  \node[font=\tiny, xshift=-30pt] at ($(otfz)!.5!(otfm)$) {
+  \node[font=\ssmall, anchor=east] at (otfm) {\tt 0};
+  \node[font=\ssmall, anchor=east] at (otfz) {\tt m};
+  \node[font=\ssmall, xshift=-30pt] at ($(otfz)!.5!(otfm)$) {
     \begin{tabular}{@{}c@{}}
-      output \\
-      transitions \\
-      fired \\
+      \texttt{output} \\
+      \texttt{transitions} \\
+      \texttt{fired} \\
     \end{tabular}
   };
-  
-  \node[rotate=90, yshift=-3pt] at ($(otfm)!.5!(otfz)$) {};
 
-  \coordinate (pauthsm) at ($(pauthsevps.pin 8)+(.3,0)$);
-  \coordinate (pauthsz) at ($(pauthsevps.pin 5)+(.3,0)$);
-  \draw (pauthsevps.pin 8) -- (pauthsm);
-  \draw (pauthsevps.pin 5) -- (pauthsz);
-  \node[font=\tiny, anchor=west] at (pauthsm) {0};
-  \node[font=\tiny, anchor=west] at (pauthsz) {m};
-  \node[rotate=90] at ($(pauthsm)!.5!(pauthsz)$) {\dots};
-  \node[font=\tiny, xshift=+25pt] at ($(pauthsz)!.5!(pauthsm)$) {
+  \coordinate (oatm) at ($(pauthsevps.bpin 4)-(4,0)$);
+  \coordinate (oatz) at ($(pauthsevps.bpin 5)-(4,0)$);
+  \draw (oatm) -| ($(pauthsevps.bpin 4)$);
+  \draw (oatz) -| ($(pauthsevps.bpin 5)$);
+  \node[rotate=90, yshift=-3pt] at ($(oatm)!.5!(oatz)$) {\dots};
+  \node[anchor=east] at (oatm) {\ssmall\tt 0};
+  \node[anchor=east] at (oatz) {\ssmall\tt m};
+  \node[font=\ssmall, xshift=-30pt] at ($(oatz)!.5!(oatm)$) {
     \begin{tabular}{@{}c@{}}
+      \texttt{output} \\
+      \texttt{arcs} \\
+      \texttt{types} \\
+    \end{tabular}
+  };
+
+  \coordinate (oawm) at ($(pauthsevps.bpin 6)-(4,0)$);
+  \coordinate (oawz) at ($(pauthsevps.bpin 7)-(4,0)$);
+  \draw (oawm) -| ($(pauthsevps.bpin 6)$);
+  \draw (oawz) -| ($(pauthsevps.bpin 7)$);
+  \node[rotate=90, yshift=-3pt] at ($(oawm)!.5!(oawz)$) {\dots};
+  \node[anchor=east] at (oawm) {\ssmall\tt 0};
+  \node[anchor=east] at (oawz) {\ssmall\tt m};
+  \node[font=\ssmall, xshift=-30pt] at ($(oawz)!.5!(oawm)$) {
+    \begin{tabular}{@{}c@{}}
+      \texttt{output} \\
+      \texttt{arcs} \\
+      \texttt{weights} \\
+    \end{tabular}
+  };
+
+  \coordinate (pauthsm) at ($(pauthsevps.bpin 12)+(.3,0)$);
+  \coordinate (pauthsz) at ($(pauthsevps.bpin 10)+(.3,0)$);
+  \draw (pauthsevps.bpin 12) -- (pauthsm);
+  \draw (pauthsevps.bpin 10) -- (pauthsz);
+  \node[font=\ssmall, anchor=west] at (pauthsm) {\tt 0};
+  \node[font=\ssmall, anchor=west] at (pauthsz) {\tt m};
+  \node[rotate=90] at ($(pauthsm)!.5!(pauthsz)$) {\dots};
+  \node[font=\ssmall\tt, xshift=+25pt] at ($(pauthsz)!.5!(pauthsm)+(.2,0)$) {
+    \begin{tabular}{@{}l@{}}
       priority \\
       authorizations \\
     \end{tabular}
   };
-
   
 \end{circuitikz}
 

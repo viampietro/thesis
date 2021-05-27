@@ -12,8 +12,8 @@ preservation, and in seeking usual proof strategies.
 
 The goal is to draw our inspiration from the literature, and to see
 how far the correspondence holds between our specific case of
-transformation, and other cases of transformations.  The material we
-used for the literature review is divided in three categories. Each
+transformation, and other cases of transformations.  The material used
+for the literature review is divided in three categories. Each
 category covers a specific case of transformation function; the three
 categories are:
 
@@ -22,10 +22,6 @@ categories are:
 \item Compilers for hardware description languages
 \item Model-to-model and model-to-text transformations
 \end{itemize}
-
-\subsection{Transformations and proofs of semantic preservation }
-\label{sec:lit-rev-trans-and-proof}
-
 
 In the introduction of his article about \ccert{} \cite{Leroy2009},
 X.Leroy presents the two points of major importance to express
@@ -108,7 +104,8 @@ asked:
 \item What is the employed proof strategy?
 \end{itemize}
 
-\paragraph{Compilers for generic programming languages}
+\subsection{Compilers for generic programming languages}
+\label{sec:gpl-compilers-and-proofs}
 
 Taking the \ccert{} compiler as an example, the compilation pass from
 Clight programs to Cminor programs is described in \cite{Blazy2006,
@@ -154,7 +151,8 @@ translation of Cminor programs into RTL programs in
 \cite{Leroy2009}). As a consequence, the complexity of the relation
 for memory model comparison increases.
 
-\paragraph{Compilers for hardware description languages}
+\subsection{Compilers for hardware description languages}
+\label{sec:hdl-compilers-and-proofs}
 
 In the case of HDL compilers, proving semantic preservation is very
 similar to the case of GPL compilers. Of course, the difference lies
@@ -267,7 +265,8 @@ cycles. Therefore, what is compared here are not the values that the
 execution states hold, but rather the activity of the source and
 target programs.
 
-\paragraph{Model transformations}
+\subsection{Model transformations}
+\label{sec:model-transf-and-proofs}
 
 Regarding model transformations, a lot of works consider semantic
 preservation as the preservation of structural properties in the

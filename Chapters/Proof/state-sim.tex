@@ -64,9 +64,46 @@ the boolean value of conditions (resp. actions and functions) are
 compared to the value of input (resp. output) ports of the \hvhdl{}
 design, also based on the $\gamma$ binder.
 
-\begin{todobox}
-  Explain the time counter particular relation.
-\end{todobox}
+As one can observe in Item~\ref{item:sim-tc}, the relation between the
+value of a time counter and the value of the $s\_time\_counter$ signal
+is a particular. It is due to the definition domain of time
+intervals. In the definition of the SITPN structure, a time interval
+$i$ is defined as follows: $i=[a,b]$ where $a\in\mathbb{N}^{*}$ and
+$b\in\mathbb{N}^{*}\sqcup\{\infty\}$. In the SITPN semantics, a time
+counter will increment its value, depending on certain conditions,
+until it has reached the upper bound of the associated time
+interval. Therefore, a time counter associated to a time interval with
+an infinite upper bound will possibly increment its value
+indefinitly. While acceptable in the theoretical world, this is not
+acceptable is the world of hardware circuits where all dimensions and
+values are finite. On the \hvhdl{} side, the signal
+$s\_time\_counter$, which value represents the value of a time
+counter, will stop its incrementation to the lower bound of the time
+interval in the case where the upper bound is infinite. As long as the
+value of the time counter is less than or equal to the lower bound of
+the time interval, we have a perfect equality between the value of the
+time counter and the value of the $s\_time\_counter$ signal. When the
+time counter reaches the lower bound, the values will possibly be
+diverging (i.e, the time counter possibly continues its
+incrementation). In that case, we are only interested in knowing that
+the value of the $s\_time\_counter$ signal is equal to the value of
+the lower bound of the time interval. The two last points of
+Item~\ref{item:sim-tc} are necessary to cover the case where a time
+counter has overreached the upper bound of its time interval. In that
+case, the time counter becomes \textit{locked}. The $s\_time\_counter$
+signal can not overreached the upper bound of the time interval
+without causing an overflow. Thus, the value of the $s\_time\_counter$
+signal diverges from the value of its corresponding time counter when
+the time counter overreaches the upper bound of its time interval.
+While the time counter is less than or equal to the upper bound of its
+time interval, we have a perfect equality between the value of the
+time counter and the value of the $s\_time\_counter$ signal.  When the
+time counter overreaches the upper bound, the value of the time
+counter stalls to upper bound plus one, and the value of
+$s\_time\_counter$ stalls to upper bound. In that case, we are only
+interested in knowing that the value of the $s\_time\_counter$ signal
+is equal to the value of the upper bound of the time interval.
+
 
 The second question that we asked above was: when does this state
 similarity relation must hold in the course of the execution? The
@@ -85,7 +122,7 @@ just before the falling edge of the clock). This is the only moment
 during the clock cycle where the $s\_reinit\_time\_counter$ signal is
 actually involved in the computation of other signals value. Thus, it
 is sufficient that Item~\ref{item:sim-reset} holds only in the middle
-of the clock cycle. However, we must now defined two state similarity
+of the clock cycle. However, we must now define two state similarity
 relation; one that checks the semantic matching after the rising edge
 of the clock signal (i.e, in the middle of the clock cycle), and one
 that checks the semantic matching after the falling edge of the clock
@@ -220,10 +257,9 @@ follows:
 
 As explained above, Definition~\ref{def:post-fe-state-sim} is similar
 to Definition~\ref{def:state-sim} except for the equality between
-reset orders and the value of signal $s\_reinit\_time\_counter$.
-
-The extended version of the post falling edge state similarity
-relation is as follows:
+reset orders and the value of signal $s\_reinit\_time\_counter$. The
+extended version of the post falling edge state similarity relation is
+defined as follows:
 
 \begin{definition}[Full post falling edge state similarity]
   \label{def:full-post-fe-state-sim}

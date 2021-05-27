@@ -4,19 +4,12 @@
 \begin{todobox}
   In this chapter, I want to talk about/draw the attention to:
   \begin{itemize}
-  \item The differentiation of boolean operators and intuitionistic
-    logic operators
-  \item The correspondence between combinational signal value and
-    there assignment expression deduced from the code. Explain that
-    this is where the \hvhdl{} semantics plays its part in the proof;
-    although we are not detailling how assignment expressions are
-    deduced from running the semantics of the \hvhdl{} code. Give some
-    examples of correspondence between combinational signal value and
-    assignment expressions (in part ``a detailled proof'')
   \item the properties of comp. instances itfaces deduced from the
     transformation (in part ``a detailled proof'')
-  \item The particularity of the similarity relation for time
-    counters.
+  \item To ease the reading, place $p$ and PCI $id_p$, meaning that
+    $\gamma(p)=id_p$.
+  \item PCI=place component instance, TCI=transition component
+    instance.
   \item In the part about the implementation, explain that the lemmas
     about the transformation function are expressed with universal
     binders rather than with existential ones to avoid the multiple
@@ -44,7 +37,7 @@ fired transitions, and we show how it has led to a bug detection in
 mechanization of the proof verification with the \coq{} proof
 assistant.
 
-\section{Semantic preserving transformations in the literature}
+\section{Proofs of semantic preservation in the literature}
 \label{sec:lit-rev-transf}
 \input{Chapters/Proof/lit-rev}
 

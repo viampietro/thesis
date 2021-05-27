@@ -1,0 +1,92 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+\usepackage{MnSymbol}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  % \draw[help lines, step=8pt] (-5.5cm,5.5cm) grid (15.5,-2.5cm);
+  % \clip (-5.7cm,5.5cm) rectangle (15.5cm,-2.5cm);
+  
+  \node[draw, rectangle,minimum width=4cm,minimum height=4cm] (idp) {\huge $id_p$};  
+  \node[draw, rectangle, minimum width=4cm,minimum height=4cm] (idt) at ($(idp)+(12,0)$) {\huge $id_t$};
+  
+  \node[anchor=south west] at ($(idp.east)$) {
+  \begin{tabular}{@{}l@{}}
+    \texttt{priority}\\
+    \texttt{authorizations(j)} \\
+  \end{tabular}
+};
+
+  \node[anchor=south east] at ($(idt.west)$) {
+    \begin{tabular}{@{}l@{}}
+      \texttt{priority}\\
+      \texttt{authorizations(i)} \\
+    \end{tabular}
+  };
+  
+  \draw (idp.east) -- (idt.west);
+  \coordinate (mid) at ($(idp.east)!.5!(idt.west)+(0,3)$);
+
+  \draw (idt.east) -| ($(idt.east)+(.3,2.5)$) -| ($(idp.west)-(.3,0)$) -- (idp.west);
+
+  \node[anchor=north west] at ($(idt.east)$) {\texttt{fired}};
+
+  \node[anchor=north east] at ($(idp.west)$) {
+    \begin{tabular}{@{}c@{}}
+      \texttt{output transitions}\\
+      \texttt{fired(j)} \\
+    \end{tabular}
+  };
+  
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

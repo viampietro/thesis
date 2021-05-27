@@ -1,0 +1,133 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  % \node[] (pn) {
+  %   \begin{tikzpicture}
+  %     \node[place, tokens=1] (p0) [label={above:$p$}] {};
+      
+  %     \node[transition] (tc) [below left=of p0, label={left:$t_c$}] {}
+  %     edge[pre, bend left] (p0);
+
+  %     \node[transition] (tb) [below =.9cm of p0, label={right:$t_b$}] {}
+  %     edge[pre] (p0);
+      
+  %     \node[transition] (ta) [below right=of p0, label={right:$t_a$}] {}
+  %     edge[pre, bend right] (p0);
+
+  %     \draw (tc.south east) edge[<-,dotted, bend right=90] (tb.south west);
+  %     \draw (tb.south east) edge[<-,dotted, bend right=90] (ta.south west);
+  %   \end{tikzpicture}
+  % };
+
+  \node (vhdl) % at ($(pn.east)+(5,0)$)
+  {
+    \begin{circuitikz}
+      % \draw[help lines, step=8pt] (-5.5cm,5.5cm) grid (15.5,-2.5cm);
+      % \clip (-5.7cm,5.5cm) rectangle (15.5cm,-2.5cm);
+      \ctikzset{multipoles/dipchip/width=2.5}
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0] (idp) {$id_p$};
+      \node [right, font=\ssmall] at (idp.bpin 1) {\tt otf(2)};
+      \node [right, font=\ssmall] at (idp.bpin 2) {\tt otf(1)};
+      \node [right, font=\ssmall] at (idp.bpin 3) {\tt otf(0)};
+      \node [left, font=\ssmall] at (idp.bpin 4) {\tt pauths(0)};
+      \node [left, font=\ssmall] at (idp.bpin 5) {\tt pauths(1)};
+      \node [left, font=\ssmall] at (idp.bpin 6) {\tt pauths(2)};
+      
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0, anchor=south west] (idta) at ($(idp.north east)+(2,1)$) {$id_{t_a}$};
+      \node [right, font=\ssmall] at (idta.bpin 2) {\tt pauths(i)};
+      \node [left, font=\ssmall] at (idta.bpin 5) {\tt fired};
+
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0, anchor=west] (idtb) at ($(idp.east)+(2,0)$) {$id_{t_b}$};
+      \node [right, font=\ssmall] at (idtb.bpin 2) {\tt pauths(j)};
+      \node [left, font=\ssmall] at (idtb.bpin 5) {\tt fired};
+      
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0, anchor=north west] (idtc) at ($(idp.south east)+(2,-1)$) {$id_{t_c}$};
+      \node [right, font=\ssmall] at (idtc.bpin 2) {\tt pauths(k)};
+      \node [left, font=\ssmall] at (idtc.bpin 5) {\tt fired};
+      
+      \draw (idp.bpin 6) -| ($(idta.bpin 2)-(.2,0)$) -- (idta.bpin 2);
+      \draw (idp.bpin 5) -- (idtb.bpin 2);
+      \draw (idp.bpin 4) -| ($(idtc.bpin 2)-(.2,0)$) -- (idtc.bpin 2);
+
+      \draw (idtc.bpin 5) -- ($(idtc.bpin 5)+(.2,0)$) --
+      ($(idtc.bpin 5)+(.2,-1)$) -| ($(idp.bpin 3)-(.2,0)$) -- (idp.bpin 3) ;
+
+      \draw (idtb.bpin 5) -| ($(idtb.bpin 5)+(.2,-1)$) -| ($(idp.bpin 2)-(.4,0)$) -- (idp.bpin 2) ;
+      \draw (idta.bpin 5) -| ($(idta.bpin 5)+(.2,1)$) -| ($(idp.bpin 1)-(.2,0)$) -- (idp.bpin 1) ;
+      
+      
+    \end{circuitikz}
+  };
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
