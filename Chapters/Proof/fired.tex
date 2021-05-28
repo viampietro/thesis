@@ -19,7 +19,7 @@ property, we must have the equivalence between the set of fired
 transitions as defined on the SITPN side and the set of fired
 transitions as defined on the \hvhdl{} side. The equivalence must hold
 at the end of the falling edge phase, or at the beginning of the
-rising edge phase, i.e, when the set of fired transitions will be used
+rising edge phase, i.e., when the set of fired transitions will be used
 to compute a new SITPN state. To express
 Lemma~\ref{lem:fe-equal-fired}, we must first define the hypotheses
 stating that a falling edge phase happened in the course of the
@@ -33,8 +33,7 @@ falling edge phase:
 
 \begin{definition}[Falling edge hypotheses]
   \label{def:fe-hyps}
-  Given an $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$,
+  Given a $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
   $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
@@ -106,13 +105,13 @@ On the SITPN side, the set of fired transitions receives an
 intentional and recursive definition (see Definition~\ref{def:fired})
 depending on a given SITPN state. In Lemma~\ref{lem:fe-equal-fired},
 we are interested in the definition of the set of fired transitions at
-state $s'$, i.e the state at the end of the falling edge phase (which
+state $s'$, i.e. the state at the end of the falling edge phase (which
 will also be the state at the beginning of the next rising edge
 phase). A transition belongs to the set of fired transitions if it is
 \emph{firable} (see Definition~\ref{def:firable}) and sensitized by
 the \emph{residual} marking at the considered SITPN state.
 Figure~\ref{fig:example-fired-trans} gives the set of fired
-transitions, i.e $Fired(s)$, for an example SITPN at a given state
+transitions, i.e. $Fired(s)$, for an example SITPN at a given state
 $s$. Here, transitions $t_a$, $t_b$ and $t_c$ are all firable at state
 $s$; however, only transition $t_c$ is sensitized by the residual
 marking.
@@ -134,7 +133,7 @@ The computation of the residual marking involves the $Pr$ sets, which
 are, for a given transition $t$ and a state $s$, the set of
 transitions with a higher firing priority than $t$ which are actually
 fired at $s$. This is where the recursive definition of the set of
-fired transitions begins. The definition is correct, i.e the recursion
+fired transitions begins. The definition is correct, i.e. the recursion
 ends, if the priority relation is a strict order over the set of
 transitions, and therefore, there are always transitions of
 top-priority (e.g, $t_c$ in Figure~\ref{fig:example-fired-trans}). The
@@ -158,14 +157,14 @@ given SITPN state.
 
 On the \hvhdl{} side, the set of fired transitions is defined through
 the value of the \texttt{fired} port of transition component
-instances. The transition design declares an output port of boolean
+instances. The transition design declares an output port of Boolean
 type with the identifier \texttt{fired}. What we want to prove in
 Lemma~\ref{lem:fe-equal-fired} is that, at the end of the falling edge
-phase (i.e at state $\sigma'$), the value of the \texttt{fired} port
+phase (i.e. at state $\sigma'$), the value of the \texttt{fired} port
 of a transition component instance reflects the firing status of the
 corresponding transition. The \texttt{fired} port is a combinational
 signal. This means that its value depends on an equation that is
-verified when all signals are stable, i.e at the end of the
+verified when all signals are stable, i.e. at the end of the
 stabilization phases happening during the simulation. In the point of
 view of the circuit synthesis, this equation reflects the wiring of
 the port in the described hardware
@@ -175,7 +174,7 @@ connected to the other internal signals.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Proof/fired-port}
+  \includegraphics[keepaspectratio, width=.6\textwidth]{Figures/Proof/fired-port}
   \caption[The fired port of the transition design]{Wiring of the
     \texttt{fired} output port in the transition design architecture;
     on the left side is the input interface of the transition design;
@@ -219,8 +218,8 @@ signal \texttt{s\_firable} and \texttt{s\_priority\_combination}.
   In the proceeding of the proof, a lot of combinational equations are
   established (e.g, Equation~\eqref{eq:fired-port-comb-eq}). These
   equations link the value of a given signal to the value of other
-  signals or expressions . All these equations are deduced by running
-  the \hvhdl{} semantics rules on the internal behavior (i.e, the
+  signals or expressions. All these equations are deduced by running
+  the \hvhdl{} semantics rules on the internal behavior (i.e., the
   processes) of the transition and the place designs. A combinational
   equation is always the result of a signal assignment statement
   happening inside the statement body of a process. For instance, in
@@ -289,7 +288,7 @@ end process priority_authorization_evaluation;
   value in the elaborated design $\Delta(id_t)$.
   
   In the proofs laid out in Appendix~\ref{app:sem-preserv-proof} and
-  in this chapter, we do not detail how the execution of processes's
+  in this chapter, we do not detail how the execution of processes'
   statement body permit to deduce combinational equations. We find
   that the proofs are easier to follow without entering in so much
   details. We let aside the task of proving that these equations hold
@@ -373,14 +372,14 @@ the priority relation. In that case, the $i$-th of the
 component instance $id_t$ is connected to the $j$-th element of the
 \texttt{priority\_authorizations} output port of the place component
 instance $id_p$. Here, $id_p$ is the place component instance bound to
-place $p$ through the $\gamma$ binder, i.e we have
+place $p$ through the $\gamma$ binder, i.e. we have
 $\gamma(p)=id_p$. Figure~\ref{fig:pauths-connection} shows the
 connection of the \texttt{priority\_authorizations} port between the
 component instances $id_p$ and $id_t$.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.8\textwidth]{Figures/Proof/pauths-connection}
+  \includegraphics[keepaspectratio, width=.8\textwidth]{Figures/Proof/pauths-connection}
   \caption[Connection of the \texttt{priority\_authorizations} ports and of the \texttt{fired} and \texttt{output\_transitions\_fired} ports.]{Connection of the $j$-th element of the \texttt{priority\_authorizations} output port of a place component instance $id_p$ to the $i$-th element of the \texttt{priority\_authorizations} input port of a transition component instance $id_t$; also the \texttt{fired} output port of $id_t$ is connected to the $j$-th element of the \texttt{output\_transitions\_fired} input port of $id_p$.}
   \label{fig:pauths-connection}
 \end{figure}
@@ -416,7 +415,7 @@ the \texttt{s\_marking} signal, assigned by the synchronous process
 \texttt{marking}. It also reads the value of the input ports
 \texttt{output\_transitions\_fired}, \texttt{output\_arcs\_types} and
 \texttt{output\_arcs\_weights}.  In Figure~\ref{fig:pauths-in-p}, the
-ports of the input and output interface are composite ports (i.e, of
+ports of the input and output interface are composite ports (i.e., of
 the array type) with an upper bound index equal to \texttt{m}. The
 number $\mathtt{m}$ is equal to the expression
 $\mathtt{output\_arcs\_number}-1$, where
@@ -467,7 +466,7 @@ state $\sigma'$:
 the new goal is:\\
 \fbox{$(\sigma'(id_p)("s\_marking")-\mathtt{vsots}\ge\sigma'(id)("output\_arcs\_weights")[j])=\mathtt{true}$.}
 
-Here $\ge$ denotes a boolean operator, i.e
+Here $\ge$ denotes a boolean operator, i.e.
 $\ge\in\mathbb{N}\rightarrow\mathbb{N}\rightarrow\mathbb{B}$. As the
 $\ge\subseteq{}(\mathbb{N}\times\mathbb{N})$ relation is decidable for
 all pairs of natural numbers, we can interchange an expression
@@ -501,7 +500,7 @@ to transitions with a higher firing priority than the transition
 connected to the index $j$. Figure~\ref{fig:ordered-indexes} takes
 back the SITPN of Figure~\ref{fig:example-fired-trans} and illustrates
 how the indexes are ordered when the connection between the PCI $id_p$
-and its output TCIs $id_{t_a}$, $id_{t_b}$ and $id_{t_c}$ is set (i.e,
+and its output TCIs $id_{t_a}$, $id_{t_b}$ and $id_{t_c}$ is set (i.e.,
 in the course of the transformation).
 
 \begin{figure}[H]
@@ -533,7 +532,7 @@ As a reminder, the current goal to prove is:\\
 The current goal is the \hvhdl{} implementation of the test that the
 residual marking in place $p$ enables transition $t$. We made the
 hypothesis that transition $t$ is sensitized by the residual marking
-for all its input places, i.e
+for all its input places, i.e.
 $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$. By looking
 at the definition of $Sens$, and knowing that a basic arc of weight
 $\omega$ connects place $p$ to transition $t$, we can deduce that
@@ -544,8 +543,8 @@ Lemma~\ref{lem:fe-equal-marking}, that $s'.M(p)$ equals
 $\sigma'(id_p)("s\_marking")$. Then, by construction, and knowing that
 TCI $id_t$ is connected to PCI $id_p$ through the index $j$, we can
 deduce that the $j$-th element of the \texttt{output\_arcs\_weights}
-input port denotes the weigth of the arc between place $p$ and
-transition $t$, i.e $\omega$. The last thing to show is the equality
+input port denotes the weight of the arc between place $p$ and
+transition $t$, i.e. $\omega$. The last thing to show is the equality
 between the two sum terms:\\
 \noindent{}\fbox{$\sum\limits_{t_i\in{}Pr(t,s')}
 \begin{cases}
@@ -572,8 +571,8 @@ between the output transitions of $p$ with a higher priority than $t$
 and the indexes of interval $[0,j-1]$. However, to complete the proof,
 we must assume that for a given transition $t_i$ with a higher
 priority than $t$ and its corresponding TCI $id_{t_i}$ the ``fired''
-equivalence holds, ie:
-$t_i\in{}Fired(s')\Leftrightarrow\sigma'(id_{t_i})("fired")=\mathtt{true}$. Unfornately,
+equivalence holds, i.e.:
+$t_i\in{}Fired(s')\Leftrightarrow\sigma'(id_{t_i})("fired")=\mathtt{true}$. Unfortunately,
 this is exactly the property we are currently trying to prove.
 
 Thus, to carry out the proof, we need a strong hypothesis stating that
@@ -792,9 +791,86 @@ of Algorithm~\ref{alg:fired}.
   \end{tabular}
 \end{definition}
 
-\subsection{A report on a bug detection }
+\subsection{A report on a bug detection}
 \label{sec:bug-detection}
 
+In the previous section, we showed the equivalence between fired
+transitions and \texttt{fired} port values at the end of the falling
+edge phase. In a previous definition of the SITPN state, preceding the
+bug detection, the set of fired transitions was a member of the SITPN
+state record. For a given $sitpn\in{}SITPN$, we defined an SITPN state
+$s$ by the record $s={<}Fired,M,I,cond,ex{>}$ where $Fired$ was the
+set of fired transitions.  The $Fired$ set was involved in the
+computation of time counter values during the falling edge
+phase. Thus, we needed the proof that the equivalence between the set
+of fired transitions and the value of the \texttt{fired} ports was
+effective at the end of the rising edge phase. In the previous SITPN
+semantics, the set of fired transitions stayed the same during the
+rising edge phase. Therefore, between two SITPN states $s, s'$
+verifying the rising edge state transition relation, i.e.
+$s\xrightarrow{\uparrow}s'$, we had $s.Fired=s'.Fired$. However, we
+showed that it wasn't the case on the \hvhdl{} side, i.e. the values
+of the \texttt{fired} ports in TCIs would not stay the same during the
+rising edge phase. The consequence was a divergence between the value
+of time counters and the value of the \texttt{s\_time\_counter}
+signals. Figure shows a case of divergence between time counters and
+\texttt{s\_time\_counter} signals values in the course of an
+execution.
+
+In Figure, during the stabilization phase coming right after the
+rising edge of the clock, the value of the \texttt{fired} port of TCI
+$id_{t_1}$ passes to \texttt{false}. After the update of the
+\texttt{s\_marking} signal value during the rising edge phase, PCI
+$id_p$ computes new priority authorizations for its output TCIs. As
+the marking is only sufficient to fire transition $t_0$ but not
+transition $t_1$, PCI $id_p$ indicates to TCI $id_{t_1}$ that it no
+longer has the authorization to fire. Consequently, through the
+connection of \texttt{priority\_authorizations} ports, the value of
+the \texttt{fired} port of $id_{t_1}$ is set to \texttt{false}.
+Following the rules of the SITPN semantics, on the next falling edge,
+the value of time counters must be reset for transition $t_0$ and
+$t_1$, because both were fired at the previous rising edge. As a part
+of the behavior of a TCI, the \texttt{time\_counter} process, executed
+at the falling edge of the clock, resets the value of the
+\texttt{s\_time\_counter} signal given that the value of the
+\texttt{fired} port is true. Thus, as the value of the \texttt{fired}
+port of TCI $id_{t_1}$ is false at the falling edge, the
+\texttt{time\_counter} process increments the value of the
+\texttt{s\_time\_counter} signal instead of resetting its value. The
+consequence is a divergence between the value of the time counter of
+transition $t_1$ and the value of the \texttt{s\_time\_counter} signal
+in TCI $id_{t_i}$.
+
+As demonstrated above, the \texttt{time\_counter} process can not rely
+on the value of the \texttt{fired} ports to determine if the value of
+the \texttt{s\_time\_counter} signal must be reset or not. We proved
+that there is an equivalence between the fired transitions and the
+value of the \texttt{fired} ports at the end of a falling edge
+phase. We need a way to memorize the value of \texttt{fired} ports at
+the moment where the equivalence hold (i.e. at the end of the falling
+edge phase) so that the \texttt{time\_counter} process can use this
+information to reset the \texttt{s\_time\_counter} signal. To do so,
+we have modified the SITPN semantics and the behavior of the
+transition design. In the actual version of the SITPN semantics, if a
+transition is fired at the beginning of the rising edge phase then a
+reset order is sent to the transition. As a consequence, the time
+counter associated to this transition will be reset at the next
+falling edge. In the actual version of the transition design behavior,
+the value of the \texttt{fired} port is involved in the computation of
+the \texttt{s\_reinit\_time\_counter} signal. Thus, the
+\texttt{time\_counter} process can rely on the value of the
+\texttt{s\_reinit\_time\_counter} signal to reset the value of the
+\texttt{s\_time\_counter} signal. As a consequence, the set of fired
+transitions is no longer involved in any the SITPN semantics rules
+happening during the falling edge phase. Therefore, we chose to
+withdraw the $Fired$ set from the definition of the SITPN state
+record. We opted for an intentional definition of the set of fired
+transitions at given SITPN state (i.e.,
+Definition~\ref{def:fired}). After these changes, we were able to
+prove that there were no more divergence between the time counters and
+the value of the \texttt{s\_time\_counter} signals in the course of
+the execution (see Lemmas~\ref{lem:re-equal-tc} and
+\ref{lem:fe-equal-tc} about the equivalence of time counters).
 
 
 %%% Local Variables:
