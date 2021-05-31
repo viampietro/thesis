@@ -1,0 +1,64 @@
+The work of mechanizing the proof of Theorem~\nameref{thm:full-bisim}
+is an ongoing task. At the moment of the writing of this memoir, we
+have only verified thirty per cent of the proof concerning
+Lemma~\nameref{lem:sim-init-states}. However, the effort to achieve
+this thirty per cent of the verification amounts to three months of
+work. Here, we give metrics to measure the gap between the informal
+proof given in this memoir (see Appendix~\ref{app:sem-preserv-proof})
+and the computer-checked proof written in \coq{}. We point out some of
+the reasons that may explain the gap, and comment some employed
+techniques to reduce the gap.
+
+Listing~\ref{lst:coq-bisim-thm} presents the \coq{} implementation of
+Theorem~\ref{thm:full-bisim}, called \texttt{sitpn2hvhdl_bisim}, along
+with the sequence of tactics constituting its proof.
+
+\begin{lstlisting}[language=coq,caption={\coq{} implementation of the \nameref{thm:full-bisim} theorem and the mechanized version of its proof.},label={lst:coq-bisim-thm}]
+Theorem sitpn2hvhdl_bisim :
+  forall sitpn decpr $id_{ent}$ $id_{arch}$ $E_c$ $\tau$ $\theta_s$ d $E_p$ mm $\theta_\sigma$ $\gamma$ $\Delta$,
+
+    (* sitpn is well-defined. *)
+    IsWellDefined sitpn ->
+    
+    (* sitpn translates into (d, $\gamma$). *)
+    sitpn_to_hvhdl sitpn decpr $id_{ent}$ $id_{arch}$ mm = (inl (d, $\gamma$)) ->
+
+    (* Environments are similar. *)
+    SimEnv sitpn $\gamma$ $E_c$ $E_p$ ->
+    
+    (* SITPN sitpn yields execution trace $\theta_s$ after $\tau$ execution cycles. *)
+    SitpnFullExec sitpn $E_c$ $\gamma$ $\theta_s$ ->    
+    
+    (* Design d yields simulation trace $\theta_\sigma$ after $\tau$ simulation cycles. *)
+    hfullsim $E_p$ $\tau$ $\Delta$ d $\theta_\sigma$ ->
+    
+    (* ** Conclusion: traces are similar. ** *)
+    SimTrace $\gamma$ $\theta_s$ $\theta_\sigma$.
+Proof.  
+  (* Case analysis on $\tau$ *)
+  destruct $\tau$;
+    intros *;
+    inversion_clear 4;
+    inversion_clear 1;
+
+  (* - CASE $\tau$ = 0, GOAL $\gamma\vdash{}s_0\sim\sigma_0$. Solved with sim_init_states lemma. 
+     - CASE $\tau{}>0$, GOAL $\gamma\vdash(s_0 :: s_0 :: s :: \theta_s)\sim{}(\sigma_0 :: \sigma :: \sigma' :: \theta_\sigma)$.  
+     Solved with [first_cycle] and [simulation] lemmas. *)
+    lazymatch goal with
+    | [ Hsimloop: simloop _ _ _ _ _ _ _ |- _ ] =>
+      inversion_clear Hsimloop; constructor; eauto with hilecop
+    end.
+Qed.
+\end{lstlisting}
+
+The proof laid out in Listing~\ref{lst:coq-bisim-thm} is
+representative of our strategy to keep our \coq{} proofs robust. To do
+so, we follow the indications laid out in. Mainly, we make an
+important use of the matching constructs to seek hypotheses in the
+current context of a proof. Also, we build hint databases and rely a
+lot on the use of the \texttt{auto} and \texttt{eauto} when possible.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

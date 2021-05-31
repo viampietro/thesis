@@ -24,16 +24,16 @@
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
-* TODO Proving semantic preservation in HILECOP [57%]
+* TODO Proving semantic preservation in HILECOP [71%]
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
 ** DONE the semantic preservation theorem [100%]
-** TODO a detailled proof: equivalence of fired transitions [75%]
+** DONE a detailled proof: equivalence of fired transitions [100%]
 *** DONE intro
 *** DONE informal presentation [65%]
 *** DONE formal presentation [85%]
-*** TODO bug detection [0%]
+*** DONE bug detection [0%]
 ** TODO mechanized verification of the proof [0%]
 ** TODO conclusion [0%]
 * TODO Conclusion

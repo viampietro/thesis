@@ -813,20 +813,27 @@ showed that it wasn't the case on the \hvhdl{} side, i.e. the values
 of the \texttt{fired} ports in TCIs would not stay the same during the
 rising edge phase. The consequence was a divergence between the value
 of time counters and the value of the \texttt{s\_time\_counter}
-signals. Figure shows a case of divergence between time counters and
-\texttt{s\_time\_counter} signals values in the course of an
-execution.
+signals. Figure~\ref{fig:diverg-tc} shows a case of divergence between
+time counters and \texttt{s\_time\_counter} signals values in the
+course of an execution.
 
-In Figure, during the stabilization phase coming right after the
-rising edge of the clock, the value of the \texttt{fired} port of TCI
-$id_{t_1}$ passes to \texttt{false}. After the update of the
-\texttt{s\_marking} signal value during the rising edge phase, PCI
-$id_p$ computes new priority authorizations for its output TCIs. As
-the marking is only sufficient to fire transition $t_0$ but not
-transition $t_1$, PCI $id_p$ indicates to TCI $id_{t_1}$ that it no
-longer has the authorization to fire. Consequently, through the
-connection of \texttt{priority\_authorizations} ports, the value of
-the \texttt{fired} port of $id_{t_1}$ is set to \texttt{false}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=\textwidth]{Figures/Proof/diverg-tc}
+  \caption[Bug Detection: ]{Bug detection: divergence between the value of time counters and the value of the $\mathtt{s\_time\_counter}$ signals due to the loss of the firing status information during the stabilization phase; the value of time counters and of the $\mathtt{s\_time\_counter}$ signals are in green; the value of diverging signals are in red.}
+  \label{fig:diverg-tc}
+\end{figure}
+
+In Figure~\ref{fig:diverg-tc}, during the stabilization phase coming
+right after the rising edge of the clock, the value of the
+\texttt{fired} port of TCI $id_{t_1}$ passes to \texttt{false}. After
+the update of the \texttt{s\_marking} signal value during the rising
+edge phase, PCI $id_p$ computes new priority authorizations for its
+output TCIs. As the marking is only sufficient to fire transition
+$t_0$ but not transition $t_1$, PCI $id_p$ indicates to TCI $id_{t_1}$
+that it no longer has the authorization to fire. Consequently, through
+the connection of \texttt{priority\_authorizations} ports, the value
+of the \texttt{fired} port of $id_{t_1}$ is set to \texttt{false}.
 Following the rules of the SITPN semantics, on the next falling edge,
 the value of time counters must be reset for transition $t_0$ and
 $t_1$, because both were fired at the previous rising edge. As a part
@@ -871,7 +878,6 @@ prove that there were no more divergence between the time counters and
 the value of the \texttt{s\_time\_counter} signals in the course of
 the execution (see Lemmas~\ref{lem:re-equal-tc} and
 \ref{lem:fe-equal-tc} about the equivalence of time counters).
-
 
 %%% Local Variables:
 %%% mode: latex
