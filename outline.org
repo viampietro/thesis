@@ -24,7 +24,7 @@
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
-* TODO Proving semantic preservation in HILECOP [71%]
+* TODO Proving semantic preservation in HILECOP [85%]
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
@@ -34,7 +34,7 @@
 *** DONE informal presentation [65%]
 *** DONE formal presentation [85%]
 *** DONE bug detection [0%]
-** TODO mechanized verification of the proof [0%]
+** DONE mechanized verification of the proof [100%]
 ** TODO conclusion [0%]
 * TODO Conclusion
 * TODO Appendix Reminder on natural semantics
