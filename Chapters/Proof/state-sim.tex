@@ -1,27 +1,29 @@
-Before stating the behavior preservation theorem, we must clarify the
-meaning of semantic preservation between an SITPN and a \hvhdl{}
+Before presenting our behavior preservation theorem, we must clarify
+the meaning of semantic preservation between an SITPN and a \hvhdl{}
 design. To do so, we must define:
 
 \begin{enumerate}
-\item what does semantical matching means between an SITPN state and an \hvhdl{} state?
-\item when, in the course of the execution of an SITPN and an \hvhdl{}
-  design, does this semantical matching must hold?
+\item What does semantic similarity mean between an SITPN state and a
+  \hvhdl{} state?
+\item When, in the course of the execution of an SITPN and a \hvhdl{}
+  design, does this semantic similarity must hold?
 \end{enumerate}
 
 We must relate the elements that constitute the execution state of an
-SITPN to the elements that constitute the execution state of an
+SITPN to the elements that constitute the execution state of a
 \hvhdl{} design. An SITPN state is an abstract structure relating the
 places, transitions, actions, functions and conditions of a given
 SITPN to the values of certain domains (see Section~\todo{Add
   ref.}). A \hvhdl{} design state is composed a signal store mapping
 signals to values, and of a component store mapping component
-instances to their own internal states. Thanks to the binder function
-$\gamma$ generated alongside the transformation from an SITPN to a
-\hvhdl{} design, we are able to relate the elements of the SITPN
-structure to the component instances and signals on the \hvhdl{}
-side. Thus, the state similarity relation expressing a semantical
-match between an SITPN state and an \hvhdl{} design is defined as
-follows:
+instances to their own internal states (which are themselves design
+states). Thanks to the binder function $\gamma$ generated alongside
+the transformation from an SITPN to a \hvhdl{} design, we are able to
+relate the elements of the SITPN structure to the component instance
+states and signal values of the \hvhdl{} design state. Thus, the state
+similarity relation, depending on a $\gamma$ binder and expressing a
+semantic match between an SITPN state and a \hvhdl{} design, is
+defined as follows:
 
 \begin{definition}[General state similarity]
   \label{def:state-sim}
@@ -52,82 +54,88 @@ follows:
 \end{definition}
 
 In Item~\ref{item:sim-mark}, based on the $\gamma$ binder, we relate
-the marking value of a place $p$ to the value of the $s\_marking$
-signal inside the internal state of the place component instance
-$id_p$. Items~\ref{item:sim-tc} and \ref{item:sim-reset} similarly
-relate the value of time counters (resp. reset orders) of transitions
-to the value of the signals $s\_time\_counter$
-(resp. $s\_reinit\_time\_counter$) in the internal state of the
-corresponding transition component instances. In item
+the marking value of a place $p$ at state $s$ to the value of the
+$\mathtt{s\_marking}$ signal inside the internal state of the place
+component instance (PCI) $id_p$. The expression $\sigma(id_p)$ returns
+the internal state of PCI $id_p$ by looking up the component store of
+state $\sigma$. Items~\ref{item:sim-tc} and \ref{item:sim-reset}
+similarly relate the value of time counters (resp. reset orders) of
+transitions to the value of the signals $\mathtt{s\_time\_counter}$
+(resp. $\mathtt{s\_reinit\_time\_counter}$) in the internal state of
+the corresponding transition component instances (TCIs). In item
 \ref{item:sim-cond} (resp. \ref{item:sim-act} and \ref{item:sim-fun}),
 the boolean value of conditions (resp. actions and functions) are
 compared to the value of input (resp. output) ports of the \hvhdl{}
 design, also based on the $\gamma$ binder.
 
 As one can observe in Item~\ref{item:sim-tc}, the relation between the
-value of a time counter and the value of the $s\_time\_counter$ signal
-is a particular. It is due to the definition domain of time
-intervals. In the definition of the SITPN structure, a time interval
-$i$ is defined as follows: $i=[a,b]$ where $a\in\mathbb{N}^{*}$ and
-$b\in\mathbb{N}^{*}\sqcup\{\infty\}$. In the SITPN semantics, a time
-counter will increment its value, depending on certain conditions,
-until it has reached the upper bound of the associated time
-interval. Therefore, a time counter associated to a time interval with
-an infinite upper bound will possibly increment its value
-indefinitly. While acceptable in the theoretical world, this is not
-acceptable is the world of hardware circuits where all dimensions and
-values are finite. On the \hvhdl{} side, the signal
-$s\_time\_counter$, which value represents the value of a time
-counter, will stop its incrementation to the lower bound of the time
-interval in the case where the upper bound is infinite. As long as the
-value of the time counter is less than or equal to the lower bound of
-the time interval, we have a perfect equality between the value of the
-time counter and the value of the $s\_time\_counter$ signal. When the
-time counter reaches the lower bound, the values will possibly be
-diverging (i.e, the time counter possibly continues its
-incrementation). In that case, we are only interested in knowing that
-the value of the $s\_time\_counter$ signal is equal to the value of
-the lower bound of the time interval. The two last points of
+value of a time counter and the value of the
+$\mathtt{s\_time\_counter}$ signal is a particular. It is due to the
+definition domain of time intervals. In the definition of the SITPN
+structure, a time interval $i$ is defined as follows: $i=[a,b]$ where
+$a\in\mathbb{N}^{*}$ and $b\in\mathbb{N}^{*}\sqcup\{\infty\}$. In the
+SITPN semantics, depending on certain conditions, a time counter
+possibly increments its value until it reaches the upper bound of the
+associated time interval. Therefore, a time counter associated to a
+time interval with an infinite upper bound will possibly increment its
+value indefinitely. While acceptable in the theoretical world, this is
+not acceptable is the world of hardware circuits where all dimensions
+and values are finite. On the \hvhdl{} side, the signal
+$\mathtt{s\_time\_counter}$, which value represents the value of a
+time counter, will stop its incrementation to the lower bound of the
+time interval in the case where the upper bound is infinite. As long
+as the value of the time counter is less than or equal to the lower
+bound of the time interval, we look for a perfect equality between the
+value of the time counter and the value of the
+$\mathtt{s\_time\_counter}$ signal. When the time counter reaches the
+lower bound, the values possibly diverge (i.e, the time counter value
+continues to be incremented while the value of the
+$\mathtt{s\_time\_counter}$ signal stalls). In that case, we are only
+interested in knowing that the value of the
+$\mathtt{s\_time\_counter}$ signal is equal to the value of the lower
+bound of the time interval. The two last points of
 Item~\ref{item:sim-tc} are necessary to cover the case where a time
 counter has overreached the upper bound of its time interval. In that
-case, the time counter becomes \textit{locked}. The $s\_time\_counter$
-signal can not overreached the upper bound of the time interval
-without causing an overflow. Thus, the value of the $s\_time\_counter$
-signal diverges from the value of its corresponding time counter when
-the time counter overreaches the upper bound of its time interval.
-While the time counter is less than or equal to the upper bound of its
-time interval, we have a perfect equality between the value of the
-time counter and the value of the $s\_time\_counter$ signal.  When the
-time counter overreaches the upper bound, the value of the time
-counter stalls to upper bound plus one, and the value of
-$s\_time\_counter$ stalls to upper bound. In that case, we are only
-interested in knowing that the value of the $s\_time\_counter$ signal
-is equal to the value of the upper bound of the time interval.
+case, the time counter becomes \textit{locked}. The
+$\mathtt{s\_time\_counter}$ signal can not overreached the upper bound
+of the time interval without causing an overflow. Thus, the value of
+the $\mathtt{s\_time\_counter}$ signal diverges from the value of its
+corresponding time counter when the time counter overreaches the upper
+bound of its time interval.  While the time counter is less than or
+equal to the upper bound of its time interval, we look for a perfect
+equality between the value of the time counter and the value of the
+$s\_time\_counter$ signal.  When the time counter overreaches the
+upper bound, the value of the time counter stalls to upper bound plus
+one, and the value of $s\_time\_counter$ stalls to upper bound. In
+that case, we are only interested in knowing that the value of the
+$\mathtt{s\_time\_counter}$ signal is equal to the value of the upper
+bound of the time interval.
 
-
-The second question that we asked above was: when does this state
+The second question that we asked above was: when does the state
 similarity relation must hold in the course of the execution? The
 source and target representations are both synchronously
 executed. Thus, we find it natural to check that the state similarity
 relation holds at the end of a clock cycle. However, due to
-modifications resulting after a bug detection and correction (see
+modifications resulting after a bug detection (see
 Section~\ref{sec:detailled-proof}), the state similarity relation of
 Definition~\ref{sec:state-sim-relation} does not hold at the end of a
-clock cycle. The equality between reset orders
+clock cycle. The equality between the value of reset orders and the
+value of the $\mathtt{s\_reinit\_time\_counter}$ signals
 (Item~\ref{item:sim-reset}) is not verified. However, this semantic
 divergence is without effect. New reset orders are computed at the
 beginning of a clock cycle such that the relation of
 Item~\ref{item:sim-reset} holds in the middle of the clock cycle (i.e,
 just before the falling edge of the clock). This is the only moment
-during the clock cycle where the $s\_reinit\_time\_counter$ signal is
-actually involved in the computation of other signals value. Thus, it
-is sufficient that Item~\ref{item:sim-reset} holds only in the middle
-of the clock cycle. However, we must now define two state similarity
-relation; one that checks the semantic matching after the rising edge
-of the clock signal (i.e, in the middle of the clock cycle), and one
-that checks the semantic matching after the falling edge of the clock
-signal (i.e, at the end of the clock cycle). The state similarity
-relation after a rising edge is defined as follows:
+during the clock cycle where the $\mathtt{s\_reinit\_time\_counter}$
+signal is actually involved in the computation of other signals
+value. Thus, it is sufficient that Item~\ref{item:sim-reset} holds
+only in the middle of the clock cycle. However, we must now define two
+state similarity relation; one that checks the semantic similarity
+after the rising edge of the clock signal (i.e, in the middle of the
+clock cycle), and one that checks the semantic similarity after the
+falling edge of the clock signal (i.e, at the end of the clock
+cycle). The state similarity relation after a rising edge is defined
+as follows:
 
 \begin{definition}[Post rising edge state similarity]
   \label{def:post-re-state-sim}
@@ -158,36 +166,43 @@ relation after a rising edge is defined as follows:
 
 Definition~\ref{def:post-re-state-sim} is similar to
 Definition~\ref{def:state-sim} in all points, except for the value of
-conditions. A condition of an SITPN is implemented by an primary input
-port in the resulting \hvhdl{} design. In \hvhdl{} semantics, the
-value of primary input ports (i.e, the input ports of the top-level
-design) are updated at each clock edge. In the SITPN semantics, the
-value of conditions are updated only at the falling edge of the
-clock. Consider that a given SITPN is executed at clock cycle $\tau$;
-after the rising edge of the clock, the value of conditions are equal
-to their value at clock cycle $\tau-1$, whereas the value primary
-input ports have been updated to fresh values. Thus, we will have to
-wait for the next falling edge to reach the equality between condition
-values and input port values.
+conditions. A condition of an SITPN is implemented by an input port in
+the resulting \hvhdl{} top-level design. In the \hvhdl{} semantics,
+the value of primary input ports (i.e, the input ports of the
+top-level design) are updated at each clock edge. In the SITPN
+semantics, the value of conditions are updated only at the falling
+edge of the clock. Consider that a given SITPN is executed at clock
+cycle $\tau$; after the rising edge of the clock, the value of
+conditions are equal to their value at clock cycle $\tau-1$, whereas
+the value primary input ports have been updated to fresh values. Thus,
+we will have to wait for the next falling edge to reach the equality
+between condition values and input port values. Therefore, there is a
+semantic divergence between the value of conditions and the value of
+input ports in the middle of the clock cycle, i.e. just before the
+next falling edge of the clock signal. However, similarly to the case
+of reset orders and $\mathtt{s\_reinit\_time\_counter}$ signals,
+conditions and their corresponding input ports are only involved in
+computations at the falling edge of the clock cycle.  Thus, it is
+sufficient that Item~\ref{item:sim-cond} holds only right after the
+falling of the clock signal.
 
 The state similarity relation draws out a correspondence between the
 values hold by an SITPN state and the values of the signals declared
-in an \hvhdl{} design state. However, to complete the proof of
-semantic preservation, we sometimes have to relate the value of
-signals to the value of expressions or predicates involved in the
-SITPN semantics. For instance, consider a given SITPN state $s$ and a
-given \hvhdl{} design state $\sigma$, and consider a transition $t$
-and its corresponding transition component instance $id_t$. It is
-useful to show that, after a rising edge, the value of signal
-$s\_enabled$ at state $\sigma(id_t)$, where $\sigma(id_t)$ denotes the
-internal state of component instance $id_t$ at state $\sigma$, is
-equal to the predicate $t\in{}Sens(s.M)$ stating that the transition
-$t$ is sensitized (or \textit{enabled}) by the marking at state $s$
-(i.e, $s.M$). Thus, for the convenience of the proof, we enrich our
-definitions of the state similiraty relations with formulas relating
-\hvhdl{} signals to SITPN semantics predicates and
-expressions. Consequently, the \textit{full} post rising edge state
-similarity relation is defined as follows:
+in a \hvhdl{} design state. However, to complete the proof of semantic
+preservation, we sometimes have to relate the value of signals to the
+value of expressions or predicates involved in the SITPN
+semantics. For instance, consider a given SITPN state $s$ and a given
+\hvhdl{} design state $\sigma$, and consider a transition $t$ and its
+corresponding TCI $id_t$. It is useful to show that, after a rising
+edge, the value of signal $s\_enabled$ at state $\sigma(id_t)$, where
+$\sigma(id_t)$ denotes the internal state of component instance $id_t$
+at state $\sigma$, is equal to the predicate $t\in{}Sens(s.M)$ stating
+that the transition $t$ is sensitized (or \textit{enabled}) by the
+marking at state $s$ (i.e, $s.M$). Thus, for the convenience of the
+proof, we enrich our definitions of the state similarity relations
+with formulas relating \hvhdl{} signals to SITPN semantics predicates
+and expressions. Consequently, the \textit{full} post rising edge
+state similarity relation is defined as follows:
 
 \begin{definition}[Full post rising edge state similarity]
   \label{def:full-post-re-state-sim}
@@ -226,8 +241,9 @@ sensitization of transitions and the value of signal $s\_enabled$, and
 the computation of the boolean product of condition values and the
 value of signal $s\_condition\_combination$.
 
-The state similarity relation after a falling edge is defined as
-follows:
+Now, let us define the state similarity relation describing how things
+must be compared between an SITPN state and a \hvhdl{} design state
+after the falling edge of a clock signal:
 
 \begin{definition}[Post falling edge state similarity]
   \label{def:post-fe-state-sim}
@@ -257,9 +273,9 @@ follows:
 
 As explained above, Definition~\ref{def:post-fe-state-sim} is similar
 to Definition~\ref{def:state-sim} except for the equality between
-reset orders and the value of signal $s\_reinit\_time\_counter$. The
-extended version of the post falling edge state similarity relation is
-defined as follows:
+reset orders and the value of the $s\_reinit\_time\_counter$
+signals. The extended version of the post falling edge state
+similarity relation is defined as follows:
 
 \begin{definition}[Full post falling edge state similarity]
   \label{def:full-post-fe-state-sim}
@@ -291,7 +307,8 @@ defined as follows:
 Definition~\ref{def:post-fe-state-sim} by drawing out a correspondence
 between:
 \begin{itemize}
-\item the firability of transitions and the value of the signal $s\_firable$
+\item the firability of transitions and the value of the signal
+  $s\_firable$
 \item the firing status of transitions (i.e, transitions are fired or
   not) and the value of the output port $fired$
 \item the sum of tokens consumed by the firing process and the value
@@ -299,11 +316,6 @@ between:
 \item the sum of tokens produced by the firing process and the value
   of the signal $s\_input\_token\_sum$
 \end{itemize}
-
-
-
-
-
 
 %%% Local Variables:
 %%% mode: latex

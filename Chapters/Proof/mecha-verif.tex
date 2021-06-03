@@ -9,7 +9,7 @@ and the size of the computer-checked proof written in \coq{}. We point
 out some of the reasons that may explain the gap, and comment some
 employed techniques to reduce the size of proof scripts. As a
 remainder, the full code including specifications and proof scripts is
-available at \todo[inline]{add ref to git repo}.
+available at \todo{add ref to git repo}.
 
 Listing~\ref{lst:coq-bisim-thm} presents the \coq{} implementation of
 Theorem~\ref{thm:full-bisim} along with the sequence of tactics
@@ -210,7 +210,21 @@ The expression ``by construction'' is a shortcut for ``knowing how the
 target \hvhdl{} design is constructed by the transformation
 function'', or ``based on the definition of the transformation
 function''. In \coq{}, proving the lemma that states the existence of
-a PCI for a given place $p$ amounts to $1500$ lines of proof script. 
+a PCI for a given place $p$ amounts to $1500$ lines of proof
+script. The lemmas regarding properties of PCI and TCI statements
+deduced from the transformation function tend to have complicated
+proofs. We believe that the implementation of the \hilecop{}
+transformation function could be more straightforward in order to
+simplify this kind of proof. By straightforward, we mean that the
+number of steps separating a given place or a given transition from
+the generation of their corresponding PCI or TCI could be diminished,
+maybe at the cost of time performance. Right now, ease of proof is
+more important than time performance, considering that our goal is to
+prove the semantic preservation theorem in a reasonable amount of
+time. Still, the major complexity of the transformation function, i.e.
+what makes the proofs so hard, lies in the generation of the
+interconnections between PCIs and TCIs. Some engineering effort could
+be spent to simplify this particular of the transformation.
 
 Also, we spent a lot of time proving some uninteresting, however
 necessary, properties about the \hvhdl{} design states and the

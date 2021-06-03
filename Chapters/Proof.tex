@@ -4,34 +4,34 @@
 \begin{todobox}
   In this chapter, I want to talk about/draw the attention to:
   \begin{itemize}
-  \item the properties of comp. instances itfaces deduced from the
-    transformation (in part ``a detailled proof'')
   \item To ease the reading, place $p$ and PCI $id_p$, meaning that
     $\gamma(p)=id_p$.
-  \item PCI=place component instance, TCI=transition component
-    instance.
   \end{itemize}
 \end{todobox}
 
-In this chapter, we present our semantic preservation theorem along
-with its proof. The written proof is about a hundred-page long after
-compilation of the \LaTeX{} files. Therefore, we will only present
-here the ``high-level'' theorems and lemmas used in the proof, and
-some hints regarding the proof strategy. The full proof is available
-to the reader in Appendix~\ref{app:sem-preserv-proof}. The theorems
-and lemmas presented in this chapter will be refering to the lemmas of
+In this chapter, we present our semantic preservation theorem (or
+behavior preservation theorem, both denomination are equivalent) along
+with its informal ``paper'' proof. The written proof is about a
+hundred-page long after compilation of the \LaTeX{} files. Therefore,
+we will only present here the ``high-level'' theorems and lemmas
+involved in the demonstration, and some points of our proof
+strategy. The full proof is available to the reader in
+Appendix~\ref{app:sem-preserv-proof}. The theorems and lemmas
+presented in this chapter will be referring to the lemmas of
 Appendix~\ref{app:sem-preserv-proof}. The structure of this chapter is
-the following one: in Section~\ref{sec:lit-rev-transf}, we present our
-review of the literature pertaining to the proof of semantic
-preservation theorems for transformation functions; in Section, we
-detail our state similarity relation, i.e, the semantic bond between
-an SITPN and its \hvhdl{} translation; in Section, we draw out our
-semantic preservation theorem; in Section, we detail a particularly
-tricky point of the proof related to the computation of fired
-transitions, and we show how it has led to a bug detection in
-\hilecop{}'s code; in Section, we present some points of the
-mechanization of the proof verification with the \coq{} proof
-assistant.
+as follows: in Section~\ref{sec:lit-rev-transf}, we present our review
+of the literature pertaining to the proof of semantic preservation
+theorems for transformation functions; in
+Section~\ref{sec:state-sim-relation}, we detail our state similarity
+relation, i.e. the semantic bond between an SITPN and its \hvhdl{}
+translation; in Section~\ref{sec:beh-pres-thm}, we draw out our
+behavior preservation theorem; in Section~\ref{sec:detailled-proof},
+we detail a particular point of the proof related to the SITPN firing
+process, and leverage the opportunity to demonstrate our proof
+strategy; also, we show how this point of the proof has led to a bug
+detection in the code of the \hvhdl{} transition design; in
+Section~\ref{sec:mecha-verif}, we present some points of the
+mechanization of the proof with the \coq{} proof assistant.
 
 \section{Proofs of semantic preservation in the literature}
 \label{sec:lit-rev-transf}
@@ -41,7 +41,7 @@ assistant.
 \label{sec:state-sim-relation}
 \input{Chapters/Proof/state-sim}
 
-\section{Behavior Preservation Theorem}
+\section{Behavior preservation theorem}
 \label{sec:beh-pres-thm}
 \input{Chapters/Proof/beh-pres-thm}
 

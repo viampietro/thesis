@@ -4,11 +4,12 @@ function is understood here as any kind of mapping from a source
 representation to a target representation, where the source and target
 representations possess a behavior of their own (i.e, they are
 executable). Here, we will focus on verification techniques based on
-the proof of semantic preservation theorems.  We are interested in how
-to prove that transformation functions are semantic
-preserving. Especially, we are interested in the expression of
-semantic preservation theorems, i.e, what does one mean by semantic
-preservation, and in seeking usual proof strategies.
+the proof of semantic preservation theorems, with an extra interest
+when the proofs are mechanized within the framework of a proof
+assistant.  We are interested in how to prove that transformation
+functions are semantic preserving. Especially, we are interested in
+the expression of semantic preservation theorems, i.e, what does one
+mean by semantic preservation, and in seeking usual proof strategies.
 
 The goal is to draw our inspiration from the literature, and to see
 how far the correspondence holds between our specific case of
@@ -23,49 +24,68 @@ categories are:
 \item Model-to-model and model-to-text transformations
 \end{itemize}
 
-In the introduction of his article about \ccert{} \cite{Leroy2009},
-X.Leroy presents the two points of major importance to express
-semantic preservation theorems for GPL compilers, and more generally
-to get the meaning of semantic preservation.
+In \cite{Leroy2009}, X.Leroy presents the two points of major
+importance to express semantic preservation theorems for GPL
+compilers, and more generally to get the meaning of semantic
+preservation.
 
 The first point is to clearly state how things are compared between
 the source and the target programs. It is to describe the runtime
 state of the source and the target, and to draw a correspondence
-between two. This is expressed through a state comparison
+between the two. This is expressed through a state comparison
 relation.
 
 The second point is to relate the execution of the source program to
-the execution of the target program through a simulation, or
-bisimulation, diagram. Figure shows the different kind of simulation
-diagrams possibly relating two programs. Choosing an adequate
-simulation diagram to express a semantic preservation theorem depends
-on the kind of possible behaviors that can exhibit a given program. In
-the case of GPL programs, X.Leroy lists three kinds of possible
-behaviors: either the program execution succeeds and returns a value,
-or the program execution fails and returns an error, or the program
-execution diverges.
+the execution of the target program through a \emph{simulation}
+diagram, equivalently named \emph{bisimulation} or \emph{commuting}
+diagram. Figure~\ref{fig:sim-diagrams}, excerpt from \cite{Leroy2009},
+shows the different kind of simulation diagrams possibly relating two
+programs.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.6\linewidth]{Figures/Proof/sim-diagrams}
-  \caption[Simulation diagrams]{Simulation diagrams between source and
-    target programs}
+  \includegraphics[keepaspectratio,width=.7\linewidth]{Figures/Proof/sim-diagrams}
+  \caption[Simulation diagrams]{Simulation diagrams relating the
+    execution of a source program to the execution of a target
+    program; $S_1$ and $S_2$ are the initial states of the source and
+    the target program, and $S'_1$ and $S'_2$ are the final states of
+    the source and target program, i.e. the states resulting of the
+    execution of the two programs. The $\sim$ symbol represents the
+    state comparison relation between the source and target language
+    states. The arrows represent the execution relation for the source
+    and target program producing the observable execution trace $t$.}
   \label{fig:sim-diagrams}
 \end{figure}
 
-Anyway, in the case where the source program execution succeeds, the
-theorem of semantic preservation takes this general form:
+Choosing an adequate simulation diagram to express a semantic
+preservation theorem depends on the kind of possible behaviors that
+can exhibit a given program. In the case of GPL programs, X.Leroy
+lists three kinds of possible behaviors: either the program execution
+succeeds and returns a value, or the program execution fails and
+returns an error, or the program execution diverges.  In the case
+where the source program execution succeeds, a theorem of semantic
+preservation takes the general form of
+Definition~\ref{def:gen-beh-pres-thm}.
 
-Consider a source program $P_1$ compiled into a target program $P_2$,
-a starting state $S_1$ for program $P_1$ and a starting state $S_2$
-for program $P_2$ such that $S_1$ and $S_2$ are similar states w.r.t.
-the exhibited state comparison relation. If the execution of $P_1$
-leads from state $S_1$ to state $S_1'$, then there exists a state
-$S_2'$ resulting of the execution of program $P_2$ from state $S_2$
-such that $S_1'$ and $S_2'$ are similar w.r.t. the exhibited state
-comparison relation.
+\begin{definition}[General behavior preservation theorem]
+  \label{def:gen-beh-pres-thm}
+  Consider a source programming language $L_1$ and a target
+  programming language $L_2$, and a source program $P_1\in{}L_1$
+  compiled into a target program $P_2\in{}L_2$ by compiler
+  $\mathtt{comp}\in{}L_1\rightarrow{}L_2$.  Consider an initial state
+  $S_1$ for program $P_1$ and an initial state $S_2$ for program $P_2$
+  such that $S_1$ and $S_2$ are similar states w.r.t. to a given state
+  comparison relation established between $L_1$ and $L_2$. Then,
+  compiler $\mathtt{comp}$ is semantic preserving if it verifies the
+  following property:
 
-Compiler verification tasks aims at proving the kind of theorem stated
+  If the execution of $P_1$ leads from state $S_1$ to final state
+  $S_1'$, then there exists a final state $S_2'$ resulting of the
+  execution of program $P_2$ from state $S_2$ such that $S_1'$ and
+  $S_2'$ are similar w.r.t. the state comparison relation.
+\end{definition}
+
+Compiler verification aims at proving the kind of theorem stated
 above. The other kind of task that can be applied to certify a
 compiler is to perform compiler validation. Compiler validation is
 interested in generating a proof of behavior preservation (or a
@@ -77,9 +97,9 @@ semantic preservation is stronger than building a proof of semantic
 preservation for each input program. Therefore, compiler verification
 is stronger than compiler validation. The aim of the thesis is to
 perform compiler \emph{verification} over the \hilecop{} methodology.
-Some of the works, cited afterwards, are more interested in compiler
-or transformation validation techniques than in verification. They are
-presented here for the sake of coverage.
+% Some of the works, cited afterwards, are more interested in compiler
+% or transformation validation techniques than in verification. They are
+% presented here for the sake of coverage.
 
 Now that we have clarified the meaning of semantic preservation for
 GPL compilers, we state that this definition of semantic preservation
@@ -96,8 +116,9 @@ asked:
 
 \begin{itemize}
 \item What are the similarities/differences between source and target
-  representations?
-\item How are described the runtime state for the source and target
+  representations? May they be programs of GPLs, or models of a given
+  model formalism.
+\item How is defined the runtime state for the source and target
   representations?
 \item How is expressed the state comparison relation?
 \item How is stated the semantic preservation theorem?
@@ -113,43 +134,45 @@ Clight programs to Cminor programs is described in \cite{Blazy2006,
 low-level imperative language. The two languages are endowed with a
 big-step operational semantics. Here, the execution state of the
 source and target languages are memory models (of course, we are
-dealing with programming languages). The memory model is the same for
-all intermediate language involved in the \ccert{} compiler. The
-memory model consists in block references; each block has a lower and
-an upper bound. To access a data, one has to specify the block
-reference along with the size of the accessed data (i.e, the data
-type) and the offset from the start of the block reference (i.e, where
-to begin the data reading). About the proof of semantic preservation,
-the most difficult point is to relate the memory state sof the source
-program to the memory states of the target program. To do so, the
-authors define a \emph{memory injection} relation that binds the
-values of source and target together. They also establish a relation
-to compare execution environments, i.e, the environments holding the
-declaration of functions, global variables\dots The proof of semantic
-preservation is built incrementally: the authors prove a simulation
-lemma for the Clight expressions, then for the Clight statements, and
-finally for the entire Clight program. The proof strategy is to reason
-by induction over the evaluation relation of the Clight programs, and
-to perform case analysis on the translation function.
+dealing with programming languages). The memory model consists in
+block references; each block has a lower and an upper bound. To access
+a data, one has to specify the block reference along with the size of
+the accessed data (i.e, the data type) and the offset from the start
+of the block reference (i.e, where to begin the data reading). About
+the proof of semantic preservation, the most difficult point is to
+relate the memory state of the source program to the memory state of
+the target program. To do so, the authors define a \emph{memory
+  injection} relation that binds the values of source and target
+together. They also establish a relation to compare execution
+environments, i.e, the environments holding the declaration of
+functions, global variables\dots The proof of semantic preservation is
+built incrementally. First, the authors prove a correctness lemma for
+the Clight expressions: if a Clight expression $a$ evaluates to value
+$v$, then the translated Cminor expression $\lfloor{}a\rfloor$
+evaluates to value $v$. Then, they prove a similar lemma for Clight
+statements, and finally for an entire Clight program. The proof
+strategy is to reason by induction over the evaluation relation of the
+Clight programs, and to perform case analysis on the translation
+function.
 
 The pattern to compiler verification for GPLs is more or less the same
 as presented above. May it be compilers for imperative languages
 \cite{Leroy2009,Strecker2002}, or compilers for functional languages
-\cite{Chlipala2010,Tan}, compiler verfication proceeds as follows:
+\cite{Chlipala2010,Tan}, compiler verification proceeds as follows:
 \begin{enumerate}
-\item establish a relation between the memory models of the source and
-  target languages, and between the global execution environments
-\item prove simulation lemmas starting from simple constructs, and
-  building up incrementally to consider entire programs
-\item reason by induction over the evaluation relation of the source
-  language, and the translation function
+\item Establish a relation between the memory models of the source and
+  target languages, and between the global execution environments.
+\item Prove correctness lemmas starting from simple constructs, and
+  building up incrementally to consider entire programs.
+\item Reason by induction over the evaluation relation of the source
+  language, and the translation function.
 \end{enumerate}
 
 Relating memory models is more difficult when the gap between the
 source and target languages is important (for instance, the
 translation of Cminor programs into RTL programs in
-\cite{Leroy2009}). As a consequence, the complexity of the relation
-for memory model comparison increases.
+\cite{Leroy2009}). As a consequence, the complexity of the memory
+model comparison relation increases.
 
 \subsection{Compilers for hardware description languages}
 \label{sec:hdl-compilers-and-proofs}
@@ -163,15 +186,20 @@ dealing with reactive systems. Therefore, the semantic preservation
 theorems are formulated w.r.t. the synchronous or time-related
 semantics of the considered languages.
 
-In \cite{Bourgeat2020,Braibant2013}, the source languages are a subset
-of the BlueSpec specification language for hardware synthesis , and
-the target is an RTL representation of the circuit. The execution
-states of the source and target are based on registers. In
-\cite{Bourgeat2020}, the execution state also hold a log of the read
-and write operations of the input program, and this log is compared to
-the log of the RTL representation. The semantic preservation theorem
-states that the registers hold the same values after the execution of
-source program and the resulting RTL circuit after one clock cycle.
+In \cite{Bourgeat2020,Braibant2013}, the source language is a subset
+of the BlueSpec specification language for hardware synthesis, and the
+target language is an RTL representation of the circuit. The runtime
+state of the source and target programs are basically a mapping
+between registers to values. In \cite{Bourgeat2020}, the execution
+state also hold a log of the read and write operations of the input
+program, and this log is compared to the log of the RTL
+representation. The semantic preservation theorem takes the general
+form of Definition~\ref{def:gen-beh-pres-thm}, however, the final
+states refer to the states of source and target programs at the end of
+a clock cycle. Thus, the semantic preservation theorem states that
+starting from equal register stores after the execution of a source
+program and its RTL circuit after one clock cycle leads to equal
+register stores.
 
 In \cite{Bourke}, the source language is a subset of \lustre{} and the
 target language is imperative language called Obc. A \lustre{} program
@@ -184,19 +212,20 @@ variables composing its internal memory and a vector of other Obc
 class instances. The authors define a data flow semantics for the
 \lustre{} language; judgments of the semantics describe how output
 streams are computed based on input streams. Also, as we are dealing
-with hardwares, the judgments treat synchronous statements and
-combinational ones. On the side of the Obc language, the semantics
-define a function $step$ that computes the execution the Obc classes
-over one clock cycle. To prove the semantic preservation theorem, the
-state comparison relation binds the values of input and output streams
-on one side to the values of variables and Obc class instances on the
-other side. The semantic preservation theorem is as follows: if a
-\lustre{} node yields output streams $o$ from input streams $i$, then
-the iterative execution of the $step$ function for the corresponding
-Obc class builds every step of output streams $o$ given the values of
-input streams $i$. The proof is done by induction over the clock step
-count, and by induction over the evaluation derivation of the nody
-instruction body.
+with hardware circuits, the semantics rules cover synchronous
+statements and combinational ones. On the side of the Obc language,
+the semantics define a function $step$ that computes the execution the
+Obc classes over one clock cycle. To prove the semantic preservation
+theorem, the state comparison relation binds the values of input and
+output streams on one side to the values of variables and Obc class
+instances on the other side. The semantic preservation theorem is as
+follows: if a \lustre{} node yields the output stream $o$ from an
+input stream $i$, then the iterative execution of the $step$ function
+for the corresponding Obc class incrementally builds the output stream
+$o$ given the values of the input stream $i$. The proof is done by
+induction over the clock step count, and by induction over the
+evaluation relation for the \lustre{} statements composing the body of
+nodes.
 
 In \cite{Loow2021}, the HDL compiler translates Verilog modules into
 netlists. The execution state of Verilog module holds the value of the
@@ -205,26 +234,26 @@ circuit holds the value of the registers declared in the
 circuit. Therefore, the state comparison relation used to state the
 semantic preservation theorem binds the values of variables on one
 side to the values of registers on the other side. The semantics of
-Verilog resembles the one of VHDL; the set of processes composing a
-module are executed w.r.t. the simulation semantics of the language,
-i.e, composed of synchronous and combinational execution steps. The
-semantics of netlists is set as a big-step operational semantics by
-means of an interpreter that runs a netlist list over n clock cycles.
-The semantic preservation theorem is as follows: Assuming that a
-module is transformed into a circuit, and that some well-formation
-hypotheses hold on the module, if the module executes without error,
-and yields a final state $venv$, then there exists a final state
-$cenv$ yielded by the execution of the circuit over n clock cycles
-s.t. $venv$ and $cenv$ are similar according to the relation
-$verilog\_netlist\_rel$. Here, the $verilog\_netlist\_rel$ is the
-state comparison relation.
+Verilog quite similar to the one of \vhdl{}; a set of processes
+composing a module are executed w.r.t. the simulation semantics of the
+language, i.e, composed of synchronous and combinational execution
+steps. The semantics of netlists is set as a big-step operational
+semantics by means of an interpreter that runs a netlist list over n
+clock cycles.  The semantic preservation theorem is as follows:
+Assuming that a module is transformed into a circuit, and that some
+well-formation hypotheses hold on the module, if the module executes
+without error, and yields a final state $venv$, then there exists a
+final state $cenv$ yielded by the execution of the circuit over n
+clock cycles s.t. $venv$ and $cenv$ are similar according to the
+relation $verilog\_netlist\_rel$. Here, the $verilog\_netlist\_rel$ is
+the state comparison relation.
 
 In \cite{Yang2016}, the compiler transforms programs of the
 synchronous language SIGNAL into Synchronous Clock Guarded Actions
 programs (S-CGA programs). A SIGNAL program describes a set of
 processes; each process holds a set of equations describing the
 relation between signals. The equations can be synchronous equations
-(refering to a clock) or combinational ones. An S-CGA program defines
+(referring to a clock) or combinational ones. An S-CGA program defines
 a set of actions to be applied to some variables when some conditions
 (the guards) are met. The SIGNAL (resp. the S-CGA) language has been
 endowed with a trace semantics describing the computation of signal
@@ -242,28 +271,28 @@ assistant.
 
 In \cite{Habibi2006}, the authors verify a methodology to design
 hardware models with SystemC models. SystemC models describe hardware
-with modules; a module is a C++ class with ports, data members and
-methods. The methodology describes a transformation from SystemC into
-Abstract State Machine (ASM) thus enabling to model-check the hardware
-models. ASMs are described in the language AsmL; in AsmL, an ASM is
-implemented by a class with data members and methods. A denotational
-(fixpoint) semantics for SystemC modules is defined along with a
-denotational semantics for AsmL. The semantics is another variant of
-simulation cycle, similar to all other synchronous languages. There
-are two phases: evaluate and update and the gap between the two is
-called a delta-delay. The execution state of a SystemC module is
-divided into a signal store, mapping signal to value, and a variable
-store, mapping variable to value. The execution state of an AsmL class
-is only composed of a variable store. The theorem of semantic
-preservation states that, after translation, a SystemC model has the
-same \textit{observational} behavior than its corresponding AsmL
-class. What is compared between a SystemC model and its corresponding
-AsmL class through their observational behavior is the activity of the
-processes of the first one and the activity of the methods of the
-second one. Processes and methods must be active at the same delta
-cycles. Therefore, what is compared here are not the values that the
-execution states hold, but rather the activity of the source and
-target programs.
+systems with modules; a module is a C++ class with ports, data members
+and methods. The methodology describes a transformation from SystemC
+models to Abstract State Machine (ASM) thus enabling to model-check
+the hardware models. ASMs are described in the language AsmL; in AsmL,
+an ASM is implemented by a class with data members and methods. A
+denotational (fixpoint) semantics for SystemC models is defined along
+with a denotational semantics for AsmL. The semantics is another
+variant of simulation cycle, similar to all other synchronous
+languages. There are two phases: evaluate and update and the gap
+between the two is called a delta-delay. The execution state of a
+SystemC model is divided into a signal store, mapping signal to value,
+and a variable store, mapping variable to value. The execution state
+of an AsmL class is only composed of a variable store. The theorem of
+semantic preservation states that, after translation, a SystemC model
+has the same \textit{observational} behavior than its corresponding
+AsmL class. What is compared between a SystemC model and its
+corresponding AsmL class through their observational behavior is the
+activity of the processes of the first one and the activity of the
+methods of the second one. Processes and methods must be active at the
+same delta cycles. Therefore, what is compared here are not the values
+that the execution states hold, but rather the activity of the source
+and target programs. 
 
 \subsection{Model transformations}
 \label{sec:model-transf-and-proofs}
@@ -272,23 +301,22 @@ Regarding model transformations, a lot of works consider semantic
 preservation as the preservation of structural properties in the
 transformed model \cite{Berramla2015,Calegari2011,Meghzili2017}.
 
-Still, there are many cases where the source model and th target one
+Still, there are many cases where the source model and the target one
 have both an execution semantics. In these cases, the authors are
 interested in proving that the transformation is semantic preserving
 by showing that the computation of the source model and the target
-model follow a simulation relation (see
-Figure~\ref{fig:sim-diagrams}).
+model follow a commuting diagram (see Figure~\ref{fig:sim-diagrams}).
 
 In \cite{Combemale2009} and \cite{Yang2014}, the authors are
 interested in giving a translational semantics to a given model having
 itself a reference execution semantics. In \cite{Combemale2009}, the
 source models are called xSpem models; they describe a set of
-activities exchanging resources and an holding an internal state. The
-target models are PNs. Both xSpem models and PNs have a state
-transition semantics. The state comparison is performed by checking
-the correspondence between each current status of the activities
-describe in an xSpem model and the marking of the PN. Then, the
-authors prove a bisimulation theorem, illustrated in
+\emph{activities} that exchange resources and hold an internal
+state. The target models are PNs. Both xSpem models and PNs have a
+state transition semantics. The state comparison is performed by
+checking the correspondence between each current status of the
+activities describe in an xSpem model and the marking of the PN. Then,
+the authors prove a bisimulation theorem, illustrated in
 Figure~\ref{fig:bisim-ref-transl}.
 
 \begin{figure}[H]
@@ -302,11 +330,9 @@ In Figure~\ref{fig:bisim-ref-transl}, one the right side of the
 diagram, i.e, the Petri net side, one can see that a Petri net
 possibly performs many internal actions (represented the arrow
 $\stackrel{\tau}{\rightarrow}^{*}$) before and after executing the
-computation step that is interest for the proof (i.e, action
-$\lambda$). Referring to the diagrams of
-Figure~\ref{fig:sim-diagrams}, this is a case of ``star''
-simulation. The proof is performed by reasoning by induction on the
-structure of the xSpem model, and then by reasoning of the state
+computation step that is of interest for the proof (i.e, action
+$\lambda$). The proof is performed by reasoning by induction on the
+structure of the xSpem models, and then by reasoning of the state
 transition semantics of xSpem models and PNs.
 
 In \cite{Yang2014}, the authors describe a transformation from a model
@@ -317,16 +343,16 @@ preserving, the authors define the semantics of AADL models and TASMs
 through Timed Transition Systems (TTSs). Thus, the execution state of
 an AADL model is the execution state of the corresponding TTS, and the
 same holds for a TASM. Comparing the state of two TTSs is easier than
-comparing the state of two different models. Then, the authors prove a
-strong bisimulation theorem to verify that the transformation is
-semantic preserving. The whole proof is mechanized within the \coq{}
-proof assistant.
+comparing the state of two different models, thus having two different
+definitions. Then, the authors prove a strong bisimulation theorem to
+verify that the transformation is semantic preserving. The whole proof
+is mechanized within the \coq{} proof assistant.
 
 In \cite{Fronc2011}, the authors describe a transformation from
 LLVM-labelled Petri nets to LLVM programs, where LLVM is low-level
 assembly language. Precisely, the generated LLVM program implements
 the state space of the source Petri net (i.e, the graph of reachable
-markings). The authors want to verify if an LLVM program trully
+markings). The authors want to verify if an LLVM program truly
 implements the PN state space, i.e if each marking present in the PN
 state space can be reached by running a specific $fire_t$ function on
 the generated LLVM program. The state of an LLVM program is defined by
@@ -340,40 +366,49 @@ $M$ to marking $M'$, then applying running the $fire_t$ function over
 the generated LLVM program at state $LM$ (such that $LM$ implements
 marking $M$) leads to a new state $LM'$, such that $LM'$ implements
 marking $M'$. To prove this theorem, the authors proceed by induction
-on the number of places of the Petri net.
+on the number of places of the input Petri net.
 
-\paragraph{Discussions on transformations and proof strategies}
+\subsection{Discussions on transformations and proof strategies}
+\label{sec:discuss-transf-and-proofs}
 
 In this thesis, we are interested in the verification of a semantic
-preservation property for a given transformation by proving a
-bisimulation theorem. To achieve this kind of proof task, the
-proceedings are quite similar, at least in the three cases of
-transformation presented above (i.e, GPLs compilation, HDLs
-compilation and model transformations). Even though the source and
-target languages or models are different from one case of
-transformation to the other, however, bisimulation theorems carry the
-same structure. The state comparison relation and the choice of the
-bisimulation diagram are the two angular stones of the process.
+preservation property for a given transformation function . To achieve
+this kind of proof task, the proceedings are quite similar, at least
+in the three cases of transformation presented above (i.e, GPL
+compilation, HDL compilation and model transformations). Even though
+the source and target languages or models are different from one case
+of transformation to the other, however, semantic preservation
+theorems carry the same structure, i.e the one presented in
+Definition~\ref{def:gen-beh-pres-thm}. The state comparison relation
+and the choice of the commuting diagram (i.e. how much computational
+steps of the target representation correspond to one computational
+step of the source representation) are the two angular stones of the
+process.
 
 One can notice that when verifying the transformation of HDL programs,
-the bisimulation theorems are expressed around a time-related
+the semantic preservation theorems are expressed around a time-related
 computational step. It can either be a clock cycle, or another kind of
 time step. The state equivalence checking is made at the end this
 time-related computational step. This differs from the expression of
-bisimulation theorems for GPLs, where a computational step is not
-related to time, but rather expresses the one-time computation of
+behavior preservation theorems for GPLs, where a computational step is
+not related to time, but rather expresses the one-time computation of
 programs.
 
 Concerning proof strategies, in the case of programming languages,
-proving the bisimulation theorems are systematically done by induction
-over the semantics relation of the source languages. The semantics
-relation are themselves defined by following the inductive structure
+proving the semantic preservation theorems are systematically done by
+induction over the semantics relations of the source and target
+languages, and by reasoning on the translation function. The semantics
+relations are themselves defined by following the inductive structure
 of the language ASTs. In the case of model transformations, when the
 source model permits it, the proofs are performed similarly by
 applying inductive reasoning over the structure of the input model.
-This enable compositional reasoning, i.e: to split the difficulty of
-proving the bisimulation theorem into simpler lemmas about the
-execution of simpler programs or simple model structures.
+This enables compositional reasoning, i.e: to split the difficulty of
+proving the semantic preservation theorem into simpler lemmas about
+the execution of simpler programs or simple model structures.  % Then,
+% with a lemma proving that the execution of a simple program or model
+% construct is correct, we can deduce the correctness of the execution
+% of more complex program or model constructs composed of these simple
+% constructs. 
 
 %%% Local Variables:
 %%% mode: latex
