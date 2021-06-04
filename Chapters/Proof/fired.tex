@@ -414,16 +414,16 @@ the \texttt{s\_marking} signal, assigned by the synchronous process
 ports of the input and output interface are composite ports (i.e., of
 the array type) with an upper bound index equal to \texttt{m}. The
 number $\mathtt{m}$ is equal to the expression
-$\mathtt{output\_arcs\_number}-1$, where
-$\mathtt{output\_arcs\_number}$ is a generic constant of the place
-design. The value of the $\mathtt{output\_arcs\_number}$ constant is
-set at the generation of the generic map of a place component instance
-$id_p$, and is equal to the number of output transitions of place
+\texttt{output\_arcs\_number}$-1$, where \texttt{output\_arcs\_number}
+is a generic constant of the place design. The value of the
+\texttt{output\_arcs\_number} constant is set at the generation of the
+generic map of a place component instance $id_p$, and is equal to the
+number of output transitions of place
 $p$. Listing~\ref{lst:pauths-out-eval-ps} presents the code of the
 \texttt{priority\_evaluation} process defined in the architecture of
 the place design.
 
-\begin{lstlisting}[language=VHDL,numbers=left,label={lst:pauths-out-eval-ps},caption={The \texttt{priority\_evaluation} process in the place design's architecture.}]
+\begin{lstlisting}[language=VHDL,label={lst:pauths-out-eval-ps},caption={The \texttt{priority\_evaluation} process in the place design's architecture.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left, numberstyle=\tiny\ttfamily]
 priority_evaluation : process (output_transitions_fired, s_marking, output_arcs_types, output_arcs_weights)
   variable v_saved_output_token_sum : local_weight_t;
 begin
