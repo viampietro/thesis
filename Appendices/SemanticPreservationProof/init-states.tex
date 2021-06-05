@@ -326,8 +326,9 @@
   that\\
   \framebox{$s_0.reset_t(t)=\sigma_0(id_t)("s\_reinit\_time\_counter")$.}
   
-  Rewriting $s_0.reset_t(t)$ as $false$, by definition of $s_0$,
-  \framebox{$\sigma_0(id_t)("s\_reinit\_time\_counter")=false$.}\\
+  Rewriting $s_0.reset_t(t)$ as $\mathtt{false}$, by definition of
+  $s_0$,
+  \framebox{$\sigma_0(id_t)("s\_reinit\_time\_counter")=\mathtt{false}$.}\\
   
   \exT{}
   
@@ -338,7 +339,7 @@
 
   Rewriting
   $\sigma_0(id_t)("s\_reinit\_time\_counter")$ as $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]$,\\
-  \framebox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]=false$.}\\
+  \framebox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}\\
   
   For all $t\in{}T$ (resp. $p\in{}P$), let $input(t)$
   (resp. $input(p)$) be the set of input places of $t$ (resp. input
@@ -355,17 +356,17 @@
     property of the elaboration relation, and \InCsCompT{}, we can
     deduce $\Delta(id_t)("ian")=1$.
 
-    By construction, $<\mathtt{reinit\_time(0)\Rightarrow}false>\in{}ipm_t$, and
+    By construction, $<\mathtt{reinit\_time(0)\Rightarrow{}false}>\in{}ipm_t$, and
     by property of the initialization relation and \InCsCompT, we can
-    deduce $\sigma_0(id_t)("rt")[0]=false$.
+    deduce $\sigma_0(id_t)("rt")[0]=\mathtt{false}$.
 
     Rewriting $\Delta(id_t)("ian")$ as $1$ and
-    $\sigma_0(id_t)("rt")[0]$ as $false$, \qedbox{tautology.}
+    $\sigma_0(id_t)("rt")[0]$ as $\mathtt{false}$, \qedbox{tautology.}
     
   \item \textbf{CASE} $input(t)\neq\emptyset$.
 
     To prove the current goal, we can equivalently prove that\\
-    \fbox{$\exists{}i\in[0,\Delta(id_t)("ian")-1]~s.t.~\sigma_0(id_t)("rt")[i]=false$.}
+    \fbox{$\exists{}i\in[0,\Delta(id_t)("ian")-1]~s.t.~\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
 
     Since $input(t)\neq\emptyset,~\exists{}p~s.t.~p\in{}input(t)$. Let
     us take such a $p\in{}input(t)$.
@@ -395,21 +396,21 @@
     $i\in[0, \Delta(id_t)("ian")-1]$. Let us take that i to
     prove the goal.
 
-    Then, we must show \framebox{$\sigma_0(id_t)("rt")[i]=false$.}
+    Then, we must show \framebox{$\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
 
     By property of the \hvhdl{} initialization relation and
     ${<}\mathtt{reinit\_time(i)\Rightarrow}id_{ji}{>}\in{}ipm_t$, we
     can deduce $\sigma_0(id_t)("rt")[i]=\sigma_0("id_{ji}")$.
 
     Rewriting $\sigma_0(id_t)("rt")[i]$ as $\sigma_0("id_{ji}")$,
-    \framebox{$\sigma_0("id_{ji}")=false$.}
+    \framebox{$\sigma_0("id_{ji}")=\mathtt{false}$.}
 
     By property of the \hvhdl{} initialization relation and
     $<\mathtt{reinit\_transitions\_time(j)\Rightarrow}id_{ji}>\in{}opm_p$,
     we can deduce $\sigma_0("id_{ji}")=\sigma_0(id_p)("rtt")[j]$.
 
     Rewriting $\sigma_0("id_{ji}")$ as $\sigma_0(id_p)("rtt")[j]$,
-    \framebox{$\sigma_p^0("rtt")[j]=false$.}
+    \framebox{$\sigma_p^0("rtt")[j]=\mathtt{false}$.}
 
     Since $t\in{}output(p)$, then we know that
     $output(p)\neq\emptyset$.
@@ -430,7 +431,7 @@
     \texttt{reinit\_transitions\_time\_evaluation} process defined in
     the place design architecture, and since
     $j\in[0,\Delta(id_p)("oan")-1]$,
-    \qedbox{$\sigma_0(id_p)("rtt")[j]=false$.}
+    \qedbox{$\sigma_0(id_p)("rtt")[j]=\mathtt{false}$.}
 
   \end{itemize}
   
@@ -451,19 +452,19 @@
   $id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c$, let us show that
   \fbox{$s_0.cond(c)=\sigma_0(id_c)$.}\\
 
-  Rewriting $s_0.cond(c)$ as $false$, by definition of $s_0$,
-  \fbox{$\sigma_0(id_c)=false$.}
+  Rewriting $s_0.cond(c)$ as $\mathtt{false}$, by definition of $s_0$,
+  \fbox{$\sigma_0(id_c)=\mathtt{false}$.}
 
   By construction, $id_c$ is an input port identifier of Boolean type
   in the \hvhdl{} design $d$, and thus, by property of the \hvhdl{}
-  elaboration relation, we can deduce $\sigma_e(id_c)=false$.
+  elaboration relation, we can deduce $\sigma_e(id_c)=\mathtt{false}$.
 
   By property of the \hvhdl{} initialization relation and
   $id_c\in{}Ins(\Delta)$, we can deduce
   $\sigma_e(id_c)=\sigma_0(id_c)$.
 
   Rewriting $\sigma_0(id_c)$ as $\sigma_e(id_c)$ and $\sigma_e(id_c)$
-  as $false$, \qedbox{tautology.}
+  as $\mathtt{false}$, \qedbox{tautology.}
   
 \end{niproof}
 
@@ -511,12 +512,12 @@
   $id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f$, let us show that
   \fbox{$s_0.ex(f)=\sigma_0(id_f)$.}\\
 
-  Rewriting $s_0.ex(f)$ as $false$, by definition of $s_0$,
-  \fbox{$\sigma_0(id_f)=false$.}
+  Rewriting $s_0.ex(f)$ as $\mathtt{false}$, by definition of $s_0$,
+  \fbox{$\sigma_0(id_f)=\mathtt{false}$.}
 
   By construction, $id_f$ is an output port identifier of Boolean type
   in the \hvhdl{} design $d$, and thus, by property of the \hvhdl{}
-  elaboration relation, we can deduce $\sigma_e(id_f)=false$.
+  elaboration relation, we can deduce $\sigma_e(id_f)=\mathtt{false}$.
 
   By construction, and by property of the initialization relation, we
   know that the output port identifier $id_f$ is assigned to
