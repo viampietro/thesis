@@ -1129,7 +1129,7 @@
         $\sigma(id_t)("fired")=\mathtt{true}$, and from
         $\sigma(id_t)("fired")=\sigma(id_{ft_i})$, we can deduce
         $\sigma(id_{ft_i})=\mathtt{true}$.
-
+t
         Then, \qedbox{$\sigma(id_{ft_i})=\mathtt{true}$ contradicts
           $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{false}$.}
       \end{itemize}
@@ -1147,20 +1147,20 @@
   $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given a $t\in{}T$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show\\
   \fbox{$t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.}\\
   
-  \exT
-  
-  \noindent{}Then, the proof is in two parts:
+  \exT{}. Then, the proof is in two parts:
 
   \begin{enumerate}
   \item Assuming that $t\in{}Sens(s'.M)$, let us show
     \fbox{$\sigma'(id_t)("s\_enabled")=\mathtt{true}$.}
 
-    \noindent{}By property of the stabilize relation and \InCsCompT:
+    \noindent{}By property of the stabilize relation, \InCsCompT{},
+    and through the examination of the \texttt{enable_evaluation}
+    process defined in the transition design architecture:
     \begin{equation}
       \sigma'(id_t)("se")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("input\_arcs\_valid")[i]\label{eq:eq-senabled-prod}
     \end{equation}
@@ -1177,33 +1177,30 @@
     \noindent{}Let us perform case analysis on $input(t)$.
 
     \begin{itemize}
-    \item \textbf{CASE} $input(t)=\emptyset$:\\
-      \noindent{}By construction,
+    \item \textbf{CASE} $input(t)=\emptyset$:
+
+      By construction,
       ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_t$ and\\
       ${<}\mathtt{input\_arcs\_valid(0)\Rightarrow{}true}{>}\in{}ipm_t$.
 
-      \noindent{}By property of the elaboration and stabilize
-      relations and\\ \InCsCompT:
-      \begin{eqnarray}
-        \label{eq:1}\Delta(id_t)("ian")&=&1\\
-        \label{eq:2}\sigma'(id_t)("iav")[0]&=&\mathtt{true}
-      \end{eqnarray}
+      By property of the elaboration and stabilize relations and
+      \InCsCompT{}, we can deduce $\Delta(id_t)("ian")=1$ and
+      $\sigma'(id_t)("iav")[0]=\mathtt{true}$.
 
-      Thanks to \eqref{eq:1}, we can deduce that $i=0$. Rewriting the
-      goal with \eqref{eq:2}, \qedbox{tautology.}
+      Thanks to $\Delta(id_t)("ian")=1$, we can deduce that $i=0$.
+
+      Rewriting the goal with $\sigma'(id_t)("iav")[0]=\mathtt{true}$,
+      \qedbox{tautology.}
       
     \item \textbf{CASE} $input(t)\neq\emptyset$:\\
       \noindent{}By construction,
       ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$.
 
-      \noindent{}By property of the elaboration relation and
-      \InCsCompT:
-      \begin{equation}
-        \label{eq:3}\Delta(id_t)("ian")=\vert{}input(t)\vert
-      \end{equation}
+      By property of the elaboration relation and \InCsCompT, we can
+      deduce $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
       
-      \noindent{}Thanks to \eqref{eq:3}, we know that
-      $i\in[0,\vert{}input(t)\vert-1]$.
+      Thanks to $\Delta(id_t)("ian")=\vert{}input(t)\vert$, we know
+      that $i\in[0,\vert{}input(t)\vert-1]$.
 
       By construction, there exist a $p\in{}input(t)$,
       $id_p\in{}Comps(\Delta)$, $gm_p$, $ipm_p$, $opm_p$,
@@ -1214,16 +1211,17 @@
       and
       ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$.
 
-      \noindent{}By property of the stabilize relation, \InCsCompT{}
-      and \InCsCompP:
-      \begin{equation}
-        \sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]\label{eq:eq-iav-oav}
-      \end{equation}
+      By property of the stabilize relation, \InCsCompT{} and
+      \InCsCompP, we can deduce
+      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$.
 
-      \noindent{}Rewriting the goal with \eqref{eq:eq-iav-oav},
+      Rewriting the goal with
+      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$:\\
       \fbox{$\sigma'(id_p)("oav")[j]=\mathtt{true}$.}
 
-      \noindent{}By property of the stabilize relation and \InCsCompP:
+      By property of the stabilize relation, \InCsCompP, and through
+      the examination of the \texttt{marking_validation_evaluation}
+      process defined in the place design architecture, we can deduce:
       \begin{equation}
         \label{eq:eq-oav-sens}
         \begin{split}
@@ -1233,7 +1231,7 @@
         \end{split}
       \end{equation}
 
-      \noindent{}Rewriting the goal with \eqref{eq:eq-oav-sens},
+      Rewriting the goal with \eqref{eq:eq-oav-sens},
       \begin{equation*}
         \fbox{$
           \begin{split}
@@ -1253,48 +1251,50 @@
         and\\
         ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
-        \noindent{}By property of the stabilize relation and \InCsCompP:
-        \begin{eqnarray}
-          \sigma'(id_p)("oat")[j]&=&\mathtt{basic}\label{eq:eq-oatj-basic}\\
-          \sigma'(id_p)("oaw")[j]&=&\omega\label{eq:eq-oawj-1}
-        \end{eqnarray}
+        By property of the stabilize relation and \InCsCompP,
 
-        \noindent{}Rewriting the goal with \eqref{eq:eq-oatj-basic}
-        and \eqref{eq:eq-oawj-1}, and simplifying the goal:\\
+        we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
+        $\sigma'(id_p)("oaw")[j]=\omega$.
+
+        Rewriting the goal with
+        $\sigma'(id_p)("oat")[j]=\mathtt{basic}$
+        and $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying the goal:\\
         \fbox{$\sigma'(id_p)("sm")\ge\omega=\mathtt{true}$.}
 
-        \noindent{}Appealing to Lemma~\nameref{lem:re-equal-marking}:
-        \begin{equation}
-          s'.M(p)=\sigma'(id_p)("sm")\label{eq:eq-marking}
-        \end{equation}
+        \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking}, we
+        can deduce $s'.M(p)=\sigma'(id_p)("sm")$.
 
-        \noindent{}Rewriting the goal with \eqref{eq:eq-marking}:
+        \noindent{}Rewriting the goal with
+        $s'.M(p)=\sigma'(id_p)("sm")$:
         \fbox{$s'.M(p)\ge\omega=\mathtt{true}$.}
 
         \noindent{}By definition of $t\in{}Sens(s'.M)$,
         \qedbox{$s'.M(p)\ge\omega=\mathtt{true}$.}
         
-      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{test})$: same as the preceding case.
-      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:\\
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{test})$: same as
+        above.
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:
+
         \noindent{}By construction,
         ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
         and\\
         ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
-        \noindent{}By property of the stabilize relation and \InCsCompP:
-        \begin{eqnarray}
-          \sigma'(id_p)("oat")[j]&=&\mathtt{inhib}\label{eq:eq-oatj-inhib}\\
-          \sigma'(id_p)("oaw")[j]&=&\omega\label{eq:eq-oawj-2}
-        \end{eqnarray}
+        \noindent{}By property of the stabilize relation and
+        \InCsCompP, we can deduce
+        $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
+        $\sigma'(id_p)("oaw")[j]=\omega$.
 
-        \noindent{}Rewriting the goal with \eqref{eq:eq-oatj-inhib}
-        and \eqref{eq:eq-oawj-2}, and simplifying the goal:\\
+        \noindent{}Rewriting the goal with
+        $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
+        $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying the goal:
         \fbox{$\sigma'(id_p)("sm")<\omega=\mathtt{true}$.}
 
-        \noindent{}Appealing to Lemma~\nameref{lem:re-equal-marking},
-        equation \eqref{eq:eq-marking} holds.
+        \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking}, we
+        can deduce $s'.M(p)=\sigma'(id_p)("sm")$.
 
-        \noindent{}Rewriting the goal with \eqref{eq:eq-marking}:
+        \noindent{}Rewriting the goal with
+        $s'.M(p)=\sigma'(id_p)("sm")$:
         \fbox{$s'.M(p)<\omega=\mathtt{true}$.}
 
         \noindent{}By definition of $t\in{}Sens(s'.M)$,
@@ -1334,8 +1334,8 @@
       equation \eqref{eq:eq-senabled-prod} holds.
       
       Rewriting $\sigma'(id_t)("se")=\mathtt{true}$ with
-      \eqref{eq:eq-senabled-prod},
-      $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("input\_arcs\_valid")[i]=\mathtt{true}$.
+      \eqref{eq:eq-senabled-prod}, we can deduce:\\
+      $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("iav")[i]=\mathtt{true}$.
 
       \noindent{}Then, we can deduce that
       $\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("iav")[i]=\mathtt{true}$.
@@ -1357,51 +1357,58 @@
       ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$.
 
       \noindent{}By property of the elaboration relation and
-      \InCsCompT, equation \eqref{eq:3} holds.
+      \InCsCompT, we can deduce
+      $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
 
-      \noindent{}Thanks to \eqref{eq:3}, we can deduce that
+      \noindent{}Thanks to $\Delta(id_t)("ian")=\vert{}input(t)\vert$,
+      we can deduce that
       $\forall{}i\in[0,\vert{}input(t)\vert-1],~\sigma'(id_t)("iav")[i]=\mathtt{true}$.
 
       \noindent{}Having such an $i\in[0,\vert{}input(t)\vert-1]$, we
       can deduce that $\sigma'(id_t)("iav")[i]=\mathtt{true}$.
 
       \noindent{}By property of the stabilize relation, \InCsCompT{}
-      and \InCsCompP, equation \eqref{eq:eq-iav-oav} holds.
+      and \InCsCompP, we can deduce
+      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$.
 
-      \noindent{}Thanks to \eqref{eq:eq-iav-oav}, we can deduce that
-      $\sigma'(id_p)("oav")[j]=\mathtt{true}$.
+      \noindent{}Thanks to
+      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$,
+      we can deduce that $\sigma'(id_p)("oav")[j]=\mathtt{true}$.
 
-      \noindent{}By property of the stabilize relation and \InCsCompP,
-      equation \eqref{eq:eq-oav-sens} holds. Thanks to
-      \eqref{eq:eq-oav-sens}, we can deduce that:
-      \begin{equation*}
+      By property of the stabilize relation and \InCsCompP, equation
+      \eqref{eq:eq-oav-sens} holds. Thanks to \eqref{eq:eq-oav-sens},
+      we can deduce that:
+      \begin{equation}
+        \label{eq:sens-true}
         \begin{split}
           \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
           & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
           & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
         \end{split}
-      \end{equation*}
+      \end{equation}
 
       \noindent{}By construction,
       ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
       and\\
       ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
-      \noindent{}By property of the stabilize relation and \InCsCompP, equations
-      \eqref{eq:eq-oatj-basic} and \eqref{eq:eq-oawj-1} hold.
+      \noindent{}By property of the stabilize relation and \InCsCompP,
+      we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
+      $\sigma'(id_p)("oaw")[j]=\omega$.
 
-      \noindent{}Thanks to \eqref{eq:eq-oatj-basic} and
-      \eqref{eq:eq-oawj-1}, we can deduce that
+      \noindent{}Thanks to $\sigma'(id_p)("oat")[j]=\mathtt{basic}$,
+      $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying
+      Equation~\eqref{eq:sens-true}, we can deduce
       $\sigma'(id_p)("sm")\ge\omega=\mathtt{true}$.
 
-      \noindent{}Appealing to Lemma~\nameref{lem:re-equal-marking},
+      \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking},
       \qedbox{$s'.M(p)\ge\omega$.}
 
     \item Assuming $pre(p,t)=(\omega,\mathtt{inhib})$, let us show
       \fbox{$s'.M(p)<\omega$.}
 
-      The proceeding is the same as the preceding case. Here, we will
-      start the proof where the two cases are diverging, i.e:
+      The proceeding is the same as in the preceding case. Here, we
+      will start the proof where the two cases are diverging, i.e:
 
       \noindent{}By construction,
       ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
@@ -1409,20 +1416,20 @@
       ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
       \noindent{}By property of the stabilize relation and \InCsCompP,
-      equations \eqref{eq:eq-oatj-inhib} and \eqref{eq:eq-oawj-1}
-      hold.
+      we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
+      $\sigma'(id_p)("oaw")[j]=\omega$.
 
-      \noindent{}Thanks to \eqref{eq:eq-oatj-inhib} and
-      \eqref{eq:eq-oawj-1}, we can deduce that
+      \noindent{}Thanks to $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$
+      and $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying
+      Equation~\eqref{eq:sens-true}, we can deduce
       $\sigma'(id_p)("sm")<\omega=\mathtt{true}$.
 
-      \noindent{}Appealing to Lemma~\nameref{lem:re-equal-marking},
+      \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking},
       \qedbox{$s'.M(p)<\omega$.}
-      
     \end{enumerate}
 
   \end{enumerate}
-\end{proof}
+\end{niproof}
 
 \begin{lemma}[Rising Edge Equal Not Sensitized]
   \label{lem:re-equal-not-sens}
@@ -1433,7 +1440,7 @@
 
 \begin{proof}
   Proving the above lemma is trivial by appealing to
-  Lemma~\nameref{lem:re-equal-sens} and by reasoning on
+  Lemma~\ref{lem:re-equal-sens} and by reasoning on
   contrapositives.
 \end{proof}
 

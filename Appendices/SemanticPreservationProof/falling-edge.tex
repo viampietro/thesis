@@ -12,32 +12,30 @@
   $~s'.M(p)=\sigma'(id_p)("s\_marking")$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given a $p\in{}P$ and an $id\in{}Comps(\Delta)$
   s.t. $\gamma(p)=id_p$, let us show\\
   \fbox{$s'.M(p)=\sigma'(id_p)("s\_marking")$.}
 
-  \noindent{}By definition of
-  $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$:
-  \begin{equation}
-    \label{eq:42}s.M(p)=s'.M(p)
-  \end{equation}
+  By definition of
+  $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$, we can deduce
+  $s.M(p)=s'.M(p)$.
 
-  \noindent{}By property of the $\mathtt{Inject}_\downarrow$ relation,
-  the \hvhdl{} falling edge relation, the stabilize relation and
-  \InCsCompP:
-  \begin{equation}
-    \label{eq:43}\sigma'(id_p)("s\_marking")=\sigma(id_p)("s\_marking")
-  \end{equation}
+  By property of the $\mathtt{Inject}_\downarrow$ relation, the
+  \hvhdl{} falling edge relation, the stabilize relation and
+  \InCsCompP, and through the examination of the \texttt{marking}
+  process defined in the place design architecture, we can deduce
+  $\sigma'(id_p)("s\_marking")=\sigma(id_p)("s\_marking")$.
 
-  \noindent{}Rewriting the goal with \eqref{eq:42} and \eqref{eq:43}:
+  Rewriting the goal with $s.M(p)=s'.M(p)$ and
+  $\sigma'(id_p)("sm")=\sigma(id_p)("sm")$:
   \fbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
 
   \noindent{}By definition of
-  $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\approx}\sigma$:
   \qedbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
   
-\end{proof}
+\end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% FALLING EDGE EQUAL OUTPUT TOKEN SUM LEMMA %%%%%%%%%%
@@ -49,30 +47,32 @@
   $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
   \fbox{$\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.}
 
   \exP{}
   
-  \noindent{}By property of the stabilize relation and \InCsCompP{}:
+  By property of the stabilize relation, \InCsCompP{}, and through the
+  examination of the \texttt{output_tokens_sum} process defined in the
+  place design architecture:
   \begin{equation}
-    \label{eq:16}
+    \label{eq:sots-at-fe}
     \sigma'(id_p)("sots")=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
     \begin{cases}
       \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-      \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+      \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
       0~otherwise \\
     \end{cases}
   \end{equation}
 
-  \noindent{}Rewriting the goal with \eqref{eq:16}:\\
+  Rewriting the goal with \eqref{eq:sots-at-fe}:\\
   \begin{equation*}
     \fbox{$
       \sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
       \begin{cases}
         \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-        \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+        \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
         0~otherwise \\
       \end{cases}$}
   \end{equation*}
@@ -89,7 +89,7 @@
        $\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
        \begin{cases}
          \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-         \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+         \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
          0~otherwise \\
        \end{cases}$ \\
      \end{tabular}}
@@ -103,7 +103,7 @@
    0~otherwise
  \end{cases}$ and $g(i)=\begin{cases}
    \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-   \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{BASIC}) \\
+   \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
    0~otherwise \\
  \end{cases}$
 
@@ -111,67 +111,66 @@
 
  \noindent{}Let us perform case analysis on $output(p)$; there are two cases:
 
- \begin{enumerate}
- \item $output(p)=\emptyset$:\\
+ \begin{itemize}
+ \item \textbf{CASE} $output(p)=\emptyset$:
    
-   \noindent{}By construction,
-   ${<}\mathtt{output\_arcs\_number\Rightarrow{}1}{>}\in{}gm_p$,
-   ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}\mathtt{BASIC}}{>}\in{}ipm_p$,
-   ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}\mathtt{true}}{>}\in{}ipm_p$,
+   By construction,
+   ${<}$\texttt{output\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}gm_p$,
+   ${<}$\texttt{output\_arcs\_types(0)}$\Rightarrow{}\mathtt{basic}{>}\in{}ipm_p$,
+   ${<}$\texttt{output\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$,
    and
-   ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$.
+   ${<}$\texttt{output\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}ipm_p$.
 
-   \noindent{}By property of the elaboration relation and \InCsCompP:
-   \begin{equation}
-     \label{eq:25}\Delta(id_p)("oan")=1
-   \end{equation}
+   By property of the elaboration relation and \InCsCompP, we can
+   deduce $\Delta(id_p)("oan")=1$.
 
-   \noindent{}By property of the stabilize relation and \InCsCompP:
-   \begin{eqnarray}
-     \label{eq:26}\sigma'(id_p)("oat")[0]&=&\mathtt{BASIC}\\
-     \label{eq:27}\sigma'(id_p)("otf")[0]&=&\mathtt{true}\\
-     \label{eq:28}\sigma'(id_p)("oaw")[0]&=&0
-   \end{eqnarray}
+   By property of the stabilize relation and \InCsCompP, we can deduce
+   $\sigma'(id_p)("oat")[0]=\mathtt{basic}$,
+   $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and
+   $\sigma'(id_p)("oaw")[0]=0$.
 
-   By property of $output(p)=\emptyset$:
-   \begin{equation}\label{eq:29}
-     \sum\limits_{t\in{}Fired(s')}
-     \begin{cases}
-       \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
-       0~otherwise
-     \end{cases}=0
-   \end{equation}
+   By property of $output(p)=\emptyset$, we can deduce\\
+   $\sum\limits_{t\in{}Fired(s')}
+   \begin{cases}
+     \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
+     0~otherwise
+   \end{cases}=0$
 
-   \noindent{}Rewriting the goal with \eqref{eq:25}, \eqref{eq:26},
-   \eqref{eq:27}, \eqref{eq:28} and \eqref{eq:29}, \qedbox{tautology.}
+   \noindent{}Rewriting the goal with $\Delta(id_p)("oan")=1$,
+   $\sigma'(id_p)("oat")[0]=\mathtt{basic}$,
+   $\sigma'(id_p)("otf")[0]=\mathtt{true}$,
+   $\sigma'(id_p)("oaw")[0]=0$ and $\sum\limits_{t\in{}Fired(s')}
+   \begin{cases}
+     \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
+     0~otherwise
+   \end{cases}=0$, \qedbox{tautology.}
    
- \item $output(p)\neq\emptyset$:\\
+ \item \textbf{CASE} $output(p)\neq\emptyset$:\\
 
    \noindent{}By construction,
    ${<}\mathtt{output\_arcs\_number\Rightarrow{}}\vert{}output(p)\vert{>}\in{}gm_p$,
-   and by property of the elaboration relation:
-   \begin{equation}
-     \label{eq:30}\Delta(id_p)("oan")=\vert{}output(p)\vert
-   \end{equation}
+   and by property of the elaboration relation, we can deduce
+   $\Delta(id_p)("oan")=\vert{}output(p)\vert$.
    
-   Rewriting the goal with \eqref{eq:30}:
+   Rewriting the goal with
+   $\Delta(id_p)("oan")=\vert{}output(p)\vert$:
    \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}output(p)\vert-1}g(i)$.}
 
    \noindent{}Let us reason by induction on the right sum term of the goal.
 
    \begin{itemize}
-   \item \textbf{BASE CASE}:\\
+   \item \textbf{BASE CASE}:
 
-     \noindent{}In that case, $0>\vert{}output\vert-1$ and
+     In that case, $0>\vert{}output\vert-1$ and
      $\sum\limits_{i=0}^{\vert{}output(p)\vert-1}g(i)=0$.
 
      \noindent{}As $0>\vert{}output\vert-1$, then
      $\vert{}output(p)\vert=0$, thus \qedbox{contradicting
        $output(p)\neq\emptyset$.}
 
-   \item \textbf{INDUCTION CASE}:\\
+   \item \textbf{INDUCTION CASE}:
 
-     \noindent{}In that case, $0\le\vert{}output(p)\vert-1$.
+     In that case, $0\le\vert{}output(p)\vert-1$.
      
      \begin{ih}
        $\forall{}F\subseteq{}Fired(s'),$
@@ -184,73 +183,65 @@
      \begin{equation}
        \label{eq:31}g(0)=\begin{cases}
          \sigma'(id_p)("oaw")[0]~\mathtt{if}~(\sigma'(id_p)("otf")[0] \\
-         \hspace{19.5ex}.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC}) \\
+         \hspace{19.5ex}.~\sigma'(id_p)("oat")[0]=\mathtt{basic}) \\
          0~otherwise \\
        \end{cases}
      \end{equation}
 
      \noindent{}Let us perform case analysis on the value of
-     $\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$; there are two cases:
+     $\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic}$; there are two cases:
      \begin{enumerate}
-     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC})=\mathtt{false}$:\\
+     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic})=\mathtt{false}$:\\
        In that case, $g(0)=0$, and then we can apply the induction
        hypothesis with $F=Fired(s')$ to solve the goal:
        \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$.}
 
-     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{BASIC})=\mathtt{true}$:\\
+     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic})=\mathtt{true}$:\\
        In that case, $g(0)=\sigma'(id_p)("oaw")[0]$,
-       $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and\\
-       $\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$.
+       $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and
+       $\sigma'(id_p)("oat")[0]=\mathtt{basic}$.
 
        \noindent{}By construction, there exist a $t\in{}output(t)$,
-       $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$. Let us take
-       such a $t\in{}output(p)$.
-
-       \exT{}
-
-       \noindent{}As $t\in{}output(p)$, there exist
-       $\omega\in\mathbb{N}^{*}$ and
-       $a\in\{\mathtt{BASIC},\mathtt{TEST},\mathtt{INHIB}\}$
-       s.t. $pre(p,t)=(\omega,a)$. Let us take an $\omega$ and $a$
-       s.t. $pre(p,t)=(\omega,a)$.
-
-       \noindent{}By construction,
-       ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}}a{>}\in{}ipm_p$,\\
-       ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$,
-       and there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
-       ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$ and
-       ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-
+       $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, and there exist
+       $gm_t$, $ipm_t$, $opm_t$ s.t. $\mathtt{comp}(id_t,$
+       $"transition",$ $gm_t,$ $ipm_t,$ $opm_t)\in{}d.cs$, and there
+       exist an $\omega\in\mathbb{N}^{*}$, an
+       $a\in\{\mathtt{basic},\mathtt{test},\mathtt{inhib}\}$ and an
+       $id_{ft}\in{}Sigs(\Delta)$ such that:
+       \begin{itemize}
+       \item $pre(p,t)=(\omega,a)$
+       \item ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}}a{>}\in{}ipm_p$
+       \item ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$
+       \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$
+       \item
+         ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+       \end{itemize}
+       
        \noindent{}By property of the stabilize relation,
-       $\sigma'(id_p)("oat")[0]=\mathtt{BASIC}$ and\\
-       ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}a}{>}\in{}ipm_p$:
-       \begin{equation}
-         \label{eq:32}pre(p,t)=(\omega,\mathtt{basic})
-       \end{equation}
+       $\sigma'(id_p)("oat")[0]=\mathtt{basic}$ and
+       ${<}$\texttt{output\_arcs\_types(0)}$\mathtt{\Rightarrow{}a}{>}\in{}ipm_p$,
+       we can deduce $pre(p,t)=(\omega,\mathtt{basic})$.
 
        \noindent{}By property of the stabilize relation,
        ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$,\\
        ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-       and $\sigma'(id_p)("otf")[0]=\mathtt{true}$:
-       \begin{equation}
-         \label{eq:33}\sigma'(id_t)("fired")=\mathtt{true}
-       \end{equation}
+       and $\sigma'(id_p)("otf")[0]=\mathtt{true}$, we can deduce
+       $\sigma'(id_t)("fired")=\mathtt{true}$.
 
-       \noindent{}Appealing to Lemma~\ref{lem:fe-equal-fired}, we know
+       Appealing to Lemma~\ref{lem:fe-equal-fired}, and thanks to
+       $\sigma'(id_t)("fired")=\mathtt{true}$, we can deduce
        $t\in{}Fired(s')$.
 
-       \noindent{}As $t\in{}Fired(s')$, we can rewrite the left sum
+       With $t\in{}Fired(s')$, we can rewrite the left sum
        term of the goal as follows:\\
        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
 
        \noindent{}We know that $g(0)=\sigma'(id_p)("oaw")[0]$, and by
        property of the stabilize relation and
-       ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow}\omega{>}\in{}ipm_p$:
-       \begin{equation}
-         \label{eq:21}\sigma'(id_p)("oaw")[0]=\omega
-       \end{equation}
+       ${<}$\texttt{output\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}ipm_p$,
+       we can deduce $\sigma'(id_p)("oaw")[0]=\omega$.
 
-       Rewriting the goal with \eqref{eq:21}:\\
+       Rewriting the goal with $\sigma'(id_p)("oaw")[0]=\omega$:\\
        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
 
        By definition of $f$, and as $pre(p,t)=(\omega,\mathtt{basic})$, then $f(t)=\omega$; thus, rewriting the goal:\\
@@ -262,11 +253,10 @@
      \end{enumerate}
      
    \end{itemize}
-   
 
- \end{enumerate}
+ \end{itemize}
  
-\end{proof}
+\end{niproof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -279,15 +269,17 @@
   $~\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'_p("s\_input\_token\_sum")$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
   \fbox{$\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.}\\
 
   \exP{}
   
-  \noindent{}By property of the stabilize relation and \InCsCompP{}:
+  By property of the stabilize relation, \InCsCompP, and through the
+  examination of the \texttt{input_tokens_sum} process defined in the
+  place design architecture:
   \begin{equation}
-    \label{eq:34}
+    \label{eq:sits-at-fe}
     \sigma'(id_p)("sits")=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
     \begin{cases}
       \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
@@ -295,7 +287,7 @@
     \end{cases}
   \end{equation}
 
-  \noindent{}Rewriting the goal with \eqref{eq:34}:\\
+  Rewriting the goal with \eqref{eq:sits-at-fe}:\\
   \begin{equation*}
     \fbox{$
       \sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
@@ -305,184 +297,167 @@
       \end{cases}$}
   \end{equation*}
 
-  \noindent{}Let us unfold the definition of the left sum term:\\
-  \fbox{
-    {\begin{tabular}{c}
-       $\sum\limits_{t\in{}Fired(s')}
-       \begin{cases}
-         \omega~\mathtt{if}~post(t,p)=\omega \\
-         0~otherwise
-       \end{cases}$ \\
-       $=$ \\
-       $\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
-       \begin{cases}
-         \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
-         0~otherwise \\
-       \end{cases}$ \\
-     \end{tabular}}
- }\\
+  Let us unfold the definition of the left sum term:\\
+  \begin{frameb}
+    \begin{tabular}{c} $\sum\limits_{t\in{}Fired(s')}
+      \begin{cases}
+        \omega~\mathtt{if}~post(t,p)=\omega \\
+        0~otherwise
+      \end{cases}$ \\
+      $=$ \\
+      $\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+      \begin{cases}
+        \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+        0~otherwise \\
+      \end{cases}$ \\
+    \end{tabular}
+  \end{frameb}
+  
+  Let us perform case analysis on $input(p)$; there are two cases:
+  
+  \begin{itemize}
+  \item \textbf{CASE} $input(p)=\emptyset$:\\
+    
+    By construction,
+    ${<}$\texttt{input\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}gm_p$,
+    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$,
+    and
+    ${<}$\texttt{input\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}ipm_p$.
 
- \noindent{}Let us perform case analysis on $input(p)$; there are two cases:
+    By property of the elaboration relation and \InCsCompP, we can
+    deduce $\Delta(id_p)("ian")=1$.
+    
+    By property of the stabilize relation and \InCsCompP, we can deduce
+    $\sigma'(id_p)("itf")[0]=\mathtt{true}$ and
+    $\sigma'(id_p)("iaw")[0]=0$.
 
- \begin{enumerate}
- \item $input(p)=\emptyset$:\\
-   
-   \noindent{}By construction,
-   ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_p$,
-   ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}\mathtt{true}}{>}\in{}ipm_p$,
-   and
-   ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$.
+    By property of $input(p)=\emptyset$, we can deduce
+    $\sum\limits_{t\in{}Fired(s')}
+    \begin{cases}
+      \omega~\mathtt{if}~post(t,p)=\omega \\
+      0~otherwise
+    \end{cases}=0$.
 
-   \noindent{}By property of the elaboration relation and \InCsCompP:
-   \begin{equation}
-     \label{eq:35}\Delta(id_p)("ian")=1
-   \end{equation}
+    \noindent{}Rewriting the goal with $\Delta(id_p)("ian")=1$,
+    $\sigma'(id_p)("itf")[0]=\mathtt{true}$,
+    $\sigma'(id_p)("iaw")[0]=0$, and $\sum\limits_{t\in{}Fired(s')}
+    \begin{cases}
+      \omega~\mathtt{if}~post(t,p)=\omega \\
+      0~otherwise
+    \end{cases}=0$, and simplifying the goal: \qedbox{tautology.}
+    
+  \item \textbf{CASE} $input(p)\neq\emptyset$:
 
-   \noindent{}By property of the stabilize relation and \InCsCompP:
-   \begin{eqnarray}
-     \label{eq:36}\sigma'(id_p)("itf")[0]&=&\mathtt{true}\\
-     \label{eq:37}\sigma'(id_p)("iaw")[0]&=&0
-   \end{eqnarray}
+    \noindent{}By construction,
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(p)\vert{>}\in{}gm_p$,
+    and by property of the elaboration relation, we can deduce
+    \label{eq:24}$\Delta(id_p)("ian")=\vert{}input(p)\vert$.
 
-   By property of $input(p)=\emptyset$:
-   \begin{equation}\label{eq:23}
-     \sum\limits_{t\in{}Fired(s')}
-     \begin{cases}
-       \omega~\mathtt{if}~post(t,p)=\omega \\
-       0~otherwise
-     \end{cases}=0
-   \end{equation}
+    \noindent{}To ease the reading, let us define functions
+    $f\in{}Fired(s')\rightarrow\mathbb{N}$ and
+    $g\in[0,\vert{}input(p)\vert-1]\rightarrow\mathbb{N}$ s.t.
+    $f(t)=\begin{cases}
+      \omega~\mathtt{if}~post(t,p)=\omega \\
+      0~otherwise
+    \end{cases}$ and $g(i)=\begin{cases}
+      \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+      0~otherwise \\
+    \end{cases}$
 
-   \noindent{}Rewriting the goal with \eqref{eq:35}, \eqref{eq:36},
-   \eqref{eq:37}, and \eqref{eq:23}, and simplifying the goal,
-   \qedbox{tautology.}
-   
- \item $input(p)\neq\emptyset$:\\
+    \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}g(i)$}\\
+    
+    Rewriting the goal with $\Delta(id_p)("ian")=\vert{}input(p)\vert$:
+    \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)$.}
 
-   \noindent{}By construction,
-   ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(p)\vert{>}\in{}gm_p$,
-   and by property of the elaboration relation:
-   \begin{equation}
-     \label{eq:24}\Delta(id_p)("ian")=\vert{}input(p)\vert
-   \end{equation}
+    \noindent{}Let us reason by induction on the right sum term of
+    the goal.
 
-   \noindent{}To ease the reading, let us define functions
-   $f\in{}Fired(s')\rightarrow\mathbb{N}$ and
-   $g\in[0,\vert{}input(p)\vert-1]\rightarrow\mathbb{N}$ s.t.
-   $f(t)=\begin{cases}
-     \omega~\mathtt{if}~post(t,p)=\omega \\
-     0~otherwise
-   \end{cases}$ and \\ $g(i)=\begin{cases}
-     \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
-     0~otherwise \\
-   \end{cases}$
+    \begin{itemize}
+    \item \textbf{BASE CASE}: In that case,
+      $0>\vert{}input(p)\vert-1$ and
+      $\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)=0$.
 
-   \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}g(i)$}\\
-   
-   Rewriting the goal with \eqref{eq:24}:
-   \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)$.}
+      As $0>\vert{}input(p)\vert-1$, then $\vert{}input(p)\vert=0$,
+      thus \qedbox{contradicting $input(p)\neq\emptyset$.}
+      
+    \item \textbf{INDUCTION CASE}: In that case,
+      $0\le\vert{}input(p)\vert-1$.
+      
+      \begin{ih}
+        $\forall{}F\subseteq{}Fired(s'),~$
+        $g(0)+\sum\limits_{t\in{}F}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$
+      \end{ih}
 
-   \noindent{}Let us reason by induction on the right sum term of the goal.
+      \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}\\
 
-   \begin{itemize}
-   \item \textbf{BASE CASE}:\\
-     \noindent{}In that case, $0>\vert{}input(p)\vert-1$ and
-     $\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)=0$.
+      By definition of $g$, we can deduce 
+      $g(0)=\begin{cases}
+        \sigma'(id_p)("iaw")[0]~\mathtt{if}~\sigma'(id_p)("itf")[0]\\
+        0~otherwise \\
+      \end{cases}$
 
-     \noindent{}As $0>\vert{}input(p)\vert-1$, then
-     $\vert{}input(p)\vert=0$, thus \qedbox{contradicting
-       $input(p)\neq\emptyset$.}
+      \noindent{}Let us perform case analysis on the value of
+      $\sigma'(id_p)("itf")[0]$; there are two cases:
+      \begin{enumerate}
+      \item $\sigma'(id_p)("itf")[0]=\mathtt{false}$:\\
+        In that case, $g(0)=0$, and then we can apply the induction
+        hypothesis with $F=Fired(s')$ to solve the goal:
+        \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
 
-   \item \textbf{INDUCTION CASE}:\\
-     \noindent{}In that case, $0\le\vert{}input(p)\vert-1$.
-     
-     \begin{ih}
-       $\forall{}F\subseteq{}Fired(s'),~$
-       $g(0)+\sum\limits_{t\in{}F}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$
-     \end{ih}
+      \item $\sigma'(id_p)("itf")[0]=\mathtt{true}$:\\
+        In that case, $g(0)=\sigma'(id_p)("iaw")[0]$ and
+        $\sigma'(id_p)("itf")[0]=\mathtt{true}$ .
 
-     \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}\\
+        \noindent{}By construction, there exist a $t\in{}input(t)$,
+        an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, $gm_t$,
+        $ipm_t$, $opm_t$ s.t. $\mathtt{comp}(id_t,$ $"transition",$
+        $gm_t,$ $ipm_t,$ $opm)\in{}d.cs$, an
+        $\omega\in\mathbb{N}^{*}$ and an $id_{ft}\in{}Sigs(\Delta)$
+        such that:
+        \begin{itemize}
+        \item $post(t,p)=\omega$
+        \item
+          ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$
+        \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$
+        \item
+          ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+        \end{itemize}
+        
+        By property of the stabilize relation,
+        ${<}$\texttt{fired}$\Rightarrow{}\mathtt{id_{ft}}{>}\in{}opm_t$,
+        ${<}$\texttt{input\_transitions\_fired(0)}$\mathtt{\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+        and $\sigma'(id_p)("itf")[0]=\mathtt{true}$, we can deduce
+        $\sigma'(id_t)("fired")=\mathtt{true}$.
 
-     By definition of $g$:
-     \begin{equation}
-       \label{eq:38}g(0)=\begin{cases}
-         \sigma'(id_p)("iaw")[0]~\mathtt{if}~\sigma'(id_p)("itf")[0]\\
-         0~otherwise \\
-       \end{cases}
-     \end{equation}
+        Appealing to Lemma~\ref{lem:fe-equal-fired} and
+        $\sigma'(id_t)("fired")=\mathtt{true}$, we can deduce
+        $t\in{}Fired(s')$.
 
-     \noindent{}Let us perform case analysis on the value of
-     $\sigma'(id_p)("itf")[0]$; there are two cases:
-     \begin{enumerate}
-     \item $\sigma'(id_p)("itf")[0]=\mathtt{false}$:\\
-       In that case, $g(0)=0$, and then we can apply the induction
-       hypothesis with $F=Fired(s')$ to solve the goal:
-       \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
+        As $t\in{}Fired(s')$, we can rewrite the left sum
+        term of the goal as follows:\\
+        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
 
-     \item $\sigma'(id_p)("itf")[0]=\mathtt{true}$:\\
-       In that case, $g(0)=\sigma'(id_p)("iaw")[0]$ and
-       $\sigma'(id_p)("itf")[0]=\mathtt{true}$ .
+        We know that $g(0)=\sigma'(id_p)("iaw")[0]$, and by property
+        of the stabilize relation and
+        ${<}$\texttt{input\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}ipm_p$,
+        we can deduce $\sigma'(id_p)("iaw")[0]=\omega$.
 
-       \noindent{}By construction, there exist a $t\in{}input(t)$,
-       $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$. Let us take
-       such a $t\in{}input(p)$.
+        Rewriting the goal with $\sigma'(id_p)("iaw")[0]=\omega$:\\
+        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
 
-       \exT{}
+        By definition of $f$, and as $post(t,p)=\omega$, then $f(t)=\omega$; thus, rewriting the goal:\\
+        \fbox{$\omega+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
 
-       \noindent{}As $t\in{}input(p)$, there exist
-       $\omega\in\mathbb{N}^{*}$ s.t. $post(t,p)=\omega$. Let us take
-       an $\omega$ s.t. $post(t,p)=\omega$.
-
-       \noindent{}By construction,
-       ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$,
-       and there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
-       ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$ and
-       ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-
-       \noindent{}By property of the stabilize relation and
-       ${<}\mathtt{input\_arcs\_types(0)\Rightarrow{}a}{>}\in{}ipm_p$:
-       \begin{equation}
-         \label{eq:39}post(t,p)=\omega
-       \end{equation}
-
-       \noindent{}By property of the stabilize relation,
-       ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$,\\
-       ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-       and $\sigma'(id_p)("itf")[0]=\mathtt{true}$:
-       \begin{equation}
-         \label{eq:40}\sigma'(id_t)("fired")=\mathtt{true}
-       \end{equation}
-
-       \noindent{}Appealing to Lemma~\ref{lem:fe-equal-fired} and
-       \eqref{eq:40}, we know $t\in{}Fired(s')$.
-
-       \noindent{}As $t\in{}Fired(s')$, we can rewrite the left sum
-       term of the goal as follows:\\
-       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
-
-       \noindent{}We know that $g(0)=\sigma'(id_p)("iaw")[0]$, and by
-       property of the stabilize relation and
-       ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow}\omega{>}\in{}ipm_p$:
-       \begin{equation}
-         \label{eq:41}\sigma'(id_p)("iaw")[0]=\omega
-       \end{equation}
-
-       Rewriting the goal with \eqref{eq:41}:\\
-       \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
-
-       By definition of $f$, and as $post(t,p)=\omega$, then $f(t)=\omega$; thus, rewriting the goal:\\
-       \fbox{$\omega+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
-
-       Then, knowing that $g(0)=\omega$, we can apply the induction
-       hypothesis with $F=Fired(s')\setminus\{t\}$:
-       \qedbox{$g(0)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
-     \end{enumerate}
-     
-   \end{itemize}
-   
- \end{enumerate}
- 
-\end{proof}
+        Then, knowing that $g(0)=\omega$, we can apply the induction
+        hypothesis with $F=Fired(s')\setminus\{t\}$:
+        \qedbox{$g(0)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
+      \end{enumerate}
+      
+    \end{itemize}
+    
+  \end{itemize}
+  
+\end{niproof}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -512,11 +487,13 @@
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
 
-  \exT\\
+  \exT{}
 
   \noindent{}By property of the elaboration,
   $\mathtt{Inject}_\downarrow$, \hvhdl{} rising edge and stabilize
-  relations, and \InCsCompT:
+  relations, \InCsCompT{}, and through the examination of the
+  \texttt{time_counter} process defined in the transition design
+  architecture, we can deduce:
   \begin{equation}
     \begin{split}
       \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}
@@ -564,46 +541,51 @@
     $s'.I(t)\le{}lower(I_s(t))$, let us show\\
     \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
 
-    Case analysis on $t\in{}Sens(s.M)$; there are two cases:
+    Let us perform case analysis on $t\in{}Sens(s.M)$; there are two
+    cases:
 
     \begin{enumerate}
-    \item $t\notin{}Sens(s.M)$:\\
-      By definition of \upSim, we have
-      \inlineequation[eq:50]{\sigma(id_t)("se")=\mathtt{false}}.
+    \item \textbf{CASE} $t\notin{}Sens(s.M)$:\\
+      By definition of \upSim, we can deduce
+      $\sigma(id_t)("se")=\mathtt{false}$.
 
-      Appealing to \eqref{eq:ne-or-nt} and \eqref{eq:50}, we have
-      \inlineequation[eq:45]{\sigma'(id_t)("stc")=0}.
+      Appealing to \eqref{eq:ne-or-nt} and
+      $\sigma(id_t)("se")=\mathtt{false}$, we can deduce
+      $\sigma'(id_t)("stc")=0$.
 
-      By definition of \dwSitpn, we have
-      \inlineequation[eq:46]{s'.I(t)=0}.
+      By definition of \dwSitpn{} (Rule~\ref{it:reset-counters}), we
+      can deduce $s'.I(t)=0$.
 
-      Rewriting the goal with \eqref{eq:45} and \eqref{eq:46}:
-      \qedbox{tautology.}
+      Rewriting the goal with $\sigma'(id_t)("stc")=0$ and
+      $s'.I(t)=0$: \qedbox{tautology.}
       
-    \item $t\in{}Sens(s.M)$:\\
-      By definition of \upSim, we have
-      \inlineequation[eq:51]{\sigma(id_t)("se")=\mathtt{true}}.
+    \item $t\in{}Sens(s.M)$:
+      
+      By definition of \upSim, we can deduce
+      $\sigma(id_t)("se")=\mathtt{true}$.
 
       By construction, and as $upper(I_s(t))=\infty$,
       ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}gm_t$. By
       property of the elaboration relation, we have
-      \inlineequation[eq:52]{\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}}.
+      $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$.
 
-      Case analysis on $s.reset_t(t)$; there are two cases:
+      Let us perform case analysis on $s.reset_t(t)$; there are two
+      cases:
       \begin{enumerate}
-      \item $s.reset_t(t)=\mathtt{true}$:\\
-        By definition of \upSim,
-        \inlineequation[eq:53]{\sigma(id_t)("srtc")=\mathtt{true}}.
+      \item \textbf{CASE} $s.reset_t(t)=\mathtt{true}$:
 
-        Appealing to \eqref{eq:etr}, \eqref{eq:51}, \eqref{eq:52} and
-        \eqref{eq:53}, we have
-        \inlineequation[eq:54]{\sigma'(id_t)("stc")=1}.
+        By definition of \upSim, $\sigma(id_t)("srtc")=\mathtt{true}$.
 
-        By definition of \dwSitpn, we have
-        \inlineequation[eq:55]{s'.I(t)=1}.
+        Appealing to \eqref{eq:etr},
+        $\sigma(id_t)("se")=\mathtt{true}$,
+        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$ and
+        $\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
+        $\sigma'(id_t)("stc")=1$.
 
-        Rewriting the goal with \eqref{eq:54} and \eqref{eq:55}:
-        \qedbox{tautology.}
+        By definition of \dwSitpn, we can deduce $s'.I(t)=1$.
+
+        Rewriting the goal with $\sigma'(id_t)("stc")=1$ and
+        $s'.I(t)=1$: \qedbox{tautology.}
 
       \item $s.reset_t(t)=\mathtt{false}$:\\
         By definition of \upSim, we have
