@@ -1,17 +1,3 @@
-\chapter{Implementation of the \hilecop{} high-level models}
-\label{chap:hilecop-models}
-
-\begin{todobox}
-  \begin{itemize}
-  \item Keep the $sitpn$ argument in the SITPN full execution
-    relation, but remove it from the SITPN execution, cycle and state
-    transition relations.
-    
-  \item Change squig arrow to straight arrow in the SITPN state
-    transition relation.
-  \end{itemize}
-\end{todobox}
-
 \section{SITPN Definitions}
 \label{sec:sitpn-defs}
 
@@ -29,8 +15,8 @@ ${<}P,T,pre,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
 \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$, where we have:
 %
 \begin{enumerate}
-\item $P=\{p_0,\ldots,p_n\}$, a set of places.
-\item $T=\{p_0,\ldots,p_m\}$, a set of transitions.
+\item $P=\{p_0,\ldots,p_n\}$, a finite set of places.
+\item $T=\{t_0,\ldots,t_m\}$, a finite set of transitions.
 \item
   $pre\in{}P\rightarrow{}T\nrightarrow(\mathbb{N}^{*}\times\{\mathtt{basic},\mathtt{inhib},\mathtt{test}\})$,
   the function associating a weight to place-transition edges.
@@ -89,7 +75,7 @@ becomes effective.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.3\linewidth]{SITPN/struct-conflict-with-basic}
+  \includegraphics[keepaspectratio,width=.3\linewidth]{pictures/struct-conflict-with-basic}
   \caption{Example of conflict between two transitions}
   \label{fig:basic-conflict}
 \end{figure}
@@ -115,10 +101,9 @@ group.  The formal definition of a conflict group is as follows:
   $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
 \end{definition}
 
-Contrary to the statement made in
-\cite[p.67]{Leroux2014}, we no more consider the notion
-of conflict as being transitive. To illustrate this,
-Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
+Contrary to the statement made in \cite[p. 67]{Leroux14}, we no more
+consider the notion of conflict as being transitive. To illustrate
+this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
 $\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
 Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
 dealt with, i.e, for all pair of transitions in the group the conflict
@@ -135,7 +120,7 @@ being necessary.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio,width=.4\linewidth]{SITPN/conflict-not-trans}
+  \includegraphics[keepaspectratio,width=.4\linewidth]{pictures/conflict-not-trans}
   \caption{Example of two separate conflict groups}
   \label{fig:conflict-not-trans}
 \end{figure}
@@ -197,6 +182,48 @@ compile-time errors during the transformation into \vhdl{}.
 \subsection{Fired Transitions}
 \label{sec:fired-trans}
 
+\begin{remark}[Relations between markings]
+  For all relation $\mathcal{R}$ existing between two marking
+  functions $M$ and $M'$, the expression $\mathcal{R}(M,M')$ is a
+  notation for $\forall{}p\in{}P,~\mathcal{R}(M(p),M'(p))$. For
+  instance, $M'=M-\sum\limits_{t_i\in{}Pr(t)}pre(t_i)$ is a notation
+  for
+  $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t_i\in{}Pr(t)}pre(p,t_i)$.
+\end{remark}
+
+\begin{remark}[Sum expressions and arc types]
+  Many times in this document, we need to express the number of tokens
+  coming in or out of places, after the firing of a certain subset of
+  transitions. To do so, we use two kinds of sum expression:
+  \begin{enumerate}
+  \item The first kind of expression computes a number of output
+    tokens. For instance, for a given place $p$,
+    $\sum\limits_{t\in{}T'}pre(p,t)$ where $T'\subseteq{}T$. This
+    expression is a notation for
+    $\sum\limits_{t\in{}T'}\begin{cases}\omega~if~pre(p,t)=(\omega,\mathtt{basic})\\
+      0~otherwise \\ \end{cases}$. Indeed, when computing a sum of
+    output tokens (i.e, resulting of a firing process), we want to add
+    to the sum the weight of the arc between place $p$ and a
+    transition $t\in{}T'$ only if there exists an arc of type
+    $\mathtt{basic}$ from $p$ to $t$ (remember that the test and
+    inhibitor never lead to the withdrawal of tokens during the firing
+    process). Otherwise, we add 0 to the sum as it is a neutral
+    element of the addition operator over natural numbers.
+  \item The second kind expression computes a number of input tokens.
+    For instance, for a given place $p$,
+    $\sum\limits_{t\in{}T'}post(p,t)$ where $T'\subseteq{}T$. This
+    expression is a notation for
+    $\sum\limits_{t\in{}T'}\begin{cases}\omega~if~post(t,p)=\omega\\
+      0~otherwise \\ \end{cases}$. Here, we add the weight of the arc
+    from $t$ to $p$ only if there exists such an arc; we add 0 to the
+    sum otherwise.
+  \end{enumerate}
+  Therefore, in the remainder of the document, we will use the
+  conciser notations $\sum\limits_{t\in{}T'}pre(p,t)$ to denote output
+  token sums, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote input
+  token sums.
+\end{remark}
+
 \begin{definition}[Sensitization]
   A transition $t\in{}T$ is said to be sensitized by a marking $M$,
   which is noted $t\in{}Sens(M)$, if and only if
@@ -212,6 +239,7 @@ compile-time errors during the transformation into \vhdl{}.
 \end{definition}
 
 \begin{definition}[Firability]
+  \label{def:firable}
 A transition $t\in{}T$ is said to be firable at a state\break{}
 $s={<}M,I,reset_t,ex,cond{>}$, which is noted $t\in{}Firable(s)$,
 if and only if $t\in{}Sens(M)$, and $t\notin{}T_i$ or $I(t)\in{}I_s(t)$, and
@@ -227,134 +255,9 @@ $\mathbb{C}(t, c) = -1 \Rightarrow cond(c) = 0$.
   $t\in{}Sens\big(M-\sum_{t_i\in{}Pr(t)}pre(t_i)\big)$, where
   $Pr(t)=\{t_i~|~t_i\succ{}t\wedge{}t_i\in{}Fired(s)\}$.
 \end{definition}
-
-Note that $M'=M-\sum_{t_i\in{}Pr(t)}pre(t_i)$ iff
-$\forall{}p\in{}P,~M'(p)=M(p)-\sum_{t_i\in{}Pr(t)}pre(p,t_i)$.
-
-Def.~\ref{def:cons-fired} makes another definition of the set of fired
-transitions at a given SITPN state. The approach of
-Def.~\ref{def:cons-fired} is more constructive, therefore easing the
-way to inductive reasoning.
-
-\begin{definition}[Constructive Fired]
-  \label{def:cons-fired}
-  A transition $t\in{}T$ is said to be fired at the SITPN state
-  $s={<}M,I,reset_t,ex,cond{>}$, iff there exists a subset
-  $fset\subseteq{}T$ such that $IsFiredSet(s,fset)$ and $t\in{}fset$.
-\end{definition}
-
-\begin{lemma}[Fired Equivalence]
-  For all
-  $sitpn\in{}SITPN,~s\in{}S(sitpn),~t\in{}T,~t\in{}Fired(s)\Leftrightarrow{}\exists{}fset\subseteq{}T,~s.t.,~IsFiredSet(s,fset)\land{}t\in{}fset$.
-\end{lemma}
-
-\begin{proof}
-  Yet to be proved.
-\end{proof}
-
-\begin{definition}[IsFiredSet]
-  Given an $sitpn\in{}SITPN$, a SITPN state $s\in{}S(sitpn)$, and a
-  subset $fset\in{}T$, the $IsFiredSet$ relation is defined as follows:\\
-  $IsFiredSet(s,fset)\equiv{}IsFiredSetAux(s,\emptyset,T,fset)$
-\end{definition}
-
-\begin{definition}[IsFiredSetAux]
-  The $IsFiredSetAux$ relation is defined by the following rules:\\
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{IsFiredSetAuxNil}} \\
-    
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]        
-        \infer0{$FiredAux(s, fired, \emptyset, fired)$}
-      \end{prooftree}} 
-  \end{tabular}
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{IsFiredSetAuxCons}} \\
-    
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
-
-        \hypo{$IsTopPriorityList(T_i, \emptyset, \emptyset, tp)$}
-        \infer[no rule]1{$ElectFired(s, fired, tp, fired')$}
-        \infer[no rule]1{$FiredAux(s, fired', T_i\setminus{}tp, fset)$}
-        \infer1{$FiredAux(s, fired, T_i, fset)$}
-      \end{prooftree}} 
-  \end{tabular}
-\end{definition}
-
-\begin{definition}[IsTopPriorityList]
-  The $IsTopPriorityList$ relation is defined by the following rules:\\
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{IsTPListNil}} \\
-    
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
-        \infer0{$IsTopPriorityList(\emptyset, tp, ntp, tp)$}
-      \end{prooftree}} 
-  \end{tabular}
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{IsTPListTP}} \\
-    
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
-        \hypo{$\forall{}t'\in{}T_i\cup{}tp\cup{}ntp,t'\nsucc{}t$}
-        \infer[no rule]1{$IsTopPriorityList(T_i, \{t\}\cup{}tp, ntp, tp')$}
-        \infer1{$IsTopPriorityList(\{t\}\cup{}T_i, tp, ntp, tp')$}
-      \end{prooftree}} 
-  \end{tabular}
-
-  \begin{tabular}{@{}l}
-    {\fontsize{9}{11}\selectfont\textsc{IsTPListNTP}} \\
-    
-    {\begin{prooftree}[template={\fontsize{9}{11}\selectfont\inserttext}]
-        \hypo{$\exists{}t'\in{}T_i\cup{}tp\cup{}ntp\wedge{}t'\succ{}t$}
-        \infer[no rule]1{$IsTopPriorityList(T_i, tp, \{t\}\cup{}ntp, tp')$}
-        \infer1{$IsTopPriorityList(\{t\}\cup{}T_i, tp, ntp, tp')$}
-      \end{prooftree}} 
-  \end{tabular}
-\end{definition}
-
-\begin{definition}[ElectFired]
-  The $ElectFired$ relation is defined by the following rules:
-  
-  \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{ElectFiredNil}} \\
-    
-    {\begin{prooftree}[template={\inserttext}]
-        \infer0{$ElectFired(s,fired,\emptyset, fired)$}
-      \end{prooftree}} 
-  \end{tabular}
-  \vspace{2ex}
-  
-  \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{ElectFired$\bot$}} \\
-    
-    {\begin{prooftree}[template={\inserttext},right label template={\fontsize{7}{8}\selectfont\inserttext}]
-        \hypo{$\neg\big(t\in{}Firable(s)\wedge{}t\in{}Sens(s.M-\sum_{t_i\in{}Pr(t,fired)}pre(t_i))\big)$}
-        \infer[no rule]1{$ElectFired(s, fired, tp, fired')$}
-        \infer1[$Pr(t,fired)=\{t_i~|~t_i\succ{}t\wedge{}t_i\in{}fired\}$]{$ElectFired(s, fired, \{t\}\cup{}tp, fired')$}
-      \end{prooftree}} 
-  \end{tabular}
-  \vspace{2ex}
-  
-  \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{ElectFired$\top$}} \\
-    
-    {\begin{prooftree}[template=\inserttext,right label template={\fontsize{7}{9}\selectfont\inserttext}]
-        \hypo{$t\in{}Firable(s)$}
-        \hypo{$t\in{}Sens(s.M-\sum_{t_i\in{}Pr(t,fired)}pre(t_i))$}
-        \infer[no rule]2{$ElectFired(s, \{t\}\cup{}fired, tp, fired')$}
-        \infer1[$Pr(t,fired)=\{t_i~|~t_i\succ{}t\wedge{}t_i\in{}fired\}$]{$ElectFired(s, fired, \{t\}\cup{}tp, fired')$}
-      \end{prooftree}}
-  \end{tabular}
-\end{definition}
     
 \subsection{SITPN Semantics}
 \label{sec:sitpn-sem}
-
-\begin{todobox}
-  \begin{itemize}
-  \item Change $E$ into $E_c$.
-  \item Change typing of the state transition relation to include the
-    environment.
-  \end{itemize}
-\end{todobox}
 
 \begin{definition}[SITPN Semantics]
   \label{def:semantics}
@@ -371,10 +274,7 @@ way to inductive reasoning.
     labels, where $Clk\in\{\uparrow,\downarrow\}$. A label is a couple $(clk,\tau)$
     composed of a clock event $clk\in{}Clk$, and a time value $\tau\in\mathbb{N}$
     expressing the current count of clock cycles.
-
-  \item
-
-    $E\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is the
+  \item $E\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is the
     environment function, which gives (Boolean) values to conditions ($\mathcal{C}$)
     depending on the count of clock cycles ($\mathbb{N}$).
   \item $\rightsquigarrow\subseteq{}S\times{}L\times{}S$ is the state
@@ -390,43 +290,35 @@ way to inductive reasoning.
       $s'=<M,I',reset_t,ex',cond'>$, if:
       % $s\xrsquigarrow{(\downarrow,\tau)}s'$,
       \begin{enumerate}[label=(\arabic*)]
-      \item\label{item:cond-env} $cond'$ is the function giving the (Boolean)
+      \item\label{it:cond-env} $cond'$ is the function giving the (Boolean)
         values of conditions that are extracted from the environment at the clock count
         $\tau$, i.e.:\\
         $\forall{}c\in{}\mathcal{C},~cond'(c)=E(\tau,c)$.
-      \item\label{item:activate-actions} All the actions associated
+      \item\label{it:activate-actions} All the actions associated
         with at least one
         marked place in the marking $M$ are activated, i.e.:\\
         $\forall{}a\in{}\mathcal{A},~ex'(a)=\sum\limits_{p\in{}marked(M)}\mathbb{A}(p,a)$
         where $p\in{}marked(M)\equiv{}M(p)>0$.
-      % \item\label{item:activate-actions} All the actions associated with at least one
-      %   marked place in the marking $M$ are activated, i.e.:\\
-      %   $\forall{}a\in{}\mathcal{A},~\big(\exists{}p\in{}P,~M(p)>0
-      %   \land{}\mathbb{A}(p,a)=1\big)\Rightarrow{}ex'(a)=1$.
-      % \item\label{item:deactivate-actions} All the actions that are only associated
-      %   with unmarked places in the marking $M$ are deactivated, i.e.:\\
-      %   $\forall{}a\in{}\mathcal{A},~\big(\forall{}p\in{}P,~M(p)=0
-      %   \vee{}\mathbb{A}(p,a)=0\big)\Rightarrow{}ex'(a)=0$.
-      \item\label{item:reset-counters} All the time transitions that
-        are sensitized by the marking $M$ and received the order to
-        reset their time intervals, have their time counter reset and
+      \item\label{it:reset-counters} All the time transitions that are
+        sensitized by the marking $M$ and received the order to reset
+        their time intervals, have their time counter reset and
         incremented, i.e.:\\
         $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=1
         \Rightarrow{}I'(t)=1$.
-      \item\label{item:inc-counters} All the time transitions with
+      \item\label{it:inc-counters} All the time transitions with
         active time counters that are sensitized by the marking $M$
         and
         did not receive a reset order, have their time counters incremented, i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=0
+        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
         \land{}(I(t)\le{}upper(I_s(t))\lor{}upper(I_s(t))=\infty)\Rightarrow{}$
         $I'(t)=I(t)+1$.
-      \item\label{item:locked-counters} All the time transitions
+      \item\label{it:locked-counters} All the time transitions
         verifying the same
         conditions as above, but with locked counters, keep having locked counters, i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=0
+        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
         \land{}I(t)>{}upper(I_s(t))\land{}upper(I_s(t))\neq\infty\Rightarrow{}$
         $I'(t)=I(t)$.
-      \item\label{item:reset-not-sens} All the time transitions that
+      \item\label{it:reset-not-sens} All the time transitions that
         are not sensitized by the marking $M$ have their time counters set to zero, i.e.:\\
         $\forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0$.
       \end{enumerate}
@@ -436,61 +328,26 @@ way to inductive reasoning.
       $s'=<M',I,reset_t',ex',cond>$, if:
       % $s'\xrsquigarrow{(\uparrow,\tau)}s''$,
       \begin{enumerate}[label=(\arabic*),resume]
-      \item\label{item:new-marking} $M'$ is the new marking resulting from
+      \item\label{it:new-marking} $M'$ is the new marking resulting
+        from
         the firing of all the transitions contained in $Fired(s)$, i.e.:\\
-        $M'=M-\sum_{t_i\in{}Fired(s)}\big(pre(t_i)-post(t_i)\big)$.
-      \item\label{item:reset-order} To receive a reset order, a
-        transition must be enabled by the
-        marking at state $s$ and disabled by the transient marking, or must be fired at state $s$:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)~\land~t\notin{}Sens_{bt}\big(M-\sum_{t_i\in{}Fired(s)}pre(t_i)\big)\lor{}t\in{}Fired(s)
-        \Rightarrow{}reset'(t)=1$.
-      \item\label{item:no-reset-order} A transition that is disabled
-        by marking $M$ or enabled on its basic and test arcs by the
-        transient marking, and that is not fired a state $s$, receives no reset order:\\
-        $\forall{}t\in{}T_i,~
-        \big(t\notin{}Sens(M)~\lor~t\in{}Sens_{bt}\big(M-\sum_{t_i\in{}Fired(s)}pre(t_i)\big)\big)
-        \land{}t\in{}Fired(s)
-        \Rightarrow{}reset'(t)=0$.
-      % \item\label{item:reset-order} All the time transitions that are
-      %   disabled by a basic or test arc\footnote{Inhibitor arcs are
-      %     not considered here; indeed, the retrieval of tokens from an
-      %     input place connected to a transition $t$ by an inhibitor
-      %     arc can never disable $t$.} at the transient marking, (i.e,
-      %   the marking resulting from the retrieval of tokens from the
-      %   input places of fired transitions), or that belong to the set
-      %   of fired
-      %   transitions, receive a reset order, i.e.:\\
-      %   $\forall{}t\in{}T_i,~t\notin{}Sens_{bt}\big(M-\sum_{t_i\in{}Fired(s)}pre(t_i)\big)\lor{}t\in{}Fired(s)
-      %   \Rightarrow{}reset'(t)=1$.
-      % \item\label{item:no-reset-order} All the time transitions that
-      %   are sensitized by their basic and test arcs at
-      %   the transient marking and do not belong to the set of fired transitions receive no reset order, i.e.:\\
-      %   $\forall{}t\in{}T_i,~t\in{}Sens_{bt}\big(M-\sum_{t_i\in{}Fired(s)}pre(t_i)\big)\land{}t\notin{}Fired(s)
-      %   \Rightarrow{}reset'(t)=0$.
-      % \item\label{item:upper-reached} Time counters are locked for all
-      %   time transitions that have reached the upper bound of their
-      %   time intervals
-      %   and were not fired at this clock cycle, i.e.:\\
-      %   $\forall{}t\in{}T_i,~I(t)\ge{}upper(I_s(t))\wedge{}t\notin{}Fired(s)
-      %   \Rightarrow{}I'(t)=\psi$.
-      % \item\label{item:upper-not-reached} Time counters are unchanged
-      %   for all the time transitions that have not yet reached the
-      %   upper bound of their time
-      %   intervals or were fired at this clock cycle, i.e.:\\
-      %   $\forall{}t\in{}T_i,~I(t)=\psi\lor{}I(t)<{}upper(I_s(t))\lor{}t\in{}Fired(s)\Rightarrow$\\
-      %   ${}I'(t)=I(t)$.
-        
-      \item\label{item:exec-fun} All functions associated with at least one fired transition ar executed, i.e:\\
+        $M'=M-\sum\limits_{t\in{}Fired(s)}pre(t)+\sum\limits_{t\in{}Fired(s)}post(t)$.
+      \item\label{it:reset-order} A time transition receives a reset
+        order if it is fired at state $s$, or, if there exists a place
+        $p$ connected to $t$ by a \texttt{basic} or \texttt{test arc}
+        and at least one output transition of $p$ is fired and the
+        transient marking of $p$ disables $t$; no reset order is sent otherwise:\\
+        \begin{equation*}
+          \begin{split}
+            \forall{}t\in{}T_i,~& t\in{}Fired(s) \\
+            & \lor\big(\exists{}p\in{}P,\omega\in\mathbb{N}^{*},~pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test}) \\
+            & \quad\quad\land\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0 \\
+            & \quad\quad\land{}s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega\big)\Rightarrow{}reset'_t(t)=\mathtt{true}, \\
+            & and~reset'_t(t)=\mathtt{false}~otherwise. \\
+          \end{split}
+        \end{equation*}
+      \item\label{it:exec-fun} All functions associated with at least one fired transition ar executed, i.e:\\
         $\forall{}f\in{}\mathcal{F},~ex'(f)=\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)$.
-      % \item\label{item:exec-fun} All the functions associated with
-      %   fired transitions
-      %   are executed, i.e.:\\
-      %   $\forall{}f\in{}\mathcal{F},~\big(\exists{}t\in{}Fired(s),~\mathbb{F}(t,f)=1\big)
-      %   \Rightarrow{}ex'(f)=1$.
-      % \item\label{item:not-exec-fun} All the functions associated with none of the
-      %   fired transitions are not executed, i.e.:\\
-      %   $\forall{}f\in{}\mathcal{F},~\big(\forall{}t\in{}Fired(s),~\mathbb{F}(t,f)=0\big)
-      %   \Rightarrow{}ex'(f)=0$.
       \end{enumerate}
     \end{itemize}
   \end{itemize}
@@ -521,20 +378,20 @@ way to inductive reasoning.
   \begin{tabular}{@{}l}
     {\fontsize{7}{10}\selectfont\textsc{ExecutionEnd}} \\
     
-    {\begin{prooftree}[template={\fontsize{9}{12}\selectfont\inserttext}]
-        \infer0 {$E_c,0\vdash$ $sitpn,s\rightarrow{}[~]$ }
+    {\begin{prooftree}
+        \infer0 {E_c,0\vdash{}sitpn,s\rightarrow{}[~]}
       \end{prooftree}} 
-  \end{tabular}  
+  \end{tabular}
   \begin{tabular}{@{}l}
     {\fontsize{7}{10}\selectfont\textsc{ExecutionLoop}} \\
     
-    {\begin{prooftree}[template={\fontsize{8}{11}\selectfont\inserttext}]
+    {\begin{prooftree}[template={\inserttext}]
 
-        \hypo{$E_c,\tau\vdash{}sitpn,s\xrightarrow{\uparrow,\downarrow}s'$}
-
-        \hypo{$E_c,\tau-1\vdash{}sitpn,s'\rightarrow{}\theta$}
+        \hypo{$E_c,\tau\vdash{}sitpn,s\xrightarrow{\uparrow}s'$}
+        \hypo{$E_c,\tau\vdash{}sitpn,s'\xrightarrow{\downarrow}s''$}
+        \hypo{$E_c,\tau-1\vdash{}sitpn,s''\rightarrow{}\theta$}
         
-        \infer2[$\tau>0$]{$E_c,\tau\vdash{}sitpn,s\rightarrow{}(s' :: \theta)$}
+        \infer3[$\tau>0$]{$E_c,\tau\vdash{}sitpn,s\rightarrow{}(s' :: s'' :: \theta)$}
       \end{prooftree}} 
   \end{tabular}
 \end{definition}
@@ -552,23 +409,23 @@ way to inductive reasoning.
   \begin{tabular}{@{}l}
     {\fontsize{7}{10}\selectfont\textsc{FullExec0}} \\
     
-    {\begin{prooftree}[template={\fontsize{8}{11}\selectfont\inserttext}]
+    {\begin{prooftree}[template={\inserttext}]
         
         \infer0{$E_c,0\vdash{}sitpn\xrightarrow{full}[s_0]$}
       \end{prooftree}} 
   \end{tabular}
-  
   \begin{tabular}{@{}l}
     {\fontsize{7}{10}\selectfont\textsc{FullExecCons}} \\
     
-    {\begin{prooftree}[template={\fontsize{8}{11}\selectfont\inserttext}]
+    {\begin{prooftree}[template={\inserttext}]
         \hypo{$E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$}
         \hypo{$E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$}
         \hypo{$E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$}
-        \infer3[$\tau>0$]{$E_c,\tau\vdash{}sitpn\xrightarrow{full}(s_0 :: s :: \theta_s)$}
+        \infer3[$\tau>0$]{$E_c,\tau\vdash{}sitpn\xrightarrow{full}(s_0 :: s_0 :: s :: \theta_s)$}
       \end{prooftree}} 
   \end{tabular}
 \end{definition}
+
 
 %%% Local Variables:
 %%% mode: latex

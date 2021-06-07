@@ -387,168 +387,179 @@
   $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show\\
   \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.}
 
   \exT
 
-  \noindent{}By property of the \hvhdl{} stabilize relation and
-  \InCsCompT{}:
+  By property of the \hvhdl{} stabilize relation, \InCsCompT, and
+  through the examination of the
+  \texttt{reinit_time_counter_evaluation} process defined in the
+  transition design architecture, we can deduce:
   \begin{equation}
     \sigma'(id_t)("srtc")=\sum\limits_{i=0}^{\Delta(id_t)("input\_arcs\_number")-1}\sigma'(id_t)("reinit\_time")[i]\label{eq:eq-srtc-prod}
   \end{equation}
 
-  \noindent{}Rewriting the goal with \eqref{eq:eq-srtc-prod},
-  \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("rt")[i]$.}\\
+  Rewriting the goal with \eqref{eq:eq-srtc-prod},
+  \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("rt")[i]$.}
   
-  \noindent{}Case analysis on $input(t)$ (2 CASES):
+  Let us perform case analysis on $input(t)$; there are two cases:
 
   \begin{itemize}
-  \item \textbf{CASE} $input(t)=\emptyset$:\\
+  \item \textbf{CASE} $input(t)=\emptyset$:
 
     By construction,
     ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_t$, and
-    by property of the elaboration relation:
-    \begin{equation}
-      \Delta(id_t)("ian")=1\label{eq:eq-ian-1}
-    \end{equation}
+    by property of the elaboration relation, we can deduce
+    $\Delta(id_t)("ian")=1$.
 
     By construction, there exists an $id_{ft}\in{}Sigs(\Delta)$ s.t.
     ${<}\mathtt{reinit\_time(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_t$ and
     ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$, and by
-    property of the \hvhdl{} stabilize relation and \\ \InCsCompT:
-    \begin{eqnarray}
-      \sigma'(id_t)("rt")[0]&=&\sigma'(id_{ft})\label{eq:eq-rt0-fired} \\
-      \sigma'(id_{ft})&=&\sigma'(id_t)("fired")\label{eq:eq-fired-fired} \\
-      \sigma'(id_t)("fired")&=&\sigma'(id_t)("s\_fired")\label{eq:eq-fired-sfired} \\
-      \sigma'(id_t)("s\_fired")&=&\sigma'(id_t)("s\_firable").\sigma'(id_t)("s\_priority\_combination")\label{eq:eq-sfired-sfirable}
-    \end{eqnarray}
+    property of the stabilize relation and \InCsCompT, we can deduce
+    $\sigma'(id_t)("rt")[0]=\sigma'(id_{ft})=\sigma'(id_t)("fired")$.
 
-    \noindent{}Rewriting the goal with \eqref{eq:eq-rt0-fired},
-    \eqref{eq:eq-fired-fired}, \eqref{eq:eq-fired-sfired} and
-    \eqref{eq:eq-sfired-sfirable},\\
-    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable").\sigma'(id_t)("s\_priority\_combination")$.}
+    Rewriting the goal with $\Delta(id_t)("ian")=1$ and
+    $\sigma'(id_t)("rt")[0]=\sigma'(id_{ft})=\sigma'(id_t)("fired")$:
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)("fired")$.}
+    
+    By property of the stabilize relation, \InCsCompT{}, and through
+    the examination of the \texttt{fired_evaluation} process, we can deduce:
+    \begin{equation}
+      \sigma'(id_t)("fired")=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")\label{eq:fired-at-re}
+    \end{equation}
 
-    \noindent{}By property of the stabilize relation, and \InCsCompT:
+    Rewriting the goal with \eqref{eq:fired-at-re}:\\
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")$.}
+
+    By property of the stabilize relation, \InCsCompT, and through the
+    examination of the \texttt{priority_authorization_evaluation}
+    process defined in the transition design architecture, we can
+    deduce:
     \begin{equation}
       \sigma'(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("priority\_authorizations")[i]\label{eq:eq-spc-sum}
     \end{equation}
 
+    As $\Delta(id_t)("ian")=1$, we can deduce
+    $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\sigma'(id_t)("pauths")[0]$.
+
+    Rewriting the goal with \eqref{eq:eq-spc-sum} and
+    $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\sigma'(id_t)("pauths")[0]$:
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("pauths")[0]$.}
+    
     By construction,
     ${<}\mathtt{priority\_authorizations(0)\Rightarrow{}true}{>}\in{}ipm_t$,
-    and by property of the stabilize relation and \InCsCompT:
-    \begin{equation}
-      \sigma'(id_t)("priority\_authorizations")[0]=true\label{eq:eq-pauth-0}
-    \end{equation}
-
-    \noindent{}Rewriting the goal with \eqref{eq:eq-ian-1},
-    \eqref{eq:eq-spc-sum} and \eqref{eq:eq-pauth-0}, and simplifying
-    the equation,\\ \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")$.}
+    and by property of the stabilize relation and \InCsCompT, we can
+    deduce $\sigma'(id_t)("pauths")[0]=\mathtt{true}$.
     
-    \noindent{}Case analysis on $t\in{}Fired(s)$ or
+    Rewriting the goal with $\sigma'(id_t)("pauths")[0]=\mathtt{true}$
+    , and simplifying the equation:\\
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")$.}
+    
+    Let us perform case analysis on $t\in{}Fired(s)$ or
     $t\notin{}Fired(s)$:
 
     \begin{itemize}
     \item \textbf{CASE} $t\in{}Fired(s)$:
       
-      \noindent{}By property of
-      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$:
-      \begin{equation}
-        s'.reset_t(t)=\mathtt{true}\label{eq:eq-reset-fired-true}
-      \end{equation}
+      By property of
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:reset-order}), we can deduce
+      $s'.reset_t(t)=\mathtt{true}$.
 
-      \noindent{}Rewriting the goal with
-      \eqref{eq:eq-reset-fired-true},
+      Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$:
       \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}
 
-      \noindent{}By property of the stabilize, the \hvhdl{} rising
-      edge and the $\mathtt{Inject}_\uparrow$ relations, and
-      \InCsCompT:
-      \begin{equation}
-        \sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")\label{eq:eq-sfirable}
-      \end{equation}
+      By property of the stabilize, the \hvhdl{} rising edge and the
+      $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
+      the examination of the \texttt{firable} process defined in the
+      transition design architecture, we can deduce
+      $\sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")$.
 
-      \noindent{}Rewriting the goal with \eqref{eq:eq-sfirable},
+      Rewriting the goal with
+      $\sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")$,
       \fbox{$\sigma(id_t)("s\_firable")=\mathtt{true}$.}
 
-      \noindent{}By property of
-      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-      \begin{equation}
-        t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{true}\label{eq:eq-firable-sfa}
-      \end{equation}
+      By property of
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+      deduce
+      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{true}$.
 
-      Rewriting the goal with \eqref{eq:eq-firable-sfa},
+      Rewriting the goal with
+      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{true}$,
       \fbox{$t\in{}Firable(s)$.}
 
-      \noindent{}By property of $t\in{}Fired(s)$,
-      \qedbox{$t\in{}Firable(s)$.}
+      By property of $t\in{}Fired(s)$, \qedbox{$t\in{}Firable(s)$.}
       
     \item \textbf{CASE} $t\notin{}Fired(s)$:
 
       \noindent{}By property of $input(t)=\emptyset$, there does not
       exist any input place connected to $t$ by a $\mathtt{basic}$ or
       $\mathtt{test}$ arc. Thus, by property of
-      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$:
-      \begin{equation}
-        s'.reset_t(t)=\mathtt{false}\label{eq:eq-reset-false}
-      \end{equation}
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:reset-order}), we can deduce
+      $s'.reset_t(t)=\mathtt{false}$.
 
-      \noindent{}Rewriting the goal with \eqref{eq:eq-reset-false},
+      Rewriting the goal with $s'.reset_t(t)=\mathtt{false}$:
       \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{false}$.}
 
-      \noindent{}By property of the stabilize, the \hvhdl{} rising
-      edge and the $\mathtt{Inject}_\uparrow$ relations, and
-      \InCsCompT, equation \eqref{eq:eq-sfirable} holds.
+      By property of the stabilize, the \hvhdl{} rising edge and the
+      $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
+      the examination of the \texttt{firable} process defined in the
+      transition design architecture, we can deduce
+      $\sigma(id_t)("sfa")=\sigma'(id_t)("sfa")$.
 
-      \noindent{}Rewriting the goal with \eqref{eq:eq-sfirable},
-      \fbox{$\sigma(id_t)("s\_firable")=false$.}
+      Rewriting the goal with
+      $\sigma(id_t)("sfa")=\sigma'(id_t)("sfa")$,
+      \fbox{$\sigma(id_t)("sfa")=\mathtt{false}$.}
 
-      \noindent{}By property of
-      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-      \begin{equation}
-        t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{false}\label{eq:eq-nfirable-sfa}
-      \end{equation}
+      By property of
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+      deduce
+      $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{false}$.
       
-      \noindent{}By property of $t\notin{}Fired(s)$ and
-      $input(t)=\emptyset$, \qedbox{$t\notin{}Firable(s)$}.
+      By property of $t\notin{}Fired(s)$ and $input(t)=\emptyset$,
+      \qedbox{$t\notin{}Firable(s)$}.
     \end{itemize}
     
-  \item \textbf{CASE} $input(t)\neq{}\emptyset$:\\
+  \item \textbf{CASE} $input(t)\neq{}\emptyset$:
 
     By construction,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$, and
-    by property of the \hvhdl{} elaboration relation:
-    \begin{equation}
-      \Delta(id_t)("ian")=\vert{}input(t)\vert\label{eq:eq-ian-inputt}
-    \end{equation}
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$,
+    and by property of the elaboration relation, we can deduce
+    $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
 
-    Rewriting the goal with \eqref{eq:eq-ian-inputt},
+    Rewriting the goal with
+    $\Delta(id_t)("ian")=\vert{}input(t)\vert$,
     \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]$.}
     
-    Case analysis on $t\in{}Fired(s)$ or $t\notin{}Fired(s)$:
+    Let us perform case analysis on $t\in{}Fired(s)$ or
+    $t\notin{}Fired(s)$:
     
     \begin{itemize}
     \item \textbf{CASE} $t\in{}Fired(s)$:
       
-      \noindent{}By property of
-      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$,
-      equation \eqref{eq:eq-reset-fired-true} holds.
+      By property of
+      $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+      (Rule~\ref{it:reset-order}), we can deduce
+      $s'.reset_t(t)=\mathtt{true}$.
 
-      \noindent{}Rewriting the goal with
-      \eqref{eq:eq-reset-fired-true},
+      Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$,
       \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
 
-      \noindent{}To prove the goal, let us show
+      To prove the goal, let us show
       \fbox{$\exists{}i\in[0,\vert{}input(t)\vert-1]$
         s.t. $\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
 
-      \noindent{}By construction, and $input(t)\neq{}\emptyset$, there
-      exist ${}p\in{}input(t)$ and $id_p\in{}Comps(\Delta)$
+      By construction, and $input(t)\neq{}\emptyset$, there exist
+      ${}p\in{}input(t)$ and $id_p\in{}Comps(\Delta)$
       s.t. $\gamma(p)=id_p$.
 
-      \exP~By construction, there exist an
+      \exP{}
+
+      By construction, there exist an
       $i\in{}[0,\vert{}input(t)\vert-1],$ a
       $j\in[0,\vert{}output(p)\vert-1]$ and $id_{ji}\in{}Sigs(\Delta)$
       s.t.
@@ -561,20 +572,23 @@
       \noindent{}By property of the stabilize relation,
       ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
       and
-      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$:
-      \begin{equation}
-        \sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]\label{eq:eq-rt-rtt}
-      \end{equation}
+      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
+      we can deduce
+      $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
 
-      Rewriting the goal with \eqref{eq:eq-rt-rtt},
+      Rewriting the goal with
+      $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$,
       \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{true}$.}
 
-      \noindent{}By property of the $\mathtt{Inject}_\uparrow$, the
-      \hvhdl{} rising edge and the stabilize relations:
+      By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+      rising edge and the stabilize relations, \InCsCompP, and through
+      the examination of the
+      \texttt{reinit_transitions_time_evaluation} process defined in
+      the place design architecture, we can deduce:
       \begin{equation}
         \label{eq:eq-rtt-j}
         \begin{split}
-          \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+          \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
           & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
           & .(\sigma(id_p)("sots")>0)\big)\\
           & +\sigma(id_p)("otf")[j] \\
@@ -584,7 +598,7 @@
       Rewriting the goal with \eqref{eq:eq-rtt-j},
       \begin{equation*}
         \fbox{$\begin{split}
-            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
             & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
             & .(\sigma(id_p)("sots")>0))\\
             & +(\sigma(id_p)("otf")[j]) \\
@@ -594,15 +608,15 @@
       By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
       ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
       and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$. By
-      property of state $\sigma$ as being a stable state:
-      \begin{equation}
-        \sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]\label{eq:eq-otf-fired}
-      \end{equation}
+      property of state $\sigma$ as being a stable state, we can
+      deduce
+      $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$.
 
-      Rewriting the goal with \eqref{eq:eq-otf-fired},
+      Rewriting the goal with
+      $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$,
       \begin{equation*}
         \fbox{$\begin{split}
-            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
             & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
             & .(\sigma(id_p)("sots")>0))\\
             & +\sigma(id_t)("fired") \\
@@ -610,14 +624,13 @@
       \end{equation*}
 
       By property of
-      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-      \begin{equation}
-        t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}\label{eq:eq-fired-fired}
-      \end{equation}
-      Knowing that $t\in{}Fired(s)$, we can rewrite the goal with the
-      right side of \eqref{eq:eq-fired-fired} and simplify the goal
-      (i.e, $\forall{}b\in\mathbb{B},~b+\mathtt{true}=\mathtt{true}$),
-      then \qedbox{tautology}.
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+      deduce
+      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
+
+      Rewriting the goal with
+      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$
+      and simplify the goal, then \qedbox{tautology}.
 
     \item \textbf{CASE} $t\notin{}Fired(s)$: Then, there are two cases
       that will determine the value of $s'.reset_t(t)$. Either there
@@ -628,7 +641,8 @@
       decidable).
 
       \begin{itemize}
-      \item \textbf{CASE} there exists such a place $p$ as described above:\\
+      \item \textbf{CASE} there exists such a place $p$ as described
+        above:
 
         Then, let us take such a place $p$ and $\omega\in\mathbb{N}^{*}$ s.t.:
         \begin{enumerate}
@@ -644,48 +658,52 @@
         when $pre(p,t)=(\omega,\mathtt{test})$.
 
         Assuming that $p$ exists, and by property of
-        $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-        \begin{equation}
-          s'.reset_t(t)=\mathtt{true}\label{eq:eq-reset-true-2}
-        \end{equation}
+        $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+        (Rule~\ref{it:reset-order}), we can deduce
+        $s'.reset_t(t)=\mathtt{true}$.
 
-        Rewriting the goal with \eqref{eq:eq-reset-true-2},
+        Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$,
         \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
 
         \noindent{}To prove the goal, let us show
         \fbox{$\exists{}i\in[0,\vert{}input(t)\vert-1]$
           s.t. $\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
 
-        \noindent{}By construction, there exists
-        $id_p\in{}Comps(\Delta)$ s.t. $\gamma(p)=id_p$.
+        By construction, there exists $id_p\in{}Comps(\Delta)$
+        s.t. $\gamma(p)=id_p$.
 
-        \exP~By construction, there exist an
+        \exP{}
+
+        By construction, there exist an
         $i\in{}[0,\vert{}input(t)\vert-1],$ a
-        $j\in[0,\vert{}output(p)\vert-1]$ and $id_{ji}\in{}Sigs(\Delta)$
-        s.t.
+        $j\in[0,\vert{}output(p)\vert-1]$ and
+        $id_{ji}\in{}Sigs(\Delta)$ s.t.
         ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
         and\\
         ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$. Let
         us take such an $i$, $j$ and $id_{ji}$, and let us use $i$ to
         prove the goal: \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
 
-        \noindent{}By property of the stabilize relation,
+        By property of the stabilize relation,
         ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
         and
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$:
-        \begin{equation}
-          \sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]\label{eq:eq-rt-rtt-2}
-        \end{equation}
+        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
+        we can deduce
+        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
 
-        Rewriting the goal with \eqref{eq:eq-rt-rtt-2},
+        Rewriting the goal with
+        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$,
         \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{true}$.}
 
-        \noindent{}By property of the $\mathtt{Inject}_\uparrow$, the
-        \hvhdl{} rising edge and the stabilize relations:
+        By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+        rising edge and the stabilize relation, and through the
+        examination of the \texttt{reinit_transitions_time_evaluation}
+        process defined in the place design architecture, we can
+        deduce:
         \begin{equation}
           \label{eq:eq-rtt-j-2}
           \begin{split}
-            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
             & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
             & .(\sigma(id_p)("sots")>0)\big)\\
             & +\sigma(id_p)("otf")[j] \\
@@ -695,46 +713,44 @@
         Rewriting the goal with \eqref{eq:eq-rtt-j-2},
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+              \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
               & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
               & .(\sigma(id_p)("sots")>0))\\
               & +\sigma(id_p)("otf")[j] \\
             \end{split}$}
         \end{equation*}
 
-        \noindent{}By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}BASIC}{>}\in{}ipm_p$
+        By construction,
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
         and\\
         ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
         
-        \noindent{}By property of the stabilize relation and
-        \InCsCompP:
-        \begin{eqnarray}
-          \sigma'(id_p)("oat")[j]&=&\mathtt{BASIC}\label{eq:5}\\
-          \sigma'(id_p)("oaw")[j]&=&\omega\label{eq:6}
-        \end{eqnarray}
+        By property of the stabilize relation and \InCsCompP, we can
+        deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
+        $\sigma'(id_p)("oaw")[j]=\omega$.
 
-        \noindent{}By property of
-        $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-        \begin{eqnarray}
-          \label{eq:7} \sigma(id_p)("sm")=s.M(p)\\
-          \label{eq:8} \sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)
-        \end{eqnarray}
+        By property of
+        $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+        deduce $\sigma(id_p)("sm")=s.M(p)$ and
+        $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
 
-        \noindent{}Rewriting the goal with \eqref{eq:5}, \eqref{eq:6},
-        \eqref{eq:7} and \eqref{eq:8}, and simplifying the goal:
+        \noindent{}Rewriting the goal with
+        $\sigma'(id_p)("oat")[j]=\mathtt{basic}$,
+        $\sigma'(id_p)("oaw")[j]=\omega$, $\sigma(id_p)("sm")=s.M(p)$
+        and
+        $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$,
+        and simplifying the goal:
         \begin{equation*}
-          \fbox{$(s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega~.~\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0))+\sigma(id_t)("fired")=\mathtt{true}$}
+          \fbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)("fired")=\mathtt{true}$}
         \end{equation*}
 
-        Thanks to the hypotheses \ref{item:1} and \ref{item:3}:
-        \begin{eqnarray}
-          \label{eq:11}s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega&=&\mathtt{true}\\
-          \label{eq:12}\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0&=&\mathtt{true}\\
-        \end{eqnarray}
-
-        Rewriting the goal with \eqref{eq:11} and \eqref{eq:12}, and
-        simplifying the goal, \qedbox{tautology.}
+        We assumed that
+        $s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega$ and
+        $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0$. Thus, by
+        assumption:
+        \begin{equation*}
+          \qedbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)("fired")=\mathtt{true}$}
+        \end{equation*}
         
       \item \textbf{CASE} such a place does not exist:\\
         Then, let us assume that, for all place $p\in{}P$
@@ -742,52 +758,56 @@
         \item $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=0$\label{item:4}
         \item or
           $\forall{}\omega\in\mathbb{N}^{*},~pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test})
-          \Rightarrow{}s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)\ge\omega$.\label{item:5}
+          \Rightarrow{}$
+          
+          \hspace{3ex}$s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)\ge\omega$.\label{item:5}
         \end{enumerate}
         
-        \noindent{}In that case, by property of
-        $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-        \begin{equation}
-          \label{eq:4}s'.reset_t(t)=\mathtt{false}
-        \end{equation}
+        In that case, by property of
+        $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+        (Rule~\ref{it:reset-order}), we can deduce
+        $s'.reset_t(t)=\mathtt{false}$.
         
-        Rewriting the goal with \eqref{eq:4}:
+        Rewriting the goal with $s'.reset_t(t)=\mathtt{false}$:
         \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
 
         To prove the goal, let us show
         \fbox{$\forall{}i\in[0,\vert{}input(t)\vert-1],~\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
 
         Given an $i\in[0,\vert{}input(t)\vert-1]$, let us show
-        \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{false}$.}\\
+        \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
 
-        \noindent{}By construction, there exist a $p\in{}input(t)$, an
+        By construction, there exist a $p\in{}input(t)$, an
         $id_p\in{}Comps(\Delta)$, $gm_p$, $ipm_p$, $opm_p$, a
         $j\in[0,\vert{}output(p)\vert-1]$, an
         $id_{ji}\in{}Sigs(\Delta)$ s.t. $\gamma(p)=id_p$ and
         \InCsCompP{} and
         ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
         and
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$. Let
+        ${<}$\texttt{reinit\_time(i)}$\Rightarrow{}\mathtt{id_{ji}}{>}\in{}ipm_t$. Let
         us take such a $p$, $id_p$, $gm_p$, $ipm_p$, $opm_p$, $j$ and
         $id_{ji}$.
 
-        \noindent{}By property of the stabilize relation,
+        By property of the stabilize relation,
         ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
         and
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$:
-        \begin{equation}
-          \sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]\label{eq:9}
-        \end{equation}
+        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
+        we can deduce
+        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
 
-        Rewriting the goal with \eqref{eq:9}:
-        \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{false}$.}\\
+        Rewriting the goal with
+        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$:
+        \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{false}$.}
 
-        \noindent{}By property of the $\mathtt{Inject}_\uparrow$, the
-        \hvhdl{} rising edge and the stabilize relations:
+        By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+        rising edge and the stabilize relations, \InCsCompP, and
+        through the examination of the
+        \texttt{reinit_transitions_time_evaluation} process defined in
+        the place design architecture, we can deduce:
         \begin{equation}
           \label{eq:10}
           \begin{split}
-            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
             & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
             & .(\sigma(id_p)("sots")>0)\big)\\
             & +\sigma(id_p)("otf")[j] \\
@@ -797,25 +817,25 @@
         Rewriting the goal with \eqref{eq:10},
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
               & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
               & .(\sigma(id_p)("sots")>0))\\
               & +\sigma(id_p)("otf")[j]) \\
             \end{split}$}
         \end{equation*}
-
+        
         By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
         ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
         and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$. By
-        property of state $\sigma$ as being a stable state:
-        \begin{equation}
-          \sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]\label{eq:13}
-        \end{equation}
+        property of state $\sigma$ as being a stable state, we can
+        deduce
+        $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$.
 
-        Rewriting the goal with \eqref{eq:13},
+        Rewriting the goal with
+        $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$:
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
               & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
               & .(\sigma(id_p)("sots")>0))\\
               & +\sigma(id_t)("fired") \\
@@ -823,42 +843,45 @@
         \end{equation*}
 
         By property of
-        $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-        \begin{equation}
-          t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}\label{eq:14}
-        \end{equation}
-        Knowing that $t\notin{}Fired(s)$, we can rewrite the goal with
-        the right side of \eqref{eq:14} and simplify the goal (i.e,
-        $\forall{}b\in\mathbb{B},~b+\mathtt{false}=b$):
+        $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+        deduce
+        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$
+
+        Rewriting the goal with
+        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$
+        and simplifying the goal:
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{BASIC}+\sigma(id_p)("oat")[j]=\mathtt{TEST}) \\
+              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
               & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
               & .(\sigma(id_p)("sots")>0))\\
             \end{split}$}
         \end{equation*}
 
-        Then, there are two cases:
+        Then, based on the assumptions made at the beginning of case,
+        there are two cases:
         \begin{enumerate}
         \item \textbf{CASE}
           $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=0$:\\
           
-          \noindent{}By property of
-          $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-          \begin{equation}
-            \label{eq:15}\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)("sots")
-          \end{equation}
+          By property of
+          $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we
+          can deduce
+          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)("sots")$.
 
-          Rewriting the goal with \eqref{eq:15} and
-          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=0$, simplifying
-          the goal: \qedbox{tautology.}
+          Rewriting the goal with
+          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)("sots")$
+          and $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=0$, and
+          simplifying the goal: \qedbox{tautology.}
           
         \item \textbf{CASE}
           $\forall{}\omega\in\mathbb{N}^{*},~pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test})
-          \Rightarrow{}s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)\ge\omega$:\\
+          \Rightarrow{}$
 
-          \noindent{}Let us perform case analysis on $pre(p,t)$; there
-          are two cases:
+          \hspace{7ex}$s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)\ge\omega$:
+
+          Let us perform case analysis on $pre(p,t)$; there are two
+          cases:
 
           \begin{enumerate}
           \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{basic})$ or $pre(p,t)=(\omega,\mathtt{basic})$:\\
@@ -866,47 +889,51 @@
             ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
             
             \noindent{}By property of stable state $\sigma$ and
-            \InCsCompP:
-            \begin{eqnarray}
-              \sigma(id_p)("oaw")[j]&=&\omega\label{eq:17}
-            \end{eqnarray}
+            \InCsCompP, we can deduce $\sigma(id_p)("oaw")[j]=\omega$.
 
-            \noindent{}By property of
-            $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-            \begin{eqnarray}
-              \label{eq:18}\sigma(id_p)("sm")&=&s.M(p)\\
-              \label{eq:19}\sigma(id_p)("sots")&=&\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)
-            \end{eqnarray}
+            By property of
+            $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we
+            can deduce $\sigma(id_p)("sm")=s.M(p)$ and
+            $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
+
+            Rewriting the goal with $\sigma(id_p)("oaw")[j]=\omega$,
+            $\sigma(id_p)("sm")=s.M(p)$ and
+            $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$:
+            \begin{equation*}
+              \fbox{$\begin{split}
+                  \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
+                  & .(s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)\\
+                  & .(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0))\\
+                \end{split}$}
+            \end{equation*}
             
-            By hypothesis, we know that
+            We assumed that
             $s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)\ge\omega$,
-            and then we can deduce:
-            \begin{equation}
-              \label{eq:20}s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega=\mathtt{false}
-            \end{equation}
-
-            Rewriting the goal with \eqref{eq:17}, \eqref{eq:18},
-            \eqref{eq:19}, and \eqref{eq:20}, and simplifying the
-            goal, \qedbox{tautology.}
-
-          \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:\\
-            \noindent{}By construction,
-            ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}INHIB}{>}\in{}ipm_p$.
+            and then we can deduce
+            $s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega=\mathtt{false}$.
             
-            \noindent{}By property of stable state $\sigma$ and
-            \InCsCompP:
-            \begin{equation}
-              \sigma(id_p)("oat")[j]=\mathtt{INHIB}\label{eq:22}
-            \end{equation}
 
-            Rewriting the goal with \eqref{eq:22}, and simplifying the
-            goal, \qedbox{tautology.}
+            Rewriting the goal with
+            $s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega=\mathtt{false}$,
+            and simplifying the goal, \qedbox{tautology.}
+
+          \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:
+            
+            By construction,
+            ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$.
+            
+            By property of stable state $\sigma$ and \InCsCompP, we
+            can deduce $\sigma(id_p)("oat")[j]=\mathtt{inhib}$.
+
+            Rewriting the goal with
+            $\sigma(id_p)("oat")[j]=\mathtt{inhib}$, and simplifying
+            the goal, \qedbox{tautology.}
           \end{enumerate}
         \end{enumerate}
       \end{itemize}
     \end{itemize}
   \end{itemize}
-\end{proof}
+\end{niproof}
 
 \subsection{Rising edge and action executions}
 \label{sec:re-action-exec}
@@ -917,34 +944,31 @@
   $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given an $a\in\mathcal{A}$ and an
   $id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a$, let us show
-  \fbox{$s'.ex(a)=\sigma'(id_a)$.}\\
+  \fbox{$s'.ex(a)=\sigma'(id_a)$.}
 
-  \noindent{}By property of $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$:
-  \begin{equation}
-    s.ex(a)=s'.ex(a)\label{eq:eq-exa}
-  \end{equation}
-  
-  \noindent{}By construction, $id_a$ is an output port identifier of
-  boolean type in the \hvhdl{} design $d$ assigned by the
-  \texttt{``action''} process only during a falling edge phase.
-
-  \noindent{}By property of the \hvhdl{} $\mathtt{Inject_{\uparrow}}$,
-  rising edge, stabilize relations, and the \texttt{``action''}
-  process:
-  \begin{equation}
-    \sigma(id_a)=\sigma'(id_a)\label{eq:eq-ida}
-  \end{equation}
-
-  \noindent{}Rewriting the goal with \eqref{eq:eq-exa} and
-  \eqref{eq:eq-ida}, \fbox{$s.ex(a)=\sigma(id_a)$.}
-
-  \noindent{}By property of
+  By property of
   $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$,
+  we can deduce $s.ex(a)=s'.ex(a)$.
+  
+  By construction, $id_a$ is an output port identifier of Boolean type
+  in the \hvhdl{} design $d$. The generated \texttt{``action''}
+  process is responsible for the assignment of the $id a$ only during
+  the initialization phase or during a falling edge phase.
+
+  By property of the \hvhdl{} $\mathtt{Inject_{\uparrow}}$, rising
+  edge, stabilize relations, and the \texttt{``action''} process, we
+  can deduce $\sigma(id_a)=\sigma'(id_a)$.
+
+  Rewriting the goal with $s.ex(a)=s'.ex(a)$ and
+  $\sigma(id_a)=\sigma'(id_a)$, \fbox{$s.ex(a)=\sigma(id_a)$.}
+
+  By property of
+  $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$,
   \qedbox{$s.ex(a)=\sigma(id_a)$.}
-\end{proof}
+\end{niproof}
 
 \subsection{Rising edge and function executions}
 \label{sec:re-fun-exec}
@@ -955,62 +979,65 @@
   $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.
 \end{lemma}
 
-\begin{proof}
+\begin{niproof}
   Given an $f\in\mathcal{F}$ and an $id_f\in{}Outs(\Delta)$
   s.t. $\gamma(f)=id_f$, let us show \fbox{$s'.ex(f)=\sigma'(id_f)$.}
 
-  \noindent{}By property of
-  $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$:
+  By property of
+  $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
+  (Rule~\ref{it:exec-fun}):
   \begin{equation}
     s'.ex(f)=\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)\label{eq:eq-exf}
   \end{equation}
+
+  By construction, $id_f$ is an output port identifier of Boolean type
+  in the \hvhdl{} design $d$. The generated \texttt{function} process
+  assigns a value to the output port $id_f$ only during the
+  initialization phase or during a rising edge phase.
   
-  \noindent{}By construction, the \texttt{``function''} process is a part of
-  design $d$'s behavior, i.e\\
+  By construction, the \texttt{function} process is defined in the
+  behavior of design $d$, i.e.\\
   $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$.
   
-  \noindent{}By construction $id_f$ is an output port of design $d$,
-  and it is only assigned in the body of the \texttt{``function''}
-  process. Let $trs(f)$ be the set of transitions associated to
-  function $f$, i.e
-  $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=true\}$. Then, depending on
-  $trs(f)$, there are two cases of assignment of output port $id_f$:
+  Let $trs(f)$ be the set of transitions associated to function $f$,
+  i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=true\}$.
+
+  Let us perform case analysis on $trs(f)$; there are two cases:
   
   \begin{itemize}
-  \item \textbf{CASE} $trs(f)=\emptyset$:\\
-    \noindent{}By construction,
+  \item \textbf{CASE} $trs(f)=\emptyset$:
+    
+    By construction,
     $\mathtt{id_f\Leftarrow{}false}\in{}ss_{\uparrow}$ where
     $ss_\uparrow$ is the part of the \texttt{``function''} process
-    body executed during the rising edge phase.
+    body executed during a rising edge phase.
 
-    \noindent{}By property of the \hvhdl{} rising edge, the stabilize
-    relations and
-    $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$:
-    \begin{equation}
-      \sigma'(id_f)=false\label{eq:eq-idf-false}
-    \end{equation}
+    By property of the \hvhdl{} rising edge, the stabilize relations
+    and $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$, we can
+    deduce $\sigma'(id_f)=\mathtt{false}$.
     
     \noindent{}By property of
     $\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)$ and
-    $trs(f)=\emptyset$:
-    \begin{equation}
-      \sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)=\mathtt{false}\label{eq:eq-sumf-false}
-    \end{equation}
+    $trs(f)=\emptyset$, we can deduce
+    $\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)=\mathtt{false}$.
 
     \noindent{}Rewriting the goal with \eqref{eq:eq-exf},
-    \eqref{eq:eq-idf-false} and \eqref{eq:eq-sumf-false},
+    $\sigma'(id_f)=\mathtt{false}$ and
+    $\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)=\mathtt{false}$:
     \qedbox{tautology.}
     
-  \item \textbf{CASE} $trs(f)\neq\emptyset$:\\
-    \noindent{}By construction,
+  \item \textbf{CASE} $trs(f)\neq\emptyset$:
+    
+    By construction,
     $\mathtt{id_f\Leftarrow{}id_{ft_0}+\dots+id_{ft_n}}\in{}ss_\uparrow$,
     where $id_{ft_i}\in{}Sigs(\Delta)$, $ss_\uparrow$ is the part of
-    the \texttt{``function''} process body executed during the rising
+    the \texttt{``function''} process body executed during a rising
     edge phase, and $n=\vert{}trs(f)\vert-1$.
 
-    \noindent{}By property of the $\mathtt{Inject}_\uparrow$, the
+    By property of the $\mathtt{Inject}_\uparrow$, the
     \hvhdl{} rising edge, the stabilize relations, and\\
-    $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$:
+    $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$, we can
+    deduce:
     \begin{equation}
       \sigma'(id_f)=\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})\label{eq:eq-idf-prod}
     \end{equation}
@@ -1019,55 +1046,49 @@
     \eqref{eq:eq-idf-prod},
     \fbox{$\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)=\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})$.}
 
-    Let us reason on the value of $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})$; there are two cases:
+    Let us reason on the value of
+    $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})$; there are two cases:
 
     \begin{itemize}
-    \item \textbf{CASE} $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$:\\
-      \noindent{}Then, we can rewrite the goal as follows:
+    \item \textbf{CASE} $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$:
+      
+      Then, we can rewrite the goal as follows:
       \fbox{$\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)=\mathtt{true}$.}
 
-      \noindent{}To prove the above goal, let us show
+      To prove the above goal, let us show
       \fbox{$\exists{}t\in{}Fired(s)~s.t.~\mathbb{F}(t,f)=\mathtt{true}$.}
 
-      \noindent{}Knowing that
-      $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$, then
-      $\exists{}id_{ft_i}~s.t.~\sigma(id_{ft_i})=\mathtt{true}$. Let
-      us take such an $id_{ft_i}$.
+      Since $trs(f)\neq\emptyset$, there exists an $t\in{}trs(f)$. Let
+      us take such a $t$.
 
-      \noindent{}By construction, for all $id_{ft_i}$, there exist a
-      $t_i\in{}trs(f)$, an $id_{t_i}\in{}Comps(\Delta)$, $gm_{t_i}$,
-      $ipm_{t_i}$ and $opm_{t_i}$ s.t. $\gamma(t_i)=id_{t_i}$ and
-      $\mathtt{comp}(id_{t_i}, "transition", gm_{t_i}, ipm_{t_i},
-      opm_{t_i})\in{}d.cs$ and
-      ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t_i}$. Let
-      us take such a $t_i$, $id_{t_i}$, $gm_{t_i}$, $ipm_{t_i}$ and
-      $opm_{t_i}$.
-
-      \noindent{}By property of $\sigma$ as being a stable design
-      state, and
-      $\mathtt{comp}(id_{t_i}, "transition", gm_{t_i}, ipm_{t_i},
-      opm_{t_i})\in{}d.cs$:
-      \begin{equation}
-        \sigma(id_{t_i})("fired")=\sigma(id_{ft_i})\label{eq:eq-fired-idfti}
-      \end{equation}
-
-      \noindent{}Thanks to \eqref{eq:eq-fired-idfti} and
-      $\sigma(id_{ft_i})=\mathtt{true}$, we can deduce that
-      $\sigma(id_{t_i})("fired")=\mathtt{true}$.
-
-      \noindent{}By property of
-      $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$:
-      \begin{equation}
-        t_i\in{}Fired(s)\Leftrightarrow\sigma(id_{t_i})("fired")=\mathtt{true}\label{eq:eq-fired-equiv}
-      \end{equation}
+      By construction, there exists an $id_t\in{}Comps(\Delta)$
+      s.t. $\gamma(t)=id_t$. \exT{}
       
-      \noindent{}Thanks to \eqref{eq:eq-fired-equiv}, we can deduce
-      $t_i\in{}Fired(s)$.
+      \noindent{}By construction, there exist an
+      $id_{ft_i}\in{}Sigs(\Delta)$ s.t.
+      ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$. Let us
+      take such an $id_{ft_i}$.
 
-      Let us use $t_i$ to prove the goal:
+      Knowing that
+      $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$, we
+      can deduce $\sigma(id_{ft_i})=\mathtt{true}$.
+      
+      \noindent{}By property of $\sigma$ as being a stable design
+      state, and \InCsCompT, we can deduce
+      $\sigma(id_{t})("fired")=\sigma(id_{ft_i})$, and thus that
+      $\sigma(id_{t})("fired")=\mathtt{true}$.
+
+      By property of
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+      deduce
+      $t\in{}Fired(s)\Leftrightarrow\sigma(id_{t})("fired")=\mathtt{true}$. Since
+      $\sigma(id_{t})("fired")=\mathtt{true}$, we can deduce
+      $t\in{}Fired(s)$.
+      
+      Let us use $t$ to prove the goal:
       \fbox{$\mathbb{F}(t,f)=\mathtt{true}$.}
 
-      \noindent{}By definition of $t_i\in{}trs(f)$,
+      By definition of $t\in{}trs(f)$,
       \qedbox{$\mathbb{F}(t,f)=\mathtt{true}$.}
 
     \item \textbf{CASE} $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{false}$:\\
@@ -1096,23 +1117,25 @@
         $id_{ft_i}$.
 
         \noindent{}By property of stable design state $\sigma$ and
-        \InCsCompT, equation~\eqref{eq:eq-fired-idfti} holds.
+        \InCsCompT, we can deduce
+        $\sigma(id_t)("fired")=\sigma(id_{ft_i})$.
 
         \noindent{}By property of
-        $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$,
-        equation~\eqref{eq:eq-fired-equiv} holds.
+        $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
+        deduce
+        $t\in{}Fired(s)\Leftrightarrow{}\sigma(id_t)("fired")=\mathtt{true}$.
 
-        \noindent{}Thanks to \eqref{eq:eq-fired-idfti} and
-        \eqref{eq:eq-fired-equiv}, we can deduce that
+        \noindent{}Since $t\in{}Fired(s)$, we can deduce
+        $\sigma(id_t)("fired")=\mathtt{true}$, and from
+        $\sigma(id_t)("fired")=\sigma(id_{ft_i})$, we can deduce
         $\sigma(id_{ft_i})=\mathtt{true}$.
 
-        \noindent{}Then, \qedbox{$\sigma(id_{ft_i})=\mathtt{true}$
-          contradicts
+        Then, \qedbox{$\sigma(id_{ft_i})=\mathtt{true}$ contradicts
           $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{false}$.}
       \end{itemize}
     \end{itemize}
   \end{itemize}
-\end{proof}
+\end{niproof}
 
 \subsection{Rising edge and sensitization}
 \label{sec:re-sens}
@@ -1204,9 +1227,9 @@
       \begin{equation}
         \label{eq:eq-oav-sens}
         \begin{split}
-          \sigma'(id_p)("oav")[j]=& \big((\sigma'(id_p)("oat")[j]=\mathtt{BASIC}+\sigma'(id_p)("oat")[j]=\mathtt{TEST}) \\
+          \sigma'(id_p)("oav")[j]=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
           & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{INHIB}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
         \end{split}
       \end{equation}
 
@@ -1214,25 +1237,25 @@
       \begin{equation*}
         \fbox{$
           \begin{split}
-            \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{BASIC}+\sigma'(id_p)("oat")[j]=\mathtt{TEST}) \\
+            \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
             & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-            & +\big(\sigma'(id_p)("oat")[j]=\mathtt{INHIB}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+            & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
           \end{split}
           $}
       \end{equation*}
 
       Let us perform case analysis on $pre(p,t)$; there are 3 cases:
       \begin{itemize}
-      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{BASIC})$:\\
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{basic})$:\\
 
         \noindent{}By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}BASIC}{>}\in{}ipm_p$
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
         and\\
         ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
         \noindent{}By property of the stabilize relation and \InCsCompP:
         \begin{eqnarray}
-          \sigma'(id_p)("oat")[j]&=&\mathtt{BASIC}\label{eq:eq-oatj-basic}\\
+          \sigma'(id_p)("oat")[j]&=&\mathtt{basic}\label{eq:eq-oatj-basic}\\
           \sigma'(id_p)("oaw")[j]&=&\omega\label{eq:eq-oawj-1}
         \end{eqnarray}
 
@@ -1251,16 +1274,16 @@
         \noindent{}By definition of $t\in{}Sens(s'.M)$,
         \qedbox{$s'.M(p)\ge\omega=\mathtt{true}$.}
         
-      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{TEST})$: same as the preceding case.
-      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{INHIB})$:\\
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{test})$: same as the preceding case.
+      \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:\\
         \noindent{}By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}INHIB}{>}\in{}ipm_p$
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
         and\\
         ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
         \noindent{}By property of the stabilize relation and \InCsCompP:
         \begin{eqnarray}
-          \sigma'(id_p)("oat")[j]&=&\mathtt{INHIB}\label{eq:eq-oatj-inhib}\\
+          \sigma'(id_p)("oat")[j]&=&\mathtt{inhib}\label{eq:eq-oatj-inhib}\\
           \sigma'(id_p)("oaw")[j]&=&\omega\label{eq:eq-oawj-2}
         \end{eqnarray}
 
@@ -1353,14 +1376,14 @@
       \eqref{eq:eq-oav-sens}, we can deduce that:
       \begin{equation*}
         \begin{split}
-          \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{BASIC}+\sigma'(id_p)("oat")[j]=\mathtt{TEST}) \\
+          \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
           & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{INHIB}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
         \end{split}
       \end{equation*}
 
       \noindent{}By construction,
-      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}BASIC}{>}\in{}ipm_p$
+      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
       and\\
       ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
@@ -1381,7 +1404,7 @@
       start the proof where the two cases are diverging, i.e:
 
       \noindent{}By construction,
-      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}INHIB}{>}\in{}ipm_p$
+      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
       and\\
       ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
 
