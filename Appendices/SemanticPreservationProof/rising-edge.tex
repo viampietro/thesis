@@ -380,7 +380,7 @@
 \subsection{Rising edge and reset orders}
 \label{sec:re-reset-orders}
 
-\begin{lemma}[Rising Edge Equal Reset Orders]
+\begin{lemma}[Rising edge equal reset orders]
   \label{lem:re-equal-reset-orders}
   \rehyps{} then\\
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -938,7 +938,7 @@
 \subsection{Rising edge and action executions}
 \label{sec:re-action-exec}
 
-\begin{lemma}[Rising Edge Equal Action Executions]
+\begin{lemma}[Rising edge equal action executions]
   \label{lem:re-equal-action-exec}
   \rehyps{} then\\
   $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.
@@ -973,7 +973,7 @@
 \subsection{Rising edge and function executions}
 \label{sec:re-fun-exec}
 
-\begin{lemma}[Rising Edge Equal Function Executions]
+\begin{lemma}[Rising edge equal function executions]
   \label{lem:re-equal-fun-exec}
   \rehyps{} then\\
   $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.
@@ -1000,7 +1000,7 @@
   $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$.
   
   Let $trs(f)$ be the set of transitions associated to function $f$,
-  i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=true\}$.
+  i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=\mathtt{true}\}$.
 
   Let us perform case analysis on $trs(f)$; there are two cases:
   
@@ -1009,8 +1009,8 @@
     
     By construction,
     $\mathtt{id_f\Leftarrow{}false}\in{}ss_{\uparrow}$ where
-    $ss_\uparrow$ is the part of the \texttt{``function''} process
-    body executed during a rising edge phase.
+    $ss_\uparrow$ is the part of the \texttt{function} process body
+    executed during a rising edge phase.
 
     By property of the \hvhdl{} rising edge, the stabilize relations
     and $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$, we can
@@ -1031,8 +1031,8 @@
     By construction,
     $\mathtt{id_f\Leftarrow{}id_{ft_0}+\dots+id_{ft_n}}\in{}ss_\uparrow$,
     where $id_{ft_i}\in{}Sigs(\Delta)$, $ss_\uparrow$ is the part of
-    the \texttt{``function''} process body executed during a rising
-    edge phase, and $n=\vert{}trs(f)\vert-1$.
+    the \texttt{function} process body executed during a rising edge
+    phase, and $n=\vert{}trs(f)\vert-1$.
 
     By property of the $\mathtt{Inject}_\uparrow$, the
     \hvhdl{} rising edge, the stabilize relations, and\\
@@ -1058,20 +1058,18 @@
       To prove the above goal, let us show
       \fbox{$\exists{}t\in{}Fired(s)~s.t.~\mathbb{F}(t,f)=\mathtt{true}$.}
 
-      Since $trs(f)\neq\emptyset$, there exists an $t\in{}trs(f)$. Let
-      us take such a $t$.
-
-      By construction, there exists an $id_t\in{}Comps(\Delta)$
-      s.t. $\gamma(t)=id_t$. \exT{}
+      From $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$,
+      we can deduce
+      $\exists{}id_{ft_i}~s.t.~\sigma(id_{ft_i})=\mathtt{true}$. Let
+      us take such an $id_{ft_i}$.
       
-      \noindent{}By construction, there exist an
-      $id_{ft_i}\in{}Sigs(\Delta)$ s.t.
-      ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$. Let us
-      take such an $id_{ft_i}$.
-
-      Knowing that
-      $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{true}$, we
-      can deduce $\sigma(id_{ft_i})=\mathtt{true}$.
+      By construction, there exist a $t\in{}trs(f)$, an
+      $id_t\in{}Comps(\Delta)$, $gm_t$, $ipm_t$, $opm_t$ such that:
+      \begin{itemize}
+      \item $\gamma(t)=id_t$
+      \item \InCsCompT{}
+      \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$
+      \end{itemize}
       
       \noindent{}By property of $\sigma$ as being a stable design
       state, and \InCsCompT, we can deduce
@@ -1080,10 +1078,7 @@
 
       By property of
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
-      deduce
-      $t\in{}Fired(s)\Leftrightarrow\sigma(id_{t})("fired")=\mathtt{true}$. Since
-      $\sigma(id_{t})("fired")=\mathtt{true}$, we can deduce
-      $t\in{}Fired(s)$.
+      deduce $t\in{}Fired(s)$.
       
       Let us use $t$ to prove the goal:
       \fbox{$\mathbb{F}(t,f)=\mathtt{true}$.}
@@ -1106,21 +1101,20 @@
       \begin{itemize}
       \item \textbf{CASE} \qedbox{$\mathbb{F}(t,f)=\mathtt{false}$.}
       \item \textbf{CASE} $\mathbb{F}(t,f)=\mathtt{true}$:\\
-        \noindent{}By construction, for all $t\in{}T$
-        s.t. $\mathbb{F}(t,f)=\mathtt{true}$, there exist an
-        $id_{t}\in{}Comps(\Delta)$, $gm_{t}$, $ipm_{t}$, $opm_{t}$ and
-        $id_{ft_i}\in{}Sigs(\Delta)$ s.t. $\gamma(t)=id_{t}$ and
-        $\mathtt{comp}(id_{t}, "transition", gm_{t}, ipm_{t},
-        opm_{t})\in{}d.cs$ and
-        ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$. Let
-        us take such a $id_{t}$, $gm_{t}$, $ipm_{t}$, $opm_{t}$ and
-        $id_{ft_i}$.
+        
+        By construction, there exist an $id_{t}\in{}Comps(\Delta)$,
+        $gm_{t}$, $ipm_{t}$, $opm_{t}$ and
+        $id_{ft_i}\in{}Sigs(\Delta)$ such that:
+        \begin{itemize}
+        \item $\gamma(t)=id_{t}$
+        \item \InCsCompT
+        \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$
+        \end{itemize}
 
-        \noindent{}By property of stable design state $\sigma$ and
-        \InCsCompT, we can deduce
-        $\sigma(id_t)("fired")=\sigma(id_{ft_i})$.
+        By property of stable design state $\sigma$ and \InCsCompT, we
+        can deduce $\sigma(id_t)("fired")=\sigma(id_{ft_i})$.
 
-        \noindent{}By property of
+        By property of
         $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
         deduce
         $t\in{}Fired(s)\Leftrightarrow{}\sigma(id_t)("fired")=\mathtt{true}$.
@@ -1129,7 +1123,7 @@
         $\sigma(id_t)("fired")=\mathtt{true}$, and from
         $\sigma(id_t)("fired")=\sigma(id_{ft_i})$, we can deduce
         $\sigma(id_{ft_i})=\mathtt{true}$.
-t
+
         Then, \qedbox{$\sigma(id_{ft_i})=\mathtt{true}$ contradicts
           $\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})=\mathtt{false}$.}
       \end{itemize}
@@ -1140,7 +1134,7 @@ t
 \subsection{Rising edge and sensitization}
 \label{sec:re-sens}
 
-\begin{lemma}[Rising Edge Equal Sensitized]
+\begin{lemma}[Rising edge equal sensitized]
   \label{lem:re-equal-sens}
   \rehyps{} then\\
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -1431,7 +1425,7 @@ t
   \end{enumerate}
 \end{niproof}
 
-\begin{lemma}[Rising Edge Equal Not Sensitized]
+\begin{lemma}[Rising edge equal not sensitized]
   \label{lem:re-equal-not-sens}
   \rehyps{} then\\
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
