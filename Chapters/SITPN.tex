@@ -28,11 +28,11 @@
   \item $M_0\in{}P\rightarrow\mathbb{N}$, the initial marking of the SITPN.
   \item $\succ\subseteq{}(T\times{}T)$, the priority relation which is a
     strict order over the set of transitions.
-  \item $\mathcal{A}=\{a_0,\ldots,a_n\}$, a set of continuous actions.
-  \item $\mathcal{C}=\{c_0,\ldots,c_n\}$, a set of conditions.
-  \item $\mathcal{F}=\{f_0,\ldots,f_n\}$, a set of functions (discrete actions).
-  \item $\mathbb{A}\in{}P\rightarrow\mathcal{A}\rightarrow\mathbb{B}$,
-    the function associating actions to places.\\  $\forall{}p\in{}P$,
+  \item $\mathcal{A}=\{a_0,\ldots,a_i\}$, a set of continuous actions.
+  \item $\mathcal{C}=\{c_0,\ldots,c_j\}$, a set of conditions.
+  \item $\mathcal{F}=\{f_0,\ldots,f_k\}$, a set of functions (discrete actions).
+  \item $\mathbb{A}$ $\in$ ${}P$ $\rightarrow$ $\mathcal{A}$ $\rightarrow$ $\mathbb{B}$,
+    the function associating actions to places.  $\forall{}p\in{}P$,
     $\forall{}a\in\mathcal{A}$, $\mathbb{A}(p,a)=\mathtt{true}$, if
     $a$ is associated to $p$, $\mathbb{A}(p,a)=\mathtt{false}$
     otherwise.
@@ -258,7 +258,7 @@ compile-time errors during the transformation into \vhdl{}.
 \begin{definition}[Fired]
   \label{def:fired}
   A transition $t\in{}T$ is said to be fired at the SITPN state
-  $s={<}M,I,reset_t,ex,cond{>}$, which is noted $t\in{}Fired(s)$, if
+  $s={<}M,I,reset_t,ex,$ $cond{>}$, which is noted $t\in{}Fired(s)$, if
   and only if $t\in{}Firable(s)$ and
   $t\in{}Sens\big(M-\sum_{t_i\in{}Pr(t)}pre(t_i)\big)$, where
   $Pr(t)=\{t_i~|~t_i\succ{}t\wedge{}t_i\in{}Fired(s)\}$.
@@ -390,6 +390,7 @@ compile-time errors during the transformation into \vhdl{}.
         \infer0 {E_c,0\vdash{}sitpn,s\rightarrow{}[~]}
       \end{prooftree}} 
   \end{tabular}
+  
   \begin{tabular}{@{}l}
     {\fontsize{7}{10}\selectfont\textsc{ExecutionLoop}} \\
     
