@@ -1,0 +1,128 @@
+In this chapter, the aim was to present the behavior preservation
+theorem stating that the \hilecop{} transformation is semantic
+preserving along with its informal proof. By presenting the work of
+the literature pertaining to the verification of \emph{transformation
+  functions} through the proof of behavior preservation theorems, we
+wanted to convince the reader that the expression of our semantic
+preservation theorem is ``correct'', i.e. it follows a common
+expression pattern. We saw that the expression of semantic
+preservation theorems is quite similar in its form even when
+considered transformations are not of the same nature (i.e. GPL
+compilers, HDL compilers and model transformations). Our semantic
+preservation theorem takes the form of a state similarity checking
+between the states composing the execution traces of our source model
+and our target program. At each point of the execution (i.e. at each
+clock signal event), the state of the input model and the state of the
+output representation must be similar to ensure the behavior
+preservation property. This definition of the behavior preservation
+property is particular to reactive systems, i.e. we are dealing with
+systems that are executing over time, and that are synchronized with a
+clock signal. Naturally, the behavior preservation theorem must ensure
+that the behaviors are similar, independently of the number of
+execution cycles performed. Hopefully, leveraging the inductive
+reasoning, proving such a thing comes down to proving that behaviors
+are preserved through a clock cycle.
+
+The study of the literature showed that the state comparison relation,
+i.e. the relation that describe how things are compared between the
+source and the target representation, is a significant element in the
+expression of the behavior preservation theorem. Especially, in our
+case, the state structure of the source and target representations are
+quite different. Indeed, we are dealing with an abstract set of data
+in the SITPN world, while in the \hvhdl{} representation all is
+converted into signal values and internal states of component
+instances. Thus, relating these two kind of states is not
+straightforward, and we thoroughly presented our state similarity
+relation in Section~\ref{sec:state-sim-relation}.
+
+In this chapter, we wanted to stress another point pertaining no more
+to the ``how'' but to the ``when'' the states of the input and output
+representations must be compared in the course of the execution. Here,
+we are dealing with to kind of models that are synchronously
+executed. However, the synchronous execution of an SITPN stays at a
+level that is quite abstract compared to the concrete execution of a
+synchronous hardware system. Indeed, the execution of a synchronous
+hardware system is related to the rules of the combinational and the
+synchronous logic, while it is not the case at the SITPN level. Thus,
+a \hvhdl{} design goes through a lot more different states in the
+proceeding of a clock cycle compared to its corresponding
+SITPN. Figure~\ref{fig:bisim-diagram} illustrates when the state
+comparison must be performed in the course of a clock cycle.
+
+While presenting the proof of Theorem~\ref{thm:beh-pres}, we used
+certain theorems declared as axioms (Theorems~\ref{thm:elab-ex},
+\ref{thm:init-ex} and \ref{thm:sim-ex}). These theorems express the
+fact that we can always derive a simulation trace from the execution
+of a \hvhdl{} design resulting of a succesful \hilecop{}
+transformation. It means that the execution of a \hvhdl{} design
+resulting from the \hilecop{} transformation never results into an
+error at some point of the simulation. We chose not to represent
+errors in the \hvhdl{} semantics due to the fact that the concept of
+error is nonexistent in the SITPN semantics. However, we argue that
+proving a theorem stating the existence of a simulation trace,
+independently of the number of simulation cycles considered, is a way
+to rectify the lack of error representation in our semantics.  By
+presenting Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and
+\ref{thm:sim-ex} as axioms, we chose to prove the theorem of semantic
+preservation in the case where a simulation trace has been produced
+for the generated \hvhdl{} design. This is the setting of
+Theorem~\ref{thm:full-bisim} for which the full proof is detailed in
+this chapter and in Appendix~\ref{app:sem-preserv-proof}. However, we
+are not giving up on the proof of Theorems~\ref{thm:elab-ex},
+\ref{thm:init-ex} and \ref{thm:sim-ex}. Indeed, proving a theorem
+stating the similarity of execution traces is useless if the execution
+a generated \hvhdl{} design always fails at some point while the
+execution of the corresponding SITPN goes on. However, we are
+confident in the fact that if the execution of a generated \hvhdl{}
+design fails, then it can only reflect a divergence in relation to the
+behavior of the input SITPN. Thus, proving that the execution traces
+are similar contributes to the proof that we can always derive an
+execution trace for a generated \hvhdl{} design.
+
+The informal ``paper'' proof of Theorem~\ref{thm:full-bisim} given in
+this chapter and Appendix~\ref{app:sem-preserv-proof} is long; about a
+hundred pages. However, as we explained in
+Section~\ref{sec:detailled-proof}, the strategy used in the overall
+proof is pretty much the same. To prove that the behavior of an SITPN
+and its corresponding \hvhdl{} design is preserved through an
+execution cycle, we must reason on the execution relations ruling both
+worlds. But first, to relate the execution of our input and output
+representations, we must structurally relate the SITPN to the
+translated \hvhdl{} design. In the proceeding of the proof, we will
+first reason on the structure of the input SITPN; based on the
+structure of the SITPN and by property of the \hilecop{}
+transformation, we can determine the structure of the top-level
+\hvhdl{} design. Once we know the structure of the SITPN and the
+\hvhdl{} design, we can unfold their execution rules to prove that
+their behavior are the same; i.e. at the end of a computational step,
+states are similar.
+
+The mechanization of the proof of Theorem~\ref{thm:full-bisim} is at
+its very beginning in terms of completion. However, we have already
+spent three months on it. Thus, the mechanization is a very slow
+process. We explain the hardness of the mechanization task by pointing
+out the two points where the distance between informal and formal
+proof is most important. The first point corresponds to the statement
+of the construction of the \hvhdl{} design based on the structure of
+the SITPN and the \hilecop{} transformation function. Reasoning on the
+transformation function is not an easy task as the transformation
+itself is not as straightforward as the transformation from a source
+program of a GPL to a target program of another GPL. In
+Section~\ref{sec:mecha-verif}, we pointed out the distance between a
+property of the transformation function expressed in one sentence in
+the informal proof and the thousands of lines that it represents in
+the formal proof. The second point digging the distance between the
+informal and the formal proof comes from the establishment of the
+synchronous and combinational equations that are verified by the
+internal signals of the PCIs and TCIS. This also results in one
+sentence statement in the informal proof while representing thousands
+of lines of code in the formal proof. The De Bruijn factor
+\cite{Wiedijk2000}, that permits to measure the distance in terms of
+number of characters between an informal proof and its machine-checked
+version (i.e. the formal program), is tremendously high in our case
+when considering these intermediary results.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

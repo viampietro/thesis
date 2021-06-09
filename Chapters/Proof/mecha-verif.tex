@@ -175,6 +175,7 @@ state invariants\footnote{State invariance lemmas are to be found in
   \texttt{GenerateHVhdlInvs.v} under the \texttt{sitpn2hvhdl} folder
   of the Git repository.}.
 
+
 \paragraph{Gap between informal and formal proof}
 
 There is a huge gap of size between the informal proof of the
@@ -206,8 +207,8 @@ following the sentence:
   s.t. $\mathtt{comp}(id_p,"place",gm_p,ipm_p,opm_p)\in{}d.cs$.''
 \end{center}
 
-The expression ``by construction'' is a shortcut for ``knowing how the
-target \hvhdl{} design is constructed by the transformation
+The expression ``by construction'' is a shorthand for ``knowing how
+the target \hvhdl{} design is constructed by the transformation
 function'', or ``based on the definition of the transformation
 function''. In \coq{}, proving the lemma that states the existence of
 a PCI for a given place $p$ amounts to $1500$ lines of proof

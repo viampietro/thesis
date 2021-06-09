@@ -118,7 +118,7 @@ marking.
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Proof/example-fired-trans}
-  \caption[An set of fired transitions]{The set of fired
+  \caption[A set of fired transitions.]{The set of fired
     transitions for an example SITPN at a given SITPN state $s$; on
     the right side, the dotted arrows indicates the priority relation
     between the three transitions ($t_c$ is the top-priority
@@ -173,13 +173,14 @@ of the transition design architecture describing how the
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio, width=.6\textwidth]{Figures/Proof/fired-port}
-  \caption[The fired port of the transition design]{Wiring of the
-    \texttt{fired} output port in the transition design architecture;
-    on the left side is the input interface of the transition design;
-    on the right side is the output interface of the transition
-    design, with the \texttt{fired} port; in red are the parts of the
-    architecture that depend on synchronous logic and in black are the
-    parts that are purely combinational.}
+  \caption[The \texttt{fired} output port in the transition design
+  architecture.]{Wiring of the \texttt{fired} output port in the
+    transition design architecture; on the left side is the input
+    interface of the transition design; on the right side is the
+    output interface of the transition design, with the \texttt{fired}
+    port; in red are the parts of the architecture that depend on
+    synchronous logic and in black are the parts that are purely
+    combinational.}
   \label{fig:fired-port}
 \end{figure}
 
@@ -332,7 +333,7 @@ Then, the proof is in two parts:
 \noindent{}Let us prove the first point. Assuming that
 $t\in{}Sens(s'.M-\sum\limits_{t_i\in{}Pr(t,s')}pre(t_i))$, let us
 show\\
-\fbox{$\big(\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\big)=\mathtt{true}$.}\\
+\fbox{$\big(\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]\big)=\mathtt{true}$.}
 
 \noindent{}To prove the current goal, we can equivalently show that:\\
 \fbox{$\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("pauths")[i]=\mathtt{true}$.}
@@ -394,7 +395,7 @@ port. Figure~\ref{fig:pauths-in-p} illustrates the wiring of the
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio,width=.7\textwidth]{Figures/Proof/pauths}
-  \caption[Wiring of the \texttt{priority\_authorizations} output port
+  \caption[The \texttt{priority\_authorizations} output port
   in the place design architecture.]{Wiring of the
     \texttt{priority\_authorizations} output port in the architecture
     of the place design; the input port interface is on the left side
@@ -827,7 +828,7 @@ signals values in the course of an execution.
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio,width=\textwidth]{Figures/Proof/diverg-tc}
-  \caption[Bug Detection: ]{Bug detection: divergence between the value of time counters and the value of the $\mathtt{s\_time\_counter}$ signals due to the loss of the firing status information during the stabilization phase; the value of time counters and of the $\mathtt{s\_time\_counter}$ signals are in green; the value of diverging signals are in red.}
+  \caption[Bug Detection in the place and transition designs.]{Bug detection: divergence between the value of time counters and the value of the $\mathtt{s\_time\_counter}$ signals due to the loss of the firing status information during the stabilization phase; the value of time counters and of the $\mathtt{s\_time\_counter}$ signals are in green; the value of diverging signals are in red.}
   \label{fig:diverg-tc}
 \end{figure}
 

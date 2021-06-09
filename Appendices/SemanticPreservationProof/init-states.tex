@@ -186,7 +186,9 @@
       \end{cases}=0$
     \end{ih}
 
-    \fbox{$\begin{cases}
+    \fbox{
+      
+      $\begin{cases}
         \sigma_0(id_p)("iaw")[0]~\mathtt{if}~\sigma_0(id_p)("itf")[0]\\
         0~otherwise \\
       \end{cases}+\sum\limits_{i=1}^{\Delta(id_p)("ian")-1}\begin{cases}
@@ -298,7 +300,7 @@
     
   \item Assuming that $upper(I_s(t))\neq\infty$ and
     $s_0.I(t)\le{}upper(I_s(t))$, let us
-    show\\ \framebox{$s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$}.\\
+    show\\ \framebox{$s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$}.
  
     Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,
     \framebox{$\sigma_0(id_t)("s\_time\_counter")=0$.}
@@ -328,7 +330,7 @@
   
   Rewriting $s_0.reset_t(t)$ as $\mathtt{false}$, by definition of
   $s_0$,
-  \framebox{$\sigma_0(id_t)("s\_reinit\_time\_counter")=\mathtt{false}$.}\\
+  \fbox{$\sigma_0(id_t)("s\_reinit\_time\_counter")=\mathtt{false}$.}
   
   \exT{}
   
@@ -339,12 +341,12 @@
 
   Rewriting
   $\sigma_0(id_t)("s\_reinit\_time\_counter")$ as $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]$,\\
-  \framebox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}\\
+  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
   
   For all $t\in{}T$ (resp. $p\in{}P$), let $input(t)$
   (resp. $input(p)$) be the set of input places of $t$ (resp. input
   transitions of $p$), and let $output(t)$ (resp. $output(p)$) be the
-  set of output places of $t$ (resp. output transitions of $p$).\\
+  set of output places of $t$ (resp. output transitions of $p$).
 
   Let us perform case analysis on $input(t)$; there are 2 cases:
 
