@@ -1,7 +1,10 @@
 #+STARTUP: indent
 
 * TODO Introduction
-* TODO The HILECOP methodology
+* TODO The HILECOP methodology [33%]
+** DONE Designing critical digital systems [%]
+** TODO HILECOP [%]
+** TODO Verifying HILECOP [%]
 * TODO Preliminary notions
 * TODO Implementation of the HILECOP high-level models [16%]
 ** TODO introduction
@@ -24,7 +27,7 @@
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
-* TODO Proving semantic preservation in HILECOP [85%]
+* TODO Proving semantic preservation in HILECOP [100%]
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
@@ -35,7 +38,7 @@
 *** DONE formal presentation [85%]
 *** DONE bug detection [0%]
 ** DONE mechanized verification of the proof [100%]
-** TODO conclusion [0%]
+** DONE conclusion [100%]
 * TODO Conclusion
 * TODO Appendix Reminder on natural semantics
 * TODO Appendix Reminder on induction principles

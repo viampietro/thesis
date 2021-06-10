@@ -1,6 +1,70 @@
 \chapter{The \hilecop{} methodology}
 \label{chap:hilecop}
 
+In this chapter, we present the context of our work, and more
+specifically, the subject of our verification task, i.e. \hilecop{}, a
+methodology for the design and production of critical digital systems.
+In Section~\ref{sec:design-crit-digit-systms}, we motivate the use of
+Model-Based Systems Engineering (MBSE) and formal methods in the
+design and production of safety-critical digital systems; in
+Section~\ref{sec:intro-hilecop}, we give an overall presentation of
+the \hilecop{} methodology which applies both the principles of MBSE
+and formal methods; in Section~\ref{sec:verif-hilecop}, we point out
+the specific transformation phase, intervening in the \hilecop{}
+methodology, that we propose to verify and discuss on how we propose
+to verify it and which research questions does it give rise to.
+
+\section{Designing critical digital systems}
+\label{sec:design-crit-digit-systms}
+
+According to Moore's law \cite{Moore2006}, the complexity of digital
+integrated circuits is always increasing. To give an example, the
+cut-of-the-edge \emph{AMD Epyc Rome} microprocessor (2019) is made out
+of 50 billions of transistors. Composing billions of transistors on a
+wired circuit is no more a task for humans but is very suited to
+computers. However, engineers need to think about the design of
+digital circuits in a way that is understandable for
+humans. Therefore, they need high-level views of the circuits they are
+designing in order to work together and to communicate about the
+designs. The domain of Model-Based Systems Engineering (MBSE)
+\cite{Long2011} proposes a framework to help engineers to design and
+produce digital circuits, in a well-documented, safe and reliable
+way. Comparable to what Model Driven Engineering (MDE) does in the
+world of software engineering, models are first order concepts in
+MBSE. A model represents a simplified view of real object. As
+illustrated in Figure~\ref{fig:MBSE-ps}, a MBSE process describes a
+way to design a digital circuit starting from a high-level view of the
+system. This high-level view can follow a graphical formalism such as
+SysML \cite{Friedenthal2014} or Petri nets \cite{Petri1962}, or a
+textual one such as SystemC \cite{Black2009} or VHDL
+\cite{Ashenden2010}. Then, the MBSE process describe many refinements
+phases (the green arrows in Figure~\ref{fig:MBSE-ps}) during which the
+input model will be transformed; at each refinement phase, the model
+goes down in abstraction towards its final implementation as a
+hardware circuit. A refinement phase, which is also a transformation
+phase, can be performed automatically or manually.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Hilecop/MBSE-ps}
+  \caption[A Model-Based Systems Engineering process.]{A Model-Based
+    Systems Engineering process; REQ stands for requirements, BEH for
+    behavior, ARCH for architecture, Dgn V\&V for design verification
+    and validation. This figure is an excerpt from \cite{Long2011}.}
+  \label{fig:MBSE-ps}
+\end{figure}
+
+In the case where the digital circuit being designed is a
+safety-critical system, i.e. on its behavior depends the life of
+people, an MBSE process will often employ formal models, i.e. models
+with a formal mathematical definition, as the design formalism.  Thus,
+these models enable a certain extent of mathematical reasoning to
+prove that safety properties are met during the design V\&V phase
+(cf. Figure~\ref{fig:MBSE-ps}).
+
+\section{Introducing the \hilecop{} methodology}
+\label{sec:intro-hilecop}
+
 The \hilecop{} methodology consists of a process for the design and
 implementation of critical digital systems. This methodology relies on
 several transformations going from abstract models to concrete FPGA
@@ -18,7 +82,7 @@ the global behavior of the digital system.
 %
 \begin{figure}[t]
 \centering
-\includegraphics[keepaspectratio=true,width=\textwidth]{Hilecop/hilecop-wf.eps}
+\includegraphics[keepaspectratio=true,width=\textwidth]{Figures/Hilecop/hilecop-wf.eps}
 \caption{Workflow of the \hilecop{} Methodology}
 \label{fig:hilecop-wf}
 \end{figure}
@@ -54,6 +118,11 @@ model-to-text transformation, the behavior described by the initial model is
 preserved in the generated VHDL code. To do so, we have to implement the
 structure of PNs used in the \hilecop{} models, together with the semantics
 providing the evolution rules of these PNs.
+
+\section{Verifying the \hilecop{} methodology}
+\label{sec:verif-hilecop}
+
+
 
 %%% Local Variables:
 %%% mode: latex
