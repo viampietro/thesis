@@ -60,7 +60,11 @@
   
   \node (abstract) [align=center, inner sep=1mm]
   {
-    \includegraphics[keepaspectratio, width=0.1\linewidth]{abstract-model.eps}%
+    \begin{tabular}{@{}c@{}}
+      \includegraphics[keepaspectratio, width=0.1\linewidth]{abs-model}\\
+      \includegraphics[keepaspectratio, width=0.1\linewidth]{abs-model}\\
+    \end{tabular}
+
   };
   
   \node (labelabs) at ($(abstract)-(0,1)$) {
@@ -68,20 +72,25 @@
     \begin{tabular}{c}
       \fontsize{7}{8}\selectfont Abstract\\
       \fontsize{7}{8}\selectfont model\\
-      \fontsize{7}{8}\selectfont \textcircled{1}
+      % \fontsize{7}{8}\selectfont \textcircled{1}
     \end{tabular}
   };
-
+  \node[anchor=north, draw, circle, inner sep=.5mm] at ($(labelabs.south)$) {\fontsize{7}{8}\selectfont $1$};
+  
   \draw (abstract)
   edge[loop above, looseness=8, ->]
-  node{\it\bfseries \fontsize{5}{8}\selectfont correction}
+  node{\it\bfseries \fontsize{5}{8}\selectfont designing}
   (abstract);
   
   % Implementation model node.
   
   \node (impl) at ($(abstract)+(3,0)$) [align=center, inner sep=1mm]
   {
-    \includegraphics[keepaspectratio, width=0.1\linewidth]{flattened-pn.eps}%
+    \begin{tabular}{@{}c@{}}
+      \includegraphics[keepaspectratio, width=0.1\linewidth]{impl-model}\\
+      \includegraphics[keepaspectratio, width=0.1\linewidth]{impl-model}\\
+    \end{tabular}
+
   };
   
   \draw (impl) edge[thick, <-, double]
@@ -98,15 +107,17 @@
   node{\it\bfseries \fontsize{5}{8}\selectfont analysis}
   (impl);
   
-  \node (labelimpl) at ($(impl)-(0,0.8)$) {
+  \node (labelimpl) at ($(impl)-(0,1)$) {
     \renewcommand{\arraystretch}{0.5}
     \begin{tabular}{c}
       \fontsize{7}{8}\selectfont Implementation\\
       \fontsize{7}{8}\selectfont model\\
-      \fontsize{7}{8}\selectfont \textcircled{2}
+      % \fontsize{7}{8}\selectfont \textcircled{2}
     \end{tabular}
   };
+  \node[anchor=north, draw, circle, inner sep=.5mm] at ($(labelimpl.south)$) {\fontsize{7}{8}\selectfont $2$};
 
+  
   % Edge between impl model and abstract model.
   
   \draw ($(abstract.north east)$) edge[loop above, in=90, out=90, min distance=17mm, <-]
@@ -125,9 +136,9 @@
   sep=1mm] {
     \renewcommand{\arraystretch}{0.5}
     \begin{tabular}{c}
-      \fontsize{7}{8}\selectfont VHDL\\
-      \fontsize{7}{8}\selectfont Source \\
-      \fontsize{7}{8}\selectfont Code\\
+      \fontsize{7}{8}\selectfont VHDL \\
+      \fontsize{7}{8}\selectfont top-level \\
+      \fontsize{7}{8}\selectfont design \\
     \end{tabular}
   };
   
@@ -142,7 +153,8 @@
   }
   (impl);
 
-  \node (labelvhdl) at ($(vhdl)-(0,1)$) {\fontsize{7}{8}\selectfont \textcircled{3}};
+  % \node (labelvhdl) at ($(vhdl)-(0,1)$) {\fontsize{7}{8}\selectfont \textcircled{3}};
+  \node[anchor=north, draw, circle, inner sep=.5mm] at ($(vhdl.south)-(0,.3)$) {\fontsize{7}{8}\selectfont $3$};
   
   \node (fpga) at ($(vhdl)+(3,0)$) [align=center, inner sep=1mm] {
 
@@ -199,12 +211,14 @@
     \begin{tabular}{c}
       \fontsize{7}{8}\selectfont FPGA\\
       \fontsize{7}{8}\selectfont implementation\\
-      \fontsize{7}{8}\selectfont \textcircled{4}
+      % \fontsize{7}{8}\selectfont \textcircled{4}
     \end{tabular}
   };
+
+  \node[anchor=north, draw, circle, inner sep=.5mm] at ($(labelfpga.south)$) {\fontsize{7}{8}\selectfont $4$};
   
-  \draw[red, thick, dotted] ($(impl.north west)+(-0.5,0.1)$) rectangle
-  ($(labelvhdl.south east)+(1,0)$);
+  \draw[red, thick, dotted] ($(impl.north west)+(-0.35,0)$) rectangle
+  ($(vhdl.south east)+(.3,-1.5)$);
   
 \end{tikzpicture}
 
