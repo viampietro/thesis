@@ -1,0 +1,102 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usetikztiminglibrary[dual arrows]{clockarrows}
+
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\tikzset{timing/font=\fontsize{40}{41}\selectfont}
+\begin{tikzpicture}
+  \timing[name=clock] at (0, 0) {L4{C}};
+
+  \node (clockcaption) at ([xshift=3mm, yshift=1mm]clock.origin) {
+    \fontsize{4}{5}\selectfont \textbf{Clock signal}
+  };
+  
+  \node[circle, black, draw=black, inner sep=0.5mm] (fstep) at ([xshift=-15pt, yshift=7pt]clock.high mid) {
+    \fontsize{4}{5}\selectfont 1
+  };
+
+  \node[inner sep=0.5mm] (finstr) [above left= 5mm of fstep] {
+    \fontsize{4}{4}\selectfont
+    \begin{tabular}{l}
+      Determines firable transitions, \\
+      starts/stops continuous actions.
+    \end{tabular}
+  }
+  edge[post, dotted] (fstep);
+  
+  \node[circle, draw=black, inner sep=0.5mm] (sstep) at ([yshift=-8pt]clock.mid) {\fontsize{4}{5}\selectfont 2};
+  
+  \node[circle, draw=black, inner sep=0.5mm] (tstep) at ([xshift=15pt, yshift=7pt]clock.high mid) {\fontsize{4}{5}\selectfont 3};
+  \node[inner sep=0.5mm] (finstr) [above right= 5mm of tstep] {
+    \fontsize{4}{4}\selectfont
+    \begin{tabular}{l}
+      Fires the transitions (updates the marking), \\
+      triggers the function executions.
+    \end{tabular}
+  }
+  edge[post, dotted] (tstep);
+  
+  \node[circle, draw=black, inner sep=0.5mm] (fostep) at ([xshift=28pt, yshift=-7pt]clock.high mid) {\fontsize{4}{5}\selectfont 4};
+  
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,141 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to inlcude graphics
+
+\usepackage{graphicx}
+\usepackage{subfig}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to frame text
+
+\usepackage{framed}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+% \begin{tikzpicture}
+%   \node[place, tokens=1] (p0) [label={left:\ssmall $P_0$}] {};
+%   \node[place, tokens=1] (p1) at ($(p0)-(0, 2)$) [label={left:\ssmall $P_1$}] {};
+
+%   \node[transition] (t0) at ($(p0)!0.5!(p1)$) [label={left:\ssmall $T_0$}] {}
+%   edge[pre] (p0)
+%   edge[post] (p1);
+%   \node (f0) at ($(t0.east)$) [xshift=5pt] {\ssmall $f_0$};
+  
+%   \node[transition] (t1) at ($(p1)-(0, 1)$) [label={left:\ssmall $T_1$}] {}
+%   edge[pre] (p1);
+%   \node (c0) at ($(t1.east)$) [xshift=5pt] {\ssmall $c_0$};
+%   \draw ($(t1.south west)-(.5, .5)$) -- ($(t1.south east)+(.5, -.5)$);
+%   \node [below =6mm of t1, align=left] {
+%     \ssmall $f_0$: $x := 0; y := 1;$ \\
+%     \ssmall $c_0$: $x\ \&\&\ y;$
+%   };
+  
+% \end{tikzpicture}
+% \begin{tikztimingtable}
+%   \ssmall Firing($T_0$) & 2LG9L \\
+%   \ssmall Firing($T_1$) & 8LG3L \\
+%   \ssmall Launching($f_0$) & 3LG N(startf0) 8L \\
+%   \ssmall $x$ & 9H N(endf0) 2L \\
+%   \ssmall $y$ & 4LN(a2)7H \\
+%   \ssmall $c_0$ & 5L5H1L \\
+%   \extracode
+%   \draw[dotted] (startf0) -- ($(startf0)+(0,7)$);
+%   \draw[dotted] (endf0) -- ($(endf0)+(0,8)$);
+%   \draw[<->] ($(startf0)+(0,6.5)$) -- ($(endf0)+(0,7.5)$);
+%   \node (s0) at ($(startf0)+(0,6.5)$) {};
+%   \node (e0) at ($(endf0)+(0,7.5)$) {};
+  
+%   \node at ($(s0)!0.5!(e0)+(0,1)$) {\ssmall $f_0$ time duration};
+% \end{tikztimingtable}
+
+% \begin{tikztimingtable}
+%   \ssmall Firing($T_0$) & 2LG9L \\
+%   \ssmall Firing($T_1$) & 11L \\
+%   \ssmall Launching($f_0$) & 3LG N(startf0) 8L \\
+%   \ssmall $x$ & 9H N(endf0) 2L \\
+%   \ssmall $y$ & 4LN(a2)7H \\
+%   \ssmall $c_0$ & 5L5H1L \\
+%   \extracode
+%   \draw[dotted] (startf0) -- ($(startf0)+(0,7)$);
+%   \draw[dotted] (endf0) -- ($(endf0)+(0,8)$);
+%   \draw[<->] ($(startf0)+(0,6.5)$) -- ($(endf0)+(0,7.5)$);
+%   \node (s0) at ($(startf0)+(0,6.5)$) {};
+%   \node (e0) at ($(endf0)+(0,7.5)$) {};
+  
+%   \node at ($(s0)!0.5!(e0)+(0,1)$) {\ssmall $f_0$ time duration};
+% \end{tikztimingtable}
+
+\begin{figure}[h]
+  \centering
+  \hspace{10pt}
+  \subfloat[\ssmall An example of Petri net.]{
+    \includegraphics[keepaspectratio=true]{async-fig1.eps}
+  }\hspace{10pt}
+  \subfloat[\ssmall Case: $T_1$ is fired before the end of $f_0$.]{
+    \includegraphics[keepaspectratio=true]{async-fig2.eps}
+  }\hspace{10pt}
+  \subfloat[\ssmall Case: $f_0$ terminates before taking the firing decision for $T_1$.]{
+    \includegraphics[keepaspectratio=true]{async-fig3.eps}
+  }\hspace{10pt}
+\end{figure}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

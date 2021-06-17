@@ -1,14 +1,13 @@
 #+STARTUP: indent
 
 * TODO Introduction
-* TODO The HILECOP methodology [33%]
-** DONE Designing critical digital systems [%]
-** TODO HILECOP [%]
-** TODO Verifying HILECOP [%]
+* DONE The HILECOP methodology [100%]
+** DONE Designing critical digital systems [100%]
+** DONE HILECOP [100%]
+** DONE Verifying HILECOP [100%]
 * TODO Preliminary notions
-* TODO Implementation of the HILECOP high-level models [16%]
-** TODO introduction
-** TODO general facts about Petri nets
+* TODO Implementation of the HILECOP high-level models [40%]
+** DONE introduction
 ** TODO informal presentation of synchronously executed Petri nets [80%]
 ** DONE formal definition of SITPNs & semantics [100%]
 ** TODO Coq implementation of SITPNs [25%]
@@ -20,14 +19,14 @@
 ** TODO a natural semantics for H-VHDL [75%]
 ** TODO Coq implementation of H-VHDL syntax and semantics [%]
 ** TODO conclusion [%]
-* TODO The HILECOP model-to-text transformation [%]
+* TODO The HILECOP model-to-text transformation [16%]
 ** TODO introduction [%]
-** TODO expressing transformation functions
+** DONE expressing transformation functions
 ** TODO informal presentation of the transformation
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
-* TODO Proving semantic preservation in HILECOP [100%]
+* DONE Proving semantic preservation in HILECOP [100%]
 ** DONE introduction [100%]
 ** DONE literature review [100%] 
 ** DONE the state similarity relation [100%]
@@ -42,9 +41,8 @@
 * TODO Conclusion
 * TODO Appendix Reminder on natural semantics
 * TODO Appendix Reminder on induction principles
-* TODO Appendix Full proof of semantic preservation [%]
-** TODO introduction (proof notations)
-** TODO initial states
-** TODO first re
-** TODO falling edge
-** TODO rising edge
+* DONE Appendix Full proof of semantic preservation [100%]
+** DONE initial states
+** DONE first re
+** DONE falling edge
+** DONE rising edge

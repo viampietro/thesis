@@ -1,0 +1,290 @@
+Here, fundamentals on the Petri net formalism are outlined, and
+certain classes of Petri nets are described more precisely. Then, the
+specificities of the Petri nets used to design the behavior of
+electronic component architecture in the \hilecop{} methodology are
+presented. For more information on the topic of Petri nets, the reader
+can refer to \cite{David1994}, \cite{Murata1989}, or \cite{Diaz2001}.
+
+\subsection{Preliminary notions on Petri nets}
+\label{subsec:pn-formalism}
+
+Petri nets, invented by C. A. Petri \cite{Petri1962}, are used to
+model a broad range of dynamic systems: resource sharing between
+concurrent processes \cite{David1994}, behavior of agents in
+multi-agent systems \cite{Celaya2007}, behavior of digital components
+\cite{Yakovlev2006}. A Petri net is a directed graph, composed of two
+types of node: place nodes (\emph{circles}) and transition nodes
+(\emph{squares} or \emph{lines}). As shown in
+Figure~\ref{fig:pn-example}, place nodes usually represent a part of
+the state of the modelled system, here the states of two computer
+processes and a semaphor; transition nodes usually refer to events
+triggering the system evolution (or state changing).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=\textwidth]{Figures/SITPN/pn-example}
+  \caption[An example of Petri net]{An example of Petri net - A
+    semaphor to prevent the parallel execution of \textit{Treatment 1}
+    and \textit{Treatment 2}.}
+  \label{fig:pn-example}
+\end{figure}
+
+\paragraph{Edges}
+In a Petri net, directed edges link together places and
+transitions. Places cannot be linked to other places, and the same
+stands for transitions.  There are two kinds of edges, \textit{pre} or
+\textit{incoming} edges, going from a place to a transition, and
+\textit{post} or \textit{outcoming} edges, going from a transition to
+a place. Places linked to a transition $t$ by incoming
+(resp. outcoming) edges will be referred to as the \textit{input}
+(resp. \textit{output}) of $t$. The same stands for a place $p$. For
+instance, in Figure~\ref{fig:pn-example}, $p_0$ and $sem$ are the
+input places of $t_0$, and $p_1$ is the output place of $t_0$; $t_1$
+and $t_3$ are the input transitions of place $sem$, and $t_0$ and
+$t_2$ are the output transitions of $sem$. Some weight --a natural
+number-- is associated to the edges of a Petri net. If no label
+appears on the edge then one is the default weight. Petri nets are
+said to be \textit{generalized} when edge weights are possibly greater
+than one.
+
+\paragraph{Marking}
+In Figure~\ref{fig:pn-example}, places $p_0$, $p_3$ and $sem$ are
+marked with tokens, represented by little black circles.  This means
+that places $p_0$, $p_3$ and $Sem$ are currently active.  The
+distribution of tokens over places is called the \textit{marking} of
+the net. The marking of a Petri net reflects the overall state of the
+modelled system at a certain moment in its activity cycle.
+
+\paragraph{Transition firing}
+In a Petri net, the marking evolves based on a token
+consump\-tion-production system. Transitions will consume tokens from
+their input places, and produce tokens to their output places. This
+whole system is called \textit{transition firing}. In order to be
+firable, a transition must be \textit{sensitized} (or
+\textit{enabled}), meaning that the number of tokens in each of its
+input places must be equal or greater than the weight of its incoming
+edges. For instance, in Figure~\ref{fig:pn-example}, the transition
+$t_0$ is sensitized because the weight of the arc ($p_0$, $t_0$) is of
+one (default value), and place $p_0$ is marked with one token, and the
+same stands for the number of tokens in place $sem$ and the weight of
+the arc ($sem$, $t_0$). As a counter example, transition $t_3$ is not
+sensitized because there is no tokens in its input place $p_2$.  Other
+parameters affect the firability of transitions, some of them will be
+presented in Section~ \ref{subsec:hpn-particularities}. When a
+sensitized transition is fired, tokens are retrieved from its input
+places (as much tokens as the weight of the arcs) and produced in its
+output places (as much tokens as the weight of the arcs).  This
+process represents the occurence of an event --denoted by the
+transition-- triggering the evolution from one state of the system to
+another. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=\textwidth]{Figures/SITPN/firing-example}
+  \caption[An example of transition firing]{The PN resulting of the firing of transition $t_0$.}
+  \label{fig:firing-example}
+\end{figure}
+
+\paragraph{Inhibitor and test edges}
+The class of \textit{extended} Petri nets introduces the inhibitor and
+test edges. As shown in Figure~\ref{fig:inhib-test-arcs}, test arc
+tips are black circles and inhibitor arc tips are white
+circles. Inhibitor and test edges are incoming edges, always coming
+from a place toward a transition.
+%
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.2\textwidth]{Figures/SITPN/inhib-arc}  
+  % \hspace{50pt}
+  \includegraphics[keepaspectratio=true, width=.2\textwidth]{Figures/SITPN/test-arc}
+  \caption{An example of inhibitor and test arcs.}
+  \label{fig:inhib-test-arcs}
+\end{figure}
+The particularity of the inhibitor and test edges is that they are not
+consuming tokens in input places after the firing of a transition.
+Indeed, they are just testing the number of tokens in incoming places
+to determine if the transition is enabled. Inhibitor arcs ensure that
+the number of tokens in input places is strictly lower than their
+weights; test arcs ensure that the number of tokens in pre-places is
+equal or greater than their weights. Therefore, in Figure
+~\ref{fig:inhib-test-arcs}.a, transition $t_0$ is sensitized because
+there is strictly less than one token in place $p_0$ and strictly less
+than two tokens in place $p_1$. In the same way, in Figure~
+\ref{fig:inhib-test-arcs}.b, transition $t_0$ is sensitized because
+there is at least one token in place $p_0$ and three tokens in place
+$p_1$.
+
+The purpose of Hilecop Petri nets is to model the behavior of
+electronic components involved in an electronic system architecture.
+Therefore, to meet the requirements of electronic system modelling,
+Hilecop Petri nets combine the properties of multiple classes of Petri
+nets, which are presented here.
+
+\paragraph{Interpreted Petri nets}
+Interpreted Petri nets (IPN) are useful to design the interaction
+between a system and its outside environment. As they describe
+electronic systems which are not completely cut from the outside
+world, Hilecop Petri nets are in need of interpretation.  Thus,
+interpretation introduces three new concepts:
+
+\begin{itemize}
+\item Continuous actions, associated to the places of a Petri net.
+  Actions associated to a place $p$ are activated as long as $p$ is
+  marked. Actions correspond to the setting of a electric signal
+  controlling some actuator (e.g, maintaining a LED on).
+\item Functions (or discrete actions), associated to the transitions
+  of a Petri net. When a transition $t$ is fired, all functions
+  associated to $t$ are executed.  Functions can be any kind of
+  discrete operations --variable incrementation, for instance--
+  manipulating both internal variable and external signal values.
+\item Conditions, associated to the transitions of a Petri net.
+  Conditions are boole\-an expressions, calculated using both internal
+  variable and external signal values.  If the value of condition $c$
+  associated to transition $t$ is \textit{false} then transition $t$
+  is not firable.
+\end{itemize}
+
+The figure \ref{fig:pn-classes}.a illustrates the use of actions,
+functions and conditions in an interpreted Petri net.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=0.5\textwidth]{Figures/SITPN/interpreted-pn}
+  \includegraphics[keepaspectratio=true, width=0.2\textwidth]{Figures/SITPN/time-pn}
+  \caption{Different classes of Petri nets.}
+  \label{fig:pn-classes}
+\end{figure}%
+%
+In figure \ref{fig:pn-classes}, the action $a_0$ is activated as
+place $p_0$ is marked by one token. Also, function $f_0$ will be
+executed at the firing of $t_0$, that is if condition $c_0$ is
+\textit{true} and $t_0$ is sensitized.
+
+\paragraph{Time Petri nets}
+
+In a time Petri net (TPN), time intervals, and time counters are
+associated to transitions. The goal of associating a time interval to
+a transition is to constraint the firing of this transition to a
+certain time window. As shown in figure \ref{fig:pn-classes}.b, time
+intervals are of the form $[a, b]$, where $a\in\mathbb{N}^{*}$ and
+$b\in\{\mathbb{N}^{*}\cup\infty\}$. Time counters are represented
+between diamond brackets.  For each sensitized transition associated
+with a time interval, time counters are incremented at a certain time
+step, previously defined by the modeller. Then, time counters are
+reset when transitions are fired or somehow disabled. In time Petri
+nets, a transition is firable only if its time counter value is within
+its time interval. For instance, in figure, only transition $t_0$ is
+firable.
+
+\subsection{Particularities of SITPNs}
+\label{subsec:hpn-particularities}
+
+This section goal is to show how the choices regarding the properties
+of Hilecop Petri nets are strongly related to their final FPGA-based
+implementation.
+ 
+% To understand the meaning of internal and external
+% variable values --$heat\_sensor\_value$, $x$ and $y$, in figure
+% \ref{fig:pn-classes}-- used by actions, functions and conditions,
+% one as to remember that in its final state, an electronic component,
+% described at a high-level with Hilecop Petri nets, will be handling
+% \textit{signals} on a FPGA card. Some signals will be provided by the
+% outside world --sensors, or by any component involved in a
+% distributed architecture--; some signals represent internal variables
+% handled by the component.
+
+\paragraph{Synchronous execution.}
+
+A clock signal regulates the evolution of Hilecop Petri nets, meaning
+that the evolution of an Hilecop Petri net is \textit{synchronized}
+with two clock events: the rising edge and the falling edge of the
+signal. Figure \ref{fig:sync-exec} depicts the process of transition
+firing and global state evolution, following the clock signal.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=1.0\textwidth]{Figures/SITPN/sync-exec}
+  \caption{Evolution of the Hilecop Petri nets synchronized with a clock signal.}
+  \label{fig:sync-exec}
+\end{figure}
+
+As shown in figure \ref{fig:sync-exec}, the marking evolution process
+is divided in two steps. First, on \textcircled{1}, firable
+transitions are collected and actions are either started or stopped
+depending on the marking of the associated places. Then, on
+\textcircled{3}, all previously collected firable transitions are
+fired, and the associated functions are executed. The implementation
+of places and transitions on FPGA is responsible for the separation of
+transition firing in two steps \cite{Leroux2014}.
+
+Why do we need a synchronous execution for Hilecop Petri nets?  While
+functions execute themselves instantaneously at an abstract level, it
+is not the case when implemented on FPGA. Indeed, on FPGA, the
+execution of functions takes a certain amount of time related to the
+propagation of electric signals inside the electronic circuit. Figure
+illustrates the effect of the time taken by the execution of function
+$f_0$.
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true,width=0.9\textwidth]{Figures/SITPN/async-exec-issue}
+  \caption{Effect of the duration of functions in firing decisions
+    \cite{Leroux2014}. }
+  \label{fig:async-exec-issue}
+\end{figure}
+
+As it is standard in Petri net theory, the marking evolves in an
+\textit{asynchronous} way, that is, transitions are fired one at a
+time. In figure, $t_0$ is fired before $t_1$, which triggers the execution
+of $f_0$. Therefore, two cases arise:
+\begin{itemize}
+\item $f_0$ has not completed yet when the decision to fire $t_1$ is
+  taken, although the execution of $f_0$ affects the firing $t_1$.
+\item $f_0$ has completed when the decision to fire $t_1$ is taken.
+\end{itemize}
+One can see how the amount of time taken by the execution of functions
+influences the evolution of a Petri net implemented on FPGA.  If the
+evolution of Hilecop Petri nets is asynchronous, there are no
+automatic means to ensure that $f_0$ completes every time before the
+firing of $t_1$ \cite{leroux}.  At the end of the Hilecop production
+line, when Petri nets are implemented on FPGA, it is possible
+leveraging an electronic circuit analyzer to determine the longest
+signal propagation path of the system. Then, it is easy to deduce an
+upper time bound for all treatments --which are nothing more than
+signal propagations-- taking place in the physical system. Eventually,
+the clock signal frequency will be set accordingly, to permit that all
+functions have enough time to be completely executed within half a
+clock period (\textcircled{4} in figure \ref{fig:sync-exec}). Thus the
+use of a clock signal and the orientation of Hilecop Petri nets toward
+a synchronous execution are mandatory.
+
+\paragraph{Conflict resolution.}
+
+The choice of a synchronous evolution is not without
+consequences. Indeed, some issues arise when trying to express an
+\textit{or} branching with Hilecop Petri nets, as shown by figure
+\ref{fig:structural-conflict}.a.
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true,width=.4\textwidth]{Figures/SITPN/structural-conflict}
+  \caption{Transitions in structural conflict.}
+  \label{fig:structural-conflict}
+\end{figure}
+The semantics of synchronous execution is that all transitions are
+fired at the same time. Then, in figure
+\ref{fig:structural-conflict}.a, transitions $t_0$ and $t_1$ are both
+sensitized by place $p_0$, and consequently are both fired at the same
+time. The system acts as if two tokens were available in place $p_0$,
+one for the firing of $t_0$ and another for the firing of $t_1$. In
+the situation depicted by figure \ref{fig:structural-conflict}.a,
+$t_0$ and $t_1$ are said to be in \textit{structural conflict} with
+each other, meaning they have one of their pre-places in common. To
+resolve structural conflicts, priorities are drawn between transitions
+which will determine a firing order in case of conflict. In figure
+\ref{fig:structural-conflict}.b, the dotted arrow represents the
+priority relation between transition $t_0$ and $t_1$.  Here, $t_0$ has
+a higher firing priority than $t_1$.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
