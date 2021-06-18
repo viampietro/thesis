@@ -61,13 +61,13 @@
 
 \begin{tikzpicture}
   
-  \node[place]  (p0) [label={above:\ssmall $P_0$}] {};
-  \node[place, tokens=1] (p1) [right =of p0, label={above:\ssmall $P_1$}] {};
-  \node[place]           (p2) at ($(p0)!0.5!(p1)-(0, 2)$) [label={left:\ssmall $P_2$}] {};
+  \node[place]  (p0) [label={above:$p_0$}] {};
+  \node[place, tokens=1] (p1) [right =of p0, label={above:$p_1$}] {};
+  \node[place]           (p2) at ($(p0)!0.5!(p1)-(0, 2)$) [label={left:$p_2$}] {};
   
-  \node[transition] (t0) at ($(p0)!0.5!(p1)-(0, 1)$) [label={left:\ssmall $T_0$}] {}
+  \node[transition] (t0) at ($(p0)!0.5!(p1)-(0, 1)$) [label={left:$t_0$}] {}
   edge[inhib, bend right=20] (p0)
-  edge[inhib, bend left=20] node[right] {\ssmall 2} (p1)
+  edge[inhib, bend left=20] node[right] {2} (p1)
   edge[post]                 (p2);
 
 \end{tikzpicture}

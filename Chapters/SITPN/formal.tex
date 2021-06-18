@@ -3,8 +3,8 @@
 
 \begin{definition}[SITPN]
   \label{def:sitpn}
-  A synchronously executed, extended, generalized, interpreted, and time Petri net
-  with priorities is a tuple\\
+  A synchronously executed, extended, generalized, interpreted, and
+  time Petri net with priorities is a tuple
   ${<}P,T,pre,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
   \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$, where we have:
   % 
@@ -133,7 +133,7 @@ Def.~\ref{def:wd-sitpn}, are not ensured, they will lead to
 compile-time errors during the transformation into \vhdl{}.
 
 \begin{definition}[Well-defined SITPN]\label{def:wd-sitpn}
-  A given $sitpn\in{}SITPN$ is well-defined if and only if:
+  A given $sitpn\in{}SITPN$ is well-defined if:
   \begin{itemize}
   \item $T\neq\emptyset$, the set of transitions must not be empty.
   \item $P\neq\emptyset$, the set of places must not be empty.
@@ -199,7 +199,7 @@ compile-time errors during the transformation into \vhdl{}.
     $\sum\limits_{t\in{}T'}pre(p,t)$ where $T'\subseteq{}T$. This
     expression is a notation for
     $\sum\limits_{t\in{}T'}\begin{cases}\omega~if~pre(p,t)=(\omega,\mathtt{basic})\\
-      0~otherwise \\ \end{cases}$. Indeed, when computing a sum of
+      0~otherwise \end{cases}$ Indeed, when computing a sum of
     output tokens (i.e, resulting of a firing process), we want to add
     to the sum the weight of the arc between place $p$ and a
     transition $t\in{}T'$ only if there exists an arc of type

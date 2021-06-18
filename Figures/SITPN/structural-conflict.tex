@@ -58,17 +58,17 @@
 
 \begin{tikzpicture}
 
-  \node[place, tokens=1] (p0) [label={above:$P_0$}] {};
-  \node[transition] (t0) [below left=6mm of p0, label={left:$T_0$}] {}
+  \node[place, tokens=1] (p0) [label={above:$p_0$}] {};
+  \node[transition] (t0) [below left=6mm of p0, label={left:$t_0$}] {}
   edge[pre, bend left] (p0);
-  \node[transition] (t1) [below right=6mm of p0, label={right:$T_1$}] {}
+  \node[transition] (t1) [below right=6mm of p0, label={right:$t_1$}] {}
   edge[pre, bend right] (p0);
   \node at ($(p0)-(0,1.7)$) {\ssmall (a) Without priorities.};
   
-  \node[place, tokens=1] (p0') [right =3cm of p0, label={above:$P_0$}] {};
-  \node[transition] (t0') [below left=6mm of p0', label={left:$T_0$}] {}
+  \node[place, tokens=1] (p0') [right =3cm of p0, label={above:$p_0$}] {};
+  \node[transition] (t0') [below left=6mm of p0', label={left:$t_0$}] {}
   edge[pre, bend left] (p0');
-  \node[transition] (t1') [below right=6mm of p0', label={right:$T_1$}] {}
+  \node[transition] (t1') [below right=6mm of p0', label={right:$t_1$}] {}
   edge[pre, bend right] (p0')
   (t1'.south) edge[pre, bend left, dotted] (t0'.south);
   \node at ($(p0')-(0,1.7)$) {\ssmall (b) With priorities.};

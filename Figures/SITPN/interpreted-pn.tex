@@ -60,41 +60,49 @@
 
 \begin{document}
 
-\begin{minipage}{0.26\textwidth}
 \begin{tikzpicture}
-  \node[place, tokens=1] (p0) [label={left:\ssmall $P_0$}] {};
-  \node[right =3pt of p0] {\ssmall $a_0$};
   
-  \node[place, tokens=1] (p1) [right =of p0, label={right:\ssmall $P_1$}] {};
-  \node[place] (p2) at ($(p0)!0.5!(p1)-(0, 2)$) [label={left:\ssmall $P_2$}] {};
-  \node[right =3pt of p2] {\ssmall $a_1$};
+  \node (pn) {
+    \begin{tikzpicture}
+      \node[place, tokens=1] (p0) [label={left:$p_0$}] {};
+      \node[anchor=west] at ($(p0.east)$) {$a_0$};
+      
+      \node[place, tokens=1] (p1) [right =of p0, label={right:$p_1$}] {};
+      \node[place] (p2) at ($(p0)!0.5!(p1)-(0, 2)$) [label={left:$p_2$}] {};
+      \node[anchor=west] at ($(p2.east)$) {$a_1$};
+      
+      \node[transition] (t0) at ($(p0)!0.5!(p1)-(0, 1)$) [label={left:$t_0$}] {}
+      edge[pre, bend right=20] (p0)
+      edge[pre, bend left=20] (p1)
+      edge[post] (p2);
+      
+      \node[right =3pt of t0, yshift=+5pt] {$f_0$};
+      \node[right =3pt of t0, yshift=-5pt] {$c_0$};
+      
+      \node[transition] (t1) at ($(p2)-(0, 1)$) [label={left:$t_1$}] {}
+      edge[pre] (p2)
+      edge[post, bend left=45] (p0);
+      
+      \node[right =3pt of t1] {$c_1$};
+    \end{tikzpicture}
+  };
+
+  \node[anchor=west] (tab) at ($(pn.east)+(.4,0)$) {
+    \begin{tabular}{|l|}
+      \hline
+      $c_0$: heat sensor value $>10^{\circ}$C \\
+      $f_0$: launch cooler \\
+      $c_1$: heat sensor value $\le{}10^{\circ}$C \\
+      $a_0$: green LED on \\
+      $a_1$: red LED on \\
+      \hline
+    \end{tabular}
+  };
   
-  \node[transition] (t0) at ($(p0)!0.5!(p1)-(0, 1)$) [label={left:\ssmall $T_0$}] {}
-  edge[pre, bend right=20] (p0)
-  edge[pre, bend left=20] (p1)
-  edge[post] (p2);
-  
-  \node[right =3pt of t0, yshift=+3pt] {\ssmall $f_0$};
-  \node[right =3pt of t0, yshift=-3pt] {\ssmall $c_0$};
-  
-  \node[transition] (t1) at ($(p2)-(0, 1)$) [label={left:\ssmall $T_1$}] {}
-  edge[pre] (p2)
-  edge[post, bend left=35] (p0);
-  
-  \node[right =3pt of t1] {\ssmall $c_1$};  
 \end{tikzpicture}
-\end{minipage}\hspace{1pt}
-\begin{minipage}{0.36\textwidth}
-  \begin{framed}
-    \fontsize{8}{9}\selectfont
-    $c_0$: $heat\_sensor\_value\ > 10$\\
-    $f_0$: $x := 1;\ y := 0;$\\
-    $c_1$: $x\ \&\&\ y;$
-    \par
-  \end{framed}
-\end{minipage}
 
 \end{document}
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t

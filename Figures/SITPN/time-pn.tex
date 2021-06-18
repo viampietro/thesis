@@ -57,25 +57,25 @@
 \begin{document}
 
 \begin{tikzpicture}
-  \node[place, tokens=1] (p0) [label={above:$P_0$}] {};
-  \node[place, tokens=1] (p1) [right =of p0, label={above:$P_1$}] {};
+  \node[place, tokens=1] (p0) [label={above:$p_0$}] {};
+  \node[place, tokens=1, anchor=north] (p1) at ($(p0.south)-(0,1)$) [label={left:$p_1$}] {};
 
-  \node[transition] (t0) at ($(p0)!0.5!(p1)$) [label={above:$T_0$}] {}
+  \node[transition] (t0) at ($(p0.south)!0.5!(p1.north)$) [label={left:$t_0$}] {}
   edge[pre] (p0)
   edge[post] (p1);
-  \node (c0) at ($(p0)!0.5!(p1)-(0,7mm)$) [align=center, text width= 1cm] {
+  \node (c0) at ($(t0.east)$) [anchor=west, align=center, text width= 1cm] {
     \ssmall
     $[2, \infty]$
-    $<2>$
+    \textcolor{red}{${<}2{>}$}
     \par
   };
   
-  \node[transition] (t1) [right =3mm of p1, label={above:$T_1$}] {}
+  \node[transition] (t1) at ($(p1.south)-(0,.5)$) [label={left:$t_1$}] {}
   edge[pre] (p1);
-  \node (c1) [right =3mm of p1, xshift=-4mm, yshift=-7mm, align=center, text width= 1cm] {
+  \node (c1) at ($(t1.east)$) [anchor=west, align=center, text width= 1cm] {
     \ssmall
     $[2, 4]$
-    $<1>$
+    \textcolor{red}{${<}1{>}$}
     \par
   };
 \end{tikzpicture}
