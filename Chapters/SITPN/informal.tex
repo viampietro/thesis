@@ -300,26 +300,41 @@ clock signal, the marking is updated, i.e. transitions are fired,
 reset orders are sent to all transitions that have been fired or
 disabled by the firing process, and all functions associated to fired
 transitions are executed. Then, on the falling edge of the clock
-signal, the fresh condition values are provided by the environment,
-the time counter values are either incremented, reset or values are
+signal, fresh condition values are provided by the environment, the
+time counter values are either incremented, reset or values are
 stalling (see the following remark on locked time counters), and all
-action associated with marked places are activated. Figure gives an
-example of the evolution of the state of a given SITPN through one
-clock cycle. The aim of this figure and the explanation that follows
-is to give some hints to the reader about the semantics of SITPNs
-before giving its formal definition in Section~\ref{sec:sitpn-sem}.
+action associated with marked places are
+activated. Figure~\ref{fig:sitpn-state-exec} gives an example of the
+evolution of the state of a given SITPN through one clock cycle. The
+aim of this figure and the explanation that follows is to give some
+hints to the reader about the semantics of SITPNs before giving its
+formal definition in Section~\ref{sec:sitpn-sem}.
 
-From Step~1 to Step~2, transition $t_0$ is fired. Indeed, transition
-$t_0$ gathers all the necessary conditions to trigger the firing
-process, namely: $t_0$ is enabled by the current marking, condition
-$c_0$ is \texttt{true} (appears in green), $t_0$'s time counter value
-is within the time interval. As a consequence, one token is consumed
-in place $p_0$ and one token is produced in place $p_1$, function
-$f_0$ is executed at Step~2 (appears in green) and a reset order is
-sent to the time counter of $t_0$ (appears in blue). From Step~2 to
-Step~3, the activation activation status are updated; $a_0$ stays
-activated place $p_0$ is marked; $a_1$ becomes newly activated as
-$p_1$ is marked. The time counter values are updated; $t_0$'s time
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/SITPN/sitpn-state-evol}
+  \caption[Evolution of an SITPN over one clock cycle.]{Evolution of
+    an SITPN over one clock cycle. Conditions appear in green when
+    their value is \texttt{true} and in red otherwise; actions and
+    functions appear in green when they are activated/executed and in
+    red otherwise; time counters appear in red and between diamond
+    brackets; time counters appear in blue when they receive reset
+    orders.}
+  \label{fig:sitpn-state-exec}
+\end{figure}
+
+From Step~1 to Step~2, the rising edge of the clock signal triggers
+the SITPN state evolution. Here, transition $t_0$ is fired. At Step~1,
+transition $t_0$ gathers all the necessary conditions to trigger the
+firing process, namely: $t_0$ is enabled by the current marking,
+condition $c_0$ is \texttt{true} (appears in green), $t_0$'s time
+counter value is within the time interval. As a consequence, one token
+is consumed in place $p_0$ and one token is produced in place $p_1$,
+function $f_0$ is executed at Step~2 (appears in green) and a reset
+order is sent to the time counter of $t_0$ (appears in blue). From
+Step~2 to Step~3, the activation activation status are updated; $a_0$
+stays activated place $p_0$ is marked; $a_1$ becomes newly activated
+as $p_1$ is marked. The time counter values are updated; $t_0$'s time
 counter is set to zero as the transition previously received a reset
 order. However, as $t_0$ is still sensitized by the new marking, its
 time counter is incremented. Thus, the resulting time counter value at
@@ -329,29 +344,113 @@ condition $c_0$ takes the value \texttt{false}.
 
 \paragraph{A remark on priorities}
 
-Some issues arise when trying to express an \textit{or} branching with
-Hilecop Petri nets, as shown by figure
-% \ref{fig:structural-conflict}.(a).
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[keepaspectratio=true,width=.4\textwidth]{Figures/SITPN/structural-conflict}
-%   \caption{Transitions in structural conflict.}
-%   \label{fig:structural-conflict}
-% \end{figure}
 The semantics of synchronous execution is that all transitions are
-fired at the same time. Then, in figure
-\ref{fig:structural-conflict}.a, transitions $t_0$ and $t_1$ are both
-sensitized by place $p_0$, and consequently are both fired at the same
-time. The system acts as if two tokens were available in place $p_0$,
-one for the firing of $t_0$ and another for the firing of $t_1$. In
-the situation depicted by figure \ref{fig:structural-conflict}.a,
-$t_0$ and $t_1$ are said to be in \textit{structural conflict} with
-each other, meaning they have one of their pre-places in common. To
-resolve structural conflicts, priorities are drawn between transitions
-which will determine a firing order in case of conflict. In figure
-\ref{fig:structural-conflict}.b, the dotted arrow represents the
-priority relation between transition $t_0$ and $t_1$.  Here, $t_0$ has
-a higher firing priority than $t_1$.
+fired at the same time. In Figure~\ref{fig:double-consum}, transitions
+$t_0$ and $t_1$ are both sensitized by place $p_0$, and consequently
+are both fired at the same time. The system acts as if two tokens were
+available in place $p_0$, one for the firing of $t_0$ and another for
+the firing of $t_1$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.8\textwidth]{Figures/SITPN/double-consum}
+  \caption[Double consumption of token in a SITPN.]{Double consumption
+    of token in a SITPN. On the left side, the current marking before
+    the firing of $t_0$ and $t_1$; on the right side, the marking
+    resulting of the firing of $t_0$ and $t_1$. The arrow indicates
+    the occurence of a rising edge that triggers the firing process.}
+  \label{fig:double-consum}
+\end{figure}
+
+In the context of an SITPN, a branching like the one of
+Figure~\ref{fig:sitpn-state-exec}, normally interpreted as an
+disjunctive branching, takes the semantics of a conjunctive branching
+when no priority are prescribed between the conflicting
+transitions. To avoid the phenomenon of ``double consumption'' of
+tokens, we enforce the resolution of the structural conflict by means
+of mutual exclusion or through the application of priorities. This
+policy about the resolution of structural conflict is part of the
+definition of a well-defined SITPN presented in
+Section~\ref{sec:sitpn-wd}, and is mandatory to produce safe models of
+digital systems.
+
+When a structural conflict between transitions is solved with
+priorities, the firing process follows a slightly different
+mechanism. As illustrated in Figure~\ref{fig:resid-marking}, to
+determine which transitions of $t_0$, $t_1$ and $t_2$ must be fired, a
+\emph{residual marking} is computed by following the priority
+order. For each transition of the group $t_0$, $t_1$ and $t_2$, the
+residual marking represents the remnant of tokens in $p_0$ after the
+firing of transitions with a higher firing priority. Thus, in the
+semantics of SITPNs, we add an extra condition to the firing of a
+transition: to be fired, a transition must be enabled by the current
+marking, must have all its conditions valuated to \texttt{true}, must
+have its time counter within its time interval and must be enabled by
+the residual marking. The computation of the residual marking only
+applies the consumption phase of the firing process, i.e. no tokens
+are generated.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/SITPN/resid-marking}
+  \caption[Computation of the residual marking of a group of
+  conflicting transitions.]{Computation of the residual marking for a
+    group of conflicting transitions. At \circled{1}
+    (resp. \circled{2} and \circled{3}), the residual marking for
+    transition $t_0$ (resp. $t_1$ and $t_2$). Condition $c_0$ is in
+    red to indicate that it is currently valuated to \texttt{false}.}
+  \label{fig:resid-marking}
+\end{figure}
+
+In Figure~\ref{fig:resid-marking}, the residual marking for $t_0$
+corresponds to the marking obtained after the firing of all
+transitions with a higher priority than $t_0$. As $t_0$ is the
+transition with the highest firing priority, the residual marking for
+$t_0$ is equal to the current marking. Transition $t_0$ gathers all
+the conditions to be firable and is enabled by the residual marking;
+thus, $t_0$ is fired. The residual marking for $t_1$ is the marking
+obtained after the firing of $t_0$, i.e. the only transition with a
+higher priority.  As illustrated at \circled{2}, $t_1$ is enabled by
+the residual marking but it does not gather all the conditions to be
+firable; indeed, condition $c_0$ associated to $t_0$ is
+\texttt{false}. Thus, $t_0$ is not fired. The residual marking for
+$t_2$ is obtained after the firing of $t_0$ only. Indeed, transition
+$t_1$ has a higher firing priority than $t_2$, however, it is not part
+of the set of fired transitions and thus it is not taken into account
+in the computation of the residual marking for $t_2$. Thus, the
+residual marking at \circled{3} enables transition $t_2$, and as $t_2$
+gathers all the conditions to be firable, then $t_2$ is fired.
+
+\paragraph{Locked time counters}
+
+SITPNs inherit from both the properties of time PNs and interpreted
+PNs. As a consequence, the phenomenon of \emph{locked} time counters
+is a consequence of this combination. As illustrated in
+Figure~\ref{fig:locked-tc}, the value of a time counter can overreach
+the upper bound of the associated time interval.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.5\textwidth]{Figures/SITPN/locked-tc}
+  \caption[An example of locked time counter.]{An example of locked
+    time counter. Condition $c$ is equal \texttt{false} and thus
+    appears in red.}
+  \label{fig:locked-tc}
+\end{figure}
+
+This situation can only arise if a condition hinders the firing of a
+given transition while the considered transition is still enabled by
+the marking. As a consequence, the time counter will be incremented at
+every clock cycle until the upper bound of the time interval is
+overreached. Then, at this point, the time counter is said to be
+\emph{locked} and its value will no more evolve.  In
+Figure~\ref{fig:locked-tc}, condition $c$ is valuated to
+\texttt{false}, thus, transition $t$ can not be fired but is still
+sensitized by the marking. As a consequence, on the next falling edge,
+the time counter of transition $t$ is incremented and overreaches the
+upper bound of interval $[2,4]$ and thus becomes locked.
+
+
 
 %%% Local Variables:
 %%% mode: latex

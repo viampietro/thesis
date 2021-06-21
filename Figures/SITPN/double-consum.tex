@@ -1,0 +1,100 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node (pn1) {
+    \begin{tikzpicture}
+      \node[place, tokens=1] (p0) [label={above:$p_0$}] {};
+      \node[transition] (t0) [below left=6mm of p0, label={left:$t_0$}] {}
+      edge[pre, bend left] (p0)
+      node[place, anchor=north] (p1) at ($(t0.south)-(0,.5)$) {}
+      edge[pre] (t0);
+      
+      \node[transition] (t1) [below right=6mm of p0, label={right:$t_1$}] {}
+      edge[pre, bend right] (p0)
+      node[place, anchor=north] (p2) at ($(t1.south)-(0,.5)$) {}
+      edge[pre] (t1);
+    \end{tikzpicture}
+  };
+
+  \node (pn2) at ($(pn1.east)+(3,0)$) {
+    \begin{tikzpicture}
+      \node[place] (p0) [label={above:$p_0$}] {};
+      \node[transition] (t0) [below left=6mm of p0, label={left:$t_0$}] {}
+      edge[pre, bend left] (p0)
+      node[place, anchor=north, tokens=1] (p1) at ($(t0.south)-(0,.5)$) {}
+      edge[pre] (t0);
+      
+      \node[transition] (t1) [below right=6mm of p0, label={right:$t_1$}] {}
+      edge[pre, bend right] (p0)
+      node[place, anchor=north, tokens=1] (p2) at ($(t1.south)-(0,.5)$) {}
+      edge[pre] (t1);
+
+
+    \end{tikzpicture}
+  };  
+  \draw ($(pn1.east)-(.1,0)$) edge[->, double, line width=1pt] node[midway, above] {\Large$\uparrow$} ($(pn2.west)+(.1,0)$);
+  
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

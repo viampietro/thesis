@@ -1,5 +1,13 @@
+Hoping that the reader has now a fair understanding of the concepts
+underlying the SITPNs and their evolution dynamics, we now give the
+formal definition of the SITPN structure and of its execution
+semantics. We also introduce the concept of a \emph{well-defined}
+SITPN at the end of the section.
+
 \subsection{SITPN structure and well-definition}
 \label{sec:struct-and-wd}
+
+\noindent{}An SITPN is formally defined as follows:
 
 \begin{definition}[SITPN]
   \label{def:sitpn}
@@ -17,11 +25,11 @@
   \item $post\in{}T\rightarrow{}P\nrightarrow\mathbb{N}^{*}$, the function
     associating a weight to transition-place edges.
   \item $M_0\in{}P\rightarrow\mathbb{N}$, the initial marking of the SITPN.
-  \item $\succ\subseteq{}(T\times{}T)$, the priority relation which is a
-    strict order over the set of transitions.
-  \item $\mathcal{A}=\{a_0,\ldots,a_i\}$, a set of continuous actions.
-  \item $\mathcal{C}=\{c_0,\ldots,c_j\}$, a set of conditions.
-  \item $\mathcal{F}=\{f_0,\ldots,f_k\}$, a set of functions (discrete actions).
+  \item $\succ\subseteq{}(T\times{}T)$, the priority relation which is
+    a partial order over the set of transitions.
+  \item $\mathcal{A}=\{a_0,\ldots,a_i\}$, a finite set of continuous actions.
+  \item $\mathcal{F}=\{f_0,\ldots,f_k\}$, a finite set of functions (discrete actions).
+  \item $\mathcal{C}=\{c_0,\ldots,c_j\}$, a finite set of conditions.
   \item $\mathbb{A}$ $\in$ ${}P$ $\rightarrow$ $\mathcal{A}$
     $\rightarrow$ $\mathbb{B}$, the function associating actions to
     places.  $\forall{}p\in{}P$, $\forall{}a\in\mathcal{A}$,
@@ -47,115 +55,12 @@
   \end{enumerate}
 \end{definition}
 
-\paragraph{Conflict Definition} In the definition of an SITPN, the
-priority relation is a mean to solve a situation of conflict in a pair
-of transitions. We will keep the definition of a conflict as simple as
-possible. Informally, the transitions of a pair are in conflict if
-they have an common input place, and if both are linked to this input
-place by a \texttt{basic} arc. Figure~\ref{fig:basic-conflict} depicts
-a situation of conflict between two transitions.
-
-At some point of the execution of the SITPN, the marking possibly
-enables the two transitions of a conflicting pair in such a manner
-that the firing of one transition disables the other; then, the
-conflict is said to be \emph{effective}. The behavior of PNs is
-fundamentally asynchronous, and a token can only be consumed by one
-transition. However, in a synchronous setting as the one of the SITPN,
-all transitions are first elected to be fired, and then all fired at
-the same time.  Therefore, the situation can arise where a same token
-is consumed by two transitions, on behalf of them being transitions in
-effective conflict that are both elected to be fired (e.g,
-Figure~\ref{fig:basic-conflict}). To prevent the phenomenon of
-``double spending'', the well-definition property of an $SITPN$
-enforces the resolution of all conflicts, i.e, to be able to decide
-which transition in a conflicting pair will be fired when the conflict
-becomes effective.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[keepaspectratio,width=.3\linewidth]{Figures/SITPN/struct-conflict-with-basic}
-  \caption{Example of conflict between two transitions}
-  \label{fig:basic-conflict}
-\end{figure}
-
-The formal definition of a conflict is as follows:
-
-\begin{definition}[Conflict]
-  For a given $sitpn\in{}SITPN$, two transitions $t,t'\in{}T$ are in
-  conflict if and only if there exists a place $p\in{}P$ such that
-  $p\in{}input(t)\cap{}input(t')$ and there exist
-  $n,m\in\mathbb{N}^{*}$ such that $pre(p,t)=(n,\mathtt{basic})$ and
-  $pre(p,t')=(m,\mathtt{basic})$.
-\end{definition}
-
-A confict group qualifies a finite set of transitions that are all in
-conflict with each other through the same place. In
-Figure~\ref{fig:basic-conflict}, the set $\{t_0,t_1\}$ is a conflict
-group.  The formal definition of a conflict group is as follows:
-
-\begin{definition}[Conflict Group]
-  For a given $sitpn\in{}SITPN$, $T_c\subseteq{}T$ is a conflict group
-  if and only if there exists a place $p$ such that
-  $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
-\end{definition}
-
-Contrary to the statement made in \cite[p. 67]{Leroux2014}, we no more
-consider the notion of conflict as being transitive. To illustrate
-this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
-$\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
-Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
-dealt with, i.e, for all pair of transitions in the group the conflict
-must be solved. However, we no more consider transitions $t_0$ and
-$t_2$ as in conflict. We argue that even when no conflict resolution
-technique is applied between transitions in the same situation as
-$t_0$ and $t_2$, the execution of the $SITPN$ can neither result in
-the double-spending of a token, nor in the case where a transition is
-not elected to be fired even though it ought to be. Therefore, we no
-more consider the construction of merged conflict group (i.e, conflict
-groups must be merged into one if their intersection is not empty;
-e.g, $\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans}) as
-being necessary.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/SITPN/conflict-not-trans}
-  \caption{Example of two separate conflict groups}
-  \label{fig:conflict-not-trans}
-\end{figure}
-
-\subsubsection{Well-definition of an SITPN}
-\label{sec:sitpn-wd}
-
-A given $sitpn\in{}SITPN$ is well-defined if it enforces some
-properties needed on the \hilecop{} source models before the
-transformation into \vhdl{}. If the properties, layed out in
-Def.~\ref{def:wd-sitpn}, are not ensured, they will lead to
-compile-time errors during the transformation into \vhdl{}.
-
-\begin{definition}[Well-defined SITPN]\label{def:wd-sitpn}
-  A given $sitpn\in{}SITPN$ is well-defined if:
-  \begin{itemize}
-  \item $T\neq\emptyset$, the set of transitions must not be empty.
-  \item $P\neq\emptyset$, the set of places must not be empty.
-  \item There is no isolated place, i.e, a place that has neither
-    input nor output transitions:\\
-    $\nexists{}p\in{}P,~input(p)=\emptyset\wedge{}output(p)=\emptyset$,
-    where $input(p)$ (resp. $output(p)$) denotes the set of input
-    (resp. output) transitions of $p$.
-  \item There is no isolated transition, i.e, a transition that has
-    neither
-    input nor output places:\\
-    $\nexists{}t\in{}T,~input(t)=\emptyset\wedge{}output(t)=\emptyset$,
-    where $input(t)$ (resp. $output(t)$) denotes the set of input
-    (resp. output) places of $t$.
-  \item All conflicts must be solved by a mean of mutual exclusion:
-    priority relation, mutually exclusive conditions, mutually
-    exclusive time intervals, structural mutual exclusion.
-  \end{itemize}
-\end{definition}
-
 \subsection{SITPN State}
 \label{sec:sitpn-state}
+
+The SITPN semantics describes the evolution of the state of an SITPN
+through a number of clock cycles; thus, we must first define the SITPN
+state structure:
 
 \begin{definition}[SITPN State]
   \label{def:sitpnstate}
@@ -164,9 +69,8 @@ compile-time errors during the transformation into \vhdl{}.
   ${<}M,I,reset_t,ex,cond{>}$, where:
   \begin{enumerate}
   \item $M\in{}P\rightarrow\mathbb{N}$ is the current marking of sitpn.
-  \item $I\in{}T_i{}\rightarrow\mathbb{N}\sqcup\{\psi\}$ is the
-    function mapping time transitions to their current time counter
-    value or to the value \emph{locked}.
+  \item $I\in{}T_i{}\rightarrow\mathbb{N}$ is the function mapping
+    time transitions to their current time counter value.
   \item $reset_t\in{}T_i\rightarrow\mathbb{B}$ is the function mapping time
     transitions to time interval reset orders (defined as Booleans).
   \item $ex\in{}\mathcal{A}\sqcup\mathcal{F}\rightarrow\mathbb{B}$ is the function
@@ -176,6 +80,8 @@ compile-time errors during the transformation into \vhdl{}.
     current value of conditions (defined as Booleans).
   \end{enumerate}
 \end{definition}
+
+
 
 \subsection{Fired Transitions}
 \label{sec:fired-trans}
@@ -424,6 +330,116 @@ compile-time errors during the transformation into \vhdl{}.
         \infer3[$\tau>0$]{$E_c,\tau\vdash{}sitpn\xrightarrow{full}(s_0 :: s_0 :: s :: \theta_s)$}
       \end{prooftree}} 
   \end{tabular}
+\end{definition}
+
+
+\subsection{Well-definition of an SITPN}
+\label{sec:sitpn-wd}
+
+\paragraph{Conflict Definition} In the definition of an SITPN, the
+priority relation is a mean to solve a situation of conflict in a pair
+of transitions. We will keep the definition of a conflict as simple as
+possible. Informally, the transitions of a pair are in conflict if
+they have an common input place, and if both are linked to this input
+place by a \texttt{basic} arc. Figure~\ref{fig:basic-conflict} depicts
+a situation of conflict between two transitions.
+
+At some point of the execution of the SITPN, the marking possibly
+enables the two transitions of a conflicting pair in such a manner
+that the firing of one transition disables the other; then, the
+conflict is said to be \emph{effective}. The behavior of PNs is
+fundamentally asynchronous, and a token can only be consumed by one
+transition. However, in a synchronous setting as the one of the SITPN,
+all transitions are first elected to be fired, and then all fired at
+the same time.  Therefore, the situation can arise where a same token
+is consumed by two transitions, on behalf of them being transitions in
+effective conflict that are both elected to be fired (e.g,
+Figure~\ref{fig:basic-conflict}). To prevent the phenomenon of
+``double spending'', the well-definition property of an $SITPN$
+enforces the resolution of all conflicts, i.e, to be able to decide
+which transition in a conflicting pair will be fired when the conflict
+becomes effective.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.3\linewidth]{Figures/SITPN/struct-conflict-with-basic}
+  \caption{Example of conflict between two transitions}
+  \label{fig:basic-conflict}
+\end{figure}
+
+The formal definition of a conflict is as follows:
+
+\begin{definition}[Conflict]
+  For a given $sitpn\in{}SITPN$, two transitions $t,t'\in{}T$ are in
+  conflict if and only if there exists a place $p\in{}P$ such that
+  $p\in{}input(t)\cap{}input(t')$ and there exist
+  $n,m\in\mathbb{N}^{*}$ such that $pre(p,t)=(n,\mathtt{basic})$ and
+  $pre(p,t')=(m,\mathtt{basic})$.
+\end{definition}
+
+A confict group qualifies a finite set of transitions that are all in
+conflict with each other through the same place. In
+Figure~\ref{fig:basic-conflict}, the set $\{t_0,t_1\}$ is a conflict
+group.  The formal definition of a conflict group is as follows:
+
+\begin{definition}[Conflict Group]
+  For a given $sitpn\in{}SITPN$, $T_c\subseteq{}T$ is a conflict group
+  if and only if there exists a place $p$ such that
+  $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
+\end{definition}
+
+Contrary to the statement made in \cite[p. 67]{Leroux2014}, we no more
+consider the notion of conflict as being transitive. To illustrate
+this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
+$\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
+Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
+dealt with, i.e, for all pair of transitions in the group the conflict
+must be solved. However, we no more consider transitions $t_0$ and
+$t_2$ as in conflict. We argue that even when no conflict resolution
+technique is applied between transitions in the same situation as
+$t_0$ and $t_2$, the execution of the $SITPN$ can neither result in
+the double-spending of a token, nor in the case where a transition is
+not elected to be fired even though it ought to be. Therefore, we no
+more consider the construction of merged conflict group (i.e, conflict
+groups must be merged into one if their intersection is not empty;
+e.g, $\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans}) as
+being necessary.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/SITPN/conflict-not-trans}
+  \caption{Example of two separate conflict groups}
+  \label{fig:conflict-not-trans}
+\end{figure}
+
+
+
+A given $sitpn\in{}SITPN$ is well-defined if it enforces some
+properties needed on the \hilecop{} source models before the
+transformation into \vhdl{}. If the properties, layed out in
+Def.~\ref{def:wd-sitpn}, are not ensured, they will lead to
+compile-time errors during the transformation into \vhdl{}.
+
+\begin{definition}[Well-defined SITPN]\label{def:wd-sitpn}
+  A given $sitpn\in{}SITPN$ is well-defined if:
+  \begin{itemize}
+  \item $T\neq\emptyset$, the set of transitions must not be empty.
+  \item $P\neq\emptyset$, the set of places must not be empty.
+  \item There is no isolated place, i.e, a place that has neither
+    input nor output transitions:\\
+    $\nexists{}p\in{}P,~input(p)=\emptyset\wedge{}output(p)=\emptyset$,
+    where $input(p)$ (resp. $output(p)$) denotes the set of input
+    (resp. output) transitions of $p$.
+  \item There is no isolated transition, i.e, a transition that has
+    neither
+    input nor output places:\\
+    $\nexists{}t\in{}T,~input(t)=\emptyset\wedge{}output(t)=\emptyset$,
+    where $input(t)$ (resp. $output(t)$) denotes the set of input
+    (resp. output) places of $t$.
+  \item All conflicts must be solved by a mean of mutual exclusion:
+    priority relation, mutually exclusive conditions, mutually
+    exclusive time intervals, structural mutual exclusion.
+  \end{itemize}
 \end{definition}
 
 

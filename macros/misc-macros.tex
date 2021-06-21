@@ -49,6 +49,11 @@
 \newcommand\rnote[1]{\parbox{\linewidth}{\textcolor{Red}{\ding{212} #1}}}
 \newcommand\qedbox[1]{\colorbox{red!20}{#1}}
 
+% Circled text
+
+\newcommand\circled[1]{\tikz[baseline=(char.base)]{\node (char) [draw, circle,
+      inner sep=1pt] {\small #1};}}
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../main"
