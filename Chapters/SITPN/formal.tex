@@ -59,8 +59,8 @@ SITPN at the end of the section.
 \label{sec:sitpn-state}
 
 The SITPN semantics describes the evolution of the state of an SITPN
-through a number of clock cycles; thus, we must first define the SITPN
-state structure:
+through a given number of clock cycles; thus, we must first define the
+SITPN state structure:
 
 \begin{definition}[SITPN State]
   \label{def:sitpnstate}
@@ -69,33 +69,45 @@ state structure:
   ${<}M,I,reset_t,ex,cond{>}$, where:
   \begin{enumerate}
   \item $M\in{}P\rightarrow\mathbb{N}$ is the current marking of sitpn.
-  \item $I\in{}T_i{}\rightarrow\mathbb{N}$ is the function mapping
-    time transitions to their current time counter value.
-  \item $reset_t\in{}T_i\rightarrow\mathbb{B}$ is the function mapping time
-    transitions to time interval reset orders (defined as Booleans).
-  \item $ex\in{}\mathcal{A}\sqcup\mathcal{F}\rightarrow\mathbb{B}$ is the function
-    representing the current activation (resp. execution) state of actions
-    (resp. functions).
+  \item\label{item:sitpn-state-tc} $I\in{}T_i{}\rightarrow\mathbb{N}$
+    is the function mapping time transitions to their current time
+    counter value.
+  \item\label{item:sitpn-state-rst} $reset_t\in{}T_i\rightarrow\mathbb{B}$ is the function mapping
+    time transitions to time interval reset orders (defined as
+    Booleans).
+  \item $ex\in{}\mathcal{A}\sqcup\mathcal{F}\rightarrow\mathbb{B}$ is
+    the function representing the current activation (resp. execution)
+    state of actions (resp. functions).
   \item $cond\in\mathcal{C}\rightarrow\mathbb{B}$ is the function representing the
     current value of conditions (defined as Booleans).
   \end{enumerate}
 \end{definition}
 
+In Items~\ref{item:sitpn-state-tc} and \ref{item:sitpn-state-rst} of
+Definition~\ref{def:sitpnstate}, \emph{time} transitions refer to
+transitions with a time interval, i.e. the transitions belonging to
+the domain of $I_s$.
 
-
-\subsection{Fired Transitions}
+\subsection{Preliminary definitions and fired transitions}
 \label{sec:fired-trans}
 
-\begin{remark}[Relations between markings]
+Before formalizing the full SITPN semantics, we must introduce some
+definitions and notations, especially the definition of a
+\emph{firable} and a \emph{fired} transition.
+
+We use the two following notations to simplify the formalization of
+the SITPN semantics.
+
+\begin{notation}[Relations between markings]
   For all relation $\mathcal{R}$ existing between two marking
   functions $M$ and $M'$, the expression $\mathcal{R}(M,M')$ is a
   notation for $\forall{}p\in{}P,~\mathcal{R}(M(p),M'(p))$. For
   instance, $M'=M-\sum\limits_{t_i\in{}Pr(t)}pre(t_i)$ is a notation
   for
   $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t_i\in{}Pr(t)}pre(p,t_i)$.
-\end{remark}
+\end{notation}
 
-\begin{remark}[Sum expressions and arc types]
+\begin{notation}[Sum expressions and arc types]
   Many times in this document, we need to express the number of tokens
   coming in or out of places, after the firing of a certain subset of
   transitions. To do so, we use two kinds of sum expression:
@@ -126,71 +138,91 @@ state structure:
   conciser notations $\sum\limits_{t\in{}T'}pre(p,t)$ to denote output
   token sums, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote input
   token sums.
-\end{remark}
+\end{notation}
+
+\noindent{}We give the formal definition of the sensitization of
+transition by a given marking as follows:
 
 \begin{definition}[Sensitization]
-  A transition $t\in{}T$ is said to be sensitized by a marking $M$,
-  which is noted $t\in{}Sens(M)$, if and only if
+  A transition $t\in{}T$ is said to be sensitized, or enabled, by a
+  marking $M$, which is noted $t\in{}Sens(M)$, if
   $\forall{}p\in{}P,\omega\in\mathbb{N}^{*},~\big(pre(p,t)=(\omega,\mathtt{basic})\vee{}pre(p,t)=(\omega,\mathtt{test})\big)\Rightarrow{}M(p)\ge{}\omega$,
   and $pre(p,t)=(\omega,\mathtt{inhib})\Rightarrow{}M(p)<{}\omega$.
 \end{definition}
 
-\begin{definition}[Sensitization by test and basic arcs]
-  A transition $t\in{}T$ is said to be sensitized by its basic and
-  test arcs at a marking $M$, which is noted $t\in{}Sens_{bt}(M)$, if
-  and only if
-  $\forall{}p\in{}P,\omega\in\mathbb{N}^{*},~\big(pre(p,t)=(\omega,\mathtt{basic})\vee{}pre(p,t)=(\omega,\mathtt{test})\big)\Rightarrow{}M(p)\ge{}\omega$.
-\end{definition}
+\noindent{}We give the formal definition of a \emph{firable}
+transition at a given SITPN state as follows:
 
 \begin{definition}[Firability]
   \label{def:firable}
   A transition $t\in{}T$ is said to be firable at a state
   $s={<}M,I,reset_t,ex,cond{>}$, which is noted $t\in{}Firable(s)$, if
-  and only if $t\in{}Sens(M)$, and $t\notin{}T_i$ or
-  $I(t)\in{}I_s(t)$, and
+  $t\in{}Sens(M)$, and $t\notin{}T_i$ or $I(t)\in{}I_s(t)$, and
   $\forall c \in \mathcal{C}, \mathbb{C}(t, c) = 1 \Rightarrow cond(c)
   = 1$ and $\mathbb{C}(t, c) = -1 \Rightarrow cond(c) = 0$.
 \end{definition}
 
+As explain in Section~\ref{subsec:hpn-particularities}, the firability
+conditions are not sufficient for a transition to be fired. A
+transition must also by enabled by the residual marking to go through
+the firing process. Definition~\ref{def:fired} gives the formal
+definition of a fired transition:
+
 \begin{definition}[Fired]
   \label{def:fired}
   A transition $t\in{}T$ is said to be fired at the SITPN state
-  $s={<}M,I,reset_t,ex,$ $cond{>}$, which is noted $t\in{}Fired(s)$, if
-  and only if $t\in{}Firable(s)$ and
+  $s={<}M,I,reset_t,ex,$ $cond{>}$, which is noted $t\in{}Fired(s)$,
+  if $t\in{}Firable(s)$ and
   $t\in{}Sens\big(M-\sum_{t_i\in{}Pr(t)}pre(t_i)\big)$, where
   $Pr(t)=\{t_i~|~t_i\succ{}t\wedge{}t_i\in{}Fired(s)\}$.
 \end{definition}
-    
+
+One can notice that the definition of the set of fired transitions is
+recursive. Indeed, to compute the residual marking necessary to the
+definition of a fired transition, the $Pr$ set must be defined. For a
+given transition $t$, the definition of the $Pr$ set of $t$ is all the
+transitions with a higher firing priority than $t$ that are also fired
+transitions; hence the recursive definition.
+
+In Definition~\ref{def:fired}, the marking
+$M-\sum_{t_i\in{}Pr(t)}pre(t_i)$ formally qualifies the residual
+marking a SITPN state $s$ for a given transition $t$.
+
 \subsection{SITPN Semantics}
 \label{sec:sitpn-sem}
 
+We formalize the semantics of a given SITPN as follows:
+
 \begin{definition}[SITPN Semantics]
   \label{def:semantics}
-  The semantics of an SITPN is the transition system
-  $<S,L,E,\rightsquigarrow>$ where:
+  The semantics of a given $sitpn\in{}SITPN$ is the transition system
+  ${<}L,E,\rightarrow{>}$ where:
   \begin{itemize}[label=-]
-  \item $S$ is the set of states of the SITPN.
-  \item
-    $s_0=<M_0,O_\mathbb{N},O_\mathbb{B},O_\mathbb{B},O_\mathbb{B}>$
-    is the initial state of the SITPN, where $M_0$ is the initial
-    marking of the SITPN, $O_\mathbb{N}$ is a function that always
-    returns 0, $O_\mathbb{B}$ is a function that always returns false.
+  \item $s_0\in{}S(sitpn)$ is the initial state of the SITPN, such
+    that
+    $s_0=<M_0,O_\mathbb{N},O_\mathbb{B},O_\mathbb{B},O_\mathbb{B}>$,
+    where $M_0$ is the initial marking of the SITPN, $O_\mathbb{N}$ is
+    a function that always returns 0, $O_\mathbb{B}$ is a function
+    that always returns \texttt{false}.
   \item $L\subseteq{}Clk\times{}\mathbb{N}$ is the set of transition
-    labels, where $Clk\in\{\uparrow,\downarrow\}$. A label is a couple $(clk,\tau)$
-    composed of a clock event $clk\in{}Clk$, and a time value $\tau\in\mathbb{N}$
-    expressing the current count of clock cycles.
-  \item $E\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is the
-    environment function, which gives (Boolean) values to conditions ($\mathcal{C}$)
-    depending on the count of clock cycles ($\mathbb{N}$).
-  \item $\rightsquigarrow\subseteq{}S\times{}L\times{}S$ is the state
+    labels, where $Clk\in\{\uparrow,\downarrow\}$. A label is a couple
+    $(clk,\tau)$ composed of a clock event $clk\in{}Clk$, and a time
+    value $\tau\in\mathbb{N}$ expressing the current count of clock
+    cycles.
+  \item
+    $E_c\in{}\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$ is
+    the environment function, which gives (Boolean) values to
+    conditions ($\mathcal{C}$) depending on the count of clock cycles
+    ($\mathbb{N}$).
+  \item $\rightarrow\subseteq{}S\times{}L\times{}S$ is the SITPN state
     transition relation, which is noted
-    $E,\tau\vdash{}s\stackrel{clk}{\rightsquigarrow}s'$ where
-    $s,s'\in{}S$ and $(clk,\tau)\in{}L$, and which is defined as
-    follows:
+    $E_c,\tau\vdash{}s\stackrel{clk}{\rightsquigarrow}s'$ where
+    $s,s'\in{}S(sitpn)$ and $(clk,\tau)\in{}L$, and which is defined
+    as follows:
     % $s\xrsquigarrow{l}s'$
     \begin{itemize}
-    \item $\forall\tau\in\mathbb{N}$,
-      $E,\tau\vdash{}s\stackrel{\downarrow}{\rightsquigarrow}s'$,
+    \item $\forall\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+      $\tau\vdash{}s\stackrel{\downarrow}{\rightarrow}s'$,
       where $s=<M,I,reset_t,ex,cond>$ and\\
       $s'=<M,I',reset_t,ex',cond'>$, if:
       % $s\xrsquigarrow{(\downarrow,\tau)}s'$,
@@ -208,7 +240,7 @@ state structure:
         sensitized by the marking $M$ and received the order to reset
         their time intervals, have their time counter reset and
         incremented, i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=1
+        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{true}
         \Rightarrow{}I'(t)=1$.
       \item\label{it:inc-counters} All the time transitions with
         active time counters that are sensitized by the marking $M$
@@ -223,11 +255,10 @@ state structure:
         $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
         \land{}I(t)>{}upper(I_s(t))\land{}upper(I_s(t))\neq\infty\Rightarrow{}$
         $I'(t)=I(t)$.
-      \item\label{it:reset-not-sens} All the time transitions that
-        are not sensitized by the marking $M$ have their time counters set to zero, i.e.:\\
+      \item\label{it:reset-not-sens} All the time transitions disabled by the marking $M$ have their time counters set to zero, i.e.:\\
         $\forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0$.
       \end{enumerate}
-    \item $\forall\tau\in\mathbb{N}$,
+    \item $\forall\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
       $E,\tau\vdash{}s\stackrel{\uparrow}{\rightsquigarrow}s'$, where
       $s=<M,I,reset_t,ex,cond>$ and\\
       $s'=<M',I,reset_t',ex',cond>$, if:
@@ -241,7 +272,8 @@ state structure:
         order if it is fired at state $s$, or, if there exists a place
         $p$ connected to $t$ by a \texttt{basic} or \texttt{test arc}
         and at least one output transition of $p$ is fired and the
-        transient marking of $p$ disables $t$; no reset order is sent otherwise:
+        transient marking of $p$ disables $t$; no reset order is sent
+        otherwise:
         \begin{equation*}
           \begin{split}
             \forall{}t\in{}T_i,~& t\in{}Fired(s) \\
@@ -257,6 +289,15 @@ state structure:
     \end{itemize}
   \end{itemize}
 \end{definition}
+
+In Rule~\ref{it:inc-counters} of the SITPN semantics, the
+\emph{active} time counters refer to the time counters that have not
+yet overreached the upper bound of the associated time interval. Of
+course, a time counter is always active when the upper bound is
+infinite. In Rule~\ref{it:locked-counters}, the \emph{locked} time
+counters refer to the time counters that have overreached the upper
+bound of the associated time interval. Of course, time counters can
+never be locked if the presence of an infinite upper bound.
 
 \subsection{SITPN Execution}
 \label{sec:sitpn-exec}
