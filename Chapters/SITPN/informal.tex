@@ -236,12 +236,12 @@ transition must be fired.
 Two transitions are in structural conflict if they have a common input
 place connected through a \textit{basic} arc (i.e. neither inhibitor
 nor test). When two transitions in structural conflict are firable at
-the same time, then, the conflict becomes \textit{effective}. A Petri
-net with priorities, it is possible to specify a firing priority in
-the case where the conflict between two transitions becomes
-effective. In that case, the transition with the highest firing
-priority will always be fired
-first. Figure~\ref{fig:structural-conflict} illustrates the
+the same time and if the firing of one of the transitions disables the
+other, then, the conflict becomes \textit{effective}. In a Petri net
+with priorities, it is possible to specify a firing priority in the
+case where the conflict between two transitions becomes effective. In
+that case, the transition with the highest firing priority will always
+be fired first. Figure~\ref{fig:structural-conflict} illustrates the
 application of a priority relation to solve the effective conflict
 between two transitions.
 
@@ -332,15 +332,16 @@ counter value is within the time interval. As a consequence, one token
 is consumed in place $p_0$ and one token is produced in place $p_1$,
 function $f_0$ is executed at Step~2 (appears in green) and a reset
 order is sent to the time counter of $t_0$ (appears in blue). From
-Step~2 to Step~3, the activation activation status are updated; $a_0$
-stays activated place $p_0$ is marked; $a_1$ becomes newly activated
-as $p_1$ is marked. The time counter values are updated; $t_0$'s time
-counter is set to zero as the transition previously received a reset
-order. However, as $t_0$ is still sensitized by the new marking, its
-time counter is incremented. Thus, the resulting time counter value at
-Step~3 is one (i.e. result of reset plus incrementation). Also, the
-condition values are retrieved from the environment. As a consequence,
-condition $c_0$ takes the value \texttt{false}.
+Step~2 to Step~3, the action activation status are updated; $a_0$
+stays activated as place $p_0$ is still marked; $a_1$ becomes newly
+activated as $p_1$ is marked. The time counter values are updated;
+$t_0$'s time counter is set to zero as the transition previously
+received a reset order. However, as $t_0$ is still sensitized by the
+new marking, its time counter is incremented. Thus, the resulting time
+counter value at Step~3 is of one (i.e. result of reset plus
+incrementation). Also, the condition values are retrieved from the
+environment. As a consequence, condition $c_0$ takes the value
+\texttt{false}.
 
 \paragraph{A remark on priorities}
 
@@ -367,7 +368,7 @@ Figure~\ref{fig:sitpn-state-exec}, normally interpreted as an
 disjunctive branching, takes the semantics of a conjunctive branching
 when no priority are prescribed between the conflicting
 transitions. To avoid the phenomenon of ``double consumption'' of
-tokens, we enforce the resolution of the structural conflict by means
+tokens, we enforce the resolution of any structural conflict by means
 of mutual exclusion or through the application of priorities. This
 policy about the resolution of structural conflict is part of the
 definition of a well-defined SITPN presented in
@@ -413,7 +414,7 @@ obtained after the firing of $t_0$, i.e. the only transition with a
 higher priority.  As illustrated at \circled{2}, $t_1$ is enabled by
 the residual marking but it does not gather all the conditions to be
 firable; indeed, condition $c_0$ associated to $t_0$ is
-\texttt{false}. Thus, $t_0$ is not fired. The residual marking for
+\texttt{false}. Thus, $t_1$ is not fired. The residual marking for
 $t_2$ is obtained after the firing of $t_0$ only. Indeed, transition
 $t_1$ has a higher firing priority than $t_2$, however, it is not part
 of the set of fired transitions and thus it is not taken into account
@@ -423,28 +424,27 @@ gathers all the conditions to be firable, then $t_2$ is fired.
 
 \paragraph{Locked time counters}
 
-SITPNs inherit from both the properties of time PNs and interpreted
-PNs. As a consequence, the phenomenon of \emph{locked} time counters
-is a consequence of this combination. As illustrated in
-Figure~\ref{fig:locked-tc}, the value of a time counter can overreach
-the upper bound of the associated time interval.
+SITPNs inherit both the properties of time PNs and interpreted
+PNs. The phenomenon of \emph{locked} time counters is a consequence of
+this combination. As illustrated in Figure~\ref{fig:locked-tc}, the
+value of a time counter can overreach the upper bound of its
+associated time interval. This situation can only arise if a condition
+hinders the firing of a given transition while the considered
+transition is still enabled by the marking. As a consequence, the time
+counter will be incremented at every clock cycle until the upper bound
+of the time interval is overreached. Then, at this point, the time
+counter is said to be \emph{locked} and its value will no more evolve.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.5\textwidth]{Figures/SITPN/locked-tc}
   \caption[An example of locked time counter.]{An example of locked
-    time counter. Condition $c$ is equal \texttt{false} and thus
+    time counter. Condition $c$ is equal to \texttt{false} and thus
     appears in red.}
   \label{fig:locked-tc}
 \end{figure}
 
-This situation can only arise if a condition hinders the firing of a
-given transition while the considered transition is still enabled by
-the marking. As a consequence, the time counter will be incremented at
-every clock cycle until the upper bound of the time interval is
-overreached. Then, at this point, the time counter is said to be
-\emph{locked} and its value will no more evolve.  In
-Figure~\ref{fig:locked-tc}, condition $c$ is valuated to
+In Figure~\ref{fig:locked-tc}, condition $c$ is valuated to
 \texttt{false}, thus, transition $t$ can not be fired but is still
 sensitized by the marking. As a consequence, on the next falling edge,
 the time counter of transition $t$ is incremented and overreaches the
