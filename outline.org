@@ -6,10 +6,10 @@
 ** DONE HILECOP [100%]
 ** DONE Verifying HILECOP [100%]
 * TODO Preliminary notions
-* TODO Implementation of the HILECOP high-level models [40%]
+* TODO Implementation of the HILECOP high-level models [60%]
 ** DONE introduction
 ** DONE informal presentation of synchronously executed Petri nets [100%]
-** TODO formal definition of SITPNs & semantics [80%]
+** DONE formal definition of SITPNs & semantics [100%]
 ** TODO Coq implementation of SITPNs [0%]
 ** TODO conclusion
 * TODO H-VHDL: a target hardware description language [0%]

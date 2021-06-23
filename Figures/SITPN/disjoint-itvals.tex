@@ -1,0 +1,92 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node (pn1) {
+    \begin{tikzpicture}
+      \node[place, tokens=2] (p0) [label={above:$p$}] {};
+      
+      \node[transition, anchor=north east] (t0) at ($(p0.south west)-(.5,.5)$) {}
+      edge[pre, bend left] (p0);
+      \node[anchor=east] at ($(t0.west)$) {
+        \begin{tabular}{@{}c@{}}
+          $t_0$ \\
+          $[1,1]$ \\
+        \end{tabular}
+      };
+
+      \node[transition, anchor=north west] (t2) at ($(p0.south east)+(.5,-.5)$) {}
+      edge[pre, bend right] (p0);
+      \node[anchor=west] at ($(t2.east)$) {
+        \begin{tabular}{@{}c@{}}
+          $t_1$ \\
+          $[2,2]$ \\
+        \end{tabular}
+      };
+
+    \end{tikzpicture}    
+  };
+
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

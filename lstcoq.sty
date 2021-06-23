@@ -23,10 +23,11 @@
 % lstlisting coq style (inspired from a file of Assia Mahboubi)
 %
 \lstdefinelanguage{Coq}{ 
-%
 % Anything betweeen $ becomes LaTeX math mode
 mathescape=true,
 %
+% Anything between the escapechar becomes LaTeX standard mode
+escapechar=\#,
 % Comments may or not include Latex commands
 texcl=true, 
 %
@@ -71,8 +72,7 @@ morekeywords=[6]{do, last, first, try, idtac, repeat},
 morekeywords=[7]{Spn, Stpn, Sitpn, SpnState, StpnState, SitpnState},
 %
 % Hilecop parameters, or fields.
-morekeywords=[8]{places, transs, pre, test, inhib, post, marking,
-  priority\_groups, lneighbors, chronos, lconditions, fired, initial\_marking},
+morekeywords=[8]{},
 % Comments delimiters, we do turn this off for the manual
 morecomment=[s]{(*}{*)},
 %
@@ -89,7 +89,7 @@ frame=tbrl, % draw a frame at the top, right, left and bottom of the listing
 frameround=tttt, % make the frame round at all four corners
 % framexleftmargin=1em,
 % framesep=4pt, % quarter circle size of the round corners
-numbersep=4pt,
+% numbersep=4pt,
 numbers=left, % show line numbers at the left
 numberstyle=\tiny\ttfamily, % style of the line numbers
 % 
