@@ -231,7 +231,7 @@ state of a SITPN.
     as follows:
     % $s\xrsquigarrow{l}s'$
     \begin{itemize}[label=$\square$]
-    \item $\forall\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$,
       $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$,
       where $s=<M,I,reset_t,ex,cond>$ and\\
       $s'=<M,I',reset_t,ex',cond'>$, if:
@@ -268,7 +268,7 @@ state of a SITPN.
       \item\label{it:reset-not-sens} All the time transitions disabled by the marking $M$ have their time counters set to zero, i.e.:\\
         $\forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0$.
       \end{enumerate}
-    \item $\forall\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
+    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$,
       $E,\tau\vdash{}s\stackrel{\uparrow}{\rightsquigarrow}s'$, where
       $s=<M,I,reset_t,ex,cond>$ and\\
       $s'=<M',I,reset_t',ex',cond>$, if:
@@ -508,6 +508,7 @@ definition of a conflicting pair of transitions and of a conflict
 group.
 
 \begin{definition}[Conflict]
+  \label{def:conflict}
   For a given $sitpn\in{}SITPN$, two transitions $t,t'\in{}T$ are in
   conflict if and only if there exists a place $p\in{}P$ such that
   $p\in{}input(t)\cap{}input(t')$ and there exist
@@ -522,6 +523,7 @@ conflict group.  The formal definition of a conflict group is as
 follows:
 
 \begin{definition}[Conflict Group]
+  \label{def:cgroup}
   For a given $sitpn\in{}SITPN$, $T_c\subseteq{}T$ is a conflict group
   if and only if there exists a place $p$ such that
   $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
@@ -564,7 +566,6 @@ complementary conditions, mutual exclusion with disjoint time
 intervals and mutual exclusion with inhibitor arcs. Here, we give the
 formal definition of these three means of mutual exclusion.
 
-
 \begin{definition}[Mutual exclusion with disjoint time intervals]
   \label{def:mutex-ti}
   Given two conflicting transitions $t_0$ and $t_1$, $t_0$ and $t_1$
@@ -573,6 +574,48 @@ formal definition of these three means of mutual exclusion.
   such that $I_s(t_0)=[a,b]$ and $I_s(t_1)=[c,d]$ and there is no
   overlapping between $[a,b]$ and $[c,d]$.
 \end{definition}
+
+\begin{definition}[Mutual exclusion with complementary conditions]
+  \label{def:mutex-conds}
+  Given two conflicting transitions $t_0$ and $t_1$, $t_0$ and $t_1$
+  are in mutual exclusion with complementary conditions if there
+  exists $c\in\mathcal{C}$ such that
+  $(\mathbb{C}(t_0,c)=1\land{}\mathbb{C}(t_1,c)=-1)$ or
+  $(\mathbb{C}(t_0,c)=-1\land{}\mathbb{C}(t_1,c)=1)$.
+\end{definition}
+
+\begin{definition}[Mutual exclusion with an inhibitor arc]
+  \label{def:mutex-conds} Given two conflicting transitions $t_0$ and
+  $t_1$, $t_0$ and $t_1$ are in mutual exclusion with an inhibitor arc
+  if there exists $p\in{}P$ and $\omega\in{}\mathbb{N}^{*}$ such that
+  $(pre(p,t_0)=(\omega,\mathtt{basic})\lor{}pre(p,t_0)=(\omega,\mathtt{test}))\land{}pre(p,t_1)=(\omega,\mathtt{inhib})$
+  or
+  $(pre(p,t_1)=(\omega,\mathtt{basic})\lor{}pre(p,t_1)=(\omega,\mathtt{test}))\land{}pre(p,t_0)=(\omega,\mathtt{inhib})$.
+\end{definition}
+
+Figure~\ref{fig:mutex} illustrates the three means of mutual exclusion
+that can be applied to solve a conflict between two transitions.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.8\linewidth]{Figures/SITPN/mutex}
+  \caption[Examples of conflicting transitions in mutual exclusion.]{
+    Examples of conflicting transitions in mutual exclusion. At
+    \circled{1}, an example of mutual exclusion with disjoint time
+    intervals; at \circled{2}, an example of mutual exclusion with
+    complementary conditions; at \circled{3}, an example of mutual
+    exclusion with an inhibitor arc.}
+  \label{fig:mutex}
+\end{figure}
+
+In Figure~\ref{fig:mutex}, in situation \circled{2}, condition $c_1$
+is associated to $t_1$ and the complementary condition is associated
+to $t_0$ thus creating the mutual exclusion. In situation \circled{3},
+the arc $(p_0,t_0)$ and $(p_0,t_1)$ ensure the mutual exclusion
+between transitions $t_0$ and $t_1$. Note that in the structure of
+mutual exlcusion with an inhibitor arc, the weight of the inhibitor
+arc and of the basic or test arc must be the same; otherwise, the
+mutual exclusion is not effective.
 
 A given $sitpn\in{}SITPN$ is well-defined if it enforces some
 properties needed on the \hilecop{} source models before the
@@ -597,9 +640,11 @@ compile-time errors during the transformation of the SITPN into a
     $\nexists{}t\in{}T,~input(t)=\emptyset\wedge{}output(t)=\emptyset$,
     where $input(t)$ (resp. $output(t)$) denotes the set of input
     (resp. output) places of $t$.
-  \item All conflicts must be solved by a mean of mutual exclusion:
-    priority relation, mutually exclusive conditions, mutually
-    exclusive time intervals, structural mutual exclusion.
+  \item For all conflict group as defined in
+    Definition~\ref{def:cgroup}, either all conflicts (i.e. for all
+    pair of transitions in the conflict group) must be solved by one
+    of the mean of mutual exclusion, or, the priority relation must be
+    a strict total order over the transitions of the conflict group.
   \end{itemize}
 \end{definition}
 
