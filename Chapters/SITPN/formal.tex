@@ -581,7 +581,7 @@ exclusion.
 \end{definition}
 
 \begin{definition}[Mutual exclusion with an inhibitor arc]
-  \label{def:mutex-conds} Given two conflicting transitions $t_0$ and
+  \label{def:mutex-inhib} Given two conflicting transitions $t_0$ and
   $t_1$, $t_0$ and $t_1$ are in mutual exclusion with an inhibitor arc
   if there exists $p\in{}P$ and $\omega\in{}\mathbb{N}^{*}$ such that
   $(pre(p,t_0)=(\omega,\mathtt{basic})\lor{}pre(p,t_0)=(\omega,\mathtt{test}))\land{}pre(p,t_1)=(\omega,\mathtt{inhib})$

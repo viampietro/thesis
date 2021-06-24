@@ -8,7 +8,7 @@
 % different environment levels.
 
 % \begin{figure}[H]
-%   {\fontsize{8}{11}\selectfont\textsc{WFTypedefEnv}}
+%   {\fontsize{10}{13}\selectfont\textsc{WFTypedefEnv}}
   
 %   \begin{prooftree}
 
@@ -34,7 +34,7 @@
 % is an enumeration of values.
 
 % \begin{figure}[H]
-%   {\fontsize{8}{11}\selectfont\textsc{WFDesign}}
+%   {\fontsize{10}{13}\selectfont\textsc{WFDesign}}
   
 %   \begin{prooftree}
 
@@ -98,7 +98,7 @@
 % where $\Delta=(Gens,Ins,Outs,Sigs,Consts,Ps,Comps,Types,Behavior)$.
 
 % \begin{figure}[H]
-%   {\fontsize{8}{11}\selectfont\textsc{WFGammaDeltaEnv}}
+%   {\fontsize{10}{13}\selectfont\textsc{WFGammaDeltaEnv}}
 %   \vspace{2ex}
   
 %   \begin{prooftree}
@@ -128,7 +128,7 @@
 % \end{figure}
 
 % \begin{figure}[H]
-%   {\fontsize{8}{11}\selectfont\textsc{WFGammaDeltaLambdaEnv}}
+%   {\fontsize{10}{13}\selectfont\textsc{WFGammaDeltaLambdaEnv}}
 %   \vspace{2ex}
   
 %   \begin{prooftree}
@@ -259,7 +259,7 @@ initialization and simulation relations. % The states in
 % $\sigma_t.\sigma_t'$.
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{FullSim}}
+  {\fontsize{10}{13}\selectfont\textsc{FullSim}}
   
   \begin{prooftree}[template=\inserttext]
 
@@ -273,7 +273,7 @@ initialization and simulation relations. % The states in
     \hypo{$\mathcal{D},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta$}
     
     \infer3 [] { $\mathcal{D},\Delta,\mathcal{M}_g,E_p,\tau\vdash$
-      $\mathrm{d}\xrightarrow{full}\theta$ }
+      $\mathrm{d}\xrightarrow{full}(\sigma_0::\theta)$ }
   \end{prooftree}
 \end{table}
 
@@ -302,7 +302,7 @@ where:
   \begin{tabular}{@{}l}
     %%% SIMULATION END.
     
-    {\fontsize{8}{11}\selectfont\textsc{SimEnd}} \\
+    {\fontsize{10}{13}\selectfont\textsc{SimEnd}} \\
     
     {\begin{prooftree}[template=\inserttext]
         \infer0 {
@@ -313,21 +313,19 @@ where:
   \begin{tabular}{l}
     % SIMULATION LOOP
     
-    {\fontsize{8}{11}\selectfont\textsc{SimLoop}} \\
+    {\fontsize{10}{13}\selectfont\textsc{SimLoop}} \\
     
     {\begin{prooftree}[template=\inserttext]
         
         % First column.
-        \hypo{$\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\xrightarrow{\uparrow,\downarrow}\sigma'$}
-        
+        \hypo{$\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\xrightarrow{\uparrow,\downarrow}\sigma',\sigma''$}
+
         % Second column.
-        \hypo{$\mathcal{D},E_p,\Delta,\tau-1,\sigma'\vdash{}cs\rightarrow\theta$}
+        \hypo{$\mathcal{D},E_p,\Delta,\tau-1,\sigma''\vdash{}cs\rightarrow\theta$}
         
-        \infer2
-        [$T_c>0$]
-        {
-          $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\rightarrow\theta$
-        }
+        \infer2 [$\tau>0$] {
+          $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash{}cs\rightarrow(\sigma'
+          :: \sigma'' :: \theta)$ }
       \end{prooftree}} \\
   \end{tabular}
 
@@ -365,72 +363,77 @@ forward simulation rules, we need to introduce two notations.
 %   resulting signal store $\mathcal{S}'$.
 % \end{remark}
 
+\begin{definition}[Input port values update]
+  Given an \hvhdl{} design $d\in{}design$, a design store
+  $\mathcal{D}\in{}id\rightarrow{}design$, an elaborated design
+  $\Delta\in{}ElDesign(d,\mathcal{D})$, a simulation environment
+  $E_p\in{}(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow(Ins(\Delta)\rightarrow{}value)$,
+  let us define the relation expressing the update of the values of
+  the input ports of $\Delta$ at a given design state
+  $\sigma\in\Sigma(\Delta)$, clock cycle count $\tau\in{}\mathbb{N}$,
+  and clock event $clk\in\{\uparrow,\downarrow\}$, and thus resulting
+  in a new state $\sigma_i\in\Sigma(\Delta)$. The relation is written
+  $\mathtt{Inject}_{clk}(\sigma,E_p,\tau,\sigma_i)$ and verifies that:
+  $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ and
+  $\sigma_i={<}\mathcal{S}\ocup{}E_p(\tau,clk),\mathcal{C},\mathcal{E}{>}$.
+\end{definition}
+
 The cycle relation states that the design state $\sigma''$ is the
 result of the execution of concurrent statement $cs$ over one
 simulation cycle, this starting from state $\sigma$.  As told in
 Hypothesis~\ref{hyp:stable-pi}, we update the input port values at
 each clock event. Fresh input port values are coming from the
 environment $E_p$. The updates are made in the definitions of
-$\sigma_{injr}$ and $\sigma_{injf}$. These definitions are expressed
+$\sigma_i$ and $\sigma'_i$. These definitions are expressed
 as side conditions.
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{SimCyc}}
+  {\fontsize{10}{13}\selectfont\textsc{SimCyc}}
   
   \begin{prooftree}[template=\inserttext]
 
     % Rising
-    \hypo{$\mathcal{D},\Delta,\sigma_{injr}\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_r$}
-
-    % Falling
-    \infer[no rule]1{$\mathcal{D},\Delta,\sigma_{injf}\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_f$}
+    \hypo{$\mathcal{D},\Delta,\sigma_i\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_r$}
 
     % Stabilize after rising.
     \hypo{$\mathcal{D},\Delta,\sigma_r\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma'$}
+    
+    % Falling
+    \hypo{$\mathcal{D},\Delta,\sigma'_i\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_f$}
 
     % Stabilize after falling.
-    \infer[no rule]1{$\mathcal{D},\Delta,\sigma_f\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
+    \hypo{$\mathcal{D},\Delta,\sigma_f\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
     
-    \infer2
+    \infer4
     [{
       \renewcommand{\arraystretch}{1.5}
       \begin{tabular}{@{}l}
-        $\sigma={<}\mathcal{S}, \mathcal{C}, \mathcal{E}{>}$ \\
-        $\sigma_{injr}={<}\mathcal{S}\ocup{}E_p(\tau,\uparrow),
-        \mathcal{C},
-        \mathcal{E}\cup(\mathcal{S}\dcap{}E_p(\tau,\uparrow)){>}$ \\
-        $\sigma'={<}\mathcal{S}', \mathcal{C}', \mathcal{E}'{>}$ \\
-        $\sigma_{injf}={<}\mathcal{S}'\ocup{}E_p(\tau,\downarrow),
-        \mathcal{C}',
-        \mathcal{E}'\cup(\mathcal{S}'\dcap{}E_p(\tau,\downarrow)){>}$ \\
+        $\mathtt{Inject}_\uparrow(\sigma,E_p,\tau,\sigma_i)$\\
+        $\mathtt{Inject}_\downarrow(\sigma',E_p,\tau,\sigma'_i)$\\
       \end{tabular}
     }] {
       $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash\mathrm{cs}\xrightarrow{\uparrow,\downarrow}$
-      $\sigma''$ }
+      $\sigma',\sigma''$ }
   \end{prooftree}
 \end{table}
 
 \begin{remark}[Input ports and signal store]
   For a given $\Delta\in{}Design$, $\sigma\in\Sigma(\Delta)$,
-  $E_p\in{}\mathbb{N}\rightarrow{}Clk\rightarrow{}(input\mhyphen{}id\rightarrow{}value)\mathbb{}$,
+  $E_p\in{}\mathbb{N}\rightarrow{}Clk\rightarrow{}(Ins(\Delta)\rightarrow{}value)\mathbb{}$,
   $\tau\in\mathbb{N}$, $clk\in{}Clk$, we have
-  $\mathtt{dom}(E_p(\tau,clk))\subset{}\mathtt{dom}(\mathcal{S})$,
+  $\mathtt{dom}(E_p(\tau,clk))\subseteq{}\mathtt{dom}(\mathcal{S})$,
   where $\sigma={<}\mathcal{S}, \mathcal{C}, \mathcal{E}{>}$. Indeed,
   the input ports of $\Delta$ that constitutes the domain of
   $E_p(\tau,clk)$ are a subset of the set of signals. The set of
-  signals constitutes the domain of state $\sigma$'s signal store
-  (i.e, $\mathcal{S}$); thus we have
-  $\mathtt{dom}(E_p(\tau,clk))\subset{}\mathtt{dom}(\sigma.\mathcal{S})$.
-  Consequently, all signals that belong to
-  $\mathtt{dom}(E_p(\tau,clk))$ and have a different value than in the
-  signal store $\mathcal{S}$ are captured by the expression
-  $\mathcal{S}\dcap{}E_p(\tau,clk)$.
+  signals constitutes the domain of the signal store of $\sigma$ (i.e,
+  $\mathcal{S}$); thus we have
+  $\mathtt{dom}(E_p(\tau,clk))\subseteq{}\mathtt{dom}(\mathcal{S})$.
 \end{remark}
 
 \subsection{Initialization rules}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{Init}}
+  {\fontsize{10}{13}\selectfont\textsc{Init}}
   
   \begin{prooftree}[template=\inserttext]
 
@@ -481,7 +484,7 @@ simulation.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{PsRunInit}} \\
+    {\fontsize{10}{13}\selectfont\textsc{PsRunInit}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Runs seq.
@@ -504,7 +507,7 @@ simulation.
 \end{table}
 
 \subsubsection{Evaluation of a component instantiation statement}
-\label{subsubsec:comp-stmt-init}
+\label{subsubsec:ps-stmt-init}
 
 \begin{sideconds}
   If $\sigma_c''$ has a non-empty set of events, then the state of
@@ -518,7 +521,7 @@ simulation.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompRunInitEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompRunInitEvents}} \\
     {\begin{prooftree}
         
         % Builds mapping for in ports.
@@ -557,7 +560,7 @@ simulation.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompRunInitNoEvent}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompRunInitNoEvent}} \\
     {\begin{prooftree}
         
         % Builds mapping for in ports.
@@ -607,7 +610,7 @@ simulation.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{ParRunInit}} \\
+    {\fontsize{10}{13}\selectfont\textsc{ParRunInit}} \\
     {\begin{prooftree}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{runinit}\sigma'}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{runinit}\sigma''}
@@ -624,7 +627,7 @@ simulation.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{NullRunInit}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NullRunInit}} \\
     {\begin{prooftree}
         \infer0
         {
@@ -679,7 +682,7 @@ their sensitivity list.
 \subsubsection{Evaluation of a process statement}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsRENoClk}}
+  {\fontsize{10}{13}\selectfont\textsc{PsRENoClk}}
   
   \begin{prooftree}[template=\inserttext]
     \hypo{}
@@ -701,7 +704,7 @@ their sensitivity list.
 \end{premises}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsREClk}}
+  {\fontsize{10}{13}\selectfont\textsc{PsREClk}}
   
   \begin{prooftree}[template=\inserttext]
 
@@ -724,7 +727,7 @@ their sensitivity list.
 \end{table}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsFENoClk}}
+  {\fontsize{10}{13}\selectfont\textsc{PsFENoClk}}
   
   \begin{prooftree}[template=\inserttext]
     \hypo{}
@@ -746,7 +749,7 @@ their sensitivity list.
 \end{premises}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsFEClk}}
+  {\fontsize{10}{13}\selectfont\textsc{PsFEClk}}
   
   \begin{prooftree}[template=\inserttext]
 
@@ -775,7 +778,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompREEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompREEvents}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -814,7 +817,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompRENoEvent}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompRENoEvent}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -852,7 +855,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompFEEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompFEEvents}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -891,7 +894,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompFENoEvent}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompFENoEvent}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -948,7 +951,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{ParFE}} \\
+    {\fontsize{10}{13}\selectfont\textsc{ParFE}} \\
     {\begin{prooftree}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma'}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{\downarrow}\sigma''}
@@ -967,7 +970,7 @@ their sensitivity list.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{NullFE}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NullFE}} \\
     {\begin{prooftree}
         \infer0
         {
@@ -979,7 +982,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{ParRE}} \\
+    {\fontsize{10}{13}\selectfont\textsc{ParRE}} \\
     {\begin{prooftree}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma'}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{\uparrow}\sigma''}
@@ -998,7 +1001,7 @@ their sensitivity list.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{NullRE}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NullRE}} \\
     {\begin{prooftree}
         \infer0
         {\Delta,\sigma\vdash\mathtt{null}\xrightarrow{\uparrow}\sigma}
@@ -1025,7 +1028,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{StabilizeEnd}} \\
+    {\fontsize{10}{13}\selectfont\textsc{StabilizeEnd}} \\
     
     {\begin{prooftree}[template=\inserttext]
         \infer0
@@ -1036,7 +1039,7 @@ their sensitivity list.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{StabilizeLoop}} \\
+    {\fontsize{10}{13}\selectfont\textsc{StabilizeLoop}} \\
     {\begin{prooftree}[template=\inserttext]
         \hypo{$\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{comb}\sigma'$}
         \hypo{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
@@ -1058,7 +1061,7 @@ their sensitivity list.
 \subsubsection{Evaluation of a process statement}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsCombStable}}
+  {\fontsize{10}{13}\selectfont\textsc{PsCombStable}}
   
   \begin{prooftree}[template=\inserttext]
     \infer0
@@ -1085,7 +1088,7 @@ their sensitivity list.
 \end{premises}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{PsCombUnstable}}
+  {\fontsize{10}{13}\selectfont\textsc{PsCombUnstable}}
   
   \begin{prooftree}[template=\inserttext]
     
@@ -1114,7 +1117,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompCombEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompCombEvents}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -1154,7 +1157,7 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{CompCombNoEvent}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompCombNoEvent}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
@@ -1194,7 +1197,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{ParComb}} \\
+    {\fontsize{10}{13}\selectfont\textsc{ParComb}} \\
     {\begin{prooftree}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{comb}\sigma'}
         \hypo{\mathcal{D},\Delta,\sigma\vdash\mathrm{cs'}\xrightarrow{comb}\sigma''}
@@ -1212,7 +1215,7 @@ their sensitivity list.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{NullComb}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NullComb}} \\
     {\begin{prooftree}
         \infer0
         {
@@ -1227,7 +1230,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapipSimple}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapipSimple}} \\
     {\begin{prooftree}
 
         % Evaluates e.
@@ -1258,7 +1261,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapipPartial}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapipPartial}} \\
     {\begin{prooftree}
 
         % Evaluates e_i and e.
@@ -1290,7 +1293,7 @@ their sensitivity list.
 \end{table}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{MapipComp}}
+  {\fontsize{10}{13}\selectfont\textsc{MapipComp}}
   
   \begin{prooftree}    
     % Evaluates mapip on assoc_p.
@@ -1330,7 +1333,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapopOpen}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapopOpen}} \\
     {\begin{prooftree}
 
         % Conclusion
@@ -1348,7 +1351,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapopSimpleToSimple}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapopSimpleToSimple}} \\
     {\begin{prooftree}
 
         % Evaluates name.
@@ -1379,7 +1382,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapopSimpleToPartial}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapopSimpleToPartial}} \\
     {\begin{prooftree}
 
         % Evaluates id_f and e_i.
@@ -1413,7 +1416,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapopPartialToSimple}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapopPartialToSimple}} \\
     {\begin{prooftree}
 
         % Evaluates name.
@@ -1444,7 +1447,7 @@ their sensitivity list.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{MapopPartialToPartial}} \\
+    {\fontsize{10}{13}\selectfont\textsc{MapopPartialToPartial}} \\
     {\begin{prooftree}
 
         % Evaluates id_f and e_i.
@@ -1478,7 +1481,7 @@ their sensitivity list.
 
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{MapopComp}}
+  {\fontsize{10}{13}\selectfont\textsc{MapopComp}}
   
   \begin{prooftree}    
     % Evaluates mapip on assoc.
@@ -1504,7 +1507,7 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{OutO}} \\
+    {\fontsize{10}{13}\selectfont\textsc{OutO}} \\
     {\begin{prooftree}
         \infer0
         [{
@@ -1525,7 +1528,7 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IdxOutO}} \\
+    {\fontsize{10}{13}\selectfont\textsc{IdxOutO}} \\
     {\begin{prooftree}
 
         % Evaluates e_i.
@@ -1575,17 +1578,20 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{SigAssign}} \\
+    {\fontsize{10}{13}\selectfont\textsc{SigAssign}} \\
     {\begin{prooftree}
 
         % Evaluates e.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
 
+        % Checks that the current value of [id__s] complies with T.
+        \hypo{\mathcal{S}(id_s)\in_c{}T}
+        
         % Checks that v complies with T.
         \hypo{v\in_c{}T}
-
+        
         % Conclusion.
-        \infer2
+        \infer3
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
@@ -1607,7 +1613,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IdxSigAssign}} \\
+    {\fontsize{10}{13}\selectfont\textsc{IdxSigAssign}} \\
     {\begin{prooftree}
 
         % Evaluates e_i and e.
@@ -1615,9 +1621,11 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
 
         % Checks that v complies with T.
+
         \hypo{v&\in_c{}T}
         \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
-
+        \infer[no rule]1{\mathcal{S}(id_s)&\in_c{}\mathtt{array(}T,n,m\mathtt{)}}
+        
         % Conclusion.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
@@ -1643,17 +1651,20 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{VarAssign}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{VarAssign}} \\    
     {\begin{prooftree}
 
         % Evaluates e.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
 
+        % Checks that val complies with T.
+        \hypo{val\in_c{}T}
+        
         % Checks that v complies with T.
         \hypo{v\in_c{}T}
 
         % Conclusion.
-        \infer2
+        \infer3
         [{
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
@@ -1672,7 +1683,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IdxVarAssign}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{IdxVarAssign}} \\    
     {\begin{prooftree}
 
         % Evaluates e_i.
@@ -1706,7 +1717,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{If}$\top$} \\    
+    {\fontsize{10}{13}\selectfont\textsc{If}$\top$} \\    
     {\begin{prooftree}
 
         % Evaluates condition.
@@ -1726,7 +1737,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{If}$\bot$} \\
+    {\fontsize{10}{13}\selectfont\textsc{If}$\bot$} \\
     {\begin{prooftree}
 
         % Evaluates condition.
@@ -1746,7 +1757,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IfElse}$\top$} \\    
+    {\fontsize{10}{13}\selectfont\textsc{IfElse}$\top$} \\    
     {\begin{prooftree}
 
         % Evaluates condition.
@@ -1766,7 +1777,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IfElse}$\bot$} \\  
+    {\fontsize{10}{13}\selectfont\textsc{IfElse}$\bot$} \\  
     {\begin{prooftree}
 
         % Evaluates condition.
@@ -1791,7 +1802,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{Loop}$\bot$} \\
+    {\fontsize{10}{13}\selectfont\textsc{Loop}$\bot$} \\
     {\begin{prooftree}
 
         % Evaluates upper bound check.
@@ -1826,7 +1837,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{Loop}$\top$} \\    
+    {\fontsize{10}{13}\selectfont\textsc{Loop}$\top$} \\    
     {\begin{prooftree}
                 
         % Upper bound check true.
@@ -1853,7 +1864,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{LoopInit}} \\
+    {\fontsize{10}{13}\selectfont\textsc{LoopInit}} \\
     {\begin{prooftree}
         
         % Evaluates e and e'.
@@ -1889,7 +1900,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{RisingEdgeDefault}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{RisingEdgeDefault}} \\    
     {\begin{prooftree}
         
         % Conclusion.
@@ -1904,7 +1915,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{FallingEdgeDefault}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{FallingEdgeDefault}} \\    
     {\begin{prooftree}
         
         % Conclusion.
@@ -1922,7 +1933,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{RisingEdgeExec}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{RisingEdgeExec}} \\    
     {\begin{prooftree}
 
         % Evaluates ss.
@@ -1939,7 +1950,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{FallingEdgeExec}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{FallingEdgeExec}} \\    
     {\begin{prooftree}
 
         % Evaluates ss.
@@ -1961,7 +1972,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{RstDefault}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{RstDefault}} \\    
     {\begin{prooftree}
 
         % Evaluates ss.
@@ -1979,7 +1990,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{RstExec}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{RstExec}} \\    
     {\begin{prooftree}
 
         % Evaluates ss.
@@ -2001,7 +2012,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{SeqStmt}} \\
+    {\fontsize{10}{13}\selectfont\textsc{SeqStmt}} \\
     {\begin{prooftree}
         
         % Evaluates ss.
@@ -2017,7 +2028,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{NullStmt}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NullStmt}} \\
     {\begin{prooftree}        
 
         % Conclusion.
@@ -2035,7 +2046,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{Nat}} \\
+    {\fontsize{10}{13}\selectfont\textsc{Nat}} \\
     {\begin{prooftree}
         \infer0
         [{
@@ -2050,7 +2061,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{False}} \\
+    {\fontsize{10}{13}\selectfont\textsc{False}} \\
     {\begin{prooftree}
         \infer0
         {
@@ -2059,7 +2070,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{True}} \\
+    {\fontsize{10}{13}\selectfont\textsc{True}} \\
     {\begin{prooftree}
         \infer0
         {
@@ -2075,7 +2086,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{Aggreg}} \\
+    {\fontsize{10}{13}\selectfont\textsc{Aggreg}} \\
     {\begin{prooftree}
 
         % Evaluates e.
@@ -2096,7 +2107,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{Sig}} \\
+    {\fontsize{10}{13}\selectfont\textsc{Sig}} \\
     {\begin{prooftree}
         \infer0
         [{
@@ -2110,7 +2121,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{Var}} \\
+    {\fontsize{10}{13}\selectfont\textsc{Var}} \\
     {\begin{prooftree}
         \infer0
         [{
@@ -2129,7 +2140,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{Gen}} \\
+    {\fontsize{10}{13}\selectfont\textsc{Gen}} \\
     {\begin{prooftree}
       \infer0
       [{
@@ -2145,7 +2156,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
   \end{tabular}
   % Idx name expressions.
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IdxSig}} \\
+    {\fontsize{10}{13}\selectfont\textsc{IdxSig}} \\
     {\begin{prooftree}
 
         % Evaluates e_i.
@@ -2176,7 +2187,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{IdxVar}} \\
+    {\fontsize{10}{13}\selectfont\textsc{IdxVar}} \\
     {\begin{prooftree}
         
         % Evaluates e_i.
@@ -2211,7 +2222,7 @@ element of array $a$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{NatAdd}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NatAdd}} \\
     {\begin{prooftree}
 
         % Evaluates e and e'.
@@ -2231,7 +2242,7 @@ element of array $a$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{NatSub}} \\
+    {\fontsize{10}{13}\selectfont\textsc{NatSub}} \\
     {\begin{prooftree}
 
         % Evaluates e and e'.
@@ -2250,7 +2261,7 @@ element of array $a$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{OrdOp}} \\
+    {\fontsize{10}{13}\selectfont\textsc{OrdOp}} \\
     
     {\begin{prooftree}
 
@@ -2272,7 +2283,7 @@ element of array $a$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{BoolBinOp}} \\
+    {\fontsize{10}{13}\selectfont\textsc{BoolBinOp}} \\
     {\begin{prooftree}
 
         % Evaluates e adn e'.
@@ -2291,7 +2302,7 @@ element of array $a$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{NotOp}} \\    
+    {\fontsize{10}{13}\selectfont\textsc{NotOp}} \\    
     {\begin{prooftree}
 
         % Evaluates e.
@@ -2309,7 +2320,7 @@ element of array $a$.
 % Equality and difference.
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{EqOp}}
+  {\fontsize{10}{13}\selectfont\textsc{EqOp}}
   
   \begin{prooftree}
 
@@ -2328,7 +2339,7 @@ element of array $a$.
 \end{table}
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{DiffOp}}
+  {\fontsize{10}{13}\selectfont\textsc{DiffOp}}
   
   \begin{prooftree}
 
@@ -2349,7 +2360,7 @@ where $eq$ is the equality relation established for all types defined
 in the semantics.
 
 \begin{table}[H]
-  {\fontsize{8}{11}\selectfont\textsc{Parenth}}
+  {\fontsize{10}{13}\selectfont\textsc{Parenth}}
   
   \begin{prooftree}
 

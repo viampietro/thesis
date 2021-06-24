@@ -404,7 +404,7 @@ evaluates the constraint bounds.  A constraint $c$ is well-formed in
 the context $\Delta$ if:
 
 \begin{itemize}[label=-]
-\item its bounds are globally static expressions \cite[p.36]{VHDL2000}
+\item its bounds are globally static expressions \cite[p.36]{VHDL00}
   of the \texttt{nat} type.
 \item its lower bound value is inferior or equal to its upper bound
   value.
@@ -412,7 +412,7 @@ the context $\Delta$ if:
 
 \begin{remark}[Type of constraints]
   As the VHDL language reference stays unclear about the type of range
-  and index constraints \cite[p.33]{VHDL2000}, we add the restriction
+  and index constraints \cite[p.33]{VHDL00}, we add the restriction
   that range and index constraints must have bounds of the
   \texttt{nat} type (i.e, value of type $nat$).
 \end{remark}
@@ -518,7 +518,7 @@ bounds.
 A \emph{generic} constraint $c$ is well-formed if:
 
 \begin{itemize}[label=-]
-\item its bounds are locally static expressions \cite[p.36]{VHDL2000} of
+\item its bounds are locally static expressions \cite[p.36]{VHDL00} of
   the \texttt{nat} type.
 \item its lower bound value is inferior or equal to its upper bound
   value.
@@ -840,13 +840,13 @@ semantics.
 
 According to the VHDL reference, when declaring a port, a signal or a
 variable, these items must receive an implicit default value depending
-on their types \cite[p.61, 64, 173]{VHDL2000}. The $defaultv$ relation
+on their types \cite[p.61, 64, 173]{VHDL00}. The $defaultv$ relation
 determines the default value for a given type.
 
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{DefaultVBool}} \\
+    {\fontsize{10}{13}\selectfont\textsc{DefaultVBool}} \\
     {\begin{prooftree}
 
         % Conclusion
@@ -858,11 +858,12 @@ determines the default value for a given type.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{DefaultVCNat}} \\
+    {\fontsize{10}{13}\selectfont\textsc{DefaultVCNat}} \\
     {\begin{prooftree}
 
         % Conclusion
         \infer[template={\inserttext}]0
+        [$n\le{}m$]
         {
           $\mathtt{nat}(n,m)$
           $\xrightarrow{defaultv}n$
@@ -874,7 +875,7 @@ determines the default value for a given type.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{DefaultVCArr}} \\
+    {\fontsize{10}{13}\selectfont\textsc{DefaultVCArr}} \\
     {\begin{prooftree}
 
         % Retrieves default value for element subtype.
@@ -882,7 +883,12 @@ determines the default value for a given type.
         
         % Conclusion
         \infer[template={\inserttext}]1
-        [$size=(m-n)+1$]
+        [
+        \begin{tabular}{@{}l}
+          $n\le{}m$ \\
+          $size=(m-n)+1$ \\
+        \end{tabular}
+        ]
         {
           $\mathtt{array}(T,n,m)$
           $\xrightarrow{defaultv}$
@@ -898,5 +904,5 @@ the value $v$.
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:
