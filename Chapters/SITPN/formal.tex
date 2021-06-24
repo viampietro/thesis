@@ -1,13 +1,13 @@
-Hoping that the reader has now a fair understanding of the concepts
-underlying the SITPNs and their evolution dynamics, we now give the
-formal definition of the SITPN structure and of its execution
-semantics. We also introduce the concept of a \emph{well-defined}
-SITPN at the end of the section.
+We hope that the reader has now a fair understanding of the concepts
+underlying the SITPNs and of the dynamics governing the SITPN state
+evolution process. In this section, we give the formal definition of
+the SITPN structure and of its execution semantics. We also introduce
+the concept of a \emph{well-defined} SITPN at the end of the section.
 
 \subsection{SITPN structure}
 \label{sec:struct-and-wd}
 
-\noindent{}An SITPN is formally defined as follows:
+\noindent{}The structure of SITPNs is formally defined as follows:
 
 \begin{definition}[SITPN]
   \label{def:sitpn}
@@ -93,10 +93,8 @@ the domain of $I_s$.
 
 Before formalizing the full SITPN semantics, we must introduce some
 definitions and notations, especially the definition of a
-\emph{firable} and a \emph{fired} transition.
-
-We use the two following notations to simplify the formalization of
-the SITPN semantics.
+\emph{firable} and a \emph{fired} transition. We use the two following
+notations to simplify the formalization of the SITPN semantics.
 
 \begin{notation}[Relations between markings]
   For all relation $\mathcal{R}$ existing between two marking
@@ -116,37 +114,37 @@ the SITPN semantics.
     tokens. For instance, for a given place $p$,
     $\sum\limits_{t\in{}T'}pre(p,t)$ where $T'\subseteq{}T$.
 
-    This expression is a notation for
+    The expression $\sum\limits_{t\in{}T'}pre(p,t)$ is a notation for
     $\sum\limits_{t\in{}T'}\begin{cases}\omega~if~pre(p,t)=(\omega,\mathtt{basic})\\
-      0~otherwise \end{cases}$
+      0~otherwise \end{cases}$.
 
-    Indeed, when computing a sum of output tokens (i.e. resulting of a
-    firing process), we want to add to the sum the weight of the arc
-    between place $p$ and a transition $t\in{}T'$ only if there exists
-    an arc of type $\mathtt{basic}$ from $p$ to $t$ (remember that the
-    test and inhibitor never lead to the withdrawal of tokens during
-    the firing process). Otherwise, we add 0 to the sum as it is a
-    neutral element of the addition operator over natural numbers.
+    When computing a sum of output tokens (i.e. resulting of a firing
+    process), we want to add to the sum the weight of the arc between
+    place $p$ and a transition $t\in{}T'$ only if there exists an arc
+    of type $\mathtt{basic}$ from $p$ to $t$ (remember that the test
+    and inhibitor never lead to the withdrawal of tokens during the
+    firing process). Otherwise, we add 0 to the sum as it is a neutral
+    element of the addition operator over natural numbers.
     
-  \item The second kind expression computes a number of input tokens.
-    For instance, for a given place $p$,
+  \item The second kind of expression computes a number of input
+    tokens.  For instance, for a given place $p$,
     $\sum\limits_{t\in{}T'}post(p,t)$ where $T'\subseteq{}T$.
 
-    This expression is a notation for
+    The expression $\sum\limits_{t\in{}T'}post(p,t)$ is a notation for
     $\sum\limits_{t\in{}T'}\begin{cases}\omega~if~post(t,p)=\omega\\
-      0~otherwise \\ \end{cases}$
+      0~otherwise \\ \end{cases}$.
 
-    Here, we add the weight of the arc
-    from $t$ to $p$ only if there exists such an arc; we add 0 to the
-    sum otherwise.
+    Here, we add the weight of the arc from $t$ to $p$ only if there
+    exists such an arc; we add 0 to the sum otherwise.
   \end{enumerate}
   Therefore, in the remainder of the document, we will use the
-  conciser notations $\sum\limits_{t\in{}T'}pre(p,t)$ to denote output
-  token sums, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote input
-  token sums.
+  conciser notation $\sum\limits_{t\in{}T'}pre(p,t)$ to denote an
+  output token sum, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote an
+  input token sum.
 \end{notation}
 
-\noindent{}We give the formal definition of the sensitization of a
+\noindent{}We give the formal definition of the sensitization (see
+Section~\ref{subsec:pn-formalism} for an informal definition) of a
 transition by a given marking as follows:
 
 \begin{definition}[Sensitization]
@@ -172,7 +170,7 @@ As explain in Section~\ref{subsec:hpn-particularities}, the firability
 conditions are not sufficient for a transition to be fired. A
 transition must also be enabled by the residual marking to go through
 the firing process. Definition~\ref{def:fired} gives the formal
-definition of a fired transition:
+definition of a fired transition at a given SITPN state:
 
 \begin{definition}[Fired]
   \label{def:fired}
@@ -186,22 +184,22 @@ definition of a fired transition:
 One can notice that the definition of the set of fired transitions is
 recursive. Indeed, to compute the residual marking necessary to the
 definition of a fired transition, the $Pr$ set must be defined. For a
-given transition $t$, the definition of the $Pr$ set of $t$ is all the
+given transition $t$, the $Pr$ set of $t$ represents all the
 transitions with a higher firing priority than $t$ that are also fired
 transitions; hence the recursive definition.
 
 In Definition~\ref{def:fired}, the marking
 $M-\sum_{t_i\in{}Pr(t)}pre(t_i)$ formally qualifies the residual
-marking a SITPN state $s$ for a given transition $t$.
+marking for a given transition $t$ and at a given SITPN state $s$.
 
 \subsection{SITPN Semantics}
 \label{sec:sitpn-sem}
 
 We formalize the semantics of a given SITPN as a transition
 system. The SITPN state transition relation defined in the SITPN
-semantics as two construction cases parameterized by a clock event,
-either falling edge or rising edge, and describes the evolution of the
-state of a SITPN.
+semantics as two cases of definition, one for each clock event.  The
+SITPN state transition relation describes the evolution of the state
+of a SITPN.
 
 \begin{definition}[SITPN Semantics]
   \label{def:semantics}
@@ -229,13 +227,10 @@ state of a SITPN.
     $E_c,\tau\vdash{}s\xrightarrow{clk}s'$ where
     $s,s'\in{}S(sitpn)$ and $(clk,\tau)\in{}L$, and which is defined
     as follows:
-    % $s\xrsquigarrow{l}s'$
     \begin{itemize}[label=$\square$]
-    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$,
-      $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$,
-      where $s=<M,I,reset_t,ex,cond>$ and\\
-      $s'=<M,I',reset_t,ex',cond'>$, if:
-      % $s\xrsquigarrow{(\downarrow,\tau)}s'$,
+    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$, we
+      have $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, where
+      $s=<M,I,reset_t,ex,cond>$ and $s'=<M,I',reset_t,ex',cond'>$, if:
       \begin{enumerate}[label=(\arabic*)]
       \item\label{it:cond-env} $cond'$ is the function giving the
         (Boolean) values of conditions that are extracted from the
@@ -254,24 +249,23 @@ state of a SITPN.
         $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{true}
         \Rightarrow{}I'(t)=1$.
       \item\label{it:inc-counters} All the time transitions that are
-        sensitized by the marking $M$ and
-        did not receive a reset order increment their time counters if time counters are still active, i.e.:\\
+        sensitized by the marking $M$, and
+        did not receive a reset order, increment their time counters if time counters are still active, i.e.:\\
         $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
         \land{}(I(t)\le{}upper(I_s(t))\lor{}upper(I_s(t))=\infty)\Rightarrow{}$
         $I'(t)=I(t)+1$.
       \item\label{it:locked-counters} All the time transitions
         verifying the same
-        conditions as above, but with locked counters, keep having locked counters, i.e.:\\
+        conditions as above, but with locked counters, keep having locked counters (values are stalling), i.e.:\\
         $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
         \land{}I(t)>{}upper(I_s(t))\land{}upper(I_s(t))\neq\infty\Rightarrow{}$
         $I'(t)=I(t)$.
       \item\label{it:reset-not-sens} All the time transitions disabled by the marking $M$ have their time counters set to zero, i.e.:\\
         $\forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0$.
       \end{enumerate}
-    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$,
-      $E,\tau\vdash{}s\stackrel{\uparrow}{\rightsquigarrow}s'$, where
-      $s=<M,I,reset_t,ex,cond>$ and\\
-      $s'=<M',I,reset_t',ex',cond>$, if:
+    \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$, we
+      have $E_c,\tau\vdash{}s\xrightarrow{\uparrow}s'$, where
+      $s=<M,I,reset_t,ex,cond>$ and $s'=<M',I,reset_t',ex',cond>$, if:
       \begin{enumerate}[label=(\arabic*),resume]
       \item\label{it:new-marking} $M'$ is the new marking resulting
         from
@@ -309,12 +303,12 @@ status of actions. Rules~\ref{it:reset-counters},
 \ref{it:reset-not-sens} focus on the update of time counter values.
 In Rule~\ref{it:inc-counters} of the SITPN semantics, the
 \emph{active} time counters refer to the time counters that have not
-yet overreached the upper bound of the associated time interval. Of
+yet overreached the upper bound of their associated time interval. Of
 course, a time counter is always active when the upper bound is
 infinite. In Rule~\ref{it:locked-counters}, the \emph{locked} time
 counters refer to the time counters that have overreached the upper
-bound of the associated time interval. Of course, time counters can
-never be locked if the presence of an infinite upper bound. In
+bound of their associated time interval. Of course, time counters can
+never be locked in the presence of an infinite upper bound. In
 Rules~\ref{it:inc-counters} and \ref{it:locked-counters}, for a given
 time interval $i$, $upper(i)$ denotes the upper bound of the time
 interval, and $lower(i)$ denotes the lower bound of the time interval.
@@ -356,14 +350,15 @@ i.e. the so-called \emph{transient} marking. Situation~\circled{3}
 corresponds to the marking at the end of the firing process. At
 \circled{3}, transition $t_1$ is enabled by the marking. However, at
 \circled{2}, the transient marking disables $t_1$ and thus $t_1$ must
-receive a reset order.
+receive a reset order (represented by a \textcolor{blue}{blue} time
+counter).
 
 \subsection{SITPN Execution}
 \label{sec:sitpn-exec}
 
 As a part of the SITPN semantics, we define here the SITPN execution
 and SITPN full execution relations. These relations bind a given SITPN
-to the execution trace, i.e. an ordered list of states, that it
+to the execution trace, i.e. a time-ordered list of states, that it
 produces when executed over a given number of clock cycles. These
 definitions are additional elements corresponding to our own
 contribution to the formalization of the SITPN semantics.
@@ -379,7 +374,7 @@ contribution to the formalization of the SITPN semantics.
 %   $E_c,\tau\vdash{}sitpn,s'\xrightarrow{\downarrow}s''$.
 % \end{definition}
 
-\begin{definition}[SITPN Execution]
+\begin{definition}[SITPN execution]
   \label{def:sitpn-exec}
   For a given $sitpn\in{}SITPN$, a starting state $s\in{}S(sitpn)$, a
   clock cycle count $\tau\in\mathbb{N}$, and an environment
@@ -415,7 +410,7 @@ contribution to the formalization of the SITPN semantics.
 \end{table}
 \end{definition}
 
-\begin{definition}[SITPN Full Execution]
+\begin{definition}[SITPN full execution]
   \label{def:sitpn-full-exec}
   For a given $sitpn\in{}SITPN$, a clock cycle count
   $\tau\in\mathbb{N}$, and an environment
@@ -510,13 +505,14 @@ group.
 \begin{definition}[Conflict]
   \label{def:conflict}
   For a given $sitpn\in{}SITPN$, two transitions $t,t'\in{}T$ are in
-  conflict if and only if there exists a place $p\in{}P$ such that
+  conflict if there exists a place $p\in{}P$ such that
   $p\in{}input(t)\cap{}input(t')$ and there exist
-  $n,m\in\mathbb{N}^{*}$ such that $pre(p,t)=(n,\mathtt{basic})$ and
-  $pre(p,t')=(m,\mathtt{basic})$.
+  $\omega,\omega'\in\mathbb{N}^{*}$ such that
+  $pre(p,t)=(\omega,\mathtt{basic})$ and
+  $pre(p,t')=(\omega',\mathtt{basic})$.
 \end{definition}
 
-A confict group qualifies a finite set of transitions that are all in
+A conflict group qualifies a finite set of transitions that are all in
 conflict with each other through the same place. In
 Figure~\ref{fig:conflict-not-trans}, the set $\{t_0,t_1\}$ is a
 conflict group.  The formal definition of a conflict group is as
@@ -525,8 +521,8 @@ follows:
 \begin{definition}[Conflict Group]
   \label{def:cgroup}
   For a given $sitpn\in{}SITPN$, $T_c\subseteq{}T$ is a conflict group
-  if and only if there exists a place $p$ such that
-  $\forall{}t\in{}output(p),\big(\exists{}n\in\mathbb{N}^{*},~pre(p,t)=(n,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
+  if there exists a place $p$ such that
+  $\forall{}t\in{}T,\big(\exists{}\omega\in\mathbb{N}^{*},~pre(p,t)=(\omega,\mathtt{basic})\big)\Leftrightarrow{}t\in{}T_c$.
 \end{definition}
 
 Contrary to the statement made in \cite[p. 67]{Leroux2014}, we no more
@@ -539,12 +535,12 @@ must be solved. However, we no more consider transitions $t_0$ and
 $t_2$ as in conflict. We argue that even when no conflict resolution
 technique is applied between transitions in the same situation as
 $t_0$ and $t_2$, the execution of the $SITPN$ can neither result in
-the double-spending of a token, nor in the case where a transition is
-not elected to be fired even though it ought to be. Therefore, we no
-more consider the construction of merged conflict group (i.e, conflict
-groups must be merged into one if their intersection is not empty;
-e.g, $\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans}) as
-being necessary.
+the double-consumption of a token, nor in the case where a transition
+is not elected to be fired even though it ought to be. Therefore, we
+no more consider the construction of merged conflict group (i.e,
+conflict groups must be merged into one if their intersection is not
+empty; e.g, $\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans})
+as being necessary.
 
 \begin{figure}[H]
   \centering
@@ -642,9 +638,9 @@ compile-time errors during the transformation of the SITPN into a
     (resp. output) places of $t$.
   \item For all conflict group as defined in
     Definition~\ref{def:cgroup}, either all conflicts (i.e. for all
-    pair of transitions in the conflict group) must be solved by one
-    of the mean of mutual exclusion, or, the priority relation must be
-    a strict total order over the transitions of the conflict group.
+    pair of transitions in the conflict group) are solved by one of
+    the mean of mutual exclusion, or, the priority relation is a
+    strict total order over the transitions of the conflict group.
   \end{itemize}
 \end{definition}
 

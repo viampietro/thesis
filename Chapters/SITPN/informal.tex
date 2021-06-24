@@ -8,28 +8,35 @@ more information on the topic of Petri nets, the reader can refer to
 \subsection{Preliminary notions on Petri nets}
 \label{subsec:pn-formalism}
 
-Petri nets, invented by C. A. Petri \cite{Petri1962}, are used to
-model a broad range of dynamic systems: resource sharing between
-concurrent processes \cite{David1994}, behavior of agents in
+Petri nets (PNs), invented by C. A. Petri \cite{Petri1962}, are used
+to model a broad range of \emph{dynamic} systems: resource sharing
+between concurrent processes \cite{David1994}, behavior of agents in
 multi-agent systems \cite{Celaya2007}, behavior of digital components
 \cite{Yakovlev2006}. A Petri net is a directed graph, composed of two
 types of node: place nodes (\emph{circles}) and transition nodes
 (\emph{squares} or \emph{lines}). As shown in
 Figure~\ref{fig:pn-example}, place nodes usually represent a part of
-the state of the modelled system, here the states of two computer
-processes and a semaphor; transition nodes usually refer to events
-triggering the system evolution (or state changing).
+the state of the modelled system, here, the states of two computer
+processes and a semaphore; transition nodes usually refer to events
+triggering the system evolution (or state changing). We will see later
+that there exists a lot of different classes of
+PNs. Figure~\ref{fig:pn-example} presents an example of the most
+simple form of PN, namely, the \emph{place-transition} PN. In this
+chapter, when no precision is given on the class of PN considered, a
+PN refers to a \emph{place-transition} PN.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=\textwidth]{Figures/SITPN/pn-example}
-  \caption[An example of Petri net]{An example of Petri net - A
-    semaphor to prevent the parallel execution of \textit{Treatment 1}
-    and \textit{Treatment 2}.}
+  \caption[An example of Petri net]{An example of Petri net. The
+    semaphore place $sem$ prevents the parallel execution of
+    \textit{Treatment 1} (place $p_1$) and \textit{Treatment 2} (place
+    $p_2$).}
   \label{fig:pn-example}
 \end{figure}
 
 \paragraph{Edges}
+
 In a Petri net, directed edges link together places and
 transitions. Places cannot be linked to other places, and the same
 stands for transitions.  There are two kinds of edges, \textit{pre} or
@@ -37,25 +44,26 @@ stands for transitions.  There are two kinds of edges, \textit{pre} or
 \textit{post} or \textit{outcoming} edges, going from a transition to
 a place. Places linked to a transition $t$ by incoming
 (resp. outcoming) edges will be referred to as the \textit{input}
-(resp. \textit{output}) of $t$. The same stands for a place $p$. For
-instance, in Figure~\ref{fig:pn-example}, $p_0$ and $sem$ are the
-input places of $t_0$, and $p_1$ is the output place of $t_0$; $t_1$
-and $t_3$ are the input transitions of place $sem$, and $t_0$ and
-$t_2$ are the output transitions of $sem$. Some weight --a natural
-number-- is associated to the edges of a Petri net. If no label
-appears on the edge then one is the default weight. Petri nets are
-said to be \textit{generalized} when edge weights are possibly greater
-than one.
+places (resp. \textit{output} places) of $t$. The same stands for the
+transitions linked to a place $p$. For instance, in
+Figure~\ref{fig:pn-example}, $p_0$ and $sem$ are the input places of
+$t_0$, and $p_1$ is the output place of $t_0$; $t_1$ and $t_3$ are the
+input transitions of place $sem$, and $t_0$ and $t_2$ are the output
+transitions of $sem$. Some weight --a natural number-- is associated
+to the edges of a Petri net. If no label appears on the edge then one
+is the default weight. Petri nets are said to be \textit{generalized}
+when the weight of the edges are possibly greater than one.
 
 \paragraph{Marking}
 In Figure~\ref{fig:pn-example}, places $p_0$, $p_3$ and $sem$ are
 marked with tokens, represented by little black circles.  This means
-that places $p_0$, $p_3$ and $Sem$ are currently active.  The
+that places $p_0$, $p_3$ and $sem$ are currently active.  The
 distribution of tokens over places is called the \textit{marking} of
 the net. The marking of a Petri net reflects the overall state of the
 modelled system at a certain moment in its activity cycle.
 
 \paragraph{Transition firing}
+
 In a Petri net, the marking evolves based on a token
 consump\-tion-production system. Transitions consume tokens from their
 input places, and produce tokens to their output places. This whole
@@ -68,15 +76,15 @@ $t_0$ is sensitized because the weight of the arc ($p_0$, $t_0$) is of
 one (default value), and place $p_0$ is marked with one token, and the
 same stands for the number of tokens in place $sem$ and the weight of
 the arc ($sem$, $t_0$). As a counter example, transition $t_3$ is not
-sensitized because there is no tokens in its input place $p_2$.
+sensitized because there are no tokens in its input place $p_2$.
 Depending on the class of PNs that is considered, other parameters
 affect the \textit{firability} of transitions (see interpreted Petri
 nets, time Petri nets and
 Section~\ref{subsec:hpn-particularities}). When a sensitized
 transition is fired, tokens are retrieved from its input places (as
-much tokens as the weight of the arcs) and produced in its output
-places (as much tokens as the weight of the arcs).  This process
-represents the occurence of an event --denoted by the transition--
+many tokens as the weight of the arcs) and produced in its output
+places (as many tokens as the weight of the arcs).  This process
+represents the occurrence of an event --denoted by the transition--
 triggering the evolution of the system from one state to
 another. Figure~\ref{fig:firing-example} shows the state of the PN of
 Figure~\ref{fig:pn-example} after the firing of the transition $t_0$.
@@ -96,16 +104,16 @@ indicates that the task ``Treatment 1'' is being performed (place
 $p_1$ is active).
 
 In Figure~\ref{fig:pn-example}, transition $t_0$ and $t_2$ are enabled
-at the same time. However, the \emph{standard} semantics of Petri nets
-is such that only one transition can be fired in that case. Either
-$t_0$ consumes the token in place $sem$ or $t_2$ does, but never
-both. Thus, the transition firing process in the standard PN semantics
-is an undeterministic process. From the marking of
-Figure~\ref{fig:pn-example}, two marking are reachable: the marking
+at the same time. However, the \emph{standard} semantics of PNs is
+such that only one transition can be fired in that case. Either $t_0$
+consumes the token in place $sem$ or $t_2$ does, but never both. Thus,
+the transition firing process in the standard PN semantics is an
+nondeterministic process. From the marking of
+Figure~\ref{fig:pn-example}, two markings are reachable: the marking
 resulting of the firing of transition $t_0$ and the one resulting of
 the firing of transition $t_2$. Also, the transition firing process is
 asynchronous. As soon as a transition is enabled, the transition
-firing process can be triggered. 
+firing process can be triggered.
 
 \paragraph{Extended Petri nets}
 The class of \textit{extended} Petri nets introduces the inhibitor and
@@ -124,13 +132,14 @@ from a place toward a transition.
     on the right side, a PN with test arcs.}
   \label{fig:inhib-test-arcs}
 \end{figure}
+
 The particularity of the inhibitor and test edges is that they are not
 consuming tokens in input places after the firing of a transition.
 Indeed, they are just testing the number of tokens in incoming places
 to determine if the transition is enabled. Inhibitor arcs ensure that
 the number of tokens in input places is strictly lower than their
-weights; test arcs ensure that the number of tokens in pre-places is
-equal or greater than their weights. Therefore, on the left side of
+weights; test arcs ensure that the number of tokens in incoming places
+is equal or greater than their weights. Therefore, on the left side of
 Figure~\ref{fig:inhib-test-arcs}, transition $t_0$ is sensitized
 because there is strictly less than one token in place $p_0$ and
 strictly less than two tokens in place $p_1$. On the right side of
@@ -139,9 +148,9 @@ because there is at least one token in place $p_0$ and three tokens in
 place $p_1$.
 
 \paragraph{Interpreted Petri nets}
-Interpreted Petri nets (IPN) \cite{David1994} are intended to describe
-the interaction between a system and its outside
-environment. Interpretation introduces three new concepts:
+Interpreted Petri nets (IPN) \cite{David1994} describe the interaction
+between a system and its outside environment. This class of PN
+introduces three new concepts: 
 
 \begin{itemize}
 
@@ -165,8 +174,16 @@ environment. Interpretation introduces three new concepts:
   
 \end{itemize}
 
-Figure~\ref{fig:ipn} illustrates the use of actions, functions and
-conditions in an interpreted Petri net.
+Conditions represent inputs from the environment; actions and
+functions describe the influence of the modelled system on its
+environment. There is an interaction between actions, functions and
+conditions. The execution of actions and functions modify the
+environment of the system, and the modification of the environment
+will be measured through the value of conditions. However, in an IPN,
+the interaction between actions, functions and conditions is not
+described as it would require to model the dynamics of the
+environment. Figure~\ref{fig:ipn} illustrates the use of actions,
+functions and conditions in an interpreted Petri net.
 
 \begin{figure}[H]
   \centering
@@ -187,49 +204,48 @@ tests or operations. However, when considering the semantics of IPNs,
 what is of interest to us is the value of conditions and the execution
 state of actions and functions. We are not interested in interpreting
 the Boolean expressions associated to conditions but only to retrieve
-their value; likewise, we are only interested in the fact that a given
+their value. Likewise, we are only interested in the fact that a given
 action/function is activated/executed but not in what is its effect on
 the environment.
 
 \paragraph{Time Petri nets}
 
 In a time Petri net (TPN), time intervals are associated to
-transitions. The goal of associating a time interval to a transition
-is to constrain the firing of this transition to a certain time
-window. As shown in Figure~\ref{fig:tpn}, time intervals are of the
-form $[a, b]$, where $a\in\mathbb{N}^{*}$ and
-$b\in\mathbb{N}^{*}\sqcup\{\infty\}$. Time intervals can also be
-defined with real numbers but in this thesis we not interested in this
-kind of time intervals. In Figure~\ref{fig:tpn}, time counters are
-represented in red between diamond brackets. The current value of time
-counters is part of the state of the TPN, along with its current
-marking, whereas time intervals are part of the static structure of
-the TPN.
+transitions. The goal is to constrain the firing of a transition to a
+certain time window. As shown in Figure~\ref{fig:tpn}, time intervals
+are of the form $[a, b]$, where $a\in\mathbb{N}^{*}$ and
+$b\in\mathbb{N}^{*}\sqcup\{\infty\}$. Other definitions of time
+intervals exist for TPNs (e.g. with real numbers), but here we will
+only consider the latter definition. In Figure~\ref{fig:tpn}, time
+counters are represented in red between diamond brackets. The current
+value of time counters is part of the state of the TPN, along with its
+current marking, whereas time intervals are part of the static
+structure of the TPN.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=0.2\textwidth]{Figures/SITPN/time-pn}
-  \caption{An example of time Petri net.}
+  \caption[An example of time Petri net.]{An example of time Petri
+    net. The value of time counters appears in red.}
   \label{fig:tpn}
 \end{figure}
 
 For each sensitized transition associated with a time interval, time
 counters are incremented at a certain time step, previously defined by
-the modeller. For instance, in the case of SITPNs, i.e. Petri nets
+the designer. For instance, in the case of SITPNs, i.e. Petri nets
 used in the \hilecop{} methodology, the reference time step for the
-incrementation of time counters is the clock cycle.
+increment of time counters is the clock cycle.
 
 When a transition associated with a time interval is fired or
 disabled, a reset order is sent to the transition to set its time
 counter to zero. The value of reset orders (Boolean values) is also a
 part of the TPN state.  In time Petri nets, a transition is firable
 only if its time counter value is within its time interval. For
-instance, in Figure~\ref{fig:tpn}, only transition $t_0$ is firable.
-
-There are multiple possible firing policy for TPNs. Here, we will only
-consider the \textit{imperative} firing policy: as soon as a time
-counter reaches the lower bound of a time interval, the associated
-transition must be fired.
+instance, in Figure~\ref{fig:tpn}, only transition $t_0$ is
+firable. Moreover, there are several possible firing policies for
+TPNs. Here, we will only consider the \textit{imperative} firing
+policy: as soon as a time counter reaches the lower bound of a time
+interval, the associated transition must be fired.
 
 \paragraph{Petri nets with priorities}
 
@@ -274,11 +290,11 @@ its synchronous execution.
 The class of interpreted Petri nets increases the expressiveness of
 the \hilecop{} high-level models. However, to ensure the safe
 execution of functions after the synthesis of the designed circuit on
-a FPGA card, the whole system must be synchronized with a clock signal
-\cite{Leroux2014}. As a consequence, a clock signal also regulates the
-evolution of SITPNS (i.e. it is a part of their semantics). The
-evolution of an SITPN is \textit{synchronized} with two clock events:
-the rising edge and the falling edge of the
+an FPGA card, the whole system must be synchronized with a clock
+signal \cite{Leroux2014}. As a consequence, a clock signal also
+regulates the evolution of SITPNS (i.e. it is a part of their
+semantics). The evolution of a SITPN is \textit{synchronized} with
+two clock events: the rising edge and the falling edge of the
 signal. Figure~\ref{fig:sync-exec} depicts the process of state
 evolution, following the clock signal.
 
@@ -290,20 +306,20 @@ evolution, following the clock signal.
 \end{figure}
 
 Considering the different classes of PNs that define SITPNs, the state
-of an SITPN is characterized by its marking, the value of time
+of a SITPN is characterized by its marking, the value of time
 counters, the reset orders assigned to time counters, the
 execution/activation status of actions/functions (Boolean values), and
 the value of conditions (also Boolean). As shown in figure
-\ref{fig:sync-exec}, the state evolution process of an SITPN is
-divided in two parts is divided in two steps. At the rising of the
-clock signal, the marking is updated, i.e. transitions are fired,
-reset orders are sent to all transitions that have been fired or
-disabled by the firing process, and all functions associated to fired
-transitions are executed. Then, on the falling edge of the clock
-signal, fresh condition values are provided by the environment, the
-time counter values are either incremented, reset or values are
-stalling (see the following remark on locked time counters), and all
-action associated with marked places are
+\ref{fig:sync-exec}, the state evolution process of a SITPN is divided
+into two steps. The rising edge of the clock signal triggers the
+marking update, which is the consequence of transition firing; all
+transitions that have been fired or disabled by the firing process
+receive reset orders; all functions associated with fired transitions
+are executed. Then, on the falling edge of the clock signal, the
+environment provides a new value to each condition. Also, the falling
+edge triggers the evolution of the time counter values; values are
+incremented, reset, or stalling (see the following remark on locked
+time counters). Finally, all actions associated with marked places are
 activated. Figure~\ref{fig:sitpn-state-exec} gives an example of the
 evolution of the state of a given SITPN through one clock cycle. The
 aim of this figure and the explanation that follows is to give some
@@ -313,13 +329,14 @@ formal definition in Section~\ref{sec:sitpn-sem}.
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/SITPN/sitpn-state-evol}
-  \caption[Evolution of an SITPN over one clock cycle.]{Evolution of
-    an SITPN over one clock cycle. Conditions appear in green when
-    their value is \texttt{true} and in red otherwise; actions and
-    functions appear in green when they are activated/executed and in
-    red otherwise; time counters appear in red and between diamond
-    brackets; time counters appear in blue when they receive reset
-    orders.}
+  \caption[Evolution of an SITPN over one clock cycle.]{Evolution of a
+    SITPN over one clock cycle. Conditions appear in
+    \textcolor{Green}{green} when their value is \texttt{true} and in
+    \textcolor{red}{red} otherwise; actions and functions appear in
+    \textcolor{Green}{green} when they are activated/executed and in
+    \textcolor{red}{red} otherwise; time counters appear in
+    \textcolor{red}{red} and between diamond brackets; time counters
+    appear in \textcolor{blue}{blue} when they receive reset orders.}
   \label{fig:sitpn-state-exec}
 \end{figure}
 
@@ -327,21 +344,23 @@ From Step~1 to Step~2, the rising edge of the clock signal triggers
 the SITPN state evolution. Here, transition $t_0$ is fired. At Step~1,
 transition $t_0$ gathers all the necessary conditions to trigger the
 firing process, namely: $t_0$ is enabled by the current marking,
-condition $c_0$ is \texttt{true} (appears in green), $t_0$'s time
-counter value is within the time interval. As a consequence, one token
-is consumed in place $p_0$ and one token is produced in place $p_1$,
-function $f_0$ is executed at Step~2 (appears in green) and a reset
-order is sent to the time counter of $t_0$ (appears in blue). From
-Step~2 to Step~3, the action activation status are updated; $a_0$
-stays activated as place $p_0$ is still marked; $a_1$ becomes newly
-activated as $p_1$ is marked. The time counter values are updated;
-$t_0$'s time counter is set to zero as the transition previously
-received a reset order. However, as $t_0$ is still sensitized by the
-new marking, its time counter is incremented. Thus, the resulting time
-counter value at Step~3 is of one (i.e. result of reset plus
-incrementation). Also, the condition values are retrieved from the
-environment. As a consequence, condition $c_0$ takes the value
-\texttt{false}.
+condition $c_0$ is \texttt{true} (appears in
+\textcolor{Green}{green}), the value of $t_0$'s time counter is within
+the time interval. As a consequence, one token is consumed in place
+$p_0$ and one token is produced in place $p_1$. Also, function $f_0$
+is executed at Step~2 (appears in \textcolor{Green}{green}) and a
+reset order is sent to the time counter of $t_0$ (appears in
+\textcolor{blue}{blue}). From Step~2 to Step~3, the falling edge
+updates the action activation status: $a_0$ stays activated as place
+$p_0$ is still marked; $a_1$ becomes newly activated as $p_1$ is
+marked. The value of time counters are updated: $t_0$'s time counter
+is set to zero as the transition previously received a reset
+order. However, as $t_0$ is still enabled by the new marking, its time
+counter is incremented. Thus, the resulting time counter value at
+Step~3 is of one (i.e. result of reset plus increment). Also, the
+environment provides a new value to each condition. As a consequence,
+condition $c_0$ takes the value \texttt{false} and condition $c_1$
+keeps the same value.
 
 \paragraph{A remark on priorities}
 
@@ -356,24 +375,25 @@ the firing of $t_1$.
   \centering
   \includegraphics[keepaspectratio=true, width=.8\textwidth]{Figures/SITPN/double-consum}
   \caption[Double consumption of token in a SITPN.]{Double consumption
-    of token in a SITPN. On the left side, the current marking before
-    the firing of $t_0$ and $t_1$; on the right side, the marking
-    resulting of the firing of $t_0$ and $t_1$. The arrow indicates
-    the occurence of a rising edge that triggers the firing process.}
+    of one token in a SITPN. On the left side, the current marking
+    before the firing of $t_0$ and $t_1$; on the right side, the
+    marking resulting of the firing of $t_0$ and $t_1$. The arrow
+    indicates the occurrence of a rising edge that triggers the firing
+    process.}
   \label{fig:double-consum}
 \end{figure}
 
-In the context of an SITPN, a branching like the one of
-Figure~\ref{fig:sitpn-state-exec}, normally interpreted as an
+In the context of a SITPN, a branching like the one of
+Figure~\ref{fig:sitpn-state-exec}, normally interpreted as a
 disjunctive branching, takes the semantics of a conjunctive branching
 when no priority are prescribed between the conflicting
 transitions. To avoid the phenomenon of ``double consumption'' of
 tokens, we enforce the resolution of any structural conflict by means
 of mutual exclusion or through the application of priorities. This
-policy about the resolution of structural conflict is part of the
+policy about the resolution of structural conflicts is part of the
 definition of a well-defined SITPN presented in
-Section~\ref{sec:sitpn-wd}, and is mandatory to produce safe models of
-digital systems.
+Section~\ref{sec:sitpn-wd}. The property of well-definition is
+mandatory to produce safe models of digital systems.
 
 When a structural conflict between transitions is solved with
 priorities, the firing process follows a slightly different
@@ -386,10 +406,10 @@ firing of transitions with a higher firing priority. Thus, in the
 semantics of SITPNs, we add an extra condition to the firing of a
 transition: to be fired, a transition must be enabled by the current
 marking, must have all its conditions valuated to \texttt{true}, must
-have its time counter within its time interval and must be enabled by
-the residual marking. The computation of the residual marking only
-applies the consumption phase of the firing process, i.e. no tokens
-are generated.
+have its time counter within its time interval \emph{and} must be
+enabled by the residual marking. The computation of the residual
+marking only involves the consumption phase of the firing process;
+tokens are withdrawn from places, but none are generated.
 
 \begin{figure}[H]
   \centering
@@ -399,58 +419,59 @@ are generated.
     group of conflicting transitions. At \circled{1}
     (resp. \circled{2} and \circled{3}), the residual marking for
     transition $t_0$ (resp. $t_1$ and $t_2$). Condition $c_0$ is in
-    red to indicate that it is currently valuated to \texttt{false}.}
+    \textcolor{red}{red} to indicate that its currentl value is
+    \texttt{false}.}
   \label{fig:resid-marking}
 \end{figure}
 
 In Figure~\ref{fig:resid-marking}, the residual marking for $t_0$
 corresponds to the marking obtained after the firing of all
-transitions with a higher priority than $t_0$. As $t_0$ is the
-transition with the highest firing priority, the residual marking for
-$t_0$ is equal to the current marking. Transition $t_0$ gathers all
-the conditions to be firable and is enabled by the residual marking;
-thus, $t_0$ is fired. The residual marking for $t_1$ is the marking
-obtained after the firing of $t_0$, i.e. the only transition with a
-higher priority.  As illustrated at \circled{2}, $t_1$ is enabled by
-the residual marking but it does not gather all the conditions to be
-firable; indeed, condition $c_0$ associated to $t_0$ is
-\texttt{false}. Thus, $t_1$ is not fired. The residual marking for
-$t_2$ is obtained after the firing of $t_0$ only. Indeed, transition
-$t_1$ has a higher firing priority than $t_2$, however, it is not part
-of the set of fired transitions and thus it is not taken into account
-in the computation of the residual marking for $t_2$. Thus, the
-residual marking at \circled{3} enables transition $t_2$, and as $t_2$
-gathers all the conditions to be firable, then $t_2$ is fired.
+transitions with a higher priority. As $t_0$ is the transition with
+the highest firing priority, the residual marking for $t_0$ is equal
+to the current marking. Transition $t_0$ gathers all the conditions to
+be firable and is enabled by the residual marking; thus, $t_0$ will be
+fired on the next rising edge. The residual marking for $t_1$ is the
+marking obtained after the firing of $t_0$, i.e. the only transition
+with a higher priority. As illustrated at \circled{2}, $t_1$ is
+enabled by the residual marking. However, $t_1$ does not gather all
+the conditions to be firable as the value of condition $c_0$ is
+\texttt{false}. Thus, $t_1$ will not be fired on the newt rising
+edge. The residual marking for $t_2$ is obtained after the firing of
+$t_0$ only. Even though transition $t_1$ has a higher firing priority
+than $t_2$, $t_1$ is not a member of the set of fired transitions.
+Thus, $t_1$ is not taken into account in the computation of the
+residual marking for $t_2$. The residual marking at \circled{3}
+enables transition $t_2$, and as $t_2$ gathers all the conditions to
+be firable, then $t_2$ will be fired on the next rising edge.
 
 \paragraph{Locked time counters}
 
-SITPNs inherit both the properties of time PNs and interpreted
-PNs. The phenomenon of \emph{locked} time counters is a consequence of
-this combination. As illustrated in Figure~\ref{fig:locked-tc}, the
-value of a time counter can overreach the upper bound of its
-associated time interval. This situation can only arise if a condition
-hinders the firing of a given transition while the considered
-transition is still enabled by the marking. As a consequence, the time
-counter will be incremented at every clock cycle until the upper bound
-of the time interval is overreached. Then, at this point, the time
-counter is said to be \emph{locked} and its value will no more evolve.
+SITPNs inherit the properties of time PNs and interpreted PNs. The
+phenomenon of \emph{locked} time counters is a consequence of this
+inheritance. As illustrated in Figure~\ref{fig:locked-tc}, the value
+of a time counter can overreach the upper bound of its associated time
+interval. This situation can only arise if a condition hinders the
+firing of a given transition while the considered transition is still
+enabled by the marking. As a consequence, the time counter will be
+incremented at every clock cycle until the upper bound of the time
+interval is overreached. Then, at this point, the time counter is said
+to be \emph{locked} and its value will no more evolve.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.5\textwidth]{Figures/SITPN/locked-tc}
   \caption[An example of locked time counter.]{An example of locked
     time counter. Condition $c$ is equal to \texttt{false} and thus
-    appears in red.}
+    appears in \textcolor{red}{red}.}
   \label{fig:locked-tc}
 \end{figure}
 
 In Figure~\ref{fig:locked-tc}, condition $c$ is valuated to
-\texttt{false}, thus, transition $t$ can not be fired but is still
-sensitized by the marking. As a consequence, on the next falling edge,
-the time counter of transition $t$ is incremented and overreaches the
-upper bound of interval $[2,4]$ and thus becomes locked.
-
-
+\texttt{false} before the falling edge of the clock signal. Thus,
+transition $t$ can not be fired but is still enabled by the
+marking. On the next falling edge, the time counter of transition $t$
+is incremented and overreaches the upper bound of interval $[2,4]$ and
+thus becomes locked.
 
 %%% Local Variables:
 %%% mode: latex

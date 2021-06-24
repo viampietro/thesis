@@ -48,27 +48,29 @@ Record Sitpn := BuildSitpn {
 }.
 \end{lstlisting}
 
-We use lists of natural numbers, i.e. \coqe|list nat| in \coq{}, to
+We use lists of natural numbers, i.e. \texttt{list nat} in \coq{}, to
 define the finite sets of places (Line~\ref{line:pls}), transitions
 (Line~\ref{line:trs}), actions (Line~\ref{line:acts}), conditions
 (Line~\ref{line:conds}) and functions (Line~\ref{line:funs}) in the
-\coqe|Sitpn| record. To be able to use these finite sets in the
-signature of functions appearing in the structure, e.g use the finite
+\texttt{Sitpn} record. We want to use these finite sets in the
+signature of functions appearing in the structure (e.g use the finite
 set of places $P$ in the signature of the initial marking
-$M_0\in{}P\rightarrow\mathbb{N}$, we use the \coq{} \coqe|sig| type to
-define subsets of elements verifying a certain property. Thus, we
-define the finite set $P$ as the subset of natural numbers that are
-members of the \coqe|places| list (Line~\ref{line:P}). We use the
-\coqe|In| proposition of the \coq{} standard library to express the
-membership of a natural number in the \coqe|places| list. Also, the
-\coqe|ArcT| type (Line~\ref{line:pre}) implements the set
-$\{\mathtt{inhib},\mathtt{test},\mathtt{basic}\}$, the
-\coqe|TimeInterval| type (Line~\ref{line:Is}) implements the set
-$\mathbb{I}^{+}$ of time intervals, and the \coqe|MOneZeroOne| type
+$M_0\in{}P\rightarrow\mathbb{N}$). To do son we leverage the \coq{}
+\texttt{sig} type to define subsets of elements verifying a certain
+property. Thus, we define the finite set $P$ as the subset of natural
+numbers that are members of the \texttt{places} list
+(Line~\ref{line:P}). We use the \texttt{In} relation defined in the
+\coq{} standard library to express the membership of a natural number
+regarding the elements of \texttt{places} list. Also, the
+\texttt{ArcT} type (Line~\ref{line:pre}) implements the set
+$\{\mathtt{inhib},\mathtt{test},\mathtt{basic}\}$; the
+\texttt{TimeInterval} type (Line~\ref{line:Is}) implements the set
+$\mathbb{I}^{+}$ of time intervals, and the \texttt{MOneZeroOne} type
 (Line~\ref{line:mone}) implements the set $\{0,1,-1\}$. The priority
-relation is implemented by the \coqe|pr| function (Line~\ref{line:pr})
-taking two transitions in parameter and projecting to the type of
-logical propositions, i.e. the \coqe|Prop| type.
+relation is implemented by the \texttt{pr} function
+(Line~\ref{line:pr}) taking two transitions in parameter and
+projecting to the type of logical propositions, i.e. the \texttt{Prop}
+type.
 
 Listing~\ref{lst:sitpn-state-impl} presents the implementation of the
 SITPN state structure as a \coq{} record type.
@@ -85,18 +87,16 @@ Record SitpnState (sitpn : Sitpn) := BuildSitpnState {
 }.
 \end{lstlisting}
 
-The \coqe|SitpnState| type definition depends on a given SITPN passed
-as a parameter; it is an example of dependent type. Then, we can refer
-to the attributes of \coqe|sitpn| in the definition of the
-\coqe|SitpnState| structure.  Projection functions are automatically
-generated to access the attributes of a record at the declaration of a
-type with the \coqe|Record| keyword.  Thus, in
-Listing~\ref{lst:sitpn-state-impl}, we can refer to the set of places
-of \coqe|sitpn| with the term \coqe|P sitpn|. The term \coqe|$T_i$ sitpn|
-denotes the set of time transitions of \coqe|sitpn|. The set of
-time transitions for a given SITPN is declared as a \coqe|sig| type
-qualifying to the subset of transitions with an associated time
-interval.
+The \texttt{SitpnState} type definition depends on a given SITPN
+passed as a parameter; it is an example of dependent type.  Projection
+functions are automatically generated to access the attributes of a
+record at the declaration of a type with the \texttt{Record} keyword.
+Thus, in Listing~\ref{lst:sitpn-state-impl}, we can refer to the set
+of places of \texttt{sitpn} with the term \texttt{P sitpn}. The term
+\texttt{$T_i$ sitpn} denotes the set of time transitions of
+\texttt{sitpn}. The set of time transitions for a given SITPN is
+declared as a \texttt{sig} type qualifying to the subset of transitions
+with an associated time interval.
 
 \subsection{Implementation of the SITPN semantics}
 \label{sec:sitpn-sem-impl}
@@ -165,16 +165,16 @@ i.e. $\sum\limits_{p\in{}marked(M)}\mathbb{A}(p,a)$, is implemented by
 Lines~\ref{line:sig-marked} and \ref{line:bsum-marked}. At
 Line~\ref{line:sig-marked}, the \texttt{Sig_in_List} predicate states
 that all the inhabitant of the \texttt{P sitpn} type (i.e. the places
-of \texttt{sitpn}) that verifies the property \texttt{fun p => M s p >
-  0} (i.e. the marking of a place is greater than zero at state
+of \texttt{sitpn}) that verifies the property \texttt{(fun p => M s p
+  > 0)} (i.e. the marking of a place is greater than zero at state
 \texttt{s}) are members of the \texttt{marked} list. Because we can
 not iterate over the elements of a given \texttt{sig} type, we use the
 \texttt{Sig_in_List} relation to convert a \texttt{sig} type into a
-list; lists are iterable by definition. At
+list. Lists are iterable by definition. At
 Line~\ref{line:bsum-marked}, the \texttt{BSum} relation states that
 \texttt{sum} is the Boolean sum obtained by applying the function
 \texttt{(fun p => $\mathbb{A}$ p a)} to the elements of the
-\texttt{marked} list. Rules~ \ref{it:reset-counters},
+\texttt{marked} list. Rules~\ref{it:reset-counters},
 \ref{it:inc-counters}, \ref{it:locked-counters} and
 \ref{it:reset-not-sens} are almost similar in their implementation to
 the description of Definition~\ref{def:semantics}. The \coq{} term
@@ -182,9 +182,9 @@ the description of Definition~\ref{def:semantics}. The \coq{} term
 particular nature of the upper bound of a time interval, i.e. defined
 over the set $\mathbb{N}^{*}\sqcup{}\{\infty\}$, the test that the
 current time counter of a given transition $t$ is less than or equal
-to the upper bound of the associated time interval is implemented by a
-separate predicate \texttt{TcLeUpper}. Similarly, the
-\texttt{TcGtUpper} predicate implements the inverse test.
+to the upper bound is implemented by a separate predicate
+\texttt{TcLeUpper}. Similarly, the \texttt{TcGtUpper} predicate
+implements the inverse test.
 
 In the construction case \texttt{SitpnStateTransition_rising}, we give
 the implementation of Rules~\ref{it:new-marking} and \ref{it:exec-fun}
