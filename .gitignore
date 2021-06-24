@@ -30,3 +30,5 @@
 **/*.fdb_latexmk
 **/*.fls
 **/*.lot
+
+!Figures/**/*.pdf

@@ -6,6 +6,10 @@
 ** DONE HILECOP [100%]
 ** DONE Verifying HILECOP [100%]
 * TODO Preliminary notions
+** set theory 
+** natural semantics
+** induction principles
+** coq language
 * DONE Implementation of the HILECOP high-level models [100%]
 ** DONE introduction
 ** DONE informal presentation of synchronously executed Petri nets [100%]
@@ -39,8 +43,6 @@
 ** DONE mechanized verification of the proof [100%]
 ** DONE conclusion [100%]
 * TODO Conclusion
-* TODO Appendix Reminder on natural semantics
-* TODO Appendix Reminder on induction principles
 * DONE Appendix Full proof of semantic preservation [100%]
 ** DONE initial states
 ** DONE first re
