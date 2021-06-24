@@ -557,19 +557,19 @@ fired. The first way is to define a firing order through a priority
 relation. The second way is to use a mean of mutual exclusion. A mean
 of mutual exclusion ensures that the two transitions of a conflicting
 pair will never be firable at the same time. For now, we only consider
-three ways of mutual exclusion, namely: mutual exclusion with
-complementary conditions, mutual exclusion with disjoint time
-intervals and mutual exclusion with inhibitor arcs. Here, we give the
-formal definition of these three means of mutual exclusion.
+two ways of mutual exclusion, namely: mutual exclusion with
+complementary conditions and mutual exclusion with inhibitor
+arcs. Here, we give the formal definition of these two means of mutual
+exclusion.
 
-\begin{definition}[Mutual exclusion with disjoint time intervals]
-  \label{def:mutex-ti}
-  Given two conflicting transitions $t_0$ and $t_1$, $t_0$ and $t_1$
-  are in mutual exclusion with disjoint time intervals if there exists
-  $a,b\in\mathbb{N}^{*}$ and $c,d\in\mathbb{N}^{*}\sqcup\{\infty\}$
-  such that $I_s(t_0)=[a,b]$ and $I_s(t_1)=[c,d]$ and there is no
-  overlapping between $[a,b]$ and $[c,d]$.
-\end{definition}
+% \begin{definition}[Mutual exclusion with disjoint time intervals]
+%   \label{def:mutex-ti}
+%   Given two conflicting transitions $t_0$ and $t_1$, $t_0$ and $t_1$
+%   are in mutual exclusion with disjoint time intervals if there exists
+%   $a,b\in\mathbb{N}^{*}$ and $c,d\in\mathbb{N}^{*}\sqcup\{\infty\}$
+%   such that $I_s(t_0)=[a,b]$ and $I_s(t_1)=[c,d]$ and there is no
+%   overlapping between $[a,b]$ and $[c,d]$.
+% \end{definition}
 
 \begin{definition}[Mutual exclusion with complementary conditions]
   \label{def:mutex-conds}
@@ -589,7 +589,7 @@ formal definition of these three means of mutual exclusion.
   $(pre(p,t_1)=(\omega,\mathtt{basic})\lor{}pre(p,t_1)=(\omega,\mathtt{test}))\land{}pre(p,t_0)=(\omega,\mathtt{inhib})$.
 \end{definition}
 
-Figure~\ref{fig:mutex} illustrates the three means of mutual exclusion
+Figure~\ref{fig:mutex} illustrates the two means of mutual exclusion
 that can be applied to solve a conflict between two transitions.
 
 \begin{figure}[H]
@@ -597,16 +597,15 @@ that can be applied to solve a conflict between two transitions.
   \includegraphics[keepaspectratio,width=.8\linewidth]{Figures/SITPN/mutex}
   \caption[Examples of conflicting transitions in mutual exclusion.]{
     Examples of conflicting transitions in mutual exclusion. At
-    \circled{1}, an example of mutual exclusion with disjoint time
-    intervals; at \circled{2}, an example of mutual exclusion with
-    complementary conditions; at \circled{3}, an example of mutual
-    exclusion with an inhibitor arc.}
+    \circled{1}, an example of mutual exclusion with complementary
+    conditions; at \circled{2}, an example of mutual exclusion with an
+    inhibitor arc.}
   \label{fig:mutex}
 \end{figure}
 
-In Figure~\ref{fig:mutex}, in situation \circled{2}, condition $c_1$
+In Figure~\ref{fig:mutex}, in situation \circled{1}, condition $c_1$
 is associated to $t_1$ and the complementary condition is associated
-to $t_0$ thus creating the mutual exclusion. In situation \circled{3},
+to $t_0$ thus creating the mutual exclusion. In situation \circled{2},
 the arc $(p_0,t_0)$ and $(p_0,t_1)$ ensure the mutual exclusion
 between transitions $t_0$ and $t_1$. Note that in the structure of
 mutual exlcusion with an inhibitor arc, the weight of the inhibitor
@@ -643,7 +642,6 @@ compile-time errors during the transformation of the SITPN into a
     strict total order over the transitions of the conflict group.
   \end{itemize}
 \end{definition}
-
 
 %%% Local Variables:
 %%% mode: latex

@@ -190,8 +190,11 @@ In the construction case \texttt{SitpnStateTransition_rising}, we give
 the implementation of Rules~\ref{it:new-marking} and \ref{it:exec-fun}
 defined in the SITPN semantics. In the implementation of
 Rule~\ref{it:new-marking}, the \texttt{IsNewMarking} predicate hides
-away the expression
-$\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)$.
+away the expression:
+
+$\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t\in{}Fired(s)}$ $pre(p,t)$
+$+\sum\limits_{t\in{}Fired(s)}post(t,p)$.
+
 In its definition, the \texttt{IsNewMarking} predicate first checks
 that the \texttt{fired} list implements the set of fired transitions
 at state \texttt{s}. Then, it builds the marking at state \texttt{s'}
