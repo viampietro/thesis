@@ -1,6 +1,3 @@
-\section{Abstract syntax for $\mathcal{H}$-VHDL.}
-\label{sec:abstractSyntax}
-
 Terminals of the language will be written in \texttt{typewriter} font,
 or will be enclosed in simple quotes for symbols with no typewriter
 representation. The $a^{*}$ denotes a possibly empty repetition of the
@@ -9,9 +6,9 @@ element $a$; the $a^{+}$ denotes a non-empty repetition of $a$.
 \subsection{Design declaration}
 \label{subsec:design-decl}
 
-As in \cite{VanTassel95}, we define the \emph{design} construct in the
-$\mathcal{H}$-VHDL's abstract syntax which has no equivalent in the
-concrete syntax of VHDL.
+As in \cite{VanTassel1995}, we define the \emph{design} construct in
+the $\mathcal{H}$-VHDL's abstract syntax which has no equivalent in
+the concrete syntax of VHDL.
 
 \begin{tabular}{lcl}
   design & ::= & \texttt{design} id$_e$ id$_a$ gens ports sigs cs \\
@@ -71,7 +68,8 @@ concrete syntax of VHDL.
 \begin{table}[H]
   \begin{tabular}{lcl}
 
-    e & ::= & e \texttt{and} e | e \texttt{or} e | \texttt{not} e | e \texttt{=} e | e $\neq$ e | e \texttt{<} e | e \texttt{<=} e | e \texttt{>} e | e \texttt{>=} e | e \texttt{+} e | e \texttt{-} e \\
+    e & ::= & e \texttt{and} e | e \texttt{or} e | \texttt{not} e | e \texttt{=} e | e $\neq$ e \\
+      & & | e \texttt{<} e | e \texttt{<=} e | e \texttt{>} e | e \texttt{>=} e | e \texttt{+} e | e \texttt{-} e \\
       & & | name | natural | boolean | \texttt{(}e$^{+}$\texttt{)} \\
       & & \\
     name & ::= & id | id\texttt{(} e \texttt{)} \\
@@ -87,5 +85,5 @@ the set of identifiers.
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:

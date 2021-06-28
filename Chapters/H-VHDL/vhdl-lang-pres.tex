@@ -1,0 +1,89 @@
+The intent here is to give an overview of the VHDL language, its
+purpose, its main syntactal constructs, and an informal description of
+its semantics as presented in the Language Reference Manual (LRM)
+\cite{VHDL2000}. As explained in Chapter~\ref{chap:hilecop}, the
+hilecop{} transformation generates a VHDL design implementing the
+input SITPN model. To do so, the transformation generates and connects
+the component instances of two previously defined VHDL designs: the
+place design that implements the concept of a SITPN place, and the
+transition design that implements a SITPN transition. These designs
+were defined by the INRIA team at the creation of the \hilecop{}
+methodology. Here, we use excerpts of the definition of the place and
+transition designs to illustrate the content of VHDL programs. The
+reader will find the source code of the place and transition designs
+in concrete and abstract syntax in Appendices~\ref{app:trans-design}
+and \ref{app:trans-design}.
+
+\subsection{Main concepts}
+\label{sec:vhdl-main-concepts}
+
+The VHDL acronym stands for Very high speed integrated circuit
+Hardware Description Language. As its name indicates, the main purpose
+of the VHDL language is to describe hardware circuits. In VHDL, the
+concept of program is called \emph{design}. A design corresponds to
+the description of a hardware circuit. A VHDL design is composed of
+two descriptive parts. The first part is called the entity and
+describes the interfaces of circuit, namely: the input and output
+ports, and the generic constants. Listing is an excerpt of the
+transition design's entity that defines the generic constants, the
+input and output port interfaces of the design. Figure is a visual
+representation of the interfaces of the transition design.
+
+\begin{lstlisting}[language=VHDL,label={lst:trans-design-entity},
+caption={The entity part of the transition design in concrete VHDL
+  syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+entity transition is
+  generic(
+    transition_type      : transition_t := NOT_TEMPORAL;
+    input_arcs_number    : natural := 1; 
+    conditions_number    : natural := 1;
+    maximal_time_counter : natural := 1
+    );        
+  port(
+    clock                   : in std_logic;
+    reset_n                 : in std_logic;
+    input_conditions        : in std_logic_vector(conditions_number-1 downto 0);
+    time_A_value            : in natural range 0 to maximal_time_counter;
+    time_B_value            : in natural range 0 to maximal_time_counter;
+    input_arcs_valid        : in std_logic_vector(input_arcs_number-1 downto 0);
+    reinit_time             : in std_logic_vector(input_arcs_number-1 downto 0);
+    priority_authorizations : in std_logic_vector(input_arcs_number-1 downto 0);
+    fired                   : out std_logic 
+    );
+end transition;
+\end{lstlisting}
+
+The entity generic clause holds the declaration of the generic
+constants.  The purpose of generic constants is either to represent
+some dimensions of the design (e.g. the size of ports, internal
+signals\dots) or to represent constant values used througout the
+design. In Listing~\ref{lst:trans-design-entity}, one can see that the
+\texttt{conditions_number} generic constant gives a dimensionin to the
+type of the \texttt{input_conditions} input port, which is a array of
+Boolean values with indexes ranging from 0 to
+\texttt{conditions_number-1} (that is the meaning of
+\texttt{std_logic_vector (conditions_number-1 downto 0)}. The port
+clause holds the declaration of input and output ports of the
+design. The \texttt{in} keyword indicates the declaration of an input
+port and the \texttt{out} indicates the declaration of an output port.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[keepaspectratio=true, width=\textwidth]{Figures/H-VHDL/transition-entity}
+  \caption[A representation of the transition design entity.]{A
+    representation of the transition design entity. }}
+  \label{fig:pn-example}
+\end{figure}
+
+
+
+The second part is called the architecture and corresponds
+to the description of the internal behavior of the design.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

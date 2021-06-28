@@ -1,0 +1,157 @@
+\chapter{The transition design in concrete and abstract VHDL syntax}
+\label{app:trans-design}
+
+\begin{lstlisting}[language=VHDL,label={lst:trans-design},caption={The transition design in concrete VHDL syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left, numberstyle=\tiny\ttfamily]
+entity transition is
+  generic(
+    transition_type      : transition_t := NOT_TEMPORAL;
+    input_arcs_number    : natural := 1; 
+    conditions_number    : natural := 1;
+    maximal_time_counter : natural := 1
+    );        
+  port(
+    clock                   : in std_logic;
+    reset_n                 : in std_logic;
+    input_conditions        : in std_logic_vector(conditions_number-1 downto 0);
+    time_A_value            : in natural range 0 to maximal_time_counter;
+    time_B_value            : in natural range 0 to maximal_time_counter;
+    input_arcs_valid        : in std_logic_vector(input_arcs_number-1 downto 0);
+    reinit_time             : in std_logic_vector(input_arcs_number-1 downto 0);
+    priority_authorizations : in std_logic_vector(input_arcs_number-1 downto 0);
+    fired                   : out std_logic 
+    );
+end transition;
+
+architecture transition_architecture of transition is
+
+  signal s_condition_combination : std_logic; 
+  signal s_enabled               : std_logic;
+  signal s_firable               : std_logic;   
+  signal s_firing_condition      : std_logic;
+  signal s_priority_combination  : std_logic;
+  signal s_reinit_time_counter   : std_logic;
+  signal s_time_counter          : natural range 0 to maximal_time_counter;
+
+begin
+  
+  condition_evaluation : process(input_conditions)
+    variable v_internal_condition : std_logic;
+  begin
+    v_internal_condition := '1';
+    
+    for i in 0 to conditions_number - 1 loop
+      v_internal_condition := v_internal_condition and input_conditions(i);
+    end loop;
+    
+    s_condition_combination <= v_internal_condition;
+  end process condition_evaluation;
+  
+  enable_evaluation : process(input_arcs_valid)
+    variable v_internal_enabled : std_logic;
+  begin
+    v_internal_enabled := '1';
+    
+    for i in 0 to input_arcs_number - 1 loop
+      v_internal_enabled := v_internal_enabled and input_arcs_valid(i);
+    end loop;
+    
+    s_enabled <= v_internal_enabled;
+  end process enable_evaluation;
+
+  reinit_time_counter_evaluation : process(reinit_time, s_enabled)
+    variable v_internal_reinit_time_counter : std_logic;
+  begin
+    v_internal_reinit_time_counter := '0';
+
+    for i in 0 to input_arcs_number - 1 loop
+      v_internal_reinit_time_counter := v_internal_reinit_time_counter or reinit_time(i);
+    end loop;
+    
+    s_reinit_time_counter <= v_internal_reinit_time_counter;
+  end process reinit_time_counter_evaluation;
+
+  time_counter : process(reset_n, clock)
+  begin
+    if (reset_n = '0') then
+      s_time_counter <= 0;
+    elsif falling_edge(clock) then
+      if ((s_enabled = '1') and (transition_type /= transition_t(NOT_TEMPORAL))) then
+        if (s_reinit_time_counter = '0') then
+          if (s_time_counter < maximal_time_counter) then
+            s_time_counter <= s_time_counter + 1;
+          end if;
+        else
+          s_time_counter <= 1; 
+        end if;
+      else
+        s_time_counter <= 0;
+      end if;
+    end if;
+  end process time_counter;
+
+  firing_condition_evaluation : process (s_enabled, s_condition_combination, s_reinit_time_counter, s_time_counter)
+  begin
+    if ( (s_condition_combination = '1')
+         and (s_enabled = '1')
+         and ( (transition_type = transition_t(NOT_TEMPORAL))
+         
+               or ( (transition_type = transition_t(TEMPORAL_A_B))
+                    and (s_reinit_time_counter = '0')
+                    and (s_time_counter >= (time_A_value-1))
+                    and (s_time_counter < time_B_value)
+                    and (time_A_value /= 0)
+                    and (time_B_value /= 0) )
+               
+               or ( (s_reinit_time_counter = '0')
+                    and (time_A_value /= 0)
+                    and ( ((transition_type = transition_t(TEMPORAL_A_A))
+                          and (s_time_counter = (time_A_value-1)))
+                    or ( (transition_type = transition_t(TEMPORAL_A_INFINITE))
+                         and (s_time_counter >= (time_A_value-1)) )
+               )
+                              
+               or ( (transition_type /= transition_t(NOT_TEMPORAL))
+                    and (s_reinit_time_counter = '1')
+                    and (time_A_value = 1) )
+               )
+    ) then
+      s_firing_condition <= '1';       
+    else
+      s_firing_condition <= '0';
+    end if;
+  end process firing_condition_evaluation;
+  
+  priority_authorization_evaluation : process(priority_authorizations)
+    variable v_priority_combination : std_logic;
+  begin
+    v_priority_combination := '1';
+    
+    for i in 0 to input_arcs_number - 1 loop
+      v_priority_combination := v_priority_combination and priority_authorizations(i);
+    end loop;
+    
+    s_priority_combination <= v_priority_combination;
+  end process priority_authorization_evaluation;
+
+  firable : process(reset_n, clock)
+  begin
+    if (reset_n = '0') then
+      s_firable <= '0';
+    elsif falling_edge(clock) then
+      s_firable <= s_firing_condition;
+    end if;
+  end process firable;
+
+  fired_evaluation : process (s_firable, s_priority_combination)
+  begin
+    fired <= s_firable and s_priority_combination;
+  end process fired_evaluation;      
+  
+end transition_architecture;
+  
+\end{lstlisting}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

@@ -87,7 +87,7 @@ sub-environments. An elaborated design is defined as follows:
     the partial function yelding the type of declared signals.
   \item
     $Ps\in{}process\mhyphen{}id\nrightarrow{}(variable\mhyphen{}id(id_p)\nrightarrow{}(type\times{}value))$
-    where
+    where\\
     $process\mhyphen{}id=\{id_p~\vert~\mathtt{process}(id_p,sl,vars,ss)\in{}behavior\}$,
     the partial function associating processes to their local
     environment. Local environments are functions mapping local
@@ -98,7 +98,7 @@ sub-environments. An elaborated design is defined as follows:
     function.
   \item
     $Comps\in{}component\mhyphen{}id\nrightarrow{}ElDesign(d_e,\mathcal{D})$,
-    where
+    where\\
     $component\mhyphen{}id=\{id_c~\vert~\mathtt{comp}(id_c,id_e,gm,ipm,opm)\in{}behavior\}$,
     the partial function mapping component instance ids to their
     elaborated design version. The set $ElDesign(d_e,\mathcal{D})$
@@ -283,5 +283,5 @@ enriched with the identifier $id$ in its events set.
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:

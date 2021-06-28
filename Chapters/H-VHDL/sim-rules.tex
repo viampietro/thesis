@@ -187,8 +187,8 @@ receives a value for each of its generic constant; we refer to it as
 the \emph{dimensioning} of the top-level design. The second step is
 the simulation phase that executes the behavioral part of the
 top-level design starting from an initial state. The simulation is
-decomposed into simulation cycles.  Each simulation cycle is divided
-in four parts entailed by the \emph{synchronous} execution of
+decomposed into simulation cycles. Each simulation cycle is divided in
+four parts entailed by the \emph{synchronous} execution of
 $\mathcal{H}$-VHDL top-level designs, i.e designs whose behavior
 depend on a clock signal. The four parts are, first, the execution of
 concurrent statements responding to the rising edge of the clock
@@ -339,7 +339,7 @@ forward simulation rules, we need to introduce two notations.
 \begin{notation}[Overriding union]
   For all partial function $f,f'\in{}X\nrightarrow{}Y$, $f\ocup{}f'$
   denotes the overriding union of $f$ and $f'$ such that
-  $f\ocup{}f'=\lambda{}x.
+  $f\ocup{}f'(x)=
   \begin{cases}
     f'(x) & if~x\in\mathtt{dom}(f') \\
     f(x) & otherwise \\
@@ -382,10 +382,10 @@ The cycle relation states that the design state $\sigma''$ is the
 result of the execution of concurrent statement $cs$ over one
 simulation cycle, this starting from state $\sigma$.  As told in
 Hypothesis~\ref{hyp:stable-pi}, we update the input port values at
-each clock event. Fresh input port values are coming from the
+each clock event. New input port values are coming from the
 environment $E_p$. The updates are made in the definitions of
-$\sigma_i$ and $\sigma'_i$. These definitions are expressed
-as side conditions.
+$\sigma_i$ and $\sigma'_i$. These definitions are expressed as side
+conditions.
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{SimCyc}}
@@ -393,18 +393,18 @@ as side conditions.
   \begin{prooftree}[template=\inserttext]
 
     % Rising
-    \hypo{$\mathcal{D},\Delta,\sigma_i\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_r$}
-
-    % Stabilize after rising.
-    \hypo{$\mathcal{D},\Delta,\sigma_r\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma'$}
+    \hypo{$\mathcal{D},\Delta,\sigma_i\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_\uparrow$}
     
     % Falling
-    \hypo{$\mathcal{D},\Delta,\sigma'_i\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_f$}
+    \infer[no rule]1{$\mathcal{D},\Delta,\sigma'_i\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_\downarrow$}
+
+    % Stabilize after rising.
+    \hypo{$\mathcal{D},\Delta,\sigma_\uparrow\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma'$}
 
     % Stabilize after falling.
-    \hypo{$\mathcal{D},\Delta,\sigma_f\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
+    \infer[no rule]1{$\mathcal{D},\Delta,\sigma_\downarrow\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma''$}
     
-    \infer4
+    \infer2
     [{
       \renewcommand{\arraystretch}{1.5}
       \begin{tabular}{@{}l}
@@ -477,7 +477,8 @@ simulation.
     (i.e, \texttt{rst} blocks) will be executed.
   \item The set of events of state $\sigma$ is emptied
     ($NoEv(\sigma)$) before the evaluation of the process statement
-    body. 
+    body, and the resulting state is the starting state that will be
+    written through the execution of the process statement body.
 \end{itemize}
 \end{premises}
 
@@ -488,7 +489,7 @@ simulation.
     {\begin{prooftree}[template=\inserttext]
         
         % Runs seq.
-        \hypo{$\Delta,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}{}\sigma',\Lambda'$}
+        \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}{}\sigma',\Lambda'$}
 
         % Conlcusion.
         \infer1
@@ -521,19 +522,19 @@ simulation.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompRunInitEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompRunInit}} \\
     {\begin{prooftree}
         
         % Builds mapping for in ports.
-        \hypo{\Delta,\Delta_c,\sigma,\sigma_c&\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c}
+        \hypo{\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{i}\xrightarrow{mapip}\sigma'_c}
         
         % Executes runinit on component behavior.
-        \infer[no rule]1{\mathcal{D},\Delta_c,\sigma_c'&\vdash{}\mathcal{D}(\mathrm{id_e}).\mathrm{cs}\xrightarrow{runinit}\sigma_c''}
+        \infer[no rule]1{\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(\mathrm{id_e}).\mathrm{cs}\xrightarrow{runinit}\sigma_c''}
         
         % Builds mapping for out ports.
         \infer[no rule]1{
-          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''&\vdash
-          \mathrm{opmap}
+          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash
+          \mathrm{o}
           \xrightarrow{mapop}
           \sigma'
         }
@@ -544,66 +545,17 @@ simulation.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma_c''={<}\mathcal{S}_c'',\mathcal{C}_c'',\mathcal{E}_c''{>}$, $\mathcal{E}_c''\neq\emptyset$ \\
-            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
           \end{tabular}
         }] {
           \mathcal{D},\Delta,\sigma\vdash~
-          $\vhdle|comp|$~(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap},
-          \mathrm{ipmap}, \mathrm{opmap})
+          $\vhdle|comp|$~(\mathrm{id}_c, \mathrm{id}_e, \mathrm{g},
+          \mathrm{i}, \mathrm{o})
           \xrightarrow{runinit}{}\sigma''
         }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompRunInitNoEvent}} \\
-    {\begin{prooftree}
-        
-        % Builds mapping for in ports.
-        \hypo{\Delta,\Delta_c,\sigma,\sigma_c&\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c}
-        
-        % Executes runinit on component behavior.
-        \infer[no rule]1{\mathcal{D},\Delta_c,\sigma_c'&\vdash\mathcal{D}(\mathrm{id_e}).\mathrm{cs}\xrightarrow{runinit}\sigma_c''}
-
-        % Builds mapping for out ports.
-        \infer[no rule]1{
-          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''&\vdash
-          \mathrm{opmap}
-          \xrightarrow{mapop}
-          \sigma'
-        }
-        
-        % Conclusion.
-        \infer1
-        [{\renewcommand{\arraystretch}{1.5}
-          \begin{tabular}{@{}l}
-            $id_e\in\mathcal{D}$ \\
-            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma_c''={<}\mathcal{S}_c'',\mathcal{C}_c'',\emptyset{>}$ \\
-          \end{tabular}
-        }] {
-          \mathcal{D},\Delta,\sigma\vdash~
-          $\vhdle|comp|$~(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap},
-          \mathrm{ipmap}, \mathrm{opmap})
-          \xrightarrow{runinit}{}\sigma'
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
-
-\begin{remark}[No event on component execution]
-  If, after the injection of fresh input values and the execution of
-  its internal behavior, a component instance displays an empty set of
-  events, then its state stayed the same
-  ($\sigma_c=\sigma'_c=\sigma''_c$). Then, no need to override the
-  component instance state in the embedding design state, and no need
-  to propagate the values coming from the output ports of the
-  component instance to the embedding design.
-\end{remark}
 
 \subsubsection{Evaluation of the composition of concurrent statements}
 \label{subsubsec:ps-stmt-init}
@@ -617,8 +569,6 @@ simulation.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l@{}}
-            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
-            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
             $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
           \end{tabular}
         }] {
@@ -648,7 +598,10 @@ all signal that belongs to the set of events at state $s$
 $\mathcal{S}_o$ for all unchanged signals. The same goes for the
 resulting component instance state store $C_m$. The new set of events
 $\mathcal{E}_m$ is the union between set of events at state $s$ and
-$s'$.
+$s'$. The \texttt{merge} correctly merges the state $o$, $s$ and $s'$
+only if the set of events of $s$ and $s'$ are disjoint. Fortunately,
+the \textsc{ParRunInit} rule that calls to the \texttt{merge} function
+defines the condition of disjoint set of events as a side condition.
 
 \begin{table}[H]
 \begin{lstlisting}[language=PseudoCoq]
@@ -708,7 +661,7 @@ their sensitivity list.
   
   \begin{prooftree}[template=\inserttext]
 
-    \hypo{$\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}{}\sigma'$}
+    \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}{}\sigma',\Lambda'$}
     
     \infer1
     [{
@@ -753,7 +706,7 @@ their sensitivity list.
   
   \begin{prooftree}[template=\inserttext]
 
-    \hypo{$\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}{}\sigma'$}
+    \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}{}\sigma',\Lambda'$}
     
     \infer1
     [{
@@ -778,19 +731,19 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompREEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompRE}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{i}\xrightarrow{mapip}\sigma'_c$}
         
         % Executes rising on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\uparrow}\sigma_c''$}
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).\mathrm{cs}\xrightarrow{\uparrow}\sigma_c''$}
         
         % Builds mapping for out ports.
         \infer[no rule]1{
           $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
-          $\mathrm{opmap}$
+          $\mathrm{o}$
           $\xrightarrow{mapop}$
           $\sigma'$
         }
@@ -801,13 +754,12 @@ their sensitivity list.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
-            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
           \end{tabular}
         }]
         {
           $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          \vhdle|comp| (id$_c$, id$_e$, g, i, o)
           $\xrightarrow{\uparrow}{}\sigma''$
         }
       \end{prooftree}} \\
@@ -817,19 +769,19 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompRENoEvent}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompFE}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{i}\xrightarrow{mapip}\sigma'_c$}
         
         % Executes rising on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\uparrow}\sigma_c''$}
-
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).\mathrm{cs}\xrightarrow{\downarrow}\sigma_c''$}
+        
         % Builds mapping for out ports.
         \infer[no rule]1{
           $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
-          $\mathrm{opmap}$
+          $\mathrm{o}$
           $\xrightarrow{mapop}$
           $\sigma'$
         }
@@ -840,90 +792,13 @@ their sensitivity list.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
           \end{tabular}
         }]
         {
           $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
-          $\xrightarrow{\uparrow}{}\sigma'$
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompFEEvents}} \\
-    {\begin{prooftree}[template=\inserttext]
-        
-        % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
-        
-        % Executes rising on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\downarrow}\sigma_c''$}
-        
-        % Builds mapping for out ports.
-        \infer[no rule]1{
-          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
-          $\mathrm{opmap}$
-          $\xrightarrow{mapop}$
-          $\sigma'$
-        }
-        
-        % Conclusion.
-        \infer1
-        [{\renewcommand{\arraystretch}{1.5}
-          \begin{tabular}{@{}l}
-            $id_e\in\mathcal{D}$ \\
-            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
-            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
-          \end{tabular}
-        }]
-        {
-          $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          \vhdle|comp| (id$_c$, id$_e$, g, i, o)
           $\xrightarrow{\downarrow}{}\sigma''$
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompFENoEvent}} \\
-    {\begin{prooftree}[template=\inserttext]
-        
-        % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
-        
-        % Executes rising on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{\downarrow}\sigma_c''$}
-
-        % Builds mapping for out ports.
-        \infer[no rule]1{
-          $\Delta,\Delta_c,\sigma,\sigma_c''\vdash$
-          $\mathrm{opmap}$
-          $\xrightarrow{mapop}$
-          $\sigma'$
-        }
-        
-        % Conclusion.
-        \infer1
-        [{\renewcommand{\arraystretch}{1.5}
-          \begin{tabular}{@{}l}
-            $id_e\in{}\mathcal{D}$ \\
-            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
-          \end{tabular}
-        }]
-        {
-          $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
-          $\xrightarrow{\downarrow}{}\sigma'$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -931,23 +806,6 @@ their sensitivity list.
 
 \subsubsection{Evaluation of the composition of concurrent statements}
 \label{subsubsec:comp-of-cs-clk}
-
-\begin{sideconds}
-  \begin{itemize}
-  \item As the set of events of the source state $\sigma$ is not
-    emptied during the evaluation of concurrent statements at clock
-    phases, we have $\mathcal{E}\subseteq{}\mathcal{E'}$ and
-    $\mathcal{E}\subseteq{}\mathcal{E''}$. Thus, the side condition
-    $\mathcal{E'}\cap\mathcal{E''}=\emptyset$, used to prevent
-    multiply driven signals in the evaluation rules of the
-    initialization and stabilization phases, only holds here if
-    $\mathcal{E}=\emptyset$, which is not always the case. So, we have
-    to remove the set $\mathcal{E}$ from the intersection of
-    $\mathcal{E'}$ and $\mathcal{E''}$ before checking that there are
-    no multiply-driven signals:
-    $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$.
-  \end{itemize}
-\end{sideconds}
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -958,10 +816,7 @@ their sensitivity list.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l@{}}
-            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
-            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
-            $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$ \\
+            $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
           \end{tabular}
         }] {
           \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{\downarrow}
@@ -989,10 +844,7 @@ their sensitivity list.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l@{}}
-            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
-            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
-            $(\mathcal{E}'\cap\mathcal{E}'')\setminus\mathcal{E}=\emptyset$ \\
+            $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
           \end{tabular}
         }] {
           \mathcal{D},\Delta,\sigma\vdash\mathrm{cs}~\mathtt{||}~\mathrm{cs'}\xrightarrow{\uparrow}
@@ -1009,35 +861,26 @@ their sensitivity list.
   \end{tabular}
 \end{table}
 
-\begin{remark}[Events at clock phases]
-  Considering that an $\uparrow$ (or $\downarrow$) phase, is always
-  preceded by a stabilization phase during the full simulation of an
-  \hvhdl{} design, we are always able to state that the set of events
-  of source state $\sigma$ is a subset of input port identifiers, i.e
-  $\mathcal{E}\subseteq{}Ins(\Delta)$. Thus, withdrawing the set
-  $\mathcal{E}$ from $\mathcal{E}'\cap\mathcal{E}''$ will never
-  overshadow cases of multiply-driven signals. Indeed, only input port
-  identifiers will be withdrawn from the set by the minus
-  operation. And, input port identifiers are not subject to the
-  problem of multiply-driven signals, because they are read-only
-  constructs.
-\end{remark}
-
 \subsection{Stabilization rules}
+\label{sec:stab-rules}
 
 \begin{table}[H]
-  \centering
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{StabilizeEnd}} \\
     
     {\begin{prooftree}[template=\inserttext]
-        \infer0
-        [$\sigma={<}\mathcal{S},\mathcal{C},\emptyset{>}$]
+
+        \hypo{$\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{comb}\sigma$}
+        \infer1
+        [$\mathcal{E}=\emptyset$]
         {
           $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma$
         }
       \end{prooftree}} \\
   \end{tabular}
+\end{table}
+
+\begin{table}[H]  
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{StabilizeLoop}} \\
     {\begin{prooftree}[template=\inserttext]
@@ -1046,9 +889,8 @@ their sensitivity list.
         \infer2
         [{
           \begin{tabular}{@{}l}
-            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{E}\neq\emptyset$ \\
-            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\emptyset{>}$
+            $\mathcal{E}''=\emptyset$
           \end{tabular}
         }]
         {
@@ -1060,24 +902,24 @@ their sensitivity list.
 
 \subsubsection{Evaluation of a process statement}
 
-\begin{table}[H]
-  {\fontsize{10}{13}\selectfont\textsc{PsCombStable}}
+% \begin{table}[H]
+%   {\fontsize{10}{13}\selectfont\textsc{PsCombStable}}
   
-  \begin{prooftree}[template=\inserttext]
-    \infer0
-    [{
-      \begin{tabular}{@{}l}
-        $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$\\
-        $\mathrm{sl}\cap\mathcal{E}=\emptyset$
-      \end{tabular}
-    }]
-    {
-      $\mathcal{D},\Delta,\sigma\vdash$
-      \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
-      $\xrightarrow{comb}NoEv(\sigma)$
-    }
-  \end{prooftree}
-\end{table}
+%   \begin{prooftree}[template=\inserttext]
+%     \infer0
+%     [{
+%       \begin{tabular}{@{}l}
+%         $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$\\
+%         $\mathrm{sl}\cap\mathcal{E}=\emptyset$
+%       \end{tabular}
+%     }]
+%     {
+%       $\mathcal{D},\Delta,\sigma\vdash$
+%       \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
+%       $\xrightarrow{comb}NoEv(\sigma)$
+%     }
+%   \end{prooftree}
+% \end{table}
 
 \begin{premises}
   The $c$ flag (for \textit{combinational}) on the $ss_c$ relation
@@ -1088,19 +930,17 @@ their sensitivity list.
 \end{premises}
 
 \begin{table}[H]
-  {\fontsize{10}{13}\selectfont\textsc{PsCombUnstable}}
+  {\fontsize{10}{13}\selectfont\textsc{PsComb}}
   
   \begin{prooftree}[template=\inserttext]
     
     % Executes ss.
-    \hypo{$\Delta,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_c}{}\sigma'$}
+    \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_c}{}\sigma',\Lambda'$}
 
     % Conclusion.
     \infer1
     [{
       \begin{tabular}{@{}l}
-        $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-        $\mathrm{sl}\cap\mathcal{E}\neq\emptyset$ \\
         $\Delta(\mathrm{id}_p)=\Lambda$ \\
       \end{tabular}
     }]
@@ -1117,19 +957,19 @@ their sensitivity list.
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompCombEvents}} \\
+    {\fontsize{10}{13}\selectfont\textsc{CompComb}} \\
     {\begin{prooftree}[template=\inserttext]
         
         % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
+        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{i}\xrightarrow{mapip}\sigma'_c$}
         
         % Executes comb on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{comb}\sigma_c''$}
+        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).\mathrm{cs}\xrightarrow{comb}\sigma_c''$}
         
         % Builds mapping for out ports.
         \infer[no rule]1{
           $\Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash$
-          $\mathrm{opmap}$
+          $\mathrm{o}$
           $\xrightarrow{mapop}$
           $\sigma'$
         }
@@ -1140,54 +980,14 @@ their sensitivity list.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\mathcal{E}''_c{>}$, $\mathcal{E}''_c\neq\emptyset$ \\
-            $\sigma''=(\sigma'(\mathrm{id}_c)\leftarrow\sigma_c'')\cup_\mathcal{E}\{\mathrm{id}_c\}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
           \end{tabular}
         }]
         {
           $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
+          \vhdle|comp| (id$_c$, id$_e$, g, i, o)
           $\xrightarrow{comb}$
           $\sigma''$
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{CompCombNoEvent}} \\
-    {\begin{prooftree}[template=\inserttext]
-        
-        % Builds mapping for in ports.
-        \hypo{$\Delta,\Delta_c,\sigma,\sigma_c\vdash\mathrm{ipmap}\xrightarrow{mapip}\sigma'_c$}
-
-        % Executes comb on component behavior.
-        \infer[no rule]1{$\mathcal{D},\Delta_c,\sigma_c'\vdash{}\mathcal{D}(id_e).cs\xrightarrow{comb}\sigma_c''$}
-        
-        % Builds mapping for out ports.
-        \infer[no rule]1{
-          $\Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash$
-          $\mathrm{opmap}$
-          $\xrightarrow{mapop}$
-          $\sigma'$
-        }
-        
-        % Conclusion.
-        \infer1
-        [{\renewcommand{\arraystretch}{1.5}
-          \begin{tabular}{@{}l}
-            $id_e\in\mathcal{D}$ \\
-            $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''_c={<}\mathcal{S}''_c,\mathcal{C}''_c,\emptyset{>}$ \\
-          \end{tabular}
-        }]
-        {
-          $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| (id$_c$, id$_e$, gmap, ipmap, opmap)
-          $\xrightarrow{comb}$
-          $\sigma'$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1204,8 +1004,6 @@ their sensitivity list.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l@{}}
-            $\sigma'={<}\mathcal{S}',\mathcal{C}',\mathcal{E}'{>}$ \\
-            $\sigma''={<}\mathcal{S}'',\mathcal{C}'',\mathcal{E}''{>}$ \\
             $\mathcal{E}'\cap\mathcal{E}''=\emptyset$ \\
           \end{tabular}
         }] {
@@ -1246,14 +1044,13 @@ their sensitivity list.
             $\Delta_c(\mathrm{id}_s)=T$ \\
             $\sigma_c={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow{}v$ \\
-            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
           \end{tabular}
         }]
         {
           \Delta,\Delta_c,\sigma,\sigma_c\vdash
           \mathrm{id}_s\Rightarrow\mathrm{e}
           \xrightarrow{mapip}
-          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1279,14 +1076,13 @@ their sensitivity list.
             $\Delta_c(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
             $\sigma_c={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_s))$ \\
-            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
           \end{tabular}
         }]
         {
           \Delta,\Delta_c,\sigma,\sigma_c\vdash
           \mathrm{id}_s(\mathrm{e}_i)\Rightarrow\mathrm{e}
           \xrightarrow{mapip}
-          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}
+          {<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1512,14 +1308,14 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
         \infer0
         [{
           \begin{tabular}{@{}l}
-            $\mathrm{id}_s\in{}Outs(\Delta_c)$ \\
-            $\mathrm{id}_s\in\sigma_c$ \\
+            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
+            $\mathrm{id}_s\in\sigma$ \\
           \end{tabular}
         }] {
-          \Delta_c,\sigma_c\vdash
+          \Delta,\sigma\vdash
           \mathrm{id}_s
           \xrightarrow{e_o}
-          \sigma_c(\mathrm{id}_s)
+          \sigma(\mathrm{id}_s)
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1546,17 +1342,17 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
         \infer2
         [{
           \begin{tabular}{@{}l}
-            $\mathrm{id}_s\in{}Outs(\Delta_c)$ \\
-            $\mathrm{id}_s\in\sigma_c$ \\
-            $\Delta_c(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
+            $\mathrm{id}_s\in\sigma$ \\
+            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
             $i=v_i~\mathtt{mod}~n$ \\
           \end{tabular}
         }]
         {
-          \Delta_c,\sigma_c\vdash
+          \Delta,\sigma\vdash
           \mathrm{id}_s(\mathrm{e}_i)
           \xrightarrow{e_o}
-          \mathtt{get\_at}(i,\sigma_c(\mathrm{id}_s))
+          \mathtt{get\_at}(i,\sigma(\mathrm{id}_s))
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1573,8 +1369,18 @@ premises when an sequential statement is composed of inner sequential
 blocks.
 
 \subsubsection{Signal assigment statement} A signal assignment
-generates a new state $\sigma'$ with a modified signal value store
-$\mathcal{S'}$ and a new event set $\mathcal{E'}$.
+generates a new design state with a modified signal store and a new
+set of events. Note that there are two states on the left side of the
+thesis symbol. $\sigma$ represents the state holding the current
+values of signals, and $\sigma_w$ holds the new values of signals
+(i.e. the \emph{written} state).
+
+\begin{premises}
+  The premise $\mathcal{S}(id_s)\in_c{}T$ checks that the value
+  associated to signal $id_s$ in the signal store of $\sigma$ complies
+  with type $T$, where $T$ is the type associated with signal $id_s$
+  in $\Delta$.
+\end{premises}
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1583,29 +1389,26 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
         % Evaluates e.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
-
-        % Checks that the current value of [id__s] complies with T.
-        \hypo{\mathcal{S}(id_s)\in_c{}T}
         
         % Checks that v complies with T.
         \hypo{v\in_c{}T}
         
         % Conclusion.
-        \infer3
+        \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
             $\Delta(\mathrm{id}_s)=T$ \\
-            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow{}v$,
-            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+            % $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+            $\mathcal{S}'_w=\mathcal{S}_w(id_s)\leftarrow{}v$ \\
+            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}_w\dcap\mathcal{S}'_w)$ \\
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash
+          \Delta,\sigma,\sigma_w,\Lambda\vdash
           \mathrm{id}_s\Leftarrow\mathrm{e}
           \xrightarrow{ss}
-          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>},\Lambda
+          {<}\mathcal{S}'_w,\mathcal{C}_w,\mathcal{E}'_w{>},\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1624,7 +1427,6 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
         \hypo{v&\in_c{}T}
         \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
-        \infer[no rule]1{\mathcal{S}(id_s)&\in_c{}\mathtt{array(}T,n,m\mathtt{)}}
         
         % Conclusion.
         \infer2
@@ -1632,22 +1434,24 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
             $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
-            $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-            $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_s))$ \\
-            $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+            $\mathcal{S}'_w=\mathcal{S}_w(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}_w(id_s))$ \\
+            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}_w\dcap\mathcal{S}'_w)$ \\
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash
+          \Delta,\sigma,\sigma_w,\Lambda\vdash
           \mathrm{id}_s(\mathrm{e}_i)\Leftarrow\mathrm{e}
           \xrightarrow{ss}
-          {<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>},\Lambda
+          {<}\mathcal{S}'_w,\mathcal{C}_w,\mathcal{E}'_w{>},\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
 
 \subsubsection{Variable assignment statement}
+
+A variable assignment statement modifies the variable values in the
+local environment.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1657,14 +1461,11 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         % Evaluates e.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
 
-        % Checks that val complies with T.
-        \hypo{val\in_c{}T}
-        
         % Checks that v complies with T.
         \hypo{v\in_c{}T}
 
         % Conclusion.
-        \infer3
+        \infer2
         [{
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
@@ -1672,10 +1473,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash
+          \Delta,\sigma,\sigma_w,\Lambda\vdash
           \mathrm{id}_v:=\mathrm{e}
           \xrightarrow{ss}
-          \sigma,\Lambda(id_v)\leftarrow{}(T,v)
+          \sigma_w,\Lambda(id_v)\leftarrow{}(T,v)
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1703,10 +1504,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash
+          \Delta,\sigma,\sigma_w,\Lambda\vdash
           \mathrm{id}_v(\mathrm{e}_i):=\mathrm{e}
           \xrightarrow{ss}
-          \sigma,\Lambda(id_v)\leftarrow{}(T,\mathtt{set\_at}(v,v_i,val))
+          \sigma_w,\Lambda(id_v)\leftarrow{}(T,\mathtt{set\_at}(v,v_i,val))
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1724,15 +1525,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\top}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma'_w,\Lambda'}
 
         % Conclusion.
         \infer2
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1746,10 +1547,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         % Conclusion.
         \infer1
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma,\Lambda
+          \sigma_w,\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1764,15 +1565,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{expr}\top}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma'_w,\Lambda'}
 
         % Conclusion.
         \infer2
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}~\mathrm{ss}'
           \xrightarrow{ss}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1784,15 +1585,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\bot}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}'\xrightarrow{ss}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}'\xrightarrow{ss}\sigma'_w,\Lambda'}
 
         % Conclusion.
         \infer2
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|if|$~(\mathrm{e})~\mathrm{ss}~\mathrm{ss}'
           \xrightarrow{ss}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1809,11 +1610,11 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \hypo{\Delta,\sigma,\Lambda_i\vdash\mathrm{id}_v=\mathrm{e}'\xrightarrow{e}\bot}
 
         % Evaluates ss and recursive call.
-        \hypo{\Delta,\sigma,\Lambda_i&\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda_i&\vdash\mathrm{ss}\xrightarrow{ss}\sigma'_w,\Lambda'}
         \infer[no rule]1{
-          \Delta,\sigma',\Lambda'&\vdash~
+          \Delta,\sigma,\sigma'_w,\Lambda'&\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
-          \xrightarrow{ss}\sigma'',\Lambda''
+          \xrightarrow{ss}\sigma''_w,\Lambda''
         }
         
         % Conclusion. 
@@ -1826,10 +1627,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma'',\Lambda''
+          \sigma''_w,\Lambda''
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1853,10 +1654,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma,\Lambda\setminus(id_v,\Lambda(id_v))
+          \sigma_w,\Lambda\setminus(id_v,\Lambda(id_v))
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1872,10 +1673,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
         
         % Upper bound check true.
-        \hypo{\Delta,\sigma,\Lambda_i\vdash~
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda_i\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma',\Lambda'}
+          \sigma'_w,\Lambda'}
 
         % Conclusion.
         \infer2
@@ -1886,10 +1687,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
           \end{tabular}
         }]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1907,10 +1708,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \infer0
         [$f\neq\uparrow$]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rising|$~\mathrm{ss}
           \xrightarrow{ss_f}
-          \sigma,\Lambda
+          \sigma_w,\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1922,10 +1723,10 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
         \infer0
         [$f\neq\downarrow$]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|falling|$~\mathrm{ss}
           \xrightarrow{ss_f}
-          \sigma,\Lambda
+          \sigma_w,\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1937,15 +1738,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
     {\begin{prooftree}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}\sigma'_w,\Lambda'}
         
         % Conclusion.
         \infer1
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rising|$~\mathrm{ss}
           \xrightarrow{ss_\uparrow}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1954,15 +1755,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
     {\begin{prooftree}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}\sigma'_w,\Lambda'}
         
         % Conclusion.
         \infer1
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|falling|$~\mathrm{ss}
           \xrightarrow{ss_\downarrow}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1976,16 +1777,16 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
     {\begin{prooftree}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss'}\xrightarrow{ss_f}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss'}\xrightarrow{ss_f}\sigma'_w,\Lambda'}
         
         % Conclusion.
         \infer1
         [$f\neq{}i$]
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rst|$~\mathrm{ss}~\mathrm{ss'}
           \xrightarrow{ss_f}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1994,15 +1795,15 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
     {\begin{prooftree}
 
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}\sigma'_w,\Lambda'}
         
         % Conclusion.
         \infer1
         {
-          \Delta,\sigma,\Lambda\vdash~
+          \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rst|$~\mathrm{ss}~\mathrm{ss'}
           \xrightarrow{ss_i}
-          \sigma',\Lambda'
+          \sigma'_w,\Lambda'
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -2016,14 +1817,14 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
     {\begin{prooftree}
         
         % Evaluates ss.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma',\Lambda'}
+        \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma'_w,\Lambda'}
 
         % Evaluates ss'.
-        \hypo{\Delta,\sigma',\Lambda'\vdash\mathrm{ss'}\xrightarrow{ss}\sigma'',\Lambda''}
+        \hypo{\Delta,\sigma,\sigma'_w,\Lambda'\vdash\mathrm{ss'}\xrightarrow{ss}\sigma''_w,\Lambda''}
 
         % Conclusion.
         \infer2{
-          \Delta,\sigma,\Lambda\vdash\mathrm{ss}\mathtt{;}~\mathrm{ss}'\xrightarrow{ss}\sigma'',\Lambda''
+          \Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\mathtt{;}~\mathrm{ss}'\xrightarrow{ss}\sigma''_w,\Lambda''
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -2033,7 +1834,7 @@ $\mathcal{S'}$ and a new event set $\mathcal{E'}$.
 
         % Conclusion.
         \infer0{
-          \Delta,\sigma,\Lambda\vdash\mathtt{null}\xrightarrow{ss}\sigma,\Lambda
+          \Delta,\sigma,\sigma_w,\Lambda\vdash\mathtt{null}\xrightarrow{ss}\sigma_w,\Lambda
         }
       \end{prooftree}} \\
   \end{tabular}

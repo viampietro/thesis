@@ -1,0 +1,62 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{circuitikz}
+  
+  \ctikzset{multipoles/dipchip/width=2}
+  \node(entity) [dipchip, num pins=8, hide numbers, no topmark, external pins width=0] {
+  };
+  \node(entityLabel) at ($(entity.south)-(0,10pt)$) [inner sep=1cm]{\small\tt or\_gate};
+  
+  % CLKS and PORTS
+  \draw (entity.bpin 2) -- ++(-.3,0) coordinate (pina) node [left,font=\ssmall] {a};
+  \draw (entity.bpin 3) -- ++(-.3,0) coordinate (pinb) node [left,font=\ssmall] {b};
+  \draw (entity.east) -- ++(.3,0) node [right,font=\ssmall] {or\_result};
+  \draw (entity.bpin 1) ++(0,0.1) -- ++(0.1,-0.1) coordinate (entclk) node[left, font=\tiny, xshift=-2mm]{CLK} -- ++(-0.1,-0.1);
+  
+  % LABELS
+ 
+% \node (eq) at ($(entcode.west)!.6!(entity.east)$) {\LARGE $\Leftrightarrow$};
+  
+\end{circuitikz}
+
+\end{document}

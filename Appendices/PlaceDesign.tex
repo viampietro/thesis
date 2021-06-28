@@ -1,0 +1,144 @@
+\chapter{The place design in concrete and abstract VHDL syntax}
+\label{app:trans-design}
+
+\begin{lstlisting}[language=VHDL,label={lst:place-design},caption={The place design in concrete VHDL syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left, numberstyle=\tiny\ttfamily]
+entity place is
+  generic(
+    input_arcs_number    : natural := 1;
+    output_arcs_number   : natural := 1;
+    maximal_marking      : natural := 1
+  );
+  port(
+    clock : in std_logic;
+    reset_n : in std_logic;
+    initial_marking : in natural range 0 to maximal_marking; 
+    input_arcs_weights : in weight_vector_t(input_arcs_number-1 downto 0);
+    output_arcs_types : in arc_vector_t(output_arcs_number-1 downto 0);
+    output_arcs_weights : in weight_vector_t(output_arcs_number-1 downto 0);
+    input_transitions_fired : in std_logic_vector(input_arcs_number-1 downto 0);          
+    output_transitions_fired : in std_logic_vector(output_arcs_number-1 downto 0);
+    output_arcs_valid : out std_logic_vector(output_arcs_number-1 downto 0);
+    priority_authorizations : out std_logic_vector(output_arcs_number-1 downto 0);
+    reinit_transitions_time : out std_logic_vector(output_arcs_number-1 downto 0);
+    marked : out std_logic 
+  );
+end place;
+
+architecture place_architecture of place is
+
+  subtype local_weight_t is natural range 0 to maximal_marking;
+
+  signal s_input_token_sum       : local_weight_t;
+  signal s_marking               : local_weight_t;
+  signal s_output_token_sum      : local_weight_t; 
+
+begin
+
+  
+  input_tokens_sum : process(input_arcs_weights, input_transitions_fired)
+    variable v_internal_input_token_sum : local_weight_t;
+  begin
+    v_internal_input_token_sum := 0;
+    
+    for i in 0 to input_arcs_number - 1 loop
+      if (input_transitions_fired(i) = '1') then
+        
+        v_internal_input_token_sum := v_internal_input_token_sum + input_arcs_weights(i);
+        
+      end if;
+    end loop;
+    
+    s_input_token_sum <= v_internal_input_token_sum;
+  end process input_tokens_sum;
+
+  output_tokens_sum : process(output_arcs_types, output_arcs_weights, output_transitions_fired)
+    variable v_internal_output_token_sum : local_weight_t;
+  begin
+    v_internal_output_token_sum := 0;
+    
+    for i in 0 to output_arcs_number - 1 loop
+      if (output_transitions_fired(i) = '1' and output_arcs_types(i) = arc_t(BASIC)) then
+        v_internal_output_token_sum := v_internal_output_token_sum + output_arcs_weights(i); 
+      end if;
+    end loop;
+    
+    s_output_token_sum <= v_internal_output_token_sum;
+  end process output_tokens_sum;
+    
+  marking : process(clock, reset_n, initial_marking)
+  begin
+    if (reset_n = '0') then
+      s_marking <= initial_marking;
+    elsif rising_edge(clock) then
+      s_marking <= s_marking + (s_input_token_sum - s_output_token_sum);
+    end if;
+  end process marking;
+
+  determine_marked : process(s_marking)
+  begin
+    if (s_marking = 0) then
+      marked <= '0';
+    else
+      marked <= '1';
+    end if;
+  end process determine_marked;        
+  
+  marking_validation_evaluation : process(output_arcs_types, output_arcs_weights, s_marking)
+  begin
+    for i in 0 to output_arcs_number - 1 loop
+      if ( ( ((output_arcs_types(i) = arc_t(BASIC)) or (output_arcs_types(i) = arc_t(TEST))) and (s_marking >= output_arcs_weights(i)) )
+           or ( (output_arcs_types(i) = arc_t(INHIBITOR)) and (s_marking < output_arcs_weights(i)) ) )
+      then
+        output_arcs_valid(i) <= '1';
+      else
+        output_arcs_valid(i) <= '0';
+      end if;
+    end loop;
+  end process marking_validation_evaluation;
+
+  priority_evaluation : process(output_arcs_types, output_arcs_weights, output_transitions_fired, s_marking)
+    variable v_saved_output_token_sum : local_weight_t;
+  begin
+    v_saved_output_token_sum := 0;
+    
+    for i in 0 to output_arcs_number - 1 loop
+      if (s_marking >= v_saved_output_token_sum + output_arcs_weights(i)) then
+        priority_authorizations(i) <= '1';
+      else
+        priority_authorizations(i) <= '0';
+      end if;
+      
+      if ((output_transitions_fired(i) = '1') and (output_arcs_types(i) = arc_t(BASIC))) then
+        v_saved_output_token_sum := v_saved_output_token_sum + output_arcs_weights(i);
+      end if;
+      
+    end loop;
+  end process priority_evaluation;
+
+  reinit_transitions_time_evaluation : process(clock, reset_n)
+  begin
+    if (reset_n = '0') then
+      reinit_transitions_time <= (others => '0');
+    elsif rising_edge(clock) then
+      for i in 0 to output_arcs_number - 1 loop
+        if ( (((output_arcs_types(i) = arc_t(BASIC)) or (output_arcs_types(i) = arc_t(TEST)))
+                and (s_marking - s_output_token_sum < output_arcs_weights(i))
+                and (s_output_token_sum > 0))
+             or output_transitions_fired(i) = '1' )
+        then
+          reinit_transitions_time(i) <= '1';
+        else
+          reinit_transitions_time(i) <= '0';
+        end if;
+      end loop;
+    end if;
+  end process reinit_transitions_time_evaluation;
+     
+end place_architecture;
+
+\end{lstlisting}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
