@@ -41,23 +41,23 @@
 \begin{document}
 
 \begin{circuitikz}
-  \ctikzset{multipoles/dipchip/width=2}
-  \ctikzset{multipoles/dipchip/pin spacing=.2}
+  \ctikzset{multipoles/dipchip/width=4.5}
+  \ctikzset{multipoles/dipchip/pin spacing=.18}
   
   \node(entity) [dipchip,
   num pins=32,
   hide numbers,
   no topmark,
   external pins width=0] {
+    \begin{circuitikz}
+
+    \end{circuitikz}
   };
-  % \node(entityLabel) at ($(entity.south)-(0,10pt)$) [inner sep=1cm]{\small\tt transition design};
-  
+
   % CLKS and PORTS
-  
   \draw (entity.bpin 2) -- ++(-.3,0) coordinate (pina) node [left,font=\ssmall] {\tt reset\_n};
   \draw (entity.bpin 1) ++(0,0.1) -- ++(0.1,-0.1) coordinate (entclk) node[left, font=\ssmall, xshift=-4mm]{\tt clock} -- ++(-0.1,-0.1);
   \draw (entity.east) -- ++(.3,0) node [right,font=\ssmall] {\tt fired};
-
 
   % input conditions
   
@@ -68,8 +68,6 @@
   \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(ic0)!.5!(icn)$) {\dots};
   \draw (entity.bpin 3) -- ++(-.3,0);
   \draw (entity.bpin 5) -- ++(-.3,0);
-  \node [right,font=\ssmall] at ($(entity.bpin 3)$) {0};
-  \node [right,font=\ssmall] at ($(entity.bpin 5)$) {$cn-1$};
   
   \node[font=\ssmall, xshift=-20pt] at ($(ic0)!.5!(icn)$) {
     \begin{tabular}{@{}c@{}}
@@ -91,8 +89,6 @@
   \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(iav0)!.5!(iavn)$) {\dots};
   \draw (entity.bpin 8) -- ++(-.3,0);
   \draw (entity.bpin 10) -- ++(-.3,0);
-  \node [right,font=\ssmall] at ($(entity.bpin 8)$) {0};
-  \node [right,font=\ssmall] at ($(entity.bpin 10)$) {$ian-1$};
   
   \node[font=\ssmall, xshift=-15pt] at ($(iav0)!.5!(iavn)$) {
     \begin{tabular}{@{}c@{}}
@@ -110,9 +106,7 @@
   \draw (rtn) -- ($(entity.bpin 13)$);
   \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(rt0)!.5!(rtn)$) {\dots};
   \draw (entity.bpin 11) -- ++(-.3,0);
-  \node[right,font=\ssmall] at ($(entity.bpin 11)$) {0};
   \draw (entity.bpin 13) -- ++(-.3,0);
-  \node [right,font=\ssmall] at ($(entity.bpin 13)$) {$ian-1$};
   
   \node[font=\ssmall, xshift=-15pt] at ($(rt0)!.5!(rtn)$) {
     \begin{tabular}{@{}c@{}}
@@ -130,8 +124,6 @@
   \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(pauths0)!.5!(pauthsn)$) {\dots};
   \draw (entity.bpin 14) -- ++(-.3,0);
   \draw (entity.bpin 16) -- ++(-.3,0);
-  \node [right,font=\ssmall] at ($(entity.bpin 14)$) {0};
-  \node [right,font=\ssmall] at ($(entity.bpin 16)$) {$ian-1$};
   
   \node[font=\ssmall, xshift=-25pt] at ($(pauths0)!.5!(pauthsn)$) {
     \begin{tabular}{@{}c@{}}
@@ -140,9 +132,51 @@
     \end{tabular}
   };
   
-  % LABELS
- 
-  % \node (eq) at ($(entcode.west)!.6!(entity.east)$) {\LARGE $\Leftrightarrow$};
+  % INTERNAL BEHAVIOR
+  
+  % condition evaluation process
+  \ctikzset{logic ports/scale=.7}
+  \node (condEvalPs) [american and port] at ($(entity.bpin 3)!.5!(entity.bpin 5)+(.2,0)$) [right] {};
+  \node[anchor=north west, font=\ssmall] at ($(condEvalPs.out)-(.3,0)$) {
+    \begin{tabular}{@{}c@{}}
+      \texttt{s\_condition} \\
+      \texttt{combination} \\
+    \end{tabular}
+  };
+  \node[anchor=west] at ($(condEvalPs.out)$) {\dots};
+  
+  \draw ($(entity.bpin 3)$) -| ($(condEvalPs.in 1)$);
+  \draw ($(entity.bpin 5)$) -| ($(condEvalPs.in 2)$);
+
+  % fired evaluation process
+  \node (firedEvalPs) [american and port] at ($(entity.east)$) [left] {};
+
+  % firable process
+  \ctikzset{multipoles/dipchip/width=1}
+  \node (firablePs) [dipchip,
+  hide numbers,
+  no topmark,
+  external pins width=0] at ($(firedEvalPs.in 1)-(.4,-.6)$) [left] {
+    \begin{tabular}{@{}c@{}}
+      firable \\
+      process \\
+    \end{tabular}
+  };
+  \draw ($(firablePs.east)$) -| ($(firedEvalPs.in 1)$);
+  
+  \coordinate (spcWire) at ($(firedEvalPs.in 2)-(.4,.6)$);
+  \draw (spcWire) -| ($(firedEvalPs.in 2)$);
+  \draw (entclk) -| ($(firablePs.bpin 1)-(.1,0)$) --++ (.1,0);
+  \draw ($(entity.bpin 2)$) -| ($(firablePs.bpin 2)-(.2,0)$) --++ (.2,0);
+
+  \node[anchor=west,font=\ssmall] at ($(firablePs.east)+(0,.2)$) {\tt s\_firable};
+  \node[anchor=north,font=\ssmall] at ($(spcWire)$) {
+    \begin{tabular}{@{}c@{}}
+      \tt s\_priority \\
+      \tt combination \\
+    \end{tabular}
+  };
+  \node[anchor=east] at (spcWire) {\dots};
   
 \end{circuitikz}
 
