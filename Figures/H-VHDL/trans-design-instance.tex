@@ -1,0 +1,106 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble,lstvhdl}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{circuitikz}
+  
+  \node(toplevel) [draw, rectangle, inner sep=2mm] {
+    \begin{circuitikz}
+      \ctikzset{multipoles/dipchip/width=3}
+      \ctikzset{multipoles/dipchip/pin spacing=.2}
+      
+      \node(entity) [dipchip,
+      num pins=16,
+      hide numbers,
+      no topmark,
+      external pins width=0] {
+      };
+      \node[anchor=north](entityLabel) at ($(entity.south)$) {\small transition design instance $id_t$};
+      
+      % CLKS and PORTS
+      
+      \draw (entity.bpin 2) -- ++(-.3,0) coordinate (pina) --++(-.3, 0) node[left,font=\ssmall] {\texttt{reset\_n}};
+      \node [right,font=\ssmall] at (entity.bpin 2) {\tt reset\_n};
+      
+      \draw (entity.bpin 1) ++(0,0.1) -- ++(0.1,-0.1) coordinate (entclk) -- ++(-0.1,-0.1);
+      \draw (entity.bpin 1) -- ++(-.3,0) --++(-.3, 0) node[left,font=\ssmall] {\texttt{clock}};
+      \node[right, font=\ssmall] at (entclk) {\tt clock};
+      
+      \draw (entity.east) -- ++(.3,0) node[right,font=\ssmall] {$id_3$};
+      \node [left,font=\ssmall] at (entity.east) {\tt fired};
+
+      % time A and time B
+      \draw (entity.bpin 3) -- ++(-.3,0) coordinate (timeA) node[left,font=\ssmall] {$0$};
+      \draw (entity.bpin 4) -- ++(-.3,0) coordinate (timeB) node[left,font=\ssmall] {$0$};
+      \node [right,font=\ssmall] at ($(entity.bpin 3)$) {\texttt{time\_A\_value}};
+      \node [right,font=\ssmall] at ($(entity.bpin 4)$) {\texttt{time\_B\_value}};
+      
+      % input conditions
+      
+      \coordinate (ic0) at ($(entity.bpin 5)-(.3,0)$);
+      \draw ($(entity.bpin 5)$) -- (ic0) --++(-.3, 0) node[anchor=east,font=\ssmall] {$id_0$};
+      \node [right,font=\ssmall] at ($(entity.bpin 5)$) {$\mathtt{input\_conditions(0)}$};
+      
+      % input arcs valid
+      
+      \coordinate (iav0) at ($(entity.bpin 6)-(.3,0)$);
+      \draw ($(entity.bpin 6)$) -- (iav0) --++(-.3, 0) node[anchor=east,font=\ssmall] {$id_1$};
+      \node [right,font=\ssmall] at ($(entity.bpin 6)$) {$\mathtt{input\_arcs\_valid(0)}$};
+      
+      % priority authorizations
+      
+      \coordinate (pauths0) at ($(entity.bpin 7)-(.3,0)$);
+      \draw ($(entity.bpin 7)$) -- (pauths0) node[anchor=east,font=\ssmall] {\vhdles|'1'|};
+      \node [right,font=\ssmall] at ($(entity.bpin 7)$) {$\mathtt{priority\_authorizations(0)}$};
+
+      % reinit time
+      
+      \coordinate (rt0) at ($(entity.bpin 8)-(.3,0)$);
+      \draw ($(entity.bpin 8)$) -- (rt0) --++(-.3, 0) node[anchor=east,font=\ssmall] {$id_2$};
+      \node[right,font=\ssmall] at ($(entity.bpin 8)$) {$\mathtt{reinit\_time(0)}$};
+    \end{circuitikz}
+  };
+
+  \node[anchor=north] at (toplevel.south) {toplevel design};
+  
+\end{circuitikz}
+
+\end{document}
