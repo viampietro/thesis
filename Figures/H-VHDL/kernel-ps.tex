@@ -1,0 +1,133 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node[draw, circle, fill=black,inner sep=3pt] (InitNode) {
+  };
+  
+  \node[draw, rectangle, inner sep=3pt] (ActWaitPss) at ($(InitNode.south)-(0,1)$) {
+    \begin{tabular}{@{}c@{}}
+      Waits for \\
+      suspension of \\
+      all processes \\
+    \end{tabular}
+  };
+
+  \node[draw, diamond, anchor=north] (DecAllSuspend) at ($(ActWaitPss.south)-(0,.5)$) {
+  };
+  \node[anchor=west] at (DecAllSuspend.east) {\ssmall all suspended?};
+  
+  \node[draw, rectangle, inner sep=3pt, anchor=north] (ActDetermNext) at ($(DecAllSuspend.south)-(0,.5)$) {
+    \begin{tabular}{@{}c@{}}
+      Determines \\
+      next cycle \\
+    \end{tabular}
+  };
+
+  \node[draw, diamond, anchor=north] (DecNextCycle) at ($(ActDetermNext.south)-(0,.5)$) {
+  };
+
+  \node[draw, circle, inner sep=0pt, anchor=north east] (ActSimEnd) at ($(DecNextCycle.south west)-(1,.5)$) {
+    \begin{tikzpicture}
+      \node[draw, circle, fill=black, inner sep=3pt, anchor=north east] (ActSimEnd) at ($(DecNextCycle.south west)-(1,.5)$) {};
+    \end{tikzpicture}
+  };
+
+  \node[draw, rectangle, inner sep=3pt, anchor=north] (ActUpSigs) at ($(DecNextCycle.south)-(0,2.5)$) {
+    \begin{tabular}{@{}c@{}}
+      Updates the current value \\
+      and the drivers of signals \\
+    \end{tabular}
+  };
+
+  \node[draw, rectangle, inner sep=3pt, anchor=north west] (ActAdvTime) at ($(DecNextCycle.south east)+(1,-.5)$) {
+    \begin{tabular}{@{}c@{}}
+      Advances \\
+      to next time \\
+      point \\
+    \end{tabular}
+  };
+
+  \node[draw, rectangle, inner sep=3pt, anchor=north] (ActWakePss) at ($(ActUpSigs.south)-(0,1)$) {
+    \begin{tabular}{@{}c@{}}
+      Wakes up \\
+      processes \\
+    \end{tabular}
+  };
+
+  \draw (InitNode.south) edge[->] (ActWaitPss.north);
+  \draw (ActWaitPss.south) edge[->] (DecAllSuspend.north);
+  \draw (DecAllSuspend.south) edge[->] (ActDetermNext.north);
+  \draw (ActDetermNext.south) edge[->] (DecNextCycle.north);
+  \draw (DecNextCycle.west) edge[->] (ActSimEnd.north east);
+  \draw (DecNextCycle.east) edge[->] (ActAdvTime.north west);
+  \draw (DecNextCycle.south) edge[->] (ActUpSigs.north);
+  \draw (ActUpSigs.south) edge[->] (ActWakePss.north);
+  \draw (ActWakePss.east) -| ($(ActWaitPss.east)+(2.5,0)$) edge[->] (ActWaitPss.east);
+  \draw (ActAdvTime.south) edge[->] ($(ActUpSigs.north)+(1.3,0)$);
+  
+  \node[anchor=east,font=\ssmall] at ($(DecNextCycle.west)-(.2,0)$) {
+    \begin{tabular}{@{}c@{}}
+      current time \\
+      = \\
+      end time \\
+    \end{tabular}
+  };
+
+  \node[anchor=east,font=\ssmall] at ($(DecNextCycle.south)!.5!(ActUpSigs.north)$) {
+    \begin{tabular}{@{}c@{}}
+      delta \\
+      cycle \\
+    \end{tabular}
+  };
+
+  \node[anchor=west,font=\ssmall] at ($(DecNextCycle.east)+(.2,0)$) {
+    \begin{tabular}{@{}c@{}}
+      time \\
+      cycle \\
+    \end{tabular}
+  };
+  
+\end{tikzpicture}
+
+\end{document}

@@ -1,7 +1,10 @@
-Terminals of the language will be written in \texttt{typewriter} font,
-or will be enclosed in simple quotes for symbols with no typewriter
-representation. The $a^{*}$ denotes a possibly empty repetition of the
-element $a$; the $a^{+}$ denotes a non-empty repetition of $a$.
+In this section, we describe the abstract syntax of \hvhdl{}, the
+subset of VHDL covering all the constructs present in the generated
+\hvhdl{} programs. Terminals of the language will be written in
+\texttt{typewriter} font, or will be enclosed in simple quotes for
+symbols with no typewriter representation. The $a^{*}$ denotes a
+possibly empty repetition of the element $a$; the $a^{+}$ denotes a
+non-empty repetition of $a$.
 
 \subsection{Design declaration}
 \label{subsec:design-decl}
@@ -16,6 +19,7 @@ the concrete syntax of VHDL.
   ports & ::= & pdecl* \\
   sigs & ::= & sdecl* \\
 \end{tabular}
+
 
 
 \subsection{Generic constant, port and internal signal declaration.}
