@@ -17,8 +17,8 @@ design $d$.
   design store $\mathcal{D}_\mathcal{H}$ is defined. Design store
   $\mathcal{D}_\mathcal{H}$ holds the description of the
   \texttt{place} and \texttt{transition} designs which full definition
-  in abstract syntax are given in appendices \ref{sec:place-abs-synt}
-  and \ref{sec:trans-abs-synt}.
+  in abstract syntax are given in Appendices~\ref{app:place-design}
+  and \ref{app:trans-design}.
 \end{definition}
 
 At the beginning of the elaboration phase, a function
@@ -44,7 +44,7 @@ of the environment. The $\mathcal{M}_g$ function is refered to as the
         
         % Conclusion
         
-        \infer[template={\fontsize{10}{13}\selectfont\inserttext}]1
+        \infer[template={\inserttext}]1
         {
           $\mathcal{D},\mathcal{M}_g\vdash$
           \vhdle|design| id$_e$ id$_a$ gens ports sigs cs
@@ -329,7 +329,7 @@ the design, are explicited in the following sections.
 
 The $etype$ relation checks the well-formedness of a type indication
 $\tau$, and transforms it into a semantical $type$ (as defined in
-Table~\ref{tab:type-value}). A subtype indication $\tau$ is well-formed
+Table~\ref{tab:type-value}). A type indication $\tau$ is well-formed
 in the context $\Delta$ if $\tau$ denotes the \texttt{boolean} keyword
 or the \texttt{nat} or \texttt{array} keywords with a
 \emph{well-formed} constraint, and a well-formed element type in the
@@ -404,7 +404,7 @@ evaluates the constraint bounds.  A constraint $c$ is well-formed in
 the context $\Delta$ if:
 
 \begin{itemize}[label=-]
-\item its bounds are globally static expressions \cite[p.36]{VHDL00}
+\item its bounds are globally static expressions \cite[p.36]{VHDL2000}
   of the \texttt{nat} type.
 \item its lower bound value is inferior or equal to its upper bound
   value.
@@ -412,7 +412,7 @@ the context $\Delta$ if:
 
 \begin{remark}[Type of constraints]
   As the VHDL language reference stays unclear about the type of range
-  and index constraints \cite[p.33]{VHDL00}, we add the restriction
+  and index constraints \cite[p.33]{VHDL2000}, we add the restriction
   that range and index constraints must have bounds of the
   \texttt{nat} type (i.e, value of type $nat$).
 \end{remark}
@@ -427,7 +427,6 @@ the context $\Delta$ if:
   \begin{tabular}{@{}l}
     {\fontsize{8}{11}\selectfont\textsc{EConstr}} \\
     {\begin{prooftree}
-        
         
         % Globally static e and e'.
         \hypo{\Delta\vdash{}SE_g(\mathrm{e})}
@@ -518,7 +517,7 @@ bounds.
 A \emph{generic} constraint $c$ is well-formed if:
 
 \begin{itemize}[label=-]
-\item its bounds are locally static expressions \cite[p.36]{VHDL00} of
+\item its bounds are locally static expressions \cite[p.36]{VHDL2000} of
   the \texttt{nat} type.
 \item its lower bound value is inferior or equal to its upper bound
   value.
@@ -840,7 +839,7 @@ semantics.
 
 According to the VHDL reference, when declaring a port, a signal or a
 variable, these items must receive an implicit default value depending
-on their types \cite[p.61, 64, 173]{VHDL00}. The $defaultv$ relation
+on their types \cite[p.61, 64, 173]{VHDL2000}. The $defaultv$ relation
 determines the default value for a given type.
 
 \begin{table}[H]
