@@ -211,8 +211,76 @@ is transformed into the array of Booleans type. This transformation is
 valid because, in the transition and place designs and also in the
 generated designs, we are only referring to the values '0' and '1'
 among all the values enumerated by the \texttt{std_logic} type (see
-\cite[p. 2]{STDLOGIC})
+\cite[p. 2]{STDLOGIC}). Also, note that the \texttt{clock} and
+\texttt{reset_n} input ports declared in the port clause of the
+transition design are removed in the hvhdl{} version. In the \hvhdl{}
+abstract syntax, the if statements that were testing the value of the
+\texttt{clock} and the \texttt{reset_n} signals have been turned into
+specific sequential statements (i.e \texttt{rst}, \texttt{falling} and
+\texttt{rising} blocks). Thus, we don't need the \texttt{clock} and
+\texttt{reset_n} signals in the port declaration list anymore.
 
+Listing~\ref{lst:t-design-pss-abss} presents the translation in
+\hvhdl{} abstract syntax of the two of the processes presented in
+Listing~\ref{lst:trans-design-arch}.
+
+\begin{lstlisting}[language=VHDL,label={lst:t-design-pss-abss},
+caption={[Two processes in \hvhdl{} abstract syntax.]The \texttt{condition_evaluation} and \texttt{firable} processes in \hvhdl{} abstract syntax. The two processes are defined in the behavior of the transition design.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+  process ("condition_evaluation", ("input_conditions"), 
+          (("v_internal_condition", boolean)),
+    v_internal_condition := $\top$;
+    (for ("i", 0, conditions_number $-$ 1) 
+      (v_internal_condition := v_internal_conditions and input_conditions(i)));
+    s_condition_combination <= v_internal_condition
+  ) ||
+  process ("firable", ("clk"), $\emptyset$,
+    rst (s_firable <= $\bot$)
+        (falling (s_firable <= s_firing_condition))
+  )
+\end{lstlisting}
+
+In Listing~\ref{lst:t-design-pss-abss}, inner blocks of sequential
+statements are enclosed between parentheses to ease the reading,
+albeit parentheses are not part of the \hvhdl{} syntax. The body of
+the \texttt{firable} process gives an example of the use of a
+\texttt{rst} block and a \texttt{falling} block. One can see, from the
+comparison of Listing~\ref{lst:trans-design-arch} and
+\ref{lst:t-design-pss-abss}, that a \texttt{rst} ss ss' statement is
+the translation of the concrete VHDL statement \texttt{if reset_n =
+  '0' then ss else ss' endif;}. Comparing the same listings, a
+\texttt{falling} ss statement is the translation of the concrete VHDL
+statement \texttt{if falling_edge(clock) then ss end if;}.
+
+Listing~\ref{lst:t-design-ci-abss} shows the translation in \hvhdl{}
+abstract syntax of the component instantiation statement laid out in
+Listing~\ref{lst:trans-design-instantiation}.
+
+\begin{lstlisting}[language=VHDL,label={lst:t-design-ci-abss},
+caption={[A component instantiation statement in \hvhdl{} abstract syntax.] An example of instantiation of the transition design in \hvhdl{} abstract syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+  comp ($id_t$, "transition", 
+    -- Generic map
+    (transition_type => 0,
+     input_arcs_number => 1,
+     conditions_number => 1,
+     maximal_time_counter => 1),
+    -- Input port map
+    (time_A_value => 0,
+     time_B_value => 0,
+     input_conditions(0) => $id_0$,
+     input_arcs_valid(0) => $id_1$,
+     priority_authorizations(0) => $\top$,
+     reinit_time(0) => $id_2$),
+    -- Output port map
+    (fired => $id_3$)
+\end{lstlisting}
+
+The statement of Listing~\ref{lst:t-design-ci-abss} is almost similar
+to the one of Listing~\ref{lst:trans-design-instantiation}. The
+\texttt{NOT_TEMPORAL} value associated to the \texttt{transition_type}
+constant is turned into 0 (remember the \texttt{temporal_t}
+enumeration type is transformed into a natural range).
 
 %%% Local Variables:
 %%% mode: latex

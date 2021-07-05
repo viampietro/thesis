@@ -1,6 +1,6 @@
-\subsection{Semantics Domains}
+\subsection{Semantic domains}
 
-Let $id$ denote the set of identifiers in the semantical domain. We
+Let $id$ denote the set of identifiers in the semantic domain. We
 write $prefix\mhyphen{}id$ to denote arbitrary subsets of the $id$
 set. The $type$ and $value$ semantical types are defined as follows:
 
@@ -44,26 +44,30 @@ least one value as an array's index range contains at least one index
   \end{itemize}
 \end{notation}
 
+\subsection{Elaborated design and design state}
+\label{sec:elab-design-and-state}
+
 Now, let us define the structure of an elaborated design which is a
 structure bound to a given \hvhdl{} design and to a design store, i.e
 a global environment mapping identifiers to \hvhdl{} designs. Only the
 designs referenced into the global design store can be instantiated as
-subcomponents of a given design. The elaborated design structure is
-used in the expression of the elaboration relation presented in
-Section~\nameref{sec:elab-rules}, as well as in the expression of the
-simulation rules. Let $ElDesign(d,\mathcal{D})$ be the set of the
-elaborated designs for a given \hvhdl{} design $d$ and a design store
-$\mathcal{D}$. An elaborated design is a composite environment built
-out of multiple sub-environments.  Each sub-environment is a table,
-represented as a partial function, mapping identifiers of a certain
-category of constructs (e.g, input port identifiers) to their
-declaration information (e.g, type indication for input ports). We
-represent an elaborated design as a record where the fields are the
+component instances in the behavior of a given design. The elaborated
+design structure is built during the elaboration phase (see
+Section~\ref{sec:elab-rules}). Then, the elaborated design will act as
+a runtime environment in the expression of the simulation rules. Let
+$ElDesign(d,\mathcal{D})$ be the set of the elaborated designs for a
+given \hvhdl{} design $d$ and a design store $\mathcal{D}$. An
+elaborated design is a composite environment built out of multiple
+sub-environments.  Each sub-environment is a table, represented as a
+partial function, mapping identifiers of a certain category of
+constructs (e.g, input port identifiers) to their declaration
+information (e.g, type indication for input ports). We represent an
+elaborated design as a record where the fields are the
 sub-environments. An elaborated design is defined as follows:
 
 \begin{definition}[Elaborated Design] For a given \hvhdl{} design
-  $d\in{}design$ s.t. $d=$ \vhdle|design| \textit{$id_{ent}$
-    $id_{arch}$ gens ports sigs behavior} and a given design store
+  $d\in{}design$ s.t. $d=$ \vhdle|design| \textit{$id_{e}$ $id_{a}$
+    gens ports sigs behavior} and a given design store
   $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$ is a record
   ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
@@ -111,17 +115,17 @@ sub-environments. An elaborated design is defined as follows:
 
 We assume that there are no overlapping between the identifiers of the
 sub-environments (i.e, an identifier belongs to at most one
-sub-environment). We note $\Delta(x)$ to denote the value returned for
-identifier $x$, where $x$ is looked up in the appropriate field of
-$\Delta$. We note $x\in\Delta$ to state that identifier $x$ is defined
-in one of $\Delta$'s fields. We note $\Delta(x)\leftarrow{}v$ the
-overriding of the value associated to identifier $x$ with value $v$ in
-the appropriate field of $\Delta$, $\Delta\cup{}(x,v)$ to note the
-addition the mapping from identifier $x$ to value $v$ in the
-appropriate field of $\Delta$, that assuming $x\notin\Delta$. We note
-$x\in\mathcal{F}(\Delta)$, where $\mathcal{F}$ is a field of $\Delta$,
-when more precision is needed regarding the lookup of identifier $x$
-in the record $\Delta$.
+sub-environment). When there is no ambiguity, we write $\Delta(x)$ to
+denote the value returned for identifier $x$, where $x$ is looked up
+in the appropriate field of $\Delta$. We write $x\in\Delta$ to state
+that identifier $x$ is defined in one of $\Delta$'s fields. We note
+$\Delta(x)\leftarrow{}v$ the overriding of the value associated to
+identifier $x$ with value $v$ in the appropriate field of $\Delta$,
+$\Delta\cup{}(x,v)$ to note the addition the mapping from identifier
+$x$ to value $v$ in the appropriate field of $\Delta$, that assuming
+$x\notin\Delta$. We write $x\in\mathcal{F}(\Delta)$, where
+$\mathcal{F}$ is a field of $\Delta$, when more precision is needed
+regarding the lookup of identifier $x$ in the record $\Delta$.
 
 Let $\Sigma(\Delta)$ be the set of design states for a given
 elaborated design $\Delta$.  A design state of $\Delta$ is defined as
@@ -143,9 +147,9 @@ follows:
     $id_c\in{}component\mhyphen{}id$ is the component identifier
     passed to function $\mathcal{C}$.
   \item
-    $\mathcal{E}\subseteq{}signal\mhyphen{}id\cup{}component\mhyphen{}id$,
-    the set of signal and component instance ids that generated an
-    event at the current simulation cycle.
+    $\mathcal{E}\subseteq{}signal\mhyphen{}id\sqcup{}component\mhyphen{}id$,
+    the set of signal and component instance identifiers that
+    generated an event at the considered design state.
   \end{itemize}
 \end{definition}
 
@@ -153,13 +157,15 @@ The $signal\mhyphen{}id$ subset is the disjoint union of
 $input\mhyphen{}id$, $output\mhyphen{}id$ and
 $declared\mhyphen{}signal\mhyphen{}id$. We use $\sigma(id)$ to denote
 the value associated to an identifier in the signal store
-$\mathcal{S}$ or in the component store $\mathcal{C}$
-fields. $id\in_\mathcal{E}\sigma$ states that an identifier belongs to
-the event set $\mathcal{E}$, whereas $id\in\sigma$ states that an
+$\mathcal{S}$ or in the component store $\mathcal{C}$ fields. When
+there is no ambiguity, we write $id\in\sigma$ to state that an
 identifier is defined in either the signal store $\mathcal{S}$ or the
-component store $\mathcal{C}$ fields. $\sigma\cup_\mathcal{E}\{id\}$
-denotes a new design state, in all points similar to $\sigma$ but
-enriched with the identifier $id$ in its events set.
+component store $\mathcal{C}$ fields. Also, when there is no
+ambiguity, we rely on indices or exponents to qualify the signal
+store, the component instance store and the set of events of a given
+design state. For instance, $\mathcal{C}_0$ denotes the component
+instance store of design state $\sigma_0$, and $\mathcal{E}'$ denotes
+the set of events of design state $\sigma'$, etc.
 
 \begin{notation}[No events design state]
   For a given \hvhdl{} design $d$, a design store $\mathcal{D}$, and
