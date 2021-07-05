@@ -13,42 +13,79 @@ As in \cite{VanTassel1995}, we define the \emph{design} construct in
 the $\mathcal{H}$-VHDL's abstract syntax which has no equivalent in
 the concrete syntax of VHDL.
 
-\begin{tabular}{lcl}
-  design & ::= & \texttt{design} id$_e$ id$_a$ gens ports sigs cs \\
-  gens & ::= & gdecl* \\
-  ports & ::= & pdecl* \\
-  sigs & ::= & sdecl* \\
-\end{tabular}
+\begin{table*}[!h]
+  \begin{tabular}{lcl}
+    design & ::= & \texttt{design} id$_e$ id$_a$ gens ports sigs cs \\
+    gens & ::= & gdecl* \\
+    ports & ::= & pdecl* \\
+    sigs & ::= & sdecl* \\
+  \end{tabular}
+\end{table*}
 
-
-
-\subsection{Generic constant, port and internal signal declaration.}
-\label{subsec:ent-decl}
-
+% \subsection{Generic constant, port and internal signal declaration.}
+% \label{subsec:ent-decl}
+\begin{table*}[!h]
 \begin{tabular}{lcl}
   gdecl & ::= & \texttt{(}id\texttt{,} $\tau$\texttt{,} e\texttt{)} \\
   pdecl & ::= & \texttt{(}(\vhdle|in||\vhdle|out|)\texttt{,} id\texttt{,} $\tau$\texttt{)}\\
   sdecl & ::= & \texttt{(}id, $\tau$\texttt{)} \\
 \end{tabular}
+\end{table*}
 
-\subsection{Concurrent statements.}
+In the above entry, $\mathrm{id}_e$ indicates the entity identifier
+and $\mathrm{id}_a$ the architecture identifier of the declared
+design. The $\mathrm{gens}$ entry corresponds to the generic clause,
+i.e. the declaration list for the generic constants of the design. A
+generic constant is declared via the \textrm{gdecl} entry; it generic
+constant declaration is a triplet composed of a generic constant
+identifier, a type indication and an expression denoting its default
+value. The ports entry holds the declaration of the input and output
+ports of the design. A port declaration (i.e. the pdecl entry) is a
+tripletcomposed of a port type, i.e. \texttt{in} or \texttt{out}, a
+port identifier, and a type indication. The sigs entry is the list
+declaring the internal signals of the design. An internal signal
+declaration entry (i.e. sdecl) is a couple composed of a signal
+identifier and a type indication. The cs entry represents the
+concurrent statements composing the behavior of the design.
+
+\subsection{Concurrent statements}
 \label{subsec:conc-stmt}
 
+\begin{table*}[!h]
 \begin{tabular}{lcl}
   cs & ::= & psstmt | cistmt | cs \texttt{||} cs | \texttt{null} \\
 \end{tabular}
+\end{table*}
+In \hvhdl{}, two kinds of concurrent statements are available to
+describe the behavior of a design: process statements, represented by
+the psstmt entry, and component instantiation statements, represented
+by the cistmt entry. Concurrent statements are composable through the
+\texttt{||} operator. We add the \texttt{null} statement to help
+represent empty behaviors.
 
-\subsubsection{Process statement.}
+\subsubsection{Process statement}
 
+\begin{table*}[!h]
 \begin{tabular}{lcl}
   psstmt & ::= & \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,}  ss\texttt{)} \\
   sl & ::= & id$^{*}$ \\
   vars & ::= & vdecl* \\
   vdecl & ::= & \texttt{(}id\texttt{,} $\tau$\texttt{)} \\
 \end{tabular}
+\end{table*}
 
-\subsubsection{Component instantiation statement.}
+A process statement declares a sensitivity, i.e. the sl entry, which
+is a list of signal identifiers. In order to be well-formed, the
+signals of a sensitivity list must be either internal signals or input
+ports of the design. The process possibly declares a set internal
+variables, i.e. the vars entry. A variable declaration entry is a
+couple composed of a variable identifier and a type indication. The ss
+entry represents the sequence of statements composing the body of the
+process, i.e. the part that will be executed during the simulation.
 
+\subsubsection{Component instantiation statement}
+
+\begin{table*}[!h]
 \begin{tabular}{lcl}
   cistmt & ::= & \vhdle|comp| \texttt{(}id$_c$\texttt{,} id$_e$\texttt{,} gmap\texttt{,} ipmap\texttt{,} opmap\texttt{)} \\
   gmap & ::= & assoc$_g^{*}$ \\
@@ -58,13 +95,40 @@ the concrete syntax of VHDL.
   assoc$_{ip}$ & ::= & \texttt{(}name\texttt{,}e\texttt{)} \\
   assoc$_{op}$ & ::= & \texttt{(}id\texttt{,}(name|\vhdle|open|)\texttt{)}|\texttt{(}id\texttt{(}e\texttt{)}\texttt{,}name\texttt{)}\\
 \end{tabular}
+\end{table*}
 
-\subsection{Sequential statement.}
+The identifier $\mathrm{id}_c$ represents the name of component
+instance. Identifier $\mathrm{id}_e$ points out the name of the
+design, i.e. the entity identifier, being instantiated here. The gmap
+entry describes the list of associations between generic constant
+identifiers and expressions. The ipmap entry is the list of
+associations between input port identifiers (or indexed identifiers)
+and expressions. The opmap entry is the list of associations between
+output port identifiers (or indexed identifiers) and signal names, or
+the \texttt{open} keyword. Associating the \texttt{open} keyword with
+an output port identifier in an output port pmap indicates that the
+port is not connected.
 
+\subsection{Sequential statements}
+
+\begin{table*}[!h]
 \begin{tabular}{lcl}
   ss & ::= & name $\mathtt{\Leftarrow}$ e | name \texttt{:=} e | \texttt{if} \texttt{(}e\texttt{)} ss [ss] | \texttt{for (}id\texttt{,}e\texttt{,}e\texttt{)} ss \\
      & &  | \texttt{falling} ss | \texttt{rising} ss | \texttt{rst} ss ss' | ss\texttt{;} ss | \texttt{null} \\
 \end{tabular}
+\end{table*}
+
+The ss entry defines the sequential statements that compose the body
+of processes. The signal assignment statement is represented with the
+$\Leftarrow$ operator; the variable assignment statement with the
+$\mathtt{:=}$ operator. Among the control flow statements, the
+\texttt{falling} statement (resp. \texttt{rising} ss) declares a block
+of sequential statements to be executed only at the falling edge
+(resp. rising edge) of the clock signal (see
+Section~\ref{sec:clk-phases-rules}). Also, the \texttt{rst} statement
+declares two blocks, the first one must be executed during the
+initialization phase of the simulation; otherwise, the second one is
+executed (see Section~\ref{sec:init-rules}).
 
 \subsection{Expressions, names and types. }
 \label{sec:expr-names}
@@ -83,9 +147,72 @@ the concrete syntax of VHDL.
   \end{tabular}
 \end{table}
 
-Under the expression entry, the natural non-terminal represents the
-set of natural numbers ($\mathbb{N}$). The id non-terminal represents
-the set of identifiers.
+The expression entry declares a set of operators over Boolean
+expressions, and natural numbers expressions.  The natural
+non-terminal represents the set of natural numbers ($\mathbb{N}$). The
+id non-terminal represents the set of identifiers, comparable to the
+set of strings, or any infinitly enumerable set. In what follows,
+identifiers will be enclosed in double quotes at the time of their
+declaration, and they will appear without double quotes when used in
+expressions.
+
+\subsection{Examples of \hvhdl{} abstract syntax}
+\label{sec:abs-syntax-examples}
+
+Listing~\ref{lst:t-design-decl-part-abss} gives the translation in
+abstract \hvhdl{} syntax of the declarative part of the transition
+design presented in Listings~\ref{lst:trans-design-entity} and
+\ref{lst:trans-design-arch} in concrete VHDL syntax.
+
+\begin{lstlisting}[language=VHDL,label={lst:t-design-decl-part-abss},
+caption={[The transition design's declarative parts in abstract
+  \hvhdl{} syntax.]The transition design's declarative parts in
+  abstract \hvhdl{}
+  syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+design "transition" "transition_architecture"
+  -- Generic clause
+  (("transition_type", natural(0, 2), 0), 
+   ("input_arcs_number", natural(0, NATMAX), 1), 
+   ("conditions_number", natural(0, NATMAX), 1),
+   ("maximal_time_counter", natural(0, NATMAX), 1))
+
+  -- Port clause
+  ((in, "input_conditions", array(boolean, 0, conditions_number$-$1)),
+   (in, "time_A_value", natural(0, maximal_time_counter)),
+   (in, "time_B_value", natural(0, maximal_time_counter)),
+   (in, "input_arcs_valid", array(boolean, 0, input_arcs_number$-$1)),
+   (in, "reinit_time", array(boolean, 0, input_arcs_number$-$1)),
+   (in, "priority_authorizations", array(boolean, 0, input_arcs_number$-$1)),
+   (out, "fired", boolean))
+
+  -- Internal signals
+  (("s_condition_combination", boolean),
+   ("s_enabled", boolean),
+   #\dots#
+   ("s_time_counter", natural(0, maximal_time_counter)))
+
+  -- Concurrent statements
+  cs
+\end{lstlisting}
+
+In Listing~\ref{lst:t-design-decl-part-abss}, the type indication of
+the ``\texttt{transition\_type}'' generic constant has been
+transformed from the \texttt{temporal_t} enumeration type to the
+\texttt{natural(0,2)} type. The \texttt{temporal_t} enumeration type,
+defined through the three values \texttt{\{NOT\_TEMPORAL,
+  TEMPORAL\_A\_A, TEMPORAL\_A\_B\}}, is naturally transformed into a
+natural range. This transformation is only valid because the
+\texttt{temporal_t} type is only defined and used in the transition
+design which has a static behavior. Also, the \texttt{std_logic} type
+defined in the VHDL Std Logic 1164 library \cite{STDLOGIC} is
+transformed into the Boolean type, and the \texttt{std_logic_vector}
+is transformed into the array of Booleans type. This transformation is
+valid because, in the transition and place designs and also in the
+generated designs, we are only referring to the values '0' and '1'
+among all the values enumerated by the \texttt{std_logic} type (see
+\cite[p. 2]{STDLOGIC})
+
 
 %%% Local Variables:
 %%% mode: latex

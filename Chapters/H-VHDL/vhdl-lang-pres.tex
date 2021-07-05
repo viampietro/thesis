@@ -68,12 +68,12 @@ entity transition is
   port(
     clock                   : in std_logic;
     reset_n                 : in std_logic;
-    input_conditions        : in std_logic_vector(conditions_number-1 downto 0);
+    input_conditions        : in std_logic_vector(conditions_number$-$1 downto 0);
     time_A_value            : in natural range 0 to maximal_time_counter;
     time_B_value            : in natural range 0 to maximal_time_counter;
-    input_arcs_valid        : in std_logic_vector(input_arcs_number-1 downto 0);
-    reinit_time             : in std_logic_vector(input_arcs_number-1 downto 0);
-    priority_authorizations : in std_logic_vector(input_arcs_number-1 downto 0);
+    input_arcs_valid        : in std_logic_vector(input_arcs_number$-$1 downto 0);
+    reinit_time             : in std_logic_vector(input_arcs_number$-$1 downto 0);
+    priority_authorizations : in std_logic_vector(input_arcs_number$-$1 downto 0);
     fired                   : out std_logic 
     );
 end transition;
@@ -153,7 +153,7 @@ begin
   begin
     v_internal_condition := '1';
     
-    for i in 0 to conditions_number - 1 loop #\label{line:for-begin}#
+    for i in 0 to conditions_number $-$ 1 loop #\label{line:for-begin}#
       v_internal_condition := v_internal_condition and input_conditions(i);
     end loop; #\label{line:for-end}#
     
