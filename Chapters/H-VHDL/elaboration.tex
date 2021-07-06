@@ -51,10 +51,10 @@ definition of a global design declaration environment called a
   \hilecop{}-generated designs (i.e, resulting from the transformation
   of a SITPN into an \hvhdl{} design), a particular design store
   $\mathcal{D}_\mathcal{H}$ is defined. Design store
-  $\mathcal{D}_\mathcal{H}$ holds the description of the
-  \texttt{place} and \texttt{transition} designs which full definition
-  in abstract syntax are given in Appendices~\ref{app:place-design}
-  and \ref{app:trans-design}.
+  $\mathcal{D}_\mathcal{H}$ holds the description of the place and
+  transition designs which full definition in abstract syntax are
+  given in Appendices~\ref{app:place-design} and
+  \ref{app:trans-design}.
 \end{definition}
 
 At the beginning of the elaboration phase, a function
@@ -97,34 +97,131 @@ the same manner, $\sigma_\emptyset$ denotes an empty design state.
 The effect of the $egens$, $eports$, $esigs$ and $ebeh$ that
 respectively deal with the elaboration of the generic constants, the
 ports, the architecture declarative part and the behavioral part of
-the design, are explicited in the following sections. To give an
-example, the elaborated design and the default design state resulting
-of the elaboration of the transition design for the given dimensioning
-function $\mathcal{M}$ are the presented through the following
-$\Delta$ and $\sigma_e$ structures:
+the design, are explicited in the following sections.
 
-\begin{tabular}{@{}ll@{}}
-  $\mathcal{M}:=\{$ & $("transition\_type", 2), ("input\_conditions",2)$ \\
-                    & $("input\_arcs\_number", 4)\}$ \\
-\end{tabular}
+\paragraph{Example of a design elaboration}
 
+The elaborated design and the default design state resulting of the
+elaboration of the transition design for a given dimensioning function
+$\mathcal{M}$ are the presented through the $\Delta$ and $\sigma_e$
+structures in Figures~\ref{fig:elab-version-of-t} and
+\ref{fig:default-state-of-t}.  The value of the dimensioning function
+$\mathcal{M}$ is the set of couples $\{("transition\_type", 2),$
+$("conditions\_number",2),$ $("input\_arcs\_number", 4)\}$.
+
+\begin{figure}[H]
+  \centering
 \begin{tabular}{@{}rl@{}}
   $\Delta:=\{$ & \\
                & \begin{tabular}{@{}ll@{}}
-                   $Gens := \{$ & $("transition\_type", (\mathtt{nat}(0,2), 2)),$ \\
-                                & $("input\_conditions", (\mathtt{nat}(0,\mathtt{NATMAX}), 2))$ \\
-                                & $("input\_arcs\_number", (\mathtt{nat}(0,\mathtt{NATMAX}), 4))$ \\
-                                & $("maximal\_time\_counter", (\mathtt{nat}(0,\mathtt{NATMAX}), 1))\},$ \\
+                   $Gens := $ & $\{("transition\_type", (nat(0,2), 2)),$ \\
+                              & $("conditions\_numbers", (nat(0,\mathtt{NATMAX}), 2))$ \\
+                              & $("input\_arcs\_number", (nat(0,\mathtt{NATMAX}), 4))$ \\
+                              & $("maximal\_time\_counter", (nat(0,\mathtt{NATMAX}), 1))\},$ \\
                  \end{tabular} \\
                & \\
                & \begin{tabular}{@{}ll@{}}
-                   $Ports := \{$ & $("transition\_type", (\mathtt{nat}(0,2), 2)),$ \\
-                                 & $("input\_conditions", (\mathtt{nat}(0,\mathtt{NATMAX}), 2))$ \\
-                                 & $("input\_arcs\_number", (\mathtt{nat}(0,\mathtt{NATMAX}), 4))$ \\
-                                 & $("maximal\_time\_counter", (\mathtt{nat}(0,\mathtt{NATMAX}), 1))\},$ \\
+                   $Ins :=$ & $\{("input\_conditions", array(bool,0,1)),$ \\
+                            & $("time\_A\_value", nat(0,1)),$ \\
+                            & $("time\_B\_value", nat(0,1)),$ \\
+                            & $("input\_arcs\_valid", array(bool,0,3)),$ \\
+                            & $("reinit\_time", array(bool,0,3)),$ \\
+                            & $("priority\_authorizations", array(bool,0,3))\},$ \\
                  \end{tabular} \\
+               & \\
+               & \begin{tabular}{@{}ll@{}}
+                   $Outs :=$ & $\{("fired", bool)\}$ \\
+                 \end{tabular} \\
+               & \begin{tabular}{@{}ll@{}}
+                   $Sigs :=$ & $\{("s\_condition\_combination", bool),$ \\
+                             & $("s\_enabled", bool),$ \\
+                             & $("s\_time\_counter", nat(0,1))\},$ \\
+                 \end{tabular} \\
+               & \\
+               & \begin{tabular}{@{}ll@{}}
+                   $Ps :=$ & $\{("condition\_evaluation", \{("v\_internal\_condition", (bool, \bot))\}),$ \\
+                           & $("firable", \emptyset)\}$ \\
+                 \end{tabular} \\
+               & \\
+               & $Comps := \emptyset$ \\
   $\}$ &  \\
 \end{tabular}
+
+\caption[An elaborated version of the transition design.]{An
+  elaborated version of the transition design; the sub-environments of
+  the elaborated design structure (i.e. functions) are represented by
+  sets of couples.}
+\label{fig:elab-version-of-t}
+\end{figure}
+
+For the sake on conciseness, Figure~\ref{fig:elab-version-of-t} gives
+only a part of the $Sigs$ and $Ps$ sub-environments resulting from the
+elaboration of the transition design.  In
+Figure~\ref{fig:elab-version-of-t}, the generic constants of the
+transition design received their values from the dimensioning function
+$\mathcal{M}$. As it is not defined in the domain of $\mathcal{M}$,
+the \texttt{maximal_time_counter} generic constant is associated with
+its default value. Also, all the types associated with ports and
+internal signals have been \emph{resolved}; i.e. the expressions
+qualifying the upper and lower bound of ranges, in the definition of
+natural range types or array types, have been evaluated. Due to the
+presence of generic constant identifiers in the expression of type
+ranges, we had to wait for the generic constants to receive a
+value. For example, \texttt{array(boolean, 0, conditions_number-1)} is
+the type indication associated with the \texttt{input_conditions}
+input port. The dimensioning function sets the value of the
+\texttt{conditions_number} generic constant to 2. After elaboration,
+the type indication \texttt{array(boolean, 0, conditions_number-1)} is
+transformed into the type $array(bool, 0, 1)$. The $Ps$
+sub-environment associates each process identifier to a local
+environment, i.e. a mapping between local variables declared in the
+process and a couple $(type, value)$. In a local environment, each
+local variable has an initial value corresponding to the implicit
+default value of its type (see
+Section~\ref{subsec:implicit-default-v}). The behavior of the
+transition design is set with processes only. Thus, the $Comps$
+sub-environment, that maps each component instance identifier to an
+elaborated design structure, is empty.
+
+Figure~\ref{fig:default-state-of-t} shows the default design state
+$\sigma_e$ of $\Delta$. In the default design state of an elaborated
+design, the value of all signals corresponds to the implicit default
+value of signals (i.e. deduced from the type of signals, see
+Section~\ref{subsec:implicit-default-v}).
+
+\begin{figure}[H]
+  \centering
+\begin{tabular}{@{}rl@{}}
+  $\sigma_e:=\{$ & \\
+                 & \begin{tabular}{@{}ll@{}}
+                     $\mathcal{S} :=$ & $\{("input\_conditions", (\bot,\bot)),$ \\
+                                      & $("time\_A\_value", 0),$ \\
+                                      & $("time\_B\_value", 0),$ \\
+                                      & $("input\_arcs\_valid", (\bot,\bot,\bot)),$ \\
+                                      & $("reinit\_time", (\bot,\bot,\bot)),$ \\
+                                      & $("priority\_authorizations", (\bot,\bot,\bot)),$ \\
+                                      & $("fired", \bot),$ \\
+                                      & $("s\_condition\_combination", \bot),$ \\
+                                      & $("s\_enabled", \bot),$ \\
+                                      & $("s\_time\_counter", 0)\},$ \\
+                   \end{tabular} \\
+                 & \\
+                 & $\mathcal{C}:=\emptyset$ \\
+                 & $\mathcal{E}:=\emptyset$ \\
+  $\}$ &  \\
+\end{tabular}
+
+\caption[An example of default design state for the transition
+design.]{The default design state associated built during the
+  elaboration phase along the elaborated design of
+  Figure~\ref{fig:elab-version-of-t}. We use values enclosed between
+  parentheses to represent array values.}
+\label{fig:default-state-of-t}
+\end{figure}
+
+The component store of design state $\sigma_e$ is empty as there are
+no component instances defining the behavior of the transition design.
+Also, the set of events of a default design state is always empty.
 
 \subsection{Generic clause elaboration}
 \label{subsubsec:gen-clause-elab}
@@ -276,9 +373,24 @@ the dimensioning function $\mathcal{M}$.
 \subsection{Port clause elaboration}
 \label{subsubsec:port-clause-elab}
 
+The $eports$ relation elaborates each port declaration defined in a
+design's port clause. For each port declaration, the $eports$ relation
+transforms the port's type indication into a semantic type and
+retrieves the implicit default value of this type. Then, the $eports$
+relation adds the binding between the input (resp. output) port
+identifier and its type to the $Ins$ (resp. $Outs$) sub-environment of
+the elaborated design structure $\Delta$. It also adds the binding
+between the input (resp. output) port identifier and its implicit
+default value to the default design state $\sigma$.
+
 \begin{premises}
-  The $defaultv$ relation yields the implicit \emph{default} value for
-  a given type.
+  \begin{itemize}
+  \item The $etype$ relation associates a type indication to its
+    corresponding semantic type and checks its well-formedness (see
+    Section~\ref{subsec:type-elab}).
+  \item The $defaultv$ relation associates a given semantic type to
+    its implicit \emph{default} value.
+\end{itemize}
 \end{premises}
 
 % Elaborate IN port.
@@ -359,14 +471,24 @@ the dimensioning function $\mathcal{M}$.
     % Conclusion
     \infer[template={\inserttext}]2{
       $\Delta,\sigma\vdash
-      \mathrm{pdecl}\mathtt{;}~\mathrm{ports}
+      \mathrm{pdecl}\mathtt{,}~\mathrm{ports}
       \xrightarrow{eports}\Delta'',\sigma''$
     }
   \end{prooftree}
 \end{figure}
 
-\subsection{Architecture declarative part elaboration.}
+\subsection{Architecture declarative part elaboration}
 \label{subsubsec:arch-decl-part-elab}
+
+The $esigs$ relation elaborates each internal signal declaration
+defined in the declarative part of a design's archtecture. For each
+signal declaration, the $esigs$ relation transforms the signal's type
+indication into a semantic type and retrieves the implicit default
+value of this type. Then, the $esigs$ relation adds the binding
+between the signal identifier and its type to the $Sigs$
+sub-environment of the elaborated design structure $\Delta$. It also
+adds the binding between the signal identifier and its implicit
+default value to the default design state $\sigma$.
 
 % Signal elaboration rule.
 
@@ -416,17 +538,17 @@ the dimensioning function $\mathcal{M}$.
     % Conclusion
     \infer[template={\inserttext}]2{
       $\Delta,\sigma\vdash
-      \mathrm{sdecl}\mathtt{;}~\mathrm{sigs}
+      \mathrm{sdecl}\mathtt{,}~\mathrm{sigs}
       \xrightarrow{esigs}\Delta'',\sigma''$
     }
   \end{prooftree}
 \end{figure}
 
-\subsection{Type indication elaboration.}
+\subsection{Type indication elaboration}
 \label{subsec:type-elab}
 
 The $etype$ relation checks the well-formedness of a type indication
-$\tau$, and transforms it into a semantical $type$ (as defined in
+$\tau$, and transforms it into a semantic $type$ (as defined in
 Table~\ref{tab:type-value}). A type indication $\tau$ is well-formed
 in the context $\Delta$ if $\tau$ denotes the \texttt{boolean} keyword
 or the \texttt{nat} or \texttt{array} keywords with a
@@ -445,7 +567,7 @@ or the \texttt{nat} or \texttt{array} keywords with a
           $\Delta\vdash$
           $~\mathtt{boolean}$
           $\xrightarrow{etype}$
-          $\mathtt{bool}$
+          $bool$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -467,7 +589,7 @@ or the \texttt{nat} or \texttt{array} keywords with a
           $\Delta\vdash$
           $~\mathtt{natural}(\mathrm{e},\mathrm{e}')$
           $\xrightarrow{etype}$
-          $\mathtt{nat}(v,v')$
+          $nat(v,v')$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -491,15 +613,15 @@ or the \texttt{nat} or \texttt{array} keywords with a
           $\Delta\vdash
           ~\mathtt{array(}\tau,\mathrm{e},\mathrm{e'}\mathtt{)}$
           $\xrightarrow{etype}$
-          $\mathtt{array(}T,v,v'\mathtt{)}$
+          $array(T,v,v')$
         }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
 
 The $econstr$ relation checks that a constraint is well-formed and
-evaluates the constraint bounds.  A constraint $c$ is well-formed in
-the context $\Delta$ if:
+evaluates the constraint bounds.  A constraint is well-formed in the
+context $\Delta$ if:
 
 \begin{itemize}[label=-]
 \item its bounds are globally static expressions \cite[p.36]{VHDL2000}
@@ -512,12 +634,16 @@ the context $\Delta$ if:
   As the VHDL language reference stays unclear about the type of range
   and index constraints \cite[p.33]{VHDL2000}, we add the restriction
   that range and index constraints must have bounds of the
-  \texttt{nat} type (i.e, value of type $nat$).
+  \texttt{nat} type (i.e. value of type $nat$).
 \end{remark}
 
 \begin{premises}
-  $SE_g$ states that an expression is \emph{globally} static (see
-  \ref{subsubsec:glob-static}).
+  \begin{itemize}
+  \item The $\in_c$ relation states that a given value conforms to a
+    given type (see Section~\ref{subsec:type-elab}).
+  \item The $SE_g$ relation states that an expression is
+    \emph{globally} static (see Section~\ref{subsubsec:glob-static}).
+\end{itemize}
 \end{premises}
 
 \begin{table}[H]
@@ -531,12 +657,12 @@ the context $\Delta$ if:
         \infer[no rule]1{\Delta\vdash{}SE_g(\mathrm{e}')}
         
         % Evaluates e and e'
-        \hypo{\Delta,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}\xrightarrow{e}v}
-        \infer[no rule]1{\Delta,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}'\xrightarrow{e}v'}
+        \hypo{\Delta&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta&\vdash\mathrm{e}'\xrightarrow{e}v'}
 
         % Well-typed e and e'.
-        \hypo{v&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
-        \infer[no rule]1{v'&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        \hypo{v&\in_c{}nat(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c{}nat(0,\mathtt{NATMAX})}
         
         % Conclusion
         \infer[template={\inserttext}]3
@@ -561,11 +687,10 @@ the definition of well-formedness differs slightly from the general
 definition. A type indication $\tau$ associated to a generic constant
 declaration is well-formed if $\tau$ denotes the \texttt{boolean}
 keyword, or the \texttt{nat} keyword with a \emph{well-formed}
-constraint.
-
-The $etype_g$ relation is specially defined to check the
-well-formedness of a subtype indication associated with a generic
-constant declaration.
+constraint. A generic constant can not be associated with a composite
+type indication (i.e. an array type).  The $etype_g$ relation is
+specially defined to check the well-formedness of a type indication
+associated with a generic constant declaration.
 
 \begin{table}[H]
   \centering
@@ -579,7 +704,7 @@ constant declaration.
           $\vdash$
           $~\mathtt{boolean}$
           $\xrightarrow{etype}$
-          $\mathtt{bool}$
+          $bool$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -601,7 +726,7 @@ constant declaration.
           $\vdash$
           $~\mathtt{natural}(\mathrm{e},\mathrm{e}')$
           $\xrightarrow{etype}$
-          $\mathtt{nat}(v,v')$
+          $nat(v,v')$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -610,9 +735,7 @@ constant declaration.
 The $econstr_g$ relation checks that a \emph{generic} constraint (i.e,
 a constraint appearing in a type indication associated with a generic
 constant declaration) is well-formed and evaluates the constraint
-bounds.
-
-A \emph{generic} constraint $c$ is well-formed if:
+bounds.  A \emph{generic} constraint is well-formed if:
 
 \begin{itemize}[label=-]
 \item its bounds are locally static expressions \cite[p.36]{VHDL2000} of
@@ -632,12 +755,12 @@ A \emph{generic} constraint $c$ is well-formed if:
         \infer[no rule]1{&SE_l(\mathrm{e}')}
         
         % Evaluates e and e'
-        \hypo{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}\xrightarrow{e}v}
-        \infer[no rule]1{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset&\vdash\mathrm{e}'\xrightarrow{e}v'}
+        \hypo{&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{&\vdash\mathrm{e}'\xrightarrow{e}v'}
 
         % Well-typed v and v'.
-        \hypo{v&\in_c\mathtt{nat}(0,\mathtt{NATMAX})}
-        \infer[no rule]1{v'&\in_c\mathtt{nat}(0,\mathtt{NATMAX})}
+        \hypo{v&\in_c{}nat(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c{}nat(0,\mathtt{NATMAX})}
         
         % Conclusion
         \infer[template={\inserttext}]3
@@ -659,6 +782,9 @@ A \emph{generic} constraint $c$ is well-formed if:
 
 \subsection{Behavior elaboration}
 \label{subsec:beh-elab}
+
+The $ebeh$ relation elaborates each concurrent statement composing the
+behavioral part of a design's architecture.
 
 \subsubsection{Elaboration of concurrent statements}
 \label{subsubsec:conc-elab}
@@ -703,14 +829,21 @@ performed in a sequential manner.
   \end{tabular}
 \end{table}
 
-\subsubsection{Process elaboration.}
+\subsubsection{Process statement elaboration}
 \label{subsubsec:ps-elab}
+
+To elaborate a process statement, the $ebeh$ relation associates the
+process identifier to a local environment. The $ebeh$ builds the local
+environment from the process's local variable declaration list (see
+the $evars$ relation). The $ebeh$ relation also checks that the
+sequential statements composing the body of the process are well-typed
+(see the $valid_{ss}$ relation in Section~\ref{subsubsec:valid-ss}).
 
 % Well-typed process with sensitivity list and vars.
 
 \begin{premises}
-  $\mathtt{valid}_{ss}$ states that a sequential statement is
-  well-typed.
+  The $\mathtt{valid}_{ss}$ relation states that a sequential
+  statement is well-typed.
 \end{premises}
 
 \begin{sideconds}
@@ -748,7 +881,7 @@ performed in a sequential manner.
   \end{prooftree}
 \end{figure}
 
-\subsubsection{Process declarative part elaboration.}
+\subsubsection{Process declarative part elaboration}
 \label{subsubsec:ps-decl-elab}
 
 The $evars$ relation builds a local environment out of a process
@@ -769,7 +902,12 @@ declarative part.
     
     % Conclusion
     \infer[template={\inserttext}]2
-    [$\mathrm{id}\notin{}\Lambda,\mathrm{id}\notin\Delta$]
+    [
+    \begin{tabular}{@{}l@{}}
+      $\mathrm{id}\notin{}\Lambda$ \\
+      $\mathrm{id}\notin\Delta$ \\
+    \end{tabular}
+    ]
     {
       $\Delta,\Lambda\vdash$
       $~(\mathrm{id},\tau)$
@@ -801,16 +939,28 @@ declarative part.
   \end{prooftree}
 \end{figure}
 
-\subsubsection{Component instantiation elaboration.}
+\subsubsection{Component instantiation statement elaboration}
 \label{subsubsec:comp-inst-elab}
+
+To elaborate a component instantiation statement, the $ebeh$ relation
+first builds a dimensioning function $\mathcal{M}$ out of the
+component instance generic map. Then, the design associated with the
+entity identifier declared by the component instance (i.e. $id_e$) is
+looked up and retrieved from the design store $\mathcal{D}$.  Then,
+the $ebeh$ relation appeals to the $elab$ relation to build an
+elaborated version $\Delta_c$ and a default design state $\delta_c$
+for the retrieved design given the specific dimensioning function
+$\mathcal{M}$. Consequently, the definition of the $elab$ and $ebeh$
+relations is mutually recursive.
 
 \begin{premises}
   \begin{itemize}[label=-]
-  \item The $emapg$ relation binds a generic map to a function
-    $\mathcal{M}\in{}id\nrightarrow{}value$ (see definition below).
+  \item The $emapg$ relation builds a function
+    $\mathcal{M}\in{}generic\mhyphen{}id\nrightarrow{}value$ out of a
+    generic map (see definition below).
   \item \texttt{valid}$_{ipm}$ (resp. \texttt{valid}$_{opm}$) states
-    that a in port map (resp. out port map) is valid, i.e well-formed
-    and well-typed (see \ref{subsec:valid-pm}).
+    that an input port map (resp. output port map) is valid, i.e
+    well-formed and well-typed (see Section~\ref{subsec:valid-pm}).
   \end{itemize}
 \end{premises}
 
@@ -829,18 +979,17 @@ declarative part.
         \hypo{\mathcal{M}_\emptyset&\vdash\mathrm{gmap}\xrightarrow{emapg}\mathcal{M}}
         
         % Elaborates design.
-        \hypo{
-          \mathcal{D},\mathcal{M}&\vdash
+        \infer[no rule]1{ \mathcal{D},\mathcal{M}&\vdash
           \mathcal{D}(\mathrm{id}_e)\xrightarrow{elab}\Delta_c,\sigma_c}
 
         % Checks in port map validity.
-        \hypo{\Delta,\Delta_c,\sigma&\vdash\mathtt{valid}_{ipm}(\mathrm{ipmap})}
+        \hypo{\Delta,\Delta_c,\sigma&\vdash\mathtt{valid}_{ipm}(\mathrm{i})}
 
         % Checks out port map validity.
-        \infer[no rule]1{\Delta,\Delta_c&\vdash\mathtt{valid}_{opm}(\mathrm{opmap})}
+        \infer[no rule]1{\Delta,\Delta_c&\vdash\mathtt{valid}_{opm}(\mathrm{o})}
         
         % Conclusion
-        \infer[template={\inserttext}]3
+        \infer[template={\inserttext}]2
         [{
           \renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
@@ -852,7 +1001,7 @@ declarative part.
         }]
         {
           $\mathcal{D},\Delta,\sigma\vdash$
-          \vhdle|comp| $(\mathrm{id}_c, \mathrm{id}_e, \mathrm{gmap}, \mathrm{ipmap}, \mathrm{opmap})\xrightarrow{ebeh}$
+          \vhdle|comp| $(\mathrm{id}_c, \mathrm{id}_e, \mathrm{g}, \mathrm{i}, \mathrm{o})\xrightarrow{ebeh}$
           $\Delta\cup{}(id_c,\Delta_c),$
           $\sigma\cup{}(id_c,\sigma_c)$
         }
@@ -860,13 +1009,13 @@ declarative part.
   \end{tabular}
 \end{table}
 
-A port map is a mapping between signals coming from an embedding
-design ($\Delta$) and ports of an internal component instance
-($\Delta_c$). The formal part of an port map entry (i.e, left of the
-arrow) belongs to the internal component, whereas the actual part
-(i.e, right of the arrow) refers to the embedding design. Therefore,
-we need both $\Delta$ and $\Delta_c$ to verify if a port map is
-well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
+A port map is a mapping between expressions and signals coming from an
+embedding design ($\Delta$) and ports of an internal component
+instance ($\Delta_c$). The formal part of an port map entry (i.e, left
+of the arrow) belongs to the internal component, whereas the actual
+part (i.e, right of the arrow) refers to the embedding
+design. Therefore, we need both $\Delta$ and $\Delta_c$ to verify if a
+port map is well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
 
 \begin{remark}[Valid generic map]
   Note that we are not checking the validity of the generic map.  In
@@ -881,6 +1030,9 @@ well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
 
 % Case formal part is not partial.
 
+The $emap_g$ relation builds a dimensioning function out of generic
+map. 
+
 \begin{table}[H]
   \begin{tabular}{@{}l}
     {\fontsize{8}{11}\selectfont\textsc{AssocGElab}} \\
@@ -891,7 +1043,7 @@ well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
         \hypo{SE_l(\mathrm{e})}
         
         % Evaluates e.
-        \hypo{\Delta_\emptyset,\sigma_\emptyset,\Lambda_\emptyset\vdash\mathrm{e}\xrightarrow{e}v}
+        \hypo{\vdash\mathrm{e}\xrightarrow{e}v}
 
         % Conclusion
         \infer[template={\inserttext}]2
@@ -926,13 +1078,101 @@ well-typed leveraging the $\mathtt{valid}_{pm}$ predicate.
   \end{tabular}
 \end{table}
 
-An $\mathrm{assoc}_g$ entry doesn't allow indexed id in its formal
-part, due to the restriction of generic constants to scalar types.
-Note that this restriction is not imposed by the VHDL language
-reference; it is our stance towards a simplification of the VHDL
-semantics.
+An $\mathrm{assoc}_g$ entry doesn't allow indexed identifiers in its
+formal part, due to the restriction of generic constants to scalar
+types.  Note that this restriction is not imposed by the LRM. We
+choose to adopt this simplification of the VHDL syntax since the case
+of generic constants with composite types is never encountered in the
+\hilecop{} VHDL programs.
 
-\subsection{Implicit default value.}
+\paragraph{Example of component instantiation statement elaboration}
+
+The following rule describes the elaboration of the transition
+component instance presented Listing~\ref{lst:t-design-ci-abss}. Here,
+$\Delta$ represents the (partially-built) elaborated version of the
+design that contains the transition component instance $id_t$ in the
+definition of its behavior. $\sigma$ represents the (partially-built)
+default state of the same embedding design. Due to the size of
+definitions, the generic map (resp. the input port and output port
+map) of the transition component instance $id_t$ is aliased by
+$\mathrm{g}_t$ (resp. $\mathrm{i}_t$ and $\mathrm{o}_t$).
+
+\begin{figure}[H]
+  {\begin{prooftree}
+      
+      % Creates mapping and elaborates gens.
+      \hypo{\mathcal{M}_\emptyset&\vdash\mathrm{g}_t\xrightarrow{emapg}\mathcal{M}}
+      
+      % Elaborates design.
+      \infer[no rule]1{ \mathcal{D},\mathcal{M}&\vdash
+        \mathcal{D}_\mathcal{H}("transition")\xrightarrow{elab}\Delta_t,\sigma_t}
+
+      % Checks in port map validity.
+      \hypo{\Delta,\Delta_t,\sigma&\vdash\mathtt{valid}_{ipm}(\mathrm{i}_t)}
+
+      % Checks out port map validity.
+      \infer[no rule]1{\Delta,\Delta_c&\vdash\mathtt{valid}_{opm}(\mathrm{o}_t)}
+      
+      % Conclusion
+      \infer[template={\inserttext}]2
+      [{
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{@{}l}
+          $\mathrm{id}_t\notin\Delta$, $\mathrm{id}_t\notin\sigma$ \\
+          $"transition"\in{}\mathcal{D}_\mathcal{H}$\\
+          % $\mathcal{D}(\mathrm{id}_e)=$ \vhdlep{7}{9}|design| id$_{ce}$ id$_{ca}$ gens ports sigs cs \\
+          $\mathcal{M}\subseteq{}Gens(\Delta_t)$ \\
+        \end{tabular}
+      }]
+      {
+        $\mathcal{D}_\mathcal{H},\Delta,\sigma\vdash$
+        \vhdle|comp| $(\mathrm{id}_t, "transition", \mathrm{g}_t, \mathrm{i}_t, \mathrm{o}_t)\xrightarrow{ebeh}$
+        $\Delta\cup{}(id_t,\Delta_t),$
+        $\sigma\cup{}(id_t,\sigma_t)$
+      }
+    \end{prooftree}}
+\end{figure}
+
+First, a dimensioning function $\mathcal{M}$ is built out of the
+generic map of $id_t$. Figure~\ref{fig:dimen-fun-of-idt} shows the
+resulting dimensioning function.
+
+\begin{figure}[H]
+  \centering
+  $\mathcal{M}:=\{("transition\_type",0),$
+  $("input\_arcs\_number", 1),$
+  $("conditions\_number", 1),$
+  $("maximal\_time\_counter",1)\}$
+  \caption[An example of dimensioning function built from a component
+  instance generic map.]{The dimensioning function obtained from the
+    transition component instance $id_t$ defined in
+    Listing~\ref{lst:t-design-ci-abss}.}
+\label{fig:dimen-fun-of-idt}
+\end{figure}
+
+Then, the transition design declaration is retrieved from the design
+store $\mathcal{D}_\mathcal{H}$, which is the specific \hilecop{}
+design store. By definition, the \hilecop{} design store maps the
+transition and the place identifiers to their corresponding design
+declaration (the side condition
+$"transition"\in\mathcal{D}_\mathcal{H}$ is true). Thus,
+$\mathcal{D}_\mathcal{H}("transition")$ returns \texttt{design}
+"transition" "transition\_architecture" $gens_t$ $ports_t$ $sigs_t$
+$cs_t$ where $gens_t$, $ports_t$, $sigs_t$ and $cs_t$ correspond to
+the declarative and behavioral parts of the transition design. Then,
+the $elab$ relation builds the elaborated design $\Delta_t$ and the
+default design state $\sigma_t$ from the transition design declaration
+given the dimensioning function $\mathcal{M}$. We do not detail the
+content of $\Delta_t$ and $\sigma_t$ as it is really close to the
+content of Figures~\ref{fig:elab-version-of-t} and
+\ref{fig:default-state-of-t}. Finally, a mapping between the
+identifier $id_t$ and $\Delta_t$ is added to the $Comps$
+sub-environment of $\Delta$, i.e. $\Delta\cup{}(id_t,\Delta_t)$. Also,
+a mapping between the identifier $id_t$ and the default state
+$\sigma_t$ is added to the component store $\mathcal{C}$ of $\sigma$,
+i.e. $\sigma\cup{}(id_t,\sigma_t)$.
+
+\subsection{Implicit default value}
 \label{subsec:implicit-default-v}
 
 According to the VHDL reference, when declaring a port, a signal or a
@@ -996,8 +1236,8 @@ determines the default value for a given type.
 \end{table}
 
 $\mathtt{create\_array}(size,T,v)$ creates an array of size $size$,
-containing element of type $T$, where each element is initialized with
-the value $v$.
+containing elements of type $T$, where each element is initialized
+with the value $v$.
 
 %%% Local Variables:
 %%% mode: latex

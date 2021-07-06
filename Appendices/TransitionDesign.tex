@@ -39,7 +39,7 @@ begin
   begin
     v_internal_condition := '1';
     
-    for i in 0 to conditions_number - 1 loop
+    for i in 0 to conditions_number $-$ 1 loop
       v_internal_condition := v_internal_condition and input_conditions(i);
     end loop;
     
@@ -51,7 +51,7 @@ begin
   begin
     v_internal_enabled := '1';
     
-    for i in 0 to input_arcs_number - 1 loop
+    for i in 0 to input_arcs_number $-$ 1 loop
       v_internal_enabled := v_internal_enabled and input_arcs_valid(i);
     end loop;
     
@@ -63,7 +63,7 @@ begin
   begin
     v_internal_reinit_time_counter := '0';
 
-    for i in 0 to input_arcs_number - 1 loop
+    for i in 0 to input_arcs_number $-$ 1 loop
       v_internal_reinit_time_counter := v_internal_reinit_time_counter or reinit_time(i);
     end loop;
     
@@ -126,7 +126,7 @@ begin
   begin
     v_priority_combination := '1';
     
-    for i in 0 to input_arcs_number - 1 loop
+    for i in 0 to input_arcs_number $-$ 1 loop
       v_priority_combination := v_priority_combination and priority_authorizations(i);
     end loop;
     

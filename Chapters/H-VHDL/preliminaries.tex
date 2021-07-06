@@ -59,11 +59,11 @@ $ElDesign(d,\mathcal{D})$ be the set of the elaborated designs for a
 given \hvhdl{} design $d$ and a design store $\mathcal{D}$. An
 elaborated design is a composite environment built out of multiple
 sub-environments.  Each sub-environment is a table, represented as a
-partial function, mapping identifiers of a certain category of
-constructs (e.g, input port identifiers) to their declaration
-information (e.g, type indication for input ports). We represent an
-elaborated design as a record where the fields are the
-sub-environments. An elaborated design is defined as follows:
+function, mapping identifiers of a certain category of constructs
+(e.g, input port identifiers) to their declaration information (e.g,
+type indication for input ports). We represent an elaborated design as
+a record where the fields are the sub-environments. An elaborated
+design is defined as follows:
 
 \begin{definition}[Elaborated Design] For a given \hvhdl{} design
   $d\in{}design$ s.t. $d=$ \vhdle|design| \textit{$id_{e}$ $id_{a}$
@@ -73,24 +73,24 @@ sub-environments. An elaborated design is defined as follows:
   ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
   \begin{itemize}[label=$-$]
   \item
-    $Gens\in{}generic\mhyphen{}id\nrightarrow{}(type\times{}value)$
+    $Gens\in{}generic\mhyphen{}id\rightarrow{}(type\times{}value)$
     where
     $generic\mhyphen{}id=\{id~\vert~(id,\tau,e)\in{}gens\}$,
     is the partial function yielding the type and the value of generic
     constants.
-  \item $Ins\in{}input\mhyphen{}id\nrightarrow{}type$ where
+  \item $Ins\in{}input\mhyphen{}id\rightarrow{}type$ where
     $input\mhyphen{}id=\{id~\vert~(\mathtt{in},id,\tau)\in{}ports\}$,
     is the partial function yielding the type of input ports.
-  \item $Outs\in{}output\mhyphen{}id\nrightarrow{}type$ where
+  \item $Outs\in{}output\mhyphen{}id\rightarrow{}type$ where
     $output\mhyphen{}id=\{id~\vert~(\mathtt{out},id,\tau)\in{}ports\}$,
     the partial function yielding the type of output ports.
   \item
-    $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\nrightarrow{}type$
+    $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\rightarrow{}type$
     where
     $declared\mhyphen{}signal\mhyphen{}id=\{id~\vert~(id,\tau)\in{}sigs\}$,
     the partial function yelding the type of declared signals.
   \item
-    $Ps\in{}process\mhyphen{}id\nrightarrow{}(variable\mhyphen{}id(id_p)\nrightarrow{}(type\times{}value))$
+    $Ps\in{}process\mhyphen{}id\rightarrow{}(variable\mhyphen{}id(id_p)\rightarrow{}(type\times{}value))$
     where\\
     $process\mhyphen{}id=\{id_p~\vert~\mathtt{process}(id_p,sl,vars,ss)\in{}behavior\}$,
     the partial function associating processes to their local
@@ -101,7 +101,7 @@ sub-environments. An elaborated design is defined as follows:
     (represented by $id_p$) passed as the first argument of the $Ps$
     function.
   \item
-    $Comps\in{}component\mhyphen{}id\nrightarrow{}ElDesign(d_e,\mathcal{D})$,
+    $Comps\in{}component\mhyphen{}id\rightarrow{}ElDesign(d_e,\mathcal{D})$,
     where\\
     $component\mhyphen{}id=\{id_c~\vert~\mathtt{comp}(id_c,id_e,gm,ipm,opm)\in{}behavior\}$,
     the partial function mapping component instance ids to their

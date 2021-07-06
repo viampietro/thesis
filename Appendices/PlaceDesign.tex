@@ -33,18 +33,15 @@ architecture place_architecture of place is
   signal s_output_token_sum      : local_weight_t; 
 
 begin
-
   
   input_tokens_sum : process(input_arcs_weights, input_transitions_fired)
     variable v_internal_input_token_sum : local_weight_t;
   begin
     v_internal_input_token_sum := 0;
     
-    for i in 0 to input_arcs_number - 1 loop
+    for i in 0 to input_arcs_number $-$ 1 loop
       if (input_transitions_fired(i) = '1') then
-        
         v_internal_input_token_sum := v_internal_input_token_sum + input_arcs_weights(i);
-        
       end if;
     end loop;
     
@@ -56,7 +53,7 @@ begin
   begin
     v_internal_output_token_sum := 0;
     
-    for i in 0 to output_arcs_number - 1 loop
+    for i in 0 to output_arcs_number $-$ 1 loop
       if (output_transitions_fired(i) = '1' and output_arcs_types(i) = arc_t(BASIC)) then
         v_internal_output_token_sum := v_internal_output_token_sum + output_arcs_weights(i); 
       end if;
@@ -70,7 +67,7 @@ begin
     if (reset_n = '0') then
       s_marking <= initial_marking;
     elsif rising_edge(clock) then
-      s_marking <= s_marking + (s_input_token_sum - s_output_token_sum);
+      s_marking <= s_marking + (s_input_token_sum $-$ s_output_token_sum);
     end if;
   end process marking;
 
@@ -85,7 +82,7 @@ begin
   
   marking_validation_evaluation : process(output_arcs_types, output_arcs_weights, s_marking)
   begin
-    for i in 0 to output_arcs_number - 1 loop
+    for i in 0 to output_arcs_number $-$ 1 loop
       if ( ( ((output_arcs_types(i) = arc_t(BASIC)) or (output_arcs_types(i) = arc_t(TEST))) and (s_marking >= output_arcs_weights(i)) )
            or ( (output_arcs_types(i) = arc_t(INHIBITOR)) and (s_marking < output_arcs_weights(i)) ) )
       then
@@ -101,7 +98,7 @@ begin
   begin
     v_saved_output_token_sum := 0;
     
-    for i in 0 to output_arcs_number - 1 loop
+    for i in 0 to output_arcs_number $-$ 1 loop
       if (s_marking >= v_saved_output_token_sum + output_arcs_weights(i)) then
         priority_authorizations(i) <= '1';
       else
@@ -120,9 +117,9 @@ begin
     if (reset_n = '0') then
       reinit_transitions_time <= (others => '0');
     elsif rising_edge(clock) then
-      for i in 0 to output_arcs_number - 1 loop
+      for i in 0 to output_arcs_number $-$ 1 loop
         if ( (((output_arcs_types(i) = arc_t(BASIC)) or (output_arcs_types(i) = arc_t(TEST)))
-                and (s_marking - s_output_token_sum < output_arcs_weights(i))
+                and (s_marking $-$ s_output_token_sum < output_arcs_weights(i))
                 and (s_output_token_sum > 0))
              or output_transitions_fired(i) = '1' )
         then

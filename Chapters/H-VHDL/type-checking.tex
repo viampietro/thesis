@@ -1,5 +1,8 @@
-\subsection{Typing relation.}
+\subsection{Typing relation}
 \label{subsec:constr-satif-rel}
+
+The typing relation $\in_c$ checks that a given value conforms to a
+given type.
 
 \begin{table}[H]
   \centering
@@ -43,12 +46,13 @@
   \end{tabular}
 \end{table}
 
-\subsection{Static expressions.}
+\subsection{Static expressions}
 \label{subsubsec:wfe}
 
-Static expressions are either locally static or globally static.
+Static expressions are either locally static or globally static; the
+LRM defines locally static and globally static expressions as follows.
 
-\subsubsection{Locally static expressions.}
+\subsubsection{Locally static expressions}
 \label{subsubsec:loc-static}
 
 An expression is \emph{locally} static if:
@@ -58,6 +62,9 @@ An expression is \emph{locally} static if:
   (i.e, \texttt{natural} or \texttt{boolean}).
 \item It is a \emph{literal} of a scalar type.
 \end{itemize}
+
+The $SE_l$ relation, defined by the following rules, states that an
+expression is locally static.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -114,11 +121,10 @@ An expression is \emph{locally} static if:
   \end{tabular}
 \end{table}
 
-\subsubsection{Globally static expressions.}
+\subsubsection{Globally static expressions}
 \label{subsubsec:glob-static}
 
-An expression is \emph{globally} static in the context $\Delta$
-if:
+An expression is \emph{globally} static in the context $\Delta$ if:
 
 \begin{itemize}[label=-]
 \item It is a generic constant.
@@ -126,6 +132,9 @@ if:
   expressions.
 \item It is a locally static expression.
 \end{itemize}
+
+The $SE_g$ relation, defined by the following rules, checks that an
+expression is globally static is a given context $\Delta$.
 
 \begin{table}[H]
   \centering
@@ -176,12 +185,12 @@ if:
   \end{tabular}
 \end{table}
 
-\subsection{Valid port map.}
+\subsection{Valid port map}
 \label{subsec:valid-pm}
 
-The $\mathtt{valid}_{ipm}$ predicate states that an \emph{in} port map
-is valid in the context $\Delta,\Delta_c$, where $\Delta$ is
-the embedding design structure and $\Delta_c$ denotes the component
+The $\mathtt{valid}_{ipm}$ predicate states that an \emph{input} port
+map is valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
+embedding design structure and $\Delta_c$ denotes the component
 instance owner of the port map, if:
 
 \begin{itemize}[label=-]
