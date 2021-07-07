@@ -11,7 +11,7 @@ given type.
     {\begin{prooftree}
 
         % Conclusion.
-        \infer0[$b\in{}\mathbb{B}$]{b\in_c\mathtt{bool}}
+        \infer0[$b\in{}\mathbb{B}$]{b\in_c{}bool}
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
@@ -19,7 +19,7 @@ given type.
     {\begin{prooftree}
 
         % Conclusion.
-        \infer0[$n\in{}[l,u]$]{n\in_c\mathtt{nat}(l,u)}
+        \infer0[$n\in{}[l,u]$]{n\in_c{}nat(l,u)}
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
@@ -41,7 +41,7 @@ given type.
           \Delta\vdash
           \mathtt{(}v_1,\dots,v_n\mathtt{)}
           \in_c
-          \mathtt{array(}T,l,u\mathtt{)}}
+          array(T,l,u)}
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
@@ -188,26 +188,28 @@ expression is globally static is a given context $\Delta$.
 \subsection{Valid port map}
 \label{subsec:valid-pm}
 
+\paragraph{Valid input port map}
+
 The $\mathtt{valid}_{ipm}$ predicate states that an \emph{input} port
 map is valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
 embedding design structure and $\Delta_c$ denotes the component
-instance owner of the port map, if:
+instance owner of the input port map, if:
 
 \begin{itemize}[label=-]
 \item All ports defined in $\Delta_c$ are exactly mapped once in the
-  portmap.
-\item For each port map entry, the formal and actual part are of the
-  same type.
+  input port map.
+\item For each input port map entry, the formal and actual part are of
+  the same type.
 \end{itemize}
 
 \begin{premises}
   \begin{itemize}[label=-]
   \item $list_{ipm}$ builds a set
-    $\mathcal{L}\subset{}id\sqcup{}(id\times\mathbb{N})$ out of
-    the port map association list.
-  \item $\mathtt{check}_{pm}$ checks the validity of a port map based on
-    the corresponding port list and the set built by the $list_{ipm}$
-    relation.
+    $\mathcal{L}\subset{}id\sqcup{}(id\times\mathbb{N})$ out of the
+    input port map.
+  \item $\mathtt{check}_{pm}$ checks the validity of a port map based
+    on the corresponding port list (here, the input ports of
+    $\Delta_c$) and the set built by the $list_{ipm}$ relation.
   \end{itemize}
 \end{premises}
 
@@ -232,9 +234,22 @@ instance owner of the port map, if:
   \end{tabular}
 \end{table}
 
+The $list_{ipm}$ relation builds a set of identifiers and couples
+(identifier, natural number) collected from the identifiers and
+indexed identifiers in the formal part (i.e. at the left of the
+association arrow) of an input port map. It also checks, for each
+association of the input port map, that the expression of the actual
+part are is of the same type than the identifier or indexed identifier
+of the formal part.
+
 \begin{sideconds}
-  $\mathrm{id}_p\notin\mathcal{L}$ checks that the port identifier
-  $id_p$ is not already mapped.
+  \begin{itemize}
+  \item $\mathrm{id}_f\in{}Ins(\Delta_c)$ checks that the identifier
+    $\mathrm{id}_f$ is an input port identifier of $\Delta_c$.
+  \item $\mathrm{id}_f\notin\mathcal{L}$ checks that the port
+    identifier $id_f$ is not already mapped, i.e. it is not already
+    referenced in the $\mathcal{L}$ set.
+  \end{itemize}
 \end{sideconds}
 
 \begin{table}[H]
@@ -253,28 +268,28 @@ instance owner of the port map, if:
         2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
-            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_p\in{}Ins(\Delta_c)$\\
-            $\Delta_c(\mathrm{id}_p)=T$ \\
+            $\mathrm{id}_f\notin\mathcal{L}$, $\mathrm{id}_f\in{}Ins(\Delta_c)$\\
+            $\Delta_c(\mathrm{id}_f)=T$ \\
           \end{tabular}
         }]
         {
           $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
-          ~\mathrm{id}_p\Rightarrow\mathrm{e}~$
-          $\xrightarrow{list_{ipm}}\mathcal{L}\cup{}\{id_p\}$
+          ~\mathrm{id}_f\Rightarrow\mathrm{e}~$
+          $\xrightarrow{list_{ipm}}\mathcal{L}\cup{}\{id_f\}$
         }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
 
 \begin{premises}
-  $v_i\in_c\mathtt{nat}(n,m)$ checks that the index value stays in the
+  $v_i\in_c{}nat(n,m)$ checks that the index value stays in the
   array bounds.
 \end{premises}
 
 \begin{sideconds}
-  $\mathrm{id}_p\notin\mathcal{L}$ and
-  $(\mathrm{id}_p, v_i)\notin\mathcal{L}$ checks that neither the port
-  identifier $id_p$ nor the couple port identifier $id_p$ and index
+  $\mathrm{id}_f\notin\mathcal{L}$ and
+  $(\mathrm{id}_f, v_i)\notin\mathcal{L}$ checks that neither the port
+  identifier $id_f$ nor the couple port identifier $id_f$ and index
   $v_i$ are already mapped.
 \end{sideconds}
 
@@ -292,7 +307,7 @@ instance owner of the port map, if:
     \infer[no rule]1{\Delta,\sigma&\vdash\mathrm{e}\xrightarrow{e}v}
     
     % Evaluates e.
-    \hypo{v_i&\in_c\mathtt{nat}(n,m)}
+    \hypo{v_i&\in_c{}nat(n,m)}
     \infer[no rule]1{v&\in_c{}T}
     
     
@@ -301,16 +316,16 @@ instance owner of the port map, if:
     3
     [{\renewcommand{\arraystretch}{1.5}
       \begin{tabular}{l}
-        $\mathrm{id}_p\notin\mathcal{L}$, $(\mathrm{id}_p, v_i)\notin\mathcal{L}$ \\
-        $\mathrm{id}_p\in{}Ins(\Delta_c)$ \\
-        $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+        $\mathrm{id}_f\notin\mathcal{L}$, $(\mathrm{id}_f, v_i)\notin\mathcal{L}$ \\
+        $\mathrm{id}_f\in{}Ins(\Delta_c)$ \\
+        $\Delta_c(\mathrm{id}_f)=array(T,n,m)$ \\
       \end{tabular}
     }]
     {
       $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
-      ~\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{e}~$
+      ~\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{e}~$
       $\xrightarrow{list_{ipm}}
-      \mathcal{L}\cup\{~(id_p,v_i)~\}$
+      \mathcal{L}\cup\{~(id_f,v_i)~\}$
     }
   \end{prooftree}
 \end{figure}
@@ -348,11 +363,87 @@ all indexes of the array range and $id$, the port id.
 \begin{equation*}
   \begin{split}
     \mathtt{check}_{pm}(Ports,\mathcal{L})\equiv
-    \forall{}\mathrm{id}_p\in\mathtt{dom}(Ports),~\mathrm{id}_p\in\mathcal{L}~\lor~&
-    (Ports(\mathrm{id}_p)=\mathtt{array}(T,n,m)\land\\
-    & \forall{}i\in[n,m],~(\mathrm{id}_p,i)\in\mathcal{L}) \\
+    \forall{}\mathrm{id}_f\in\mathtt{dom}(Ports),~\mathrm{id}_f\in\mathcal{L}~\lor~&
+    (Ports(\mathrm{id}_f)=\mathtt{array}(T,n,m)\land\\
+    & \forall{}i\in[n,m],~(\mathrm{id}_f,i)\in\mathcal{L}) \\
   \end{split}
 \end{equation*}
+
+\paragraph{Example of input port map validity checking}
+
+We use the component instantiation statement of
+Listing~\ref{lst:t-design-ci-abss} to illustrate the use of the
+$valid_{ipm}$ predicate. The following rule demonstrates the validity
+checking on the input port map of component instance $id_t$.
+
+\begin{figure}[H]
+  \centering
+  {\begin{prooftree}
+
+      % Lists formal parts.
+      \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}_\emptyset\vdash{\fontsize{9}{11}\selectfont
+        \begin{tabular}{@{}l@{}}          
+          (\texttt{time_A_value} $\Rightarrow{}0$, \\
+          \texttt{time_B_value} $\Rightarrow{}0$, \\
+          \texttt{input_conditions(0)} $\Rightarrow{}id_0$, \\
+          \texttt{input_arcs_valid(0)} $\Rightarrow{}id_1$, \\
+          \texttt{priority_authorizations(0)} $\Rightarrow\top$, \\
+          \texttt{reinit_time(0)} $\Rightarrow{}id_2$) \\
+        \end{tabular}}\xrightarrow{list_{ipm}}\mathcal{L}}
+
+      % Well-formed port map.
+      \hypo{\mathtt{check}_{pm}(Ins(\Delta_c),\mathcal{L})}
+      
+      % Conclusion
+      \infer[template={\inserttext}]2
+      {
+        $\Delta,\Delta_c,\sigma\vdash\mathtt{valid}_{ipm}\Bigg($
+        {\fontsize{9}{11}\selectfont
+        \begin{tabular}{@{}l@{}}          
+          (\texttt{time_A_value} $\Rightarrow{}0$, \\
+          \texttt{time_B_value} $\Rightarrow{}0$, \\
+          \texttt{input_conditions(0)} $\Rightarrow{}id_0$, \\
+          \texttt{input_arcs_valid(0)} $\Rightarrow{}id_1$, \\
+          \texttt{priority_authorizations(0)} $\Rightarrow\top$, \\
+          \texttt{reinit_time(0)} $\Rightarrow{}id_2$) \\
+        \end{tabular}}
+        $\Bigg)$
+      }
+    \end{prooftree}}
+\end{figure}
+
+\noindent{}where:
+
+\begin{itemize}
+\item $Ins(\Delta_c):=$
+\begin{tabular}{@{}l@{}}
+$\{("time\_A\_value", nat(0,1)),$ \\
+$("time\_B\_value", nat(0,1)),$ \\
+$("input\_conditions", array(bool,0,0)),$ \\
+$("input\_arcs\_valid", array(bool,0,0)),$ \\
+$("priority\_authorizations", array(bool,0,0)),$ \\
+$("reinit\_time", array(bool,0,0))\}$ \\
+\end{tabular}
+
+In $Ins(\Delta_c)$, the types of input ports are deduced from the
+generic map of the transition component instance $id_t$.
+\item $\mathcal{L}:=$
+  \begin{tabular}{@{}l@{}}
+  $\{"time\_A\_value",$ $"time\_B\_value",$ \\
+  $("input\_conditions", 0),$ $("input\_arcs\_valid", 0),$ \\
+  $("priority\_authorizations", 0),$ $("reinit\_time", 0)\}$ \\
+  \end{tabular}
+\end{itemize}
+
+We add that the identifiers $id_0$, $id_1$ and $id_2$ are referenced
+as internal signals of the Boolean type in the embedding elaborated
+design $\Delta$, i.e:
+
+\begin{itemize}
+\item $Sigs(\Delta):=\{(id_0, bool),$ $(id_1,bool),$ $(id_2,bool)\}$
+\end{itemize}
+
+\paragraph{Valid output port map}
 
 The $\mathtt{valid}_{opm}$ predicate states that an \emph{output} port
 map is valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
@@ -360,11 +451,13 @@ embedding design structure and $\Delta_c$ denotes the component
 instance owner of the port map, if:
 
 \begin{itemize}[label=-]
-\item An output port appears at most once in the output port map.
-\item Two different output ports cannot be connected to the same
-  signal.
-\item For each port map entry, the formal and the actual part are of
-  the exact same type (i.e, in the sense of the Leibniz equality).
+\item An output port identifier appears at most once in the output
+  port map.
+\item Two different output port identifiers cannot be connected to the
+  same signal.
+\item For each output port map entry, the formal and the actual part
+  are of the exact same type (i.e, in the sense of the Leibniz
+  equality).
 \end{itemize}
 
 We allow partially connected output port map; i.e, an output port map
@@ -405,14 +498,19 @@ output ports are \texttt{open} by default.
 
 \begin{sideconds}
   \begin{itemize}[label=-]
-  \item $\mathrm{id}_p\notin\mathcal{L}$ checks that the port
-    identifier $\mathrm{id}_p$ is not already mapped (i.e, is not
-    already in the formal part of the port map).
-  \item $\mathrm{id}_s\notin\mathcal{L}_{ids}$ checks that the signal
-    identifier $\mathrm{id}_s$ is not already mapped (i.e, is not
-    already in the actual part of the port map).
-  \item $\Delta_c(\mathrm{id}_p)=\Delta(\mathrm{id}_s)=T$ checks that
-    $\mathrm{id}_p$ and $\mathrm{id}_s$ are exactly of the same type.
+  \item $\mathrm{id}_f\notin\mathcal{L}$ checks that the port
+    identifier $\mathrm{id}_f$ is not already mapped (i.e, is not
+    already used in the formal part of a port map entry).
+  \item $\mathrm{id}_a\notin\mathcal{L}_{ids}$ checks that the signal
+    identifier $\mathrm{id}_a$ is not already mapped (i.e, is not
+    already used in the actual part of a port map entry).
+  \item $\mathrm{id}_f\in{}Outs(\Delta_c)$ checks that $id_f$ is an
+    output port identifier of $\Delta_c$.
+  \item $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ checks that
+    $\mathrm{id}_a$ is either an output port or an internal signal
+    identifier of $\Delta$.
+  \item $\Delta_c(\mathrm{id}_f)=\Delta(\mathrm{id}_a)=T$ checks that
+    $\mathrm{id}_f$ and $\mathrm{id}_a$ are exactly of the same type.
   \end{itemize}
 \end{sideconds}
 
@@ -426,27 +524,27 @@ output ports are \texttt{open} by default.
         0
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
-            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_s\notin\mathcal{L}_{ids}$ \\
-            $\mathrm{id}_p\in{}Outs(\Delta_c)$\\
-            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta_c(\mathrm{id}_p)=\Delta(\mathrm{id}_s)=T$ \\
+            $\mathrm{id}_f\notin\mathcal{L}$, $\mathrm{id}_a\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_f\in{}Outs(\Delta_c)$\\
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_f)=\Delta(\mathrm{id}_a)=T$ \\
           \end{tabular}
         }] {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-          $\mathrm{id}_p\Rightarrow\mathrm{id}_s$
+          $\mathrm{id}_f\Rightarrow\mathrm{id}_a$
           $\xrightarrow{list_{opm}}$
-          $\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}\cup{}\{id_s\}$ }
+          $\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}\cup{}\{id_a\}$ }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
 
 \begin{sideconds}
-  $Outs_c(\mathrm{id}_p)=T$ and
-  $Sigs(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ checks that the
-  type of $\mathrm{id}_p$ and the type of the elements of
-  $\mathrm{id}_s$ are the same. Note that $\mathrm{id_s}$ must denote
-  an array as $\mathrm{id}_p$ is mapped to one of $\mathrm{id}_s$'s
-  partial.
+  $Outs_c(\mathrm{id}_f)=T$ and
+  $Sigs(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ checks that the
+  type of $\mathrm{id}_f$ and the type of the elements of
+  $\mathrm{id}_a$ are the same. Note that $\mathrm{id_a}$ must denote
+  an array as $\mathrm{id}_f$ is mapped to one subelement of
+  $\mathrm{id}_a$.
 \end{sideconds}
 
 \begin{table}[H]
@@ -461,25 +559,25 @@ output ports are \texttt{open} by default.
         \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i (in array bounds).
-        \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        \hypo{v_i\in_c{}nat(n,m)}
         
         % Conclusion
         \infer[template={\inserttext}]    
         3
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
-            $\mathrm{id}_p\notin\mathcal{L}$, $\mathrm{id}_s$, $(\mathrm{id}_s, v_i)\notin\mathcal{L}_{ids}$ \\
-            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
-            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta_c(\mathrm{id}_p)=T$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\mathrm{id}_f\notin\mathcal{L}$, $\mathrm{id}_a$, $(\mathrm{id}_a, v_i)\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_f)=T$ \\
+            $\Delta(\mathrm{id}_a)=array(T,n,m)$ \\
           \end{tabular}
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
-          ~\mathrm{id}_p\Rightarrow\mathrm{id}_s(\mathrm{e}_i)~$
+          ~\mathrm{id}_f\Rightarrow\mathrm{id}_a(\mathrm{e}_i)~$
           $\xrightarrow{list_{opm}}
-          \mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}\cup{}\{(id_s,v_i)\}$
+          \mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}\cup{}\{(id_a,v_i)\}$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -495,14 +593,14 @@ output ports are \texttt{open} by default.
         0
         [{
           \begin{tabular}{l}
-            $\mathrm{id}_p\notin\mathcal{L}$ \\
-            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_f\notin\mathcal{L}$ \\
+            $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
           \end{tabular}
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
-          ~\mathrm{id}_p\Rightarrow\mathtt{open}~$
-          $\xrightarrow{list_{opm}}\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}$
+          ~\mathrm{id}_f\Rightarrow\mathtt{open}~$
+          $\xrightarrow{list_{opm}}\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -521,23 +619,23 @@ output ports are \texttt{open} by default.
 %         \hypo{\vdash\mathrm{e}_i\xrightarrow{expr}v_i}
 
 %         % Well-typed v_i (in array bounds).
-%         \hypo{v_i\in_c\mathtt{nat}(n,m)}
+%         \hypo{v_i\in_c{}nat(n,m)}
         
 %         % Conclusion
 %         \infer[template={\inserttext}]
 %         3
 %         [{
 %           \begin{tabular}{l}
-%             $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$ \\
-%             $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
-%             $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+%             $\mathrm{id}_f,(\mathrm{id}_f,v_i)\notin\mathcal{L}$ \\
+%             $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
+%             $\Delta_c(\mathrm{id}_f)=\mathtt{array(}T,n,m\mathtt{)}$ \\
 %           \end{tabular}
 %         }]
 %         {
 %           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-%           $\mathrm{id}_p(e_i)\Rightarrow\mathtt{open}$
+%           $\mathrm{id}_f(e_i)\Rightarrow\mathtt{open}$
 %           $\xrightarrow{list_{opm}}$
-%           $\mathcal{L}\cup{}\{id_p\},\mathcal{L}_{ids}$
+%           $\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}$
 %         }
 %       \end{prooftree}} \\
 %   \end{tabular}
@@ -546,7 +644,7 @@ output ports are \texttt{open} by default.
 \begin{remark}[Unconnected output port.]
   We forbid the case where an indexed formal part corresponding to the
   subelement of a composite output port is unconnected, i.e
-  $\mathrm{id}_p(e_i)\Rightarrow\mathtt{open}$, as it could lead to
+  $\mathrm{id}_f(e_i)\Rightarrow\mathtt{open}$, as it could lead to
   the case where some subelements of a composite output port are
   connected while others are not (error case in \cite[p.7]{VHDL2000}).
 \end{remark}
@@ -563,25 +661,25 @@ output ports are \texttt{open} by default.
         \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i (in array bounds).
-        \hypo{v_i\in_c\mathtt{nat}(n,m)}
+        \hypo{v_i\in_c{}nat(n,m)}
         
         % Conclusion
         \infer[template={\inserttext}]
         3
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
-            $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$, $\mathrm{id}_s\notin\mathcal{L}_{ids}$ \\
-            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
-            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
-            $\Delta(\mathrm{id}_s)=T$ \\
+            $\mathrm{id}_f,(\mathrm{id}_f,v_i)\notin\mathcal{L}$, $\mathrm{id}_a\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_f)=array(T,n,m)$ \\
+            $\Delta(\mathrm{id}_a)=T$ \\
           \end{tabular}
         }]
         {
           $\Delta,\Delta_c,\mathcal{L}\vdash$
-          $\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{id}_s$
+          $\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{id}_a$
           $\xrightarrow{list_{opm}}$
-          $\mathcal{L}\cup\{(id_p,v_i)\},\mathcal{L}_{ids}\cup\{id_s\}$
+          $\mathcal{L}\cup\{(id_f,v_i)\},\mathcal{L}_{ids}\cup\{id_a\}$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -602,26 +700,29 @@ output ports are \texttt{open} by default.
         \infer[no rule]1{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v'_i and v_i.
-        \hypo{v'_i&\in_c\mathtt{nat}(n',m')}
-        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        \hypo{v'_i&\in_c{}nat(n',m')}
+        \infer[no rule]1{v_i&\in_c{}nat(n,m)}
         
         % Conclusion
         \infer[template={\inserttext}]
         3
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
-            $\mathrm{id}_p,(\mathrm{id}_p,v_i)\notin\mathcal{L}$, $\mathrm{id}_s,(\mathrm{id}_s,v'_i)\notin\mathcal{L}_{ids}$ \\
-            $\mathrm{id}_p\in{}Outs(\Delta_c)$ \\
-            $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta_c(\mathrm{id}_p)=\mathtt{array(}T,n,m\mathtt{)}$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n',m'\mathtt{)}$ \\ 
+            $\mathrm{id}_f,(\mathrm{id}_f,v_i)\notin\mathcal{L}$, $\mathrm{id}_a,(\mathrm{id}_a,v'_i)\notin\mathcal{L}_{ids}$ \\
+            $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
+            $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
+            $\Delta_c(\mathrm{id}_f)=array(T,n,m)$ \\
+            $\Delta(\mathrm{id}_a)=array(T,n',m')$ \\ 
           \end{tabular}
         }]
         {
           $\Delta,\Delta_c,\mathcal{L}\vdash$
-          $\mathrm{id}_p(\mathrm{e}_i)\Rightarrow\mathrm{id}_s(\mathrm{e'}_i)$
+          $\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{id}_a(\mathrm{e'}_i)$
           $\xrightarrow{list_{opm}}$
-          $\mathcal{L}\cup\{(id_p,v_i)\},\mathcal{L}_{ids}\cup\{(id_s,v'_i)\}$
+          \begin{tabular}{@{}l@{}}
+            $\mathcal{L}\cup\{(id_f,v_i)\},$ \\
+            $\mathcal{L}_{ids}\cup\{(id_a,v'_i)\}$\\
+          \end{tabular}
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -661,15 +762,100 @@ output ports are \texttt{open} by default.
   \end{tabular}
 \end{table}
 
+\paragraph{Example of output port map validity checking}
+
+To illustrate the validity checking of an output port map as performed
+by the $valid_{opm}$ predicate, we introduce in
+Listing~\ref{lst:p-design-ci-abss} the instantiation in \hvhdl{}
+abstract syntax of a place component $id_p$ in the behavior of an
+embedding design.
+
+\begin{lstlisting}[language=VHDL,label={lst:p-design-ci-abss},
+caption={[A component instantiation statement in \hvhdl{} abstract syntax (place component instance).] An example of instantiation of the place design in \hvhdl{} abstract syntax. The place component instance is named $id_p$.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+  comp ($id_p$, "place", 
+    -- Generic map
+    (input_arcs_number => 1,
+     output_arcs_number => 1,
+     maximal_marking => 1),
+    -- Input port map
+    (initial_marking => 1,
+     input_arcs_weights(0) => 1,
+     output_arcs_types(0) => 0,
+     output_arcs_weights(1) => 1,
+     input_transitions_fired(0) => $id_0$, 
+     output_transitions_fired(0) => $id_1$),
+    -- Output port map
+    (output_arcs_valid(0) => $id_2$,
+     priority_authorizations(0) => $id_3$,
+     reinit_transitions_time(0) => $id_4$,
+     marked => $id_5$);
+\end{lstlisting}
+
+The following rule describes the validity checking of the output port
+map of component $id_p$.
+
+\begin{figure}[H]
+  \centering
+  {\begin{prooftree}
+
+      % Lists formal parts.
+      \hypo{
+        \Delta,\Delta_c,\emptyset,\emptyset\vdash
+        {\fontsize{9}{11}\selectfont
+          \begin{tabular}{@{}l@{}}
+            \texttt{output_arcs_valid(0)} $\Rightarrow{}id_2$, \\
+            \texttt{priority_authorizations(0)} $\Rightarrow{}id_3$, \\
+            \texttt{reinit_transitions_time(0)} $\Rightarrow{}id_4$, \\
+            \texttt{marked} $\Rightarrow{}id_5$ \\
+          \end{tabular}}
+        \xrightarrow{list_{opm}}
+        {\fontsize{9}{11}\selectfont
+          \begin{tabular}{@{}l}
+            $\{("output\_arcs\_valid", 0),$ \\
+            $("priority\_authorizations", 0)$ \\
+            $("reinit\_transitions\_time", 0),$ \\
+            $"marked"\}$ \\
+          \end{tabular}},
+        \{id_2,id_3,id_4,id_5\}
+      }
+      
+      % Conclusion
+      \infer[template={\inserttext}]
+      1
+      {
+        $\Delta,\Delta_c\vdash\mathtt{valid}_{opm}\Bigg(${\fontsize{9}{11}\selectfont
+          \begin{tabular}{@{}l@{}}
+            \texttt{output_arcs_valid(0)} $\Rightarrow{}id_2$, \\
+            \texttt{priority_authorizations(0)} $\Rightarrow{}id_3$, \\
+            \texttt{reinit_transitions_time(0)} $\Rightarrow{}id_4$, \\
+            \texttt{marked} $\Rightarrow{}id_5$ \\
+          \end{tabular}}$\Bigg)$
+      }
+    \end{prooftree}}
+\end{figure}
+
 \subsection{Valid sequential statements.}
 \label{subsubsec:valid-ss}
 
 The $\mathtt{valid}_{ss}$ predicate states that a sequential statement
-is well-typed.
+is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \subsubsection{Well-typed signal assignment.}
 
 % Well-typed signal assignment.
+
+\begin{premises}
+  \begin{itemize}
+  \item $\Delta,\sigma,\Lambda\vdash{}e\xrightarrow{e}v$ evaluates the
+    expression assigned to signal $\mathrm{id}_s$ in the context
+    $\Delta,\sigma,\Lambda$. During the elaboration, $\sigma$
+    corresponds to the default design state, i.e. where each signal is
+    associated to its type default value.
+  \item $v\in_c{}T$ checks that the value of expression $e$ conforms
+    to the type of signal $\mathrm{id}_s$.
+  \end{itemize}
+\end{premises}
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -710,7 +896,7 @@ is well-typed.
         
         % Well-typed v and v_i.
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}nat(n,m)}
         
         % Conclusion
         \infer[template={\inserttext}]2
@@ -718,7 +904,7 @@ is well-typed.
           \renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_s)=array(T,n,m)$ \\
           \end{tabular}
         }]
         {
@@ -768,7 +954,7 @@ is well-typed.
         
         % Well-typed v and v_i.
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}nat(n,m)}
         
         % Conclusion
         \infer[template={\inserttext}]2
@@ -776,7 +962,7 @@ is well-typed.
           \renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in{}\Lambda$ \\
-            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},val)$ \\
+            $\Lambda(\mathrm{id}_v)=(array(T,n,m),val)$ \\
           \end{tabular}
         }]
         {
@@ -847,15 +1033,15 @@ is well-typed.
         \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e'}\xrightarrow{e}v'}
 
         % Well-typed v and v'.
-        \hypo{v&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
-        \infer[no rule]1{v'&\in_c{}\mathtt{nat}(0,\mathtt{NATMAX})}
+        \hypo{v&\in_c{}{}nat(0,\mathtt{NATMAX})}
+        \infer[no rule]1{v'&\in_c{}{}nat(0,\mathtt{NATMAX})}
         
         % Well-typed ss.
         \hypo{\Delta,\sigma,\Lambda'\vdash\mathtt{valid}_{ss}(\mathrm{ss})}
         
         % Conclusion
         \infer[template={\inserttext}]3
-        [$\Lambda'=\Lambda\cup(\mathrm{id}_v,(\mathtt{nat}(v,v'), v))$]
+        [$\Lambda'=\Lambda\cup(\mathrm{id}_v,({}nat(v,v'), v))$]
         {
           $\Delta,\sigma,\Lambda\vdash\mathtt{valid}_{ss}($\vhdle|for| (id$_v$, e, e') ss$)$
         }

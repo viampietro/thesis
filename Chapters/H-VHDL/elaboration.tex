@@ -50,10 +50,19 @@ definition of a global design declaration environment called a
   abstract syntax. As a prerequisite to the elaboration of
   \hilecop{}-generated designs (i.e, resulting from the transformation
   of a SITPN into an \hvhdl{} design), a particular design store
-  $\mathcal{D}_\mathcal{H}$ is defined. Design store
-  $\mathcal{D}_\mathcal{H}$ holds the description of the place and
-  transition designs which full definition in abstract syntax are
-  given in Appendices~\ref{app:place-design} and
+  $\mathcal{D}_\mathcal{H}$ is defined.  Design store
+  $\mathcal{D}_\mathcal{H}$ holds the bindinds between the transition
+  and place entity identifiers (i.e. "transition" and "place") and the
+  description of the place and transition designs:\\
+  
+  \begin{tabular}{@{}ll@{}}
+    \centering
+    $\mathcal{D}_\mathcal{H}:=$ & $\{("transition", \mathtt{design}~"transition"~"transition\_architecture"~gens_t~ports_t~sigs_t~cs_t),$ \\
+                                & $("place", \mathtt{design}~"place"~"place\_architecture"~gens_p~ports_p~sigs_p~cs_p)\}$ \\
+  \end{tabular}\\
+
+  The full definition of the place and transition designs in abstract
+  syntax are given in Appendices~\ref{app:place-design} and
   \ref{app:trans-design}.
 \end{definition}
 
@@ -843,7 +852,13 @@ sequential statements composing the body of the process are well-typed
 
 \begin{premises}
   The $\mathtt{valid}_{ss}$ relation states that a sequential
-  statement is well-typed.
+  statement is well-typed in the context
+  $\Delta,\sigma,\Lambda$. During the elaboration of a process
+  contained in the behavioral part of a design, $\Delta$ represents
+  the elaborated design structure being built, $\sigma$ is the default
+  design state being built, and $\Lambda$ is the local variable
+  environment deduced from the elaboration of the process declarative
+  part.
 \end{premises}
 
 \begin{sideconds}
@@ -1090,12 +1105,13 @@ of generic constants with composite types is never encountered in the
 The following rule describes the elaboration of the transition
 component instance presented Listing~\ref{lst:t-design-ci-abss}. Here,
 $\Delta$ represents the (partially-built) elaborated version of the
-design that contains the transition component instance $id_t$ in the
-definition of its behavior. $\sigma$ represents the (partially-built)
-default state of the same embedding design. Due to the size of
-definitions, the generic map (resp. the input port and output port
-map) of the transition component instance $id_t$ is aliased by
-$\mathrm{g}_t$ (resp. $\mathrm{i}_t$ and $\mathrm{o}_t$).
+design that contains the transition component instance $id_t$ in its
+behavior. $\sigma$ represents the (partially-built) default state of
+the same embedding design. Due to the size of definitions, the generic
+map (resp. the input port and output port map) of the transition
+component instance $id_t$ is aliased by $\mathrm{g}_t$
+(resp. $\mathrm{i}_t$ and $\mathrm{o}_t$) (see
+Listing~\ref{lst:t-design-ci-abss} for the full definitions).
 
 \begin{figure}[H]
   {\begin{prooftree}
@@ -1133,38 +1149,39 @@ $\mathrm{g}_t$ (resp. $\mathrm{i}_t$ and $\mathrm{o}_t$).
     \end{prooftree}}
 \end{figure}
 
-First, a dimensioning function $\mathcal{M}$ is built out of the
-generic map of $id_t$. Figure~\ref{fig:dimen-fun-of-idt} shows the
-resulting dimensioning function.
+\noindent{}where:
 
-\begin{figure}[H]
-  \centering
-  $\mathcal{M}:=\{("transition\_type",0),$
-  $("input\_arcs\_number", 1),$
-  $("conditions\_number", 1),$
-  $("maximal\_time\_counter",1)\}$
-  \caption[An example of dimensioning function built from a component
-  instance generic map.]{The dimensioning function obtained from the
-    transition component instance $id_t$ defined in
-    Listing~\ref{lst:t-design-ci-abss}.}
-\label{fig:dimen-fun-of-idt}
-\end{figure}
+\begin{itemize}
+\item $\mathcal{M}:=$
+  \begin{tabular}{@{}l@{}}
+    $\{("transition\_type",0),$\\
+    $("input\_arcs\_number", 1),$ \\
+    $("conditions\_number", 1),$\\
+    $("maximal\_time\_counter",1)\}$\\
+  \end{tabular}
+\item $\mathcal{D}_\mathcal{H}("transition"):=$ \texttt{design}
+  "transition" "transition\_architecture" $gens_t$ $ports_t$ $sigs_t$
+  $cs_t$
+\item $Gens(\Delta_t):=$
+  \begin{tabular}{@{}l@{}}
+    $\{("transition\_type", nat(0,2)),$ \\
+    $("input\_arcs\_number", nat(0,\mathtt{NATMAX})),$ \\
+    $("conditions\_number", nat(0,\mathtt{NATMAX})),$ \\
+    $("maximal\_time\_counter", nat(0,\mathtt{NATMAX}))\}$ \\
+  \end{tabular}
+\end{itemize}
 
 Then, the transition design declaration is retrieved from the design
 store $\mathcal{D}_\mathcal{H}$, which is the specific \hilecop{}
 design store. By definition, the \hilecop{} design store maps the
 transition and the place identifiers to their corresponding design
 declaration (the side condition
-$"transition"\in\mathcal{D}_\mathcal{H}$ is true). Thus,
-$\mathcal{D}_\mathcal{H}("transition")$ returns \texttt{design}
-"transition" "transition\_architecture" $gens_t$ $ports_t$ $sigs_t$
-$cs_t$ where $gens_t$, $ports_t$, $sigs_t$ and $cs_t$ correspond to
-the declarative and behavioral parts of the transition design. Then,
-the $elab$ relation builds the elaborated design $\Delta_t$ and the
-default design state $\sigma_t$ from the transition design declaration
-given the dimensioning function $\mathcal{M}$. We do not detail the
-content of $\Delta_t$ and $\sigma_t$ as it is really close to the
-content of Figures~\ref{fig:elab-version-of-t} and
+$"transition"\in\mathcal{D}_\mathcal{H}$ is true). Then, the $elab$
+relation builds the elaborated design $\Delta_t$ and the default
+design state $\sigma_t$ from the transition design declaration given
+the dimensioning function $\mathcal{M}$. We do not detail the content
+of $\Delta_t$ and $\sigma_t$ as it is really close to the content of
+Figures~\ref{fig:elab-version-of-t} and
 \ref{fig:default-state-of-t}. Finally, a mapping between the
 identifier $id_t$ and $\Delta_t$ is added to the $Comps$
 sub-environment of $\Delta$, i.e. $\Delta\cup{}(id_t,\Delta_t)$. Also,
@@ -1202,7 +1219,7 @@ determines the default value for a given type.
         \infer[template={\inserttext}]0
         [$n\le{}m$]
         {
-          $\mathtt{nat}(n,m)$
+          $nat(n,m)$
           $\xrightarrow{defaultv}n$
         }
       \end{prooftree}} \\
@@ -1227,7 +1244,7 @@ determines the default value for a given type.
         \end{tabular}
         ]
         {
-          $\mathtt{array}(T,n,m)$
+          $array(T,n,m)$
           $\xrightarrow{defaultv}$
           $\mathtt{create\_array}(size,T,v)$
         }
