@@ -216,11 +216,11 @@ environment
 $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
 a simulation cycle count $\tau\in\mathbb{N}$, and a simulation trace
 $\theta\in{}\mathtt{list}(\Sigma(\Delta))$, corresponding to the list
-of states yielded by design d after $\tau$ simulation cycles. Note
-that we use the pointed notation to access the behavioral part of
-design d, written d.cs. It is this part of the design that is executed
-during the simulation, and therefore is passed as a parameter of the
-initialization and simulation relations. % The states in
+of states yielded by the simulation of design d after $\tau$
+cycles. Note that we use the pointed notation to access the behavioral
+part of design d, written d.cs. It is this part of the design that is
+executed during the simulation, and therefore is passed as a parameter
+of the initialization and simulation relations. % The states in
 % $\sigma_t$ are \emph{time}-ordered, that is, the first states of the
 % list are the earliest states in the simulation history. To achieve
 % conciseness, further on a singleton trace containing the only element
@@ -252,13 +252,17 @@ initialization and simulation relations. % The states in
 \begin{itemize}[label=-]
 \item $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, the
   function yelding the values of generic constants for a given
-  top-level design, refered to as the \emph{dimensioning} function.
+  top-level design, refered to as the \emph{dimensioning}
+  function. Here, $Gens(\Delta)$ denotes the domain of $Gens(\Delta)$,
+  i.e. the set of generic constant identifiers of $\Delta$.
 \item
-  $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(ident\nrightarrow{}value)$,
+  $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
   the function yelding a mapping from primary inputs (i.e, input ports
   of the top-level design) to values at a given simulation cycle count
   (i.e, the $\mathbb{N}$ argument), and a given clock event (i.e, the
-  $Clk$ argument, where $Clk=\{\uparrow,\downarrow\}$).
+  $Clk$ argument, where $Clk=\{\uparrow,\downarrow\}$). Here,
+  $Ins(\Delta)$ denotes the domain of $Ins(\Delta)$, i.e. the set of
+  input port identifiers of $\Delta$.
 \item $\tau$, the number of simulation cycles to execute.  The value
   of $\tau$ is decremented at each clock cycle until it reaches zero
   (see Section~\ref{sec:sim-loop}).
@@ -266,6 +270,22 @@ initialization and simulation relations. % The states in
 
 \subsection{Simulation loop}
 \label{sec:sim-loop}
+
+The following rules define the \hvhdl{} simulation relation. The
+\hvhdl{} simulation relation associates the execution of a behavior
+$cs$ with a simulation trace $\theta$ in a context
+$\mathcal{D},E_p,\Delta,\tau,\sigma$. The simulation trace $\theta$ is
+the result of the execution of the design behavior $cs$ during $\tau$
+cycles. In the case where $\tau$ is equal zero (Rule~\textsc{SimEnd}),
+the execution of $cs$ returns an empty trace. In the case where $\tau$
+is greater than zero (Rule~\textsc{SimLoop}), one simulation cycle is
+performed from the starting state $\sigma$ and returns the two states:
+$\sigma'$, the state in the middle of the clock cycle, and $\sigma''$,
+the state at the end of the clock cycle. Then, the \hvhdl{} simulation
+relation calls itself recursively with a decremented cycle count
+$\tau$. The recursive call yields a trace $\theta$ which is then
+appended to the states $\sigma'$ and $\sigma''$ to form the final
+simulation trace.
 
 \begin{table}[H]
 
@@ -324,18 +344,9 @@ forward simulation rules, we need to introduce two notations.
   $f\dcap{}f'=\{~x\in\mathtt{dom}(f)\cap\mathtt{dom}(f')~|~f(x)\neq{}f'(x)~\}$.
 \end{notation}
 
-% \begin{remark}[Initialization and signal events.]
-%   In the definition of the $\dcap$ relation, adding the difference
-%   between the domain of $f'$ and $f$ is mandatory, as it permits to
-%   take into account elements that have a fresh value in $f'$.  This
-%   helps to catch events on signals that happened to have no values in
-%   a signal store $\mathcal{S}$ but have a fresh (initial) value in a
-%   resulting signal store $\mathcal{S}'$.
-% \end{remark}
-
 \begin{definition}[Input port values update]
   Given an \hvhdl{} design $d\in{}design$, a design store
-  $\mathcal{D}\in{}id\rightarrow{}design$, an elaborated design
+  $\mathcal{D}\in{}id\nrightarrow{}design$, an elaborated design
   $\Delta\in{}ElDesign(d,\mathcal{D})$, a simulation environment
   $E_p\in{}(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow(Ins(\Delta)\rightarrow{}value)$,
   let us define the relation expressing the update of the values of
@@ -348,14 +359,20 @@ forward simulation rules, we need to introduce two notations.
   $\sigma_i={<}\mathcal{S}\ocup{}E_p(\tau,clk),\mathcal{C},\mathcal{E}{>}$.
 \end{definition}
 
-The cycle relation states that the design state $\sigma''$ is the
-result of the execution of concurrent statement $cs$ over one
-simulation cycle, this starting from state $\sigma$.  As told in
-Hypothesis~\ref{hyp:stable-pi}, we update the input port values at
-each clock event. New input port values are coming from the
-environment $E_p$. The updates are made in the definitions of
-$\sigma_i$ and $\sigma'_i$. These definitions are expressed as side
-conditions.
+The \hvhdl{} simulation cycle relation is defined through the only
+Rule~\textsc{SimCyc}. It states that the design states $\sigma'$ and
+$\sigma''$ are the result of the execution of the design behavior $cs$
+over one simulation cycle, this starting from state $\sigma$. Here,
+$\sigma'$ is the state obtained in the middle of the clock cycle,
+i.e. after the rising edge phase and the first stabilization phase,
+and $\sigma''$ is the state obtained at the end of the clock cycle,
+i.e. after the falling edge phase and the second stabilization phase.
+As told in Hypothesis~\ref{hyp:stable-pi}, the update of the value of
+input ports is performed at each clock event. New input port values
+are coming from the environment $E_p$. The updates are made through
+the definitions of states $\sigma_i$ and $\sigma'_i$ which are
+qualified in the side conditions by the $\mathtt{Inject}_{\uparrow}$
+and $\mathtt{Inject}_{\downarrow}$ relations.
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{SimCyc}}
@@ -390,6 +407,12 @@ conditions.
 \subsection{Initialization rules}
 \label{sec:init-rules}
 
+The $init$ relation, defined through the only Rule~\textsc{Init},
+describes the initialization phase of the \hvhdl{} simulation
+algorithm. It produces an initial simulation state $\sigma_0$ by
+executing the design behavior $cs$ in the context
+$\mathcal{D},\Delta,\sigma$.
+
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{Init}}
   
@@ -399,46 +422,63 @@ conditions.
     \hypo{$\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{runinit}{}\sigma'$}
 
     % Stabilization phase after runinit.
-    \hypo{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}{}\sigma''$}
+    \hypo{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}{}\sigma_0$}
 
     % Conclusion.
     \infer2
     {
-      $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{init}\sigma''$
+      $\mathcal{D},\Delta,\sigma\vdash\mathrm{cs}\xrightarrow{init}\sigma_0$
     }
 
   \end{prooftree}
 \end{table}
 
-At the initialization phase, the block of sequential instructions of
-all processes is executed exactly once ($\xrightarrow{runinit}$), then
-a stabilization phase follows ($\xrightarrow{\rightsquigarrow}$). It
-is during the initialization phase that the first part of
-$\mathtt{rst}$ blocks is executed. A block (\vhdle|rst| ss ss') is
-equivalent to (\vhdle|if rst = '0' then| ss \vhdle|else| ss') where
-\texttt{rst} is a reserved signal identifier. Therefore, when
-considering a \texttt{rst} block, the $runinit$ relation executes the
-ss block; at every other moment of the simulation, the ss' block is
-executed. This mimicks the conventional proceeding of a simulation
-where the \texttt{rst} signal (for \textit{reset} signal) is set to
-false during the initialization (only during the $runinit$ phase, not
-during the stabilization phase), and then is set to true for the rest
-of the simulation.
+During the initialization phase, each process is executed exactly
+once. This is formalized by the $runinit$ relation. Then a
+stabilization phase follows, formalized by the $stabilize$ relation,
+i.e. $\xrightarrow{\rightsquigarrow}$. The initialization phase
+triggers the execution of the first part of reset blocks. A reset
+block (\vhdle|rst| ss ss') is equivalent to (\vhdle|if rst = '0' then|
+ss \vhdle|else| ss' \vhdle|end if;|).  Therefore, when considering a
+(\texttt{rst} ss ss') block, the $runinit$ relation always executes
+the ss block; at every other moment of the simulation, the ss' block
+is executed. This mimicks the conventional proceeding of a simulation
+where a \textit{reset} signal set to false triggers the initialization
+of the simulated system, and then is set to true for the rest of the
+simulation.
+
+The $runinit$ relation is defined by the Rules~\textsc{PsRunInit},
+\textsc{CompRunInit}, \textsc{ParRunInit} and
+\textsc{NullRunInit}. The $stabilize$ relation is defined in
+Section~\ref{sec:stab-rules}.
 
 \subsubsection{Evaluation of a process statement}
 \label{subsubsec:ps-stmt-init}
 
+The \textsc{PsRunInit} rule describes the execution of a process
+statement during the initialization phase. The execution of a process
+statement comes down to the execution of the process statement
+body. The result of the execution is a new state $\sigma'$.
+
 \begin{premises}
   \begin{itemize}
   \item The $i$ flag of the $ss_i$ relation indicates that all
-    sequential instructions responding to the initialization phase
-    (i.e, \texttt{rst} blocks) will be executed.
-  \item The set of events of state $\sigma$ is emptied
-    ($NoEv(\sigma)$) before the evaluation of the process statement
-    body, and the resulting state is the starting state that will be
-    written through the execution of the process statement body.
+    sequential statements responding to the initialization phase (i.e,
+    reset blocks) will be executed.
+  \item The $ss_i$ relation takes two states in its context, i.e. two
+    $\sigma$. The first $\sigma$ is the state used to evaluate
+    expressions appearing in the process statement body; the second
+    $\sigma$ is the state that will be modified by the execution of
+    signal assignment statements.
+
 \end{itemize}
 \end{premises}
+
+\begin{sideconds}
+  The local environment $\Lambda$ used to execute the body of the
+  process $\mathrm{id}_p$ is retrieved from the $Ps$ sub-environment
+  of the elaborated design $\Delta$.
+\end{sideconds}
 
 \begin{table}[H]
   \centering
@@ -447,7 +487,7 @@ of the simulation.
     {\begin{prooftree}[template=\inserttext]
         
         % Runs seq.
-        \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}{}\sigma',\Lambda'$}
+        \hypo{$\Delta,\sigma,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_i}{}\sigma',\Lambda'$}
 
         % Conlcusion.
         \infer1
@@ -468,6 +508,58 @@ of the simulation.
 \subsubsection{Evaluation of a component instantiation statement}
 \label{subsubsec:ps-stmt-init}
 
+Rule~\textsc{CompRunInit} describes the execution of a component
+instantiation statement during the initialization phase. The execution
+of a component instantiation statement is divided in three
+phases. First, the input ports of the component instance receive new
+values through the evaluation of the component instance input port
+map. Second, the internal behavior of the component instance is
+evaluated; this evaluation possibly modifies the value of the internal
+signals and the output ports of the component instance. Finally,
+through the evaluation of its output port map, the component instance
+propagates the value of its output ports to the signals of the
+embedding design.
+
+\begin{premises}
+  \begin{itemize}
+  \item The $mapip$ relation evaluates the input port map i of
+    $\mathrm{id}_c$, thus modifying the internal state $\sigma_c$ of
+    $\mathrm{id}_c$. The result is a new internal state $\sigma'_c$.
+  \item The expression $\mathcal{D}(\mathrm{id}_e).\mathrm{cs}$ refers
+    to the internal behavior of the component instance
+    $\mathrm{id}_c$.
+  \item State $\sigma_c''$ is the new internal state of component
+    instance $\mathrm{id}_c$ resulting from the execution of the
+    internal behavior of $\mathrm{id}_c$.
+  \item The $mapop$ relation evaluates the output port map o of
+    $\mathrm{id}_c$, thus modifying the state $\sigma$ of the
+    embedding design. The result is a new embedding design state
+    $\sigma'$.
+  \end{itemize}
+\end{premises}
+
+\begin{sideconds}
+  \begin{itemize}
+  \item $\Delta_c$ is the elaborated version of the component instance
+    $\mathrm{id}_c$ referenced in the $Comps$ sub-environment of the
+    embedding design $\Delta$, i.e. $\Delta(id_c)=\Delta_c$.
+  \item $\sigma_c$ is the internal design state of the component
+    instance $\mathrm{id}_c$ referenced in the component store of
+    state $\sigma$, i.e. $\sigma(id_c)=\sigma_c$.
+  \item The component store $\mathcal{C}''$ of state $\sigma''$ is
+    equal to the component store $\mathcal{C}'$ of state $\sigma'$
+    where the component instance $\mathrm{id}_c$ is assigned to its
+    new internal state $\sigma_c''$.
+  \item The expression $\mathcal{C}\dcap\mathcal{C}''$ equals
+    $\{\mathrm{id}_c\}$ if the internal state of component state
+    $id_c$ has changed after the evaluation of its input port map and
+    its internal behavior. In other words, we register the component
+    instance $\mathrm{id}_c$ as an eventful component instance if
+    $\sigma_c\neq\sigma_c''$.
+  \end{itemize}
+\end{sideconds}
+
+
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
@@ -482,7 +574,7 @@ of the simulation.
         
         % Builds mapping for out ports.
         \infer[no rule]1{
-          \Delta,\Delta_c,NoEv(\sigma),\sigma_c''\vdash
+          \Delta,\Delta_c,\sigma,\sigma_c''\vdash
           \mathrm{o}
           \xrightarrow{mapop}
           \sigma'
@@ -492,9 +584,10 @@ of the simulation.
         \infer1
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
-            $id_e\in\mathcal{D}$ \\
+            $\mathrm{id}_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}''){>}$ \\
+            $\mathcal{C}''=\mathcal{C}'(\mathrm{id}_c)\leftarrow\sigma_c''$
           \end{tabular}
         }] {
           \mathcal{D},\Delta,\sigma\vdash~
@@ -508,6 +601,14 @@ of the simulation.
 
 \subsubsection{Evaluation of the composition of concurrent statements}
 \label{subsubsec:ps-stmt-init}
+
+Rule~\textsc{ParRunInit} describes the evaluation of the parallel
+composition of two concurrent statements cs and cs'. The two
+concurrent statements are evaluated starting from the same state
+$\sigma$ and they generate two different state $\sigma'$ and
+$\sigma''$. The state resulting from the concurrent execution of cs
+and cs' is the result of a merging between the starting state
+$\sigma$, and the two states $\sigma'$ and $\sigma''$.
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -525,15 +626,6 @@ of the simulation.
         }
       \end{prooftree}} \\
   \end{tabular}
-  \begin{tabular}{l}
-    {\fontsize{10}{13}\selectfont\textsc{NullRunInit}} \\
-    {\begin{prooftree}
-        \infer0
-        {
-          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{runinit}NoEv(\sigma)
-        }
-      \end{prooftree}} \\
-  \end{tabular}
 \end{table}
 
 The \texttt{merge} function computes a new state based on the original
@@ -548,8 +640,8 @@ $\mathcal{S}_o$ for all unchanged signals. The same goes for the
 resulting component instance state store $C_m$. The new set of events
 $\mathcal{E}_m$ is the union between set of events at state $s$ and
 $s'$. The \texttt{merge} correctly merges the state $o$, $s$ and $s'$
-only if the set of events of $s$ and $s'$ are disjoint. Fortunately,
-the \textsc{ParRunInit} rule that calls to the \texttt{merge} function
+only if the set of events of $s$ and $s'$ are disjoint. The
+\textsc{ParRunInit} rule that appeals to the \texttt{merge} function
 defines the condition of disjoint set of events as a side condition.
 
 \begin{table}[H]
@@ -572,6 +664,33 @@ Definition merge(o,s,s') :=
   some multiply-driven signals, which are forbidden in our semantics.
 \end{remark}
 
+In the formalization of the \hvhdl{} simulation algorithm, the set of
+events of a design state is only useful to merge the states resulting
+from the execution of multiple concurrent statements. In the LRM
+simulation algorithm, the kernel process uses the set of events to
+resume the activity of processes. If one of the signal declared in a
+process' sensitivity list is registered in the current set of events,
+then the process body must be executed. We choose to disregard this
+aspect of the execution of process in the formalization of our
+simulation algorithm (see Section~\ref{sec:stab-rules} about the
+definition of stabilization rules).
+
+Rule~\textsc{NullRunInit} evaluates a null statement during the
+initialization phase. The evaluation of a null statement yields a
+state similar to the starting state but with an empty event set.
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{NullRunInit}} \\
+    {\begin{prooftree}
+        \infer0
+        {
+          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{runinit}NoEv(\sigma)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
 \subsection{Clock phases rules}
 \label{sec:clk-phases-rules}
 
@@ -583,6 +702,16 @@ synchronous processes are processes containing the \texttt{clk} in
 their sensitivity list.
 
 \subsubsection{Evaluation of a process statement}
+
+The following rules describe the evaluation of a process statement at
+the occurrence of the rising or the falling edge of the clock
+signal. In the case where a process does not contain the \texttt{clk}
+identifier in its sensitivity list, then its statement body is not
+executed during the clock phases (see Rules~\textsc{PsRENoClk} and
+\textsc{PsFENoClk}). Otherwise, its statement body is
+executed. Depending on the considered clock event, falling blocks or
+rising blocks are executed when encountered in the body of a process
+(see Rules~\textsc{PsREClk} and \textsc{PsFEClk}).
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{PsRENoClk}}
@@ -611,7 +740,7 @@ their sensitivity list.
   
   \begin{prooftree}[template=\inserttext]
 
-    \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}{}\sigma',\Lambda'$}
+    \hypo{$\Delta,\sigma,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\uparrow}{}\sigma',\Lambda'$}
     
     \infer1
     [{
@@ -656,7 +785,7 @@ their sensitivity list.
   
   \begin{prooftree}[template=\inserttext]
 
-    \hypo{$\Delta,\sigma,NoEv(\sigma),\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}{}\sigma',\Lambda'$}
+    \hypo{$\Delta,\sigma,\sigma,\Lambda\vdash\mathrm{ss}\xrightarrow{ss_\downarrow}{}\sigma',\Lambda'$}
     
     \infer1
     [{
@@ -677,6 +806,16 @@ their sensitivity list.
 
 \subsubsection{Evaluation of a component instantiation statement}
 \label{subsubsec:sync-comp-inst}
+
+The following rules describe the evaluation of a component
+instantiation statement during the clock phases. These rules are
+similar in every point to Rule~\textsc{CompRunInit} that describes the
+evaluation of a component instantiation statement during the
+initialization phase. The only difference lies in the execution of the
+internal behavior of the component instance. During the clock phases,
+the falling ($\xrightarrow{\downarrow}$) or the rising
+($\xrightarrow{\uparrow}$) relations evaluate the internal behavior of
+component instances.
 
 \begin{table}[H]
   \centering
@@ -704,7 +843,8 @@ their sensitivity list.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}''){>}$ \\
+            $\mathcal{C}''=\mathcal{C}'(\mathrm{id}_c)\leftarrow\sigma_c''$ \\
           \end{tabular}
         }]
         {
@@ -742,7 +882,8 @@ their sensitivity list.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}''){>}$ \\
+            $\mathcal{C}''=\mathcal{C}'(\mathrm{id}_c)\leftarrow\sigma_c''$ \\
           \end{tabular}
         }]
         {
@@ -756,6 +897,12 @@ their sensitivity list.
 
 \subsubsection{Evaluation of the composition of concurrent statements}
 \label{subsubsec:comp-of-cs-clk}
+
+The following rules describe the evaluation of the composition of
+concurrent statements and the evaluation of null statements during the
+clock phases. These rules are similar to the ones describe for the
+initialization phase. Thus, the reader can refer to
+Section~\ref{subsubsec:ps-stmt-init}) for more details.
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -814,6 +961,27 @@ their sensitivity list.
 \subsection{Stabilization rules}
 \label{sec:stab-rules}
 
+The following rules describe the evaluation of concurrent statements,
+representing a design's behavior, during a stabilization phase. The
+stabilization phase triggers the execution of the combinational parts
+of the behavior by appealing to the $comb$ relation.  When the
+execution of the combinational parts of the behavior does not change
+the design state anymore, then we have reached a stable state and the
+stabilization phase ends (Rule~\textsc{StabilizeEnd}). When the
+execution of the combinational parts produces some events, i.e. it
+changes the value of signals or the internal state of component
+instances, then the stabilization phase must continue until a stable
+state is reached (Rule~\textsc{StabilizeLoop}).
+
+\begin{sideconds}
+  \begin{itemize}
+  \item In Rule~\textsc{StabilizeEnd}, state $\sigma$ is an eventless
+    state, i.e. its event set $\mathcal{E}$ is empty.
+  \item In Rule~\textsc{StabilizeLoop}, state $\sigma'$ is an eventful
+    state and state $\sigma''$ is eventless.
+\end{itemize}
+\end{sideconds}
+
 \begin{table}[H]
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{StabilizeEnd}} \\
@@ -828,9 +996,6 @@ their sensitivity list.
         }
       \end{prooftree}} \\
   \end{tabular}
-\end{table}
-
-\begin{table}[H]  
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{StabilizeLoop}} \\
     {\begin{prooftree}[template=\inserttext]
@@ -852,31 +1017,29 @@ their sensitivity list.
 
 \subsubsection{Evaluation of a process statement}
 
-% \begin{table}[H]
-%   {\fontsize{10}{13}\selectfont\textsc{PsCombStable}}
-  
-%   \begin{prooftree}[template=\inserttext]
-%     \infer0
-%     [{
-%       \begin{tabular}{@{}l}
-%         $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$\\
-%         $\mathrm{sl}\cap\mathcal{E}=\emptyset$
-%       \end{tabular}
-%     }]
-%     {
-%       $\mathcal{D},\Delta,\sigma\vdash$
-%       \vhdle|process| \texttt{(}id$_p$\texttt{,} sl\texttt{,} vars\texttt{,} ss\texttt{)}
-%       $\xrightarrow{comb}NoEv(\sigma)$
-%     }
-%   \end{prooftree}
-% \end{table}
+Rule~\textsc{PsComb} describes the execution of a process statement
+during a stabilization phase. Even synchronous processes can be
+executed during a stabilization phase, however, the falling and rising
+blocks are not interpreted. Thus, the evaluation of a \emph{purely}
+synchronous process, defined only with falling or rising blocks and no
+combinational parts, does not change the design state during a
+stabilization phase. 
 
 \begin{premises}
-  The $c$ flag (for \textit{combinational}) on the $ss_c$ relation
-  indicates that instructions responding to clock events
-  (\texttt{falling} and \texttt{rising} blocks) and instructions
-  executed during the initialization phase only (\texttt{rst} blocks)
-  will not be considered.
+  \begin{itemize}
+  \item The $c$ flag (for \textit{combinational}) on the $ss_c$
+    relation indicates that instructions responding to clock events
+    (\texttt{falling} and \texttt{rising} blocks) and instructions
+    executed during the initialization phase only (\texttt{rst}
+    blocks) will not be considered.
+
+  \item The set of events of state $\sigma$ is emptied
+    ($NoEv(\sigma)$, see Notation~\ref{notation:noev}) before the
+    evaluation of the process statement body. It corresponds to the
+    consumption of the information brought by the event set. Once the
+    information has been consumed, new events can be generated by
+    executing the process body.
+  \end{itemize}
 \end{premises}
 
 \begin{table}[H]
@@ -967,7 +1130,7 @@ their sensitivity list.
     {\begin{prooftree}
         \infer0
         {
-          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{\downarrow}NoEv(\sigma)
+          \Delta,\sigma\vdash\mathtt{null}\xrightarrow{comb}NoEv(\sigma)
         }
       \end{prooftree}} \\
   \end{tabular}
