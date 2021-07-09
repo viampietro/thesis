@@ -506,7 +506,7 @@ body. The result of the execution is a new state $\sigma'$.
 \end{table}
 
 \subsubsection{Evaluation of a component instantiation statement}
-\label{subsubsec:ps-stmt-init}
+\label{subsubsec:ci-stmt-init}
 
 Rule~\textsc{CompRunInit} describes the execution of a component
 instantiation statement during the initialization phase. The execution
@@ -808,8 +808,8 @@ rising blocks are executed when encountered in the body of a process
 \label{subsubsec:sync-comp-inst}
 
 The following rules describe the evaluation of a component
-instantiation statement during the clock phases. These rules are
-similar in every point to Rule~\textsc{CompRunInit} that describes the
+instantiation statement during clock phases. These rules are similar
+in every point to Rule~\textsc{CompRunInit} that describes the
 evaluation of a component instantiation statement during the
 initialization phase. The only difference lies in the execution of the
 internal behavior of the component instance. During the clock phases,
@@ -902,7 +902,7 @@ The following rules describe the evaluation of the composition of
 concurrent statements and the evaluation of null statements during the
 clock phases. These rules are similar to the ones describe for the
 initialization phase. Thus, the reader can refer to
-Section~\ref{subsubsec:ps-stmt-init}) for more details.
+Section~\ref{subsubsec:ps-stmt-init} for more details.
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -1067,6 +1067,18 @@ stabilization phase.
 
 \subsubsection{Evaluation of a component instantiation statement}
 
+Rule~\textsc{CompComb} describes the evaluation of a component
+instantiation statement during a stabilization phase. This rule is
+similar in every point to Rule~\textsc{CompRunInit}, and
+Rules~\textsc{CompRE} and \textsc{CompFE}, that describe the
+evaluation of a component instantiation statement during the
+initialization phase, and the clock phases. The only difference lies
+in the execution of the internal behavior of the component
+instance. During a stabilization, the $comb$ relation evaluate the
+internal behavior of component instances. Otherwise, see
+Section~\ref{subsubsec:ci-stmt-init} for more details about the
+premises and side conditions of Rule~\textsc{CompComb}.
+
 \begin{table}[H]
   \centering
   \begin{tabular}{@{}l}
@@ -1093,7 +1105,8 @@ stabilization phase.
           \begin{tabular}{@{}l}
             $id_e\in\mathcal{D}$ \\
             $\Delta(\mathrm{id}_c)=\Delta_c$, $\sigma(\mathrm{id}_c)=\sigma_c$ \\
-            $\sigma''={<}\mathcal{S}',\mathcal{C}'(id_c)\leftarrow\sigma_c'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}'){>}$ \\
+            $\sigma''={<}\mathcal{S}',\mathcal{C}'',\mathcal{E}'\cup(\mathcal{C}\dcap\mathcal{C}''){>}$ \\
+            $\mathcal{C}''=\mathcal{C}'(\mathrm{id}_c)\leftarrow\sigma_c''$ \\
           \end{tabular}
         }]
         {
@@ -1107,6 +1120,12 @@ stabilization phase.
 \end{table}
 
 \subsubsection{Evaluation of the composition of concurrent statements}
+
+The following rules describe the evaluation of the composition of
+concurrent statements and the evaluation of null statements during a
+stabilization phase. These rules are similar to the ones describe for
+the initialization phase. Thus, the reader can refer to
+Section~\ref{subsubsec:ps-stmt-init} for more details.
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -1138,6 +1157,16 @@ stabilization phase.
 
 \subsection{Evaluation of input and output port maps}
 \label{subsec:mapinout}
+
+\subsubsection{Evaluation of an input port map}
+\label{sec:ipmap-eval}
+
+Here, we define the $mapip$ relation that evaluates the input port map
+of a component instance. For each association of the input port map,
+the actual part is evaluated and the result is assigned to the formal
+part of the association, i.e. an input port
+(Rule~\textsc{MapipSimple}) or an indexed input port
+(Rule~\textsc{MapipPartial}) identifier.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1180,13 +1209,13 @@ stabilization phase.
 
         % Checks that v complies with T.
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}nat(n,m)}
 
         % Conclusion.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
-            $\Delta_c(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta_c(\mathrm{id}_s)=array(T,n,m)$ \\
             $\sigma_c={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'=\mathcal{S}(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_s))$ \\
           \end{tabular}
@@ -1232,13 +1261,100 @@ stabilization phase.
   \end{prooftree}
 \end{table}
 
+\subsubsection{Evaluation of an output port map}
+\label{sec:opmap-eval}
+
+Here, we define the $mapop$ relation that evaluates the output port
+map of a component instance. For each association of the output port
+map, the formal part is evaluated and the result is assigned to the
+actual part of the association. There can be five kind of associations
+in an output port map:
+
+\begin{itemize}
+\item an output port identifier (of the component instance) is
+  associated with the \texttt{open} keyword, thus denoting an
+  unconnected output port in the output interface of the component
+  instance
+\item an output port identifier is associated with an internal signal
+  or an output port identifier of the embedding design
+  (Rule~\textsc{MapopSimpleToSimple})
+\item an output port identifier is associated with an indexed internal
+  signal or an output port identifier of the embedding design
+  (Rule~\textsc{MapopSimpleToPartial})
+\item an indexed output port identifier is associated with an internal
+  signal or an output port identifier of the embedding design
+  (Rule~\textsc{MapopPartialToSimple})
+\item an indexed output port identifier is associated with an indexed
+  internal signal or an output port identifier of the embedding design
+  (Rule~\textsc{MapopPartialToPartial})
+\end{itemize}
+
 \begin{remark}[Out ports and $e$]
   We can not use the $e$ relation to interpret the values of output
   ports, because output ports are write-only constructs. We append the
-  flag $o$ to the $e$ relation (i.e, $e_o$) to permit the
-  evaluation of output port identifiers as regular signal identifier
-  expressions.
+  flag $o$ to the $e$ relation (i.e, $e_o$) to enable the evaluation
+  of output port identifiers as regular signal identifier expressions.
 \end{remark}
+
+The $e_o$ relation is only defined to retrieve the value of out
+ports from a store signal $\mathcal{S}$ under a design state
+$\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{OutO}} \\
+    {\begin{prooftree}
+        \infer0
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
+            $\mathrm{id}_s\in\sigma$ \\
+          \end{tabular}
+        }] {
+          \Delta,\sigma\vdash
+          \mathrm{id}_s
+          \xrightarrow{e_o}
+          \sigma(\mathrm{id}_s)
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{IdxOutO}} \\
+    {\begin{prooftree}
+
+        % Evaluates e_i.
+        \hypo{
+          \vdash
+          \mathrm{e}_i
+          \xrightarrow{e}
+          v_i
+        }
+
+        % Checks well-typed v_i.
+        \hypo{v_i\in_c{}nat(n,m)}
+        
+        % Conclusion.
+        \infer2
+        [{
+          \begin{tabular}{@{}l}
+            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
+            $\mathrm{id}_s\in\sigma$ \\
+            $\Delta(\mathrm{id}_s)={}array(T,n,m\mathtt{)}$ \\
+            $i=v_i~\mathtt{mod}~n$ \\
+          \end{tabular}
+        }]
+        {
+          \Delta,\sigma\vdash
+          \mathrm{id}_s(\mathrm{e}_i)
+          \xrightarrow{e_o}
+          \mathtt{get\_at}(i,\sigma(\mathrm{id}_s))
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+The following rules define the $mapop$ relation.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1252,11 +1368,21 @@ stabilization phase.
           \Delta,\Delta_c,\sigma,\sigma_c\vdash
           \mathrm{id}_f\Rightarrow\mathtt{open}
           \xrightarrow{mapop}
-          \sigma_c
+          \sigma
         }
       \end{prooftree}} \\
   \end{tabular}
 \end{table}
+
+\begin{sideconds}
+  In the signal store $\mathcal{S}'$, value $v$ is assigned to the
+  signal identifier $\mathrm{id}_a$. If this assignment changes the
+  value of $\mathrm{id}_a$, then an event on signal $\mathrm{id}_a$
+  must be registered.  The expression
+  $\mathcal{E}\cup\mathcal{S}\dcap\mathcal{S}'$ represents the set of
+  signals that have a different value in signal store $\mathcal{S}$
+  and $\mathcal{S}'$.
+\end{sideconds}
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1300,14 +1426,14 @@ stabilization phase.
 
         % Checks that v complies with T.
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}{}nat(n,m)}
 
         % Conclusion.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
             $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_a)={}array(T,n,m\mathtt{)}$ \\
             $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_a))$ \\
             $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
@@ -1365,14 +1491,14 @@ stabilization phase.
 
         % Checks that v complies with T.
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}{}nat(n,m)}
 
         % Conclusion.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
             $\mathrm{id}_a\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_a)={}array(T,n,m\mathtt{)}$ \\
             $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'=\mathcal{S}(id_a)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}(id_a))$ \\
             $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
@@ -1409,77 +1535,26 @@ stabilization phase.
   \end{prooftree}
 \end{table}
 
-The $e_o$ relation is only defined to retrieve the value of out
-ports from a store signal $\mathcal{S}$ under a design state
-$\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
 
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{OutO}} \\
-    {\begin{prooftree}
-        \infer0
-        [{
-          \begin{tabular}{@{}l}
-            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
-            $\mathrm{id}_s\in\sigma$ \\
-          \end{tabular}
-        }] {
-          \Delta,\sigma\vdash
-          \mathrm{id}_s
-          \xrightarrow{e_o}
-          \sigma(\mathrm{id}_s)
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{@{}l}
-    {\fontsize{10}{13}\selectfont\textsc{IdxOutO}} \\
-    {\begin{prooftree}
-
-        % Evaluates e_i.
-        \hypo{
-          \vdash
-          \mathrm{e}_i
-          \xrightarrow{e}
-          v_i
-        }
-
-        % Checks well-typed v_i.
-        \hypo{v_i\in_c\mathtt{nat}(n,m)}
-        
-        % Conclusion.
-        \infer2
-        [{
-          \begin{tabular}{@{}l}
-            $\mathrm{id}_s\in{}Outs(\Delta)$ \\
-            $\mathrm{id}_s\in\sigma$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
-            $i=v_i~\mathtt{mod}~n$ \\
-          \end{tabular}
-        }]
-        {
-          \Delta,\sigma\vdash
-          \mathrm{id}_s(\mathrm{e}_i)
-          \xrightarrow{e_o}
-          \mathtt{get\_at}(i,\sigma(\mathrm{id}_s))
-        }
-      \end{prooftree}} \\
-  \end{tabular}
-\end{table}
 
 \subsection{Evaluation of sequential statements}
 \label{subsec:seq-stmts}
 
-The $ss$ symbol indicates that the evaluation of the considered
-sequential statement does not depend on a specific flag (i.e, the $c$,
-$i$, $\uparrow$ or $\downarrow$ flag). In the rules of the $ss$
-relation, a $ss$ flag is tranferred from the conclusion to the
-premises when an sequential statement is composed of inner sequential
-blocks.
+Here, we define the $ss$ relation that evaluates the sequential
+statements used in the body of processes. The phases of a simulation
+cycle influences the evaluation of sequential statements. For
+instance, reset blocks are only evaluated during an initialization
+phase, falling blocks during a falling edge phase\dots Thus, we append
+a specific flag to the $ss$ relation to enable the evaluation of
+specific sequential statements at particular phases of the simulation
+cycle. There are four different flags, the $c$ flag to denote the
+execution of combinational statements only, the $i$ flag to enable the
+execution of reset blocks, the $\uparrow$ (resp. $\downarrow$) flag to
+enable the execution of rising (resp. falling) blocks.  Writing the
+$ss$ relation with no flag indicates that the evaluation of a given
+sequential statement is the same for every phase of the simulation
+cycle. A flag is tranferred from the conclusion to the premises when
+an sequential statement is composed of inner sequential blocks.
 
 \subsubsection{Signal assigment statement} A signal assignment
 generates a new design state with a modified signal store and a new
@@ -1488,12 +1563,13 @@ thesis symbol. $\sigma$ represents the state holding the current
 values of signals, and $\sigma_w$ holds the new values of signals
 (i.e. the \emph{written} state).
 
-\begin{premises}
-  The premise $\mathcal{S}(id_s)\in_c{}T$ checks that the value
-  associated to signal $id_s$ in the signal store of $\sigma$ complies
-  with type $T$, where $T$ is the type associated with signal $id_s$
-  in $\Delta$.
-\end{premises}
+\begin{sideconds}
+  The expression $\mathcal{S}\dcap\mathcal{S}'_w$ registers signal
+  $\mathrm{id}_s$ as an eventful signal if its value after assignment,
+  i.e. in the signal store $\mathcal{S}'_w$, is different from its
+  current value at state $\sigma$, i.e. in the signal store
+  $\mathcal{S}$.
+\end{sideconds}
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1514,7 +1590,7 @@ values of signals, and $\sigma_w$ holds the new values of signals
             $\Delta(\mathrm{id}_s)=T$ \\
             % $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
             $\mathcal{S}'_w=\mathcal{S}_w(id_s)\leftarrow{}v$ \\
-            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}_w\dcap\mathcal{S}'_w)$ \\
+            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}\dcap\mathcal{S}'_w)$ \\
           \end{tabular}
         }]
         {
@@ -1539,16 +1615,16 @@ values of signals, and $\sigma_w$ holds the new values of signals
         % Checks that v complies with T.
 
         \hypo{v&\in_c{}T}
-        \infer[no rule]1{v_i&\in_c{}\mathtt{nat}(n,m)}
+        \infer[no rule]1{v_i&\in_c{}nat(n,m)}
         
         % Conclusion.
         \infer2
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Outs(\Delta)$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_s)={}array(T,n,m\mathtt{)}$ \\
             $\mathcal{S}'_w=\mathcal{S}_w(id_s)\leftarrow\mathtt{set\_at}(v,v_i,\mathcal{S}_w(id_s))$ \\
-            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}_w\dcap\mathcal{S}'_w)$ \\
+            $\mathcal{E}'_w=\mathcal{E}_w\cup(\mathcal{S}\dcap\mathcal{S}'_w)$ \\
           \end{tabular}
         }]
         {
@@ -1563,8 +1639,8 @@ values of signals, and $\sigma_w$ holds the new values of signals
 
 \subsubsection{Variable assignment statement}
 
-A variable assignment statement modifies the variable values in the
-local environment.
+A variable assignment statement modifies the value of a variable
+defined in a local environment $\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1605,7 +1681,7 @@ local environment.
         \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
 
         % Checks that v complies with T.
-        \hypo{v_i&\in_c\mathtt{nat}(n,m)}
+        \hypo{v_i&\in_c{}nat(n,m)}
         \infer[no rule]1{v&\in_c{}T}
 
         % Conclusion.
@@ -1613,7 +1689,7 @@ local environment.
         [{
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
-            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},val)$ \\
+            $\Lambda(\mathrm{id}_v)=({}array(T,n,m\mathtt{)},val)$ \\
           \end{tabular}
         }]
         {
@@ -1626,8 +1702,22 @@ local environment.
   \end{tabular}
 \end{table}
 
+\begin{remark}[Local variables and persistent values]
+  In the LRM, the value of local variables is persistent through the
+  multiple execution of a process. However, in the definition of the
+  place and transition designs, and in the VHDL programs generated by
+  \hilecop{}, all local variables are initialized by an assignment
+  statement at the beginning of the body of processes. Thus, to
+  simplify the \hvhdl{} semantics, we choose not to consider local
+  variables as persistent memory as their values are renewed at each
+  execution of a process.
+\end{remark}
+
 \subsubsection{If statement}
 \label{subsubsec:if-stmt}
+
+Here, we present the classical evaluation of if and if-else
+statements.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1714,6 +1804,8 @@ local environment.
 
 \subsubsection{Loop statement}
 
+Here, we present the classical evaluation of for-loop statements.
+
 \begin{table}[H]
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{Loop}$\bot$} \\
@@ -1796,7 +1888,7 @@ local environment.
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\notin\Lambda$ \\
-            $\Lambda_i=\Lambda\cup(id_v,(\mathtt{nat}(v,v'),v))$ \\
+            $\Lambda_i=\Lambda\cup(id_v,({}nat(v,v'),v))$ \\
           \end{tabular}
         }]
         {
@@ -1811,6 +1903,16 @@ local environment.
 
 \subsubsection{Rising and falling edge block statements}
 \label{subsubsec:rise-and-fall-stmts}
+
+Here, we define the execution of rising and falling blocks. Rising
+(resp. Falling) blocks are executed only during a rising
+(resp. falling) edge phase of a simulation cycle, i.e. when the flag
+$\uparrow$ (resp. $\downarrow$) is raised
+(Rule~$\textsc{RisingEgdeExec}$ and
+\textsc{FallingEdgeExec}). Otherwise, the evaluation of these blocks
+is without effect on state $\sigma_w$ and on the local environment
+$\Lambda$ (Rules~\textsc{RisingEdgeDefault} and
+\textsc{FallingEdgeDefault}).
 
 \begin{table}[H]
   \begin{tabular}{l}
@@ -1884,6 +1986,14 @@ local environment.
 
 \subsubsection{Rst block statement}
 
+Here, we define the evaluation of reset blocks. The first part of
+reset blocks is only evaluated during the initialization phase of a
+simulation cycle, i.e. when the $i$ flag is raised
+(Rule~\textsc{RstExec}). Otherwise, it is the second part of the reset
+block that is evaluated (Rule~\textsc{RstDefault}). Remember that a
+reset block is the transcription of a if-else statement specifically
+devised for the \hvhdl{} abstract syntax.
+
 \begin{table}[H]
   \begin{tabular}{l}
     {\fontsize{10}{13}\selectfont\textsc{RstDefault}} \\    
@@ -1924,6 +2034,15 @@ local environment.
 
 \subsubsection{Composition of sequential statements and null statement}
 
+Here, we present the evaluation of the composition of sequential
+statements (Rule~\textsc{SeqStmt}) and of the null sequential
+statement (Rule~\textsc{NullStmt}). When evaluating a sequence of
+statements, the same state $\sigma$ holding the current value of
+signals is used to execute both part of the sequence. The written
+state $\sigma_w$ is modified by the first part of the sequence, thus
+resulting in a state $\sigma'_w$. Then, $\sigma'_w$ is used to
+evaluate the second part of the sequence.
+
 \begin{table}[H]
   \begin{tabular}{l}
     {\fontsize{10}{13}\selectfont\textsc{SeqStmt}} \\
@@ -1955,6 +2074,16 @@ local environment.
 
 \subsection{Evaluation of expressions}
 \label{subsec:expr-rules}
+
+Here, we present the evaluation of expressions used throughout the
+definition of \hvhdl{} designs. Rules~\textsc{Nat}, \textsc{False} and
+\textsc{True} describe the evaluation of natural number and boolean
+constants. Rule~\textsc{Aggreg} describes the evaluation of an
+aggregate expression. Rule~\textsc{Gen} presents the evaluation of a
+generic constant identifier. Rules~\textsc{Sig} and \textsc{Var}
+describe the evaluation of signal and variable identifiers.
+Rules~\textsc{IdxSig} and \textsc{IdxVar} corresponds to the
+evaluation of indexed signal and indexed variable identifiers.
 
 % Nat and Bool literals.
 
@@ -2077,14 +2206,14 @@ local environment.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i.
-        \hypo{v_i\in_c{}\mathtt{nat}(n,m)}
+        \hypo{v_i\in_c{}{}nat(n,m)}
         
         % Conclusion.
         \infer2
         [{
           \begin{tabular}{@{}l}
             $\mathrm{id}_s\in{}Sigs(\Delta)\cup{}Ins(\Delta)$ \\
-            $\Delta(\mathrm{id}_s)=\mathtt{array(}T,n,m\mathtt{)}$ \\
+            $\Delta(\mathrm{id}_s)={}array(T,n,m\mathtt{)}$ \\
             $i=v_i~\mathtt{mod}~n$ \\
           \end{tabular}
         }]
@@ -2108,14 +2237,14 @@ local environment.
         \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i.
-        \hypo{v_i\in_c{}\mathtt{nat}(n,m)}
+        \hypo{v_i\in_c{}{}nat(n,m)}
         
         % Conclusion.
         \infer2
         [{
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
-            $\Lambda(\mathrm{id}_v)=(\mathtt{array(}T,n,m\mathtt{)},v)$ \\
+            $\Lambda(\mathrm{id}_v)=({}array(T,n,m\mathtt{)},v)$ \\
             $i=v_i~\mathtt{mod}~n$ \\
           \end{tabular}
         }]
@@ -2129,8 +2258,25 @@ local environment.
   \end{tabular}
 \end{table}
 
-where \texttt{get\_at}$(i,a)$ is a function returning the $i$-th
-element of array $a$.
+In Rules~\textsc{IdxSig} and \textsc{IdxVar}, \texttt{get\_at}$(i,a)$
+is a function returning the $i$-th element of array $a$.
+
+Rule~\textsc{NatAdd} describe the evaluation of the addition between
+two expressions of the natural type. The operator $+_\mathbb{N}$
+denotes the addition operator of natural numbers in the semantic
+world. We add as a side condition that the result of the addition
+between two natural numbers must not exceed the value of the
+\texttt{NATMAX} number (the greatest natural number representable in
+\hvhdl{}). Rule~\textsc{NatSub} describes the evaluation of the
+substraction between two expressions of the natural
+type. Rule~\textsc{OrdOp} describes the evaluation of the comparison
+between two expressions of the natural types. The result of the
+comparison is a Boolean value. Rules~\textsc{BoolBinOp} and
+\textsc{NotOp} describes the evaluation of Boolean expressions.
+Rules~\textsc{EqOp} and \textsc{DiffOp} define the evaluation of the
+equality and difference between two expressions of the same type; the
+result is a Boolean value. Rule~\textsc{Parenth} describes the
+evaluation of a parenthesised expression.
 
 % Natural operators.
 
@@ -2234,60 +2380,63 @@ element of array $a$.
 % Equality and difference.
 
 \begin{table}[H]
-  {\fontsize{10}{13}\selectfont\textsc{EqOp}}
-  
-  \begin{prooftree}
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{EqOp}} \\
+    
+    {\begin{prooftree}
 
-    % Evaluates e.
-    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
 
-    % Evaluates e'.
-    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e'}\xrightarrow{e}v'}
+        % Evaluates e'.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e'}\xrightarrow{e}v'}
 
-    % Conclusion.
-    \infer2
-    {
-      \Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}eq(v,v')
-    }
-  \end{prooftree}
+        % Conclusion.
+        \infer2
+        {
+          \Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}eq(v,v')
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{DiffOp}}  \\
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}v}
+
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash
+          \mathrm{e}~\neq~\mathrm{e'}
+          \xrightarrow{e}\lnot{}v
+        }
+      \end{prooftree}}\\
+  \end{tabular}
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{Parenth}} \\
+    
+    {\begin{prooftree}
+
+        % Evaluates e.
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
+
+        % Conclusion.
+        \infer1
+        {
+          \Delta,\sigma,\Lambda\vdash\mathtt{(}\mathrm{e}\mathtt{)}\xrightarrow{e}v
+        }
+      \end{prooftree}} \\
+  \end{tabular}
 \end{table}
 
-\begin{table}[H]
-  {\fontsize{10}{13}\selectfont\textsc{DiffOp}}
-  
-  \begin{prooftree}
-
-    % Evaluates e.
-    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}~=~\mathrm{e'}\xrightarrow{e}v}
-
-    % Conclusion.
-    \infer1
-    {
-      \Delta,\sigma,\Lambda\vdash
-      \mathrm{e}~\neq~\mathrm{e'}
-      \xrightarrow{e}\lnot{}v
-    }
-  \end{prooftree}
-\end{table}
-
-where $eq$ is the equality relation established for all types defined
-in the semantics.
-
-\begin{table}[H]
-  {\fontsize{10}{13}\selectfont\textsc{Parenth}}
-  
-  \begin{prooftree}
-
-    % Evaluates e.
-    \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}v}
-
-    % Conclusion.
-    \infer1
-    {
-      \Delta,\sigma,\Lambda\vdash\mathtt{(}\mathrm{e}\mathtt{)}\xrightarrow{e}v
-    }
-  \end{prooftree}
-\end{table}
+In Rule~\textsc{EqOp}, $eq$ is the equality operator established for
+all types defined in the semantics. In the definition of $eq$, two
+natural numbers and two Booleans are compared with the Leibniz
+equality. Two values of an array type are equal if the sub-elements
+sharing the same index are equal; thus the two arrays must be of the
+same size.
 
 %%% Local Variables:
 %%% mode: latex

@@ -6,12 +6,12 @@ set. The $type$ and $value$ semantical types are defined as follows:
 
 \begin{table}[H]
   \begin{tabular}{lcl}
-    $type$ & ::= & \texttt{bool} | \texttt{nat(}$nat$,$nat$\texttt{)} | \texttt{array} \texttt{(}$type$,$nat$,$nat$\texttt{)} \\
+    $type$ & ::= & $bool$ | $nat(n$, $n)$ | $array(type$, $n$, $n)$ \\
            & & \\
-    $value$ & ::= & $bool$ | $nat$ | $array$ \\
-    $bool$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
-    $nat$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
-    $array$ & ::= & \texttt{(}$value^{+}$\texttt{)}\\
+    $value$ & ::= & $b$ | $n$ | $arr$ \\
+    $b$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
+    $n$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
+    $arr$ & ::= & \texttt{(}$value^{+}$\texttt{)}\\
 
   \end{tabular}
   \caption{The $type$ and $value$ semantical types.}
