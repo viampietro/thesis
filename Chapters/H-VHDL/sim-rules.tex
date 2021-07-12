@@ -21,7 +21,7 @@ assignment. Listing~\ref{lst:clk-unit-delay} presents the behavioral
 part of the architecture of the embedding top-level design.
 
 \begin{lstlisting}[language=VHDL,label={lst:clk-unit-delay},
-caption={[]},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+caption={[An architecture to simulate a synchronous design.] An architecture to simulate a synchronous design. The architecture \texttt{toplevel\_arch} is composed of the \texttt{clkp} process, that simulates a clock signal, and of an instance of the design \texttt{tl} named $id_{tl}$, i.e. the design under simulation. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 architecture toplevel_arch of toplevel is
 begin 
