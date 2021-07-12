@@ -369,80 +369,6 @@ all indexes of the array range and $id$, the port id.
   \end{split}
 \end{equation*}
 
-\paragraph{Example of input port map validity checking}
-
-We use the component instantiation statement of
-Listing~\ref{lst:t-design-ci-abss} to illustrate the use of the
-$valid_{ipm}$ predicate. The following rule demonstrates the validity
-checking on the input port map of component instance $id_t$.
-
-\begin{figure}[H]
-  \centering
-  {\begin{prooftree}
-
-      % Lists formal parts.
-      \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}_\emptyset\vdash{\fontsize{9}{11}\selectfont
-        \begin{tabular}{@{}l@{}}          
-          (\texttt{time_A_value} $\Rightarrow{}0$, \\
-          \texttt{time_B_value} $\Rightarrow{}0$, \\
-          \texttt{input_conditions(0)} $\Rightarrow{}id_0$, \\
-          \texttt{input_arcs_valid(0)} $\Rightarrow{}id_1$, \\
-          \texttt{priority_authorizations(0)} $\Rightarrow\top$, \\
-          \texttt{reinit_time(0)} $\Rightarrow{}id_2$) \\
-        \end{tabular}}\xrightarrow{list_{ipm}}\mathcal{L}}
-
-      % Well-formed port map.
-      \hypo{\mathtt{check}_{pm}(Ins(\Delta_c),\mathcal{L})}
-      
-      % Conclusion
-      \infer[template={\inserttext}]2
-      {
-        $\Delta,\Delta_c,\sigma\vdash\mathtt{valid}_{ipm}\Bigg($
-        {\fontsize{9}{11}\selectfont
-        \begin{tabular}{@{}l@{}}          
-          (\texttt{time_A_value} $\Rightarrow{}0$, \\
-          \texttt{time_B_value} $\Rightarrow{}0$, \\
-          \texttt{input_conditions(0)} $\Rightarrow{}id_0$, \\
-          \texttt{input_arcs_valid(0)} $\Rightarrow{}id_1$, \\
-          \texttt{priority_authorizations(0)} $\Rightarrow\top$, \\
-          \texttt{reinit_time(0)} $\Rightarrow{}id_2$) \\
-        \end{tabular}}
-        $\Bigg)$
-      }
-    \end{prooftree}}
-\end{figure}
-
-\noindent{}where:
-
-\begin{itemize}
-\item $Ins(\Delta_c):=$
-\begin{tabular}{@{}l@{}}
-$\{("time\_A\_value", nat(0,1)),$ \\
-$("time\_B\_value", nat(0,1)),$ \\
-$("input\_conditions", array(bool,0,0)),$ \\
-$("input\_arcs\_valid", array(bool,0,0)),$ \\
-$("priority\_authorizations", array(bool,0,0)),$ \\
-$("reinit\_time", array(bool,0,0))\}$ \\
-\end{tabular}
-
-In $Ins(\Delta_c)$, the types of input ports are deduced from the
-generic map of the transition component instance $id_t$.
-\item $\mathcal{L}:=$
-  \begin{tabular}{@{}l@{}}
-  $\{"time\_A\_value",$ $"time\_B\_value",$ \\
-  $("input\_conditions", 0),$ $("input\_arcs\_valid", 0),$ \\
-  $("priority\_authorizations", 0),$ $("reinit\_time", 0)\}$ \\
-  \end{tabular}
-\end{itemize}
-
-We add that the identifiers $id_0$, $id_1$ and $id_2$ are referenced
-as internal signals of the Boolean type in the embedding elaborated
-design $\Delta$, i.e:
-
-\begin{itemize}
-\item $Sigs(\Delta):=\{(id_0, bool),$ $(id_1,bool),$ $(id_2,bool)\}$
-\end{itemize}
-
 \paragraph{Valid output port map}
 
 The $\mathtt{valid}_{opm}$ predicate states that an \emph{output} port
@@ -606,41 +532,6 @@ output ports are \texttt{open} by default.
   \end{tabular}
 \end{table}
 
-
-% \begin{table}[H]
-%   \begin{tabular}{@{}l}
-%     {\fontsize{8}{11}\selectfont\textsc{ListOPMPartialToOpen}} \\
-%     {\begin{prooftree}
-
-%         % Static expr e_i and natural.
-%         \hypo{SE_l(\mathrm{e}_i)}
-
-%         % Evaluates e_i.
-%         \hypo{\vdash\mathrm{e}_i\xrightarrow{expr}v_i}
-
-%         % Well-typed v_i (in array bounds).
-%         \hypo{v_i\in_c{}nat(n,m)}
-        
-%         % Conclusion
-%         \infer[template={\inserttext}]
-%         3
-%         [{
-%           \begin{tabular}{l}
-%             $\mathrm{id}_f,(\mathrm{id}_f,v_i)\notin\mathcal{L}$ \\
-%             $\mathrm{id}_f\in{}Outs(\Delta_c)$ \\
-%             $\Delta_c(\mathrm{id}_f)=\mathtt{array(}T,n,m\mathtt{)}$ \\
-%           \end{tabular}
-%         }]
-%         {
-%           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-%           $\mathrm{id}_f(e_i)\Rightarrow\mathtt{open}$
-%           $\xrightarrow{list_{opm}}$
-%           $\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}$
-%         }
-%       \end{prooftree}} \\
-%   \end{tabular}
-% \end{table}
-
 \begin{remark}[Unconnected output port.]
   We forbid the case where an indexed formal part corresponding to the
   subelement of a composite output port is unconnected, i.e
@@ -762,79 +653,6 @@ output ports are \texttt{open} by default.
   \end{tabular}
 \end{table}
 
-\paragraph{Example of output port map validity checking}
-
-To illustrate the validity checking of an output port map as performed
-by the $valid_{opm}$ predicate, we introduce in
-Listing~\ref{lst:p-design-ci-abss} the instantiation in \hvhdl{}
-abstract syntax of a place component $id_p$ in the behavior of an
-embedding design.
-
-\begin{lstlisting}[language=VHDL,label={lst:p-design-ci-abss},
-caption={[A component instantiation statement in \hvhdl{} abstract syntax (place component instance).] An example of instantiation of the place design in \hvhdl{} abstract syntax. The place component instance is named $id_p$.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
-numberstyle=\tiny\ttfamily]
-  comp ($id_p$, "place", 
-    -- Generic map
-    (input_arcs_number => 1,
-     output_arcs_number => 1,
-     maximal_marking => 1),
-    -- Input port map
-    (initial_marking => 1,
-     input_arcs_weights(0) => 1,
-     output_arcs_types(0) => 0,
-     output_arcs_weights(1) => 1,
-     input_transitions_fired(0) => $id_0$, 
-     output_transitions_fired(0) => $id_1$),
-    -- Output port map
-    (output_arcs_valid(0) => $id_2$,
-     priority_authorizations(0) => $id_3$,
-     reinit_transitions_time(0) => $id_4$,
-     marked => $id_5$);
-\end{lstlisting}
-
-The following rule describes the validity checking of the output port
-map of component $id_p$.
-
-\begin{figure}[H]
-  \centering
-  {\begin{prooftree}
-
-      % Lists formal parts.
-      \hypo{
-        \Delta,\Delta_c,\emptyset,\emptyset\vdash
-        {\fontsize{9}{11}\selectfont
-          \begin{tabular}{@{}l@{}}
-            \texttt{output_arcs_valid(0)} $\Rightarrow{}id_2$, \\
-            \texttt{priority_authorizations(0)} $\Rightarrow{}id_3$, \\
-            \texttt{reinit_transitions_time(0)} $\Rightarrow{}id_4$, \\
-            \texttt{marked} $\Rightarrow{}id_5$ \\
-          \end{tabular}}
-        \xrightarrow{list_{opm}}
-        {\fontsize{9}{11}\selectfont
-          \begin{tabular}{@{}l}
-            $\{("output\_arcs\_valid", 0),$ \\
-            $("priority\_authorizations", 0)$ \\
-            $("reinit\_transitions\_time", 0),$ \\
-            $"marked"\}$ \\
-          \end{tabular}},
-        \{id_2,id_3,id_4,id_5\}
-      }
-      
-      % Conclusion
-      \infer[template={\inserttext}]
-      1
-      {
-        $\Delta,\Delta_c\vdash\mathtt{valid}_{opm}\Bigg(${\fontsize{9}{11}\selectfont
-          \begin{tabular}{@{}l@{}}
-            \texttt{output_arcs_valid(0)} $\Rightarrow{}id_2$, \\
-            \texttt{priority_authorizations(0)} $\Rightarrow{}id_3$, \\
-            \texttt{reinit_transitions_time(0)} $\Rightarrow{}id_4$, \\
-            \texttt{marked} $\Rightarrow{}id_5$ \\
-          \end{tabular}}$\Bigg)$
-      }
-    \end{prooftree}}
-\end{figure}
-
 \subsection{Valid sequential statements}
 \label{subsubsec:valid-ss}
 
@@ -859,7 +677,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedSigAssign}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTSig}} \\
     {\begin{prooftree}
 
         % Evaluates e.
@@ -887,7 +705,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 % Well-typed indexed signal assignment.
 \begin{table}[H]
   \begin{tabular}{l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedIdxSigAssign}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTIdxSig}} \\
     {\begin{prooftree}
 
         % Evaluates e and e_i.
@@ -918,7 +736,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedVarAssign}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTVar}} \\
     {\begin{prooftree}
         
         % Evaluates e.
@@ -945,7 +763,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]    
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedIdxVarAssign}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTIdxVar}} \\
     {\begin{prooftree}
 
         % Evaluates e and e_i.
@@ -976,7 +794,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedIf}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTIf}} \\
     {\begin{prooftree}
 
         % Eval e.
@@ -999,7 +817,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedIfElse}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTIfElse}} \\
     {\begin{prooftree}
 
         % Eval e.
@@ -1025,7 +843,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedLoop}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTLoop}} \\
     {\begin{prooftree}
 
         % Eval e and e'.
@@ -1053,7 +871,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedRising}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTRising}} \\
     {\begin{prooftree}
         
         % Well-typed ss.
@@ -1067,7 +885,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
       \end{prooftree}} \\
   \end{tabular}
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedFalling}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTFalling}} \\
     {\begin{prooftree}
         
         % Well-typed ss.
@@ -1086,7 +904,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedRst}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTRst}} \\
     {\begin{prooftree}
         
         % Well-typed ss.
@@ -1109,7 +927,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
-    {\fontsize{8}{11}\selectfont\textsc{WellTypedNull}} \\
+    {\fontsize{8}{11}\selectfont\textsc{WTNull}} \\
     {\begin{prooftree}
                 
         % Conclusion
