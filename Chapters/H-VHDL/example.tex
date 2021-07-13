@@ -211,13 +211,13 @@ signal store of $\sigma_{e2}$.
 \subsubsection{Elaboration of the behavioral part}
 \label{sec:ex-elab-beh}
 
-The behavior of the \texttt{tl} design
-contains two component instantiation statements and two process
-statements. Each one of these statements will be elaborated in
-sequence. Here, we present the elaboration of the \texttt{marked}
-process to illustrate the elaboration of a process statement; we
-present the elaboration of place component instance $id_p$ to
-illustrate the elaboration of a component instantiation statement.
+The behavior of the \texttt{tl} design contains two component
+instantiation statements and two process statements. Each one of these
+statements will be elaborated in sequence. First, we present the
+elaboration of the \texttt{marked} process to illustrate the
+elaboration of a process statement; then, we present the elaboration
+of place component instance $id_p$ to illustrate the elaboration of a
+component instantiation statement.
 
 \paragraph{Elaboration of a process statement}
 
@@ -326,8 +326,10 @@ a derivation.
 \item $\sigma_{e2}(id_m)=\bot$
 \end{enumerate}
 
-At the end of the elaboration of the behavior of the \texttt{tl}
-design, the $Ps$ sub-environment of $Delta$ is as follows: $Ps(\Delta):=\{(\mathtt{marked},\emptyset), (\mathtt{fired},\emptyset)\}$
+At the end of the elaboration of the \texttt{tl} design's behavior,
+the $Ps$ sub-environment of $Delta$ is as follows:
+$Ps(\Delta):=\{(\mathtt{marked},\emptyset),
+(\mathtt{fired},\emptyset)\}$
 
 \paragraph{Elaboration of a component instantiation statement}
 
@@ -361,7 +363,7 @@ the \texttt{tl} design.
     \hypo{}
     \ellipsis{}{}
     \infer1{
-      $\Delta_2,\Delta_p,\sigma_{e2}\vdash{}\mathtt{valid}_{opm}(o_p)$
+      $\Delta_2,\Delta_p\vdash{}\mathtt{valid}_{opm}(o_p)$
     }
     
     % Conclusion
@@ -390,22 +392,24 @@ the \texttt{tl} design.
   \end{tabular}
 \end{enumerate}
 
-The elaboration of a component instance is divided in four
-parts. First, a dimensioning function is built out of the generic map
-of the component instance. Figure shows a part of the creation of the
-dimensioning functioning $\mathcal{M}$ from the generic map of the
-component instance $id_p$. Basically, the elaboration of a generic map
-is a transformation from a syntactic construct, i.e. the generic map,
-into a function, i.e. the dimensioning function $\mathcal{M}$. The
-elaboration of a generic map also checks that each generic constant is
-associated with a default value of the right type.
+The elaboration of a component instantiation statement is divided in
+three parts. First, a dimensioning function is built out of the
+generic map of the component instance. Figure~\ref{fig:ex-emapg} shows
+a part of the creation of the dimensioning functioning $\mathcal{M}$
+from the generic map of the component instance $id_p$. Basically, the
+elaboration of a generic map is a transformation from a syntactic
+construct, i.e. the generic map, into a function, i.e. the
+dimensioning function $\mathcal{M}$. For each association of the
+generic map, the elaboration checks that the actual part of the
+association is a locally static expression (see
+Section~\ref{subsubsec:loc-static}).
 
 \begin{figure}[H]
   \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}, separation=10pt]
 
     % Elab of assocg
+    \infer0[\fontsize{7}{10}\selectfont\textsc{LSENat}]{$SE_l(1)$}
     \infer0[\fontsize{7}{10}\selectfont\textsc{Nat}]{$1\xrightarrow{e}1$}
-    \infer0[\fontsize{7}{10}\selectfont\textsc{IsCNat}]{$1\in_c{}nat(0,\mathtt{NATMAX})$}
     \infer2[\fontsize{7}{10}\selectfont\textsc{AssocGElab}$^1$]{$\emptyset\vdash{}(\mathtt{ian},1)\xrightarrow{emapg}$
       $\{(\mathtt{ian},1)\}$}
 
@@ -427,24 +431,23 @@ associated with a default value of the right type.
 
 \noindent{}where:
 \begin{enumerate}
-\item $0\le{}1\le{}\mathtt{NATMAX}$
+\item $\mathtt{ian}\notin\emptyset$
 \end{enumerate}
 
 The second step of the elaboration of a component instance is to
-retrieve and to elaborate the design associated with the component
-instance in the design store. Here, the design store is the \hilecop{}
-design store $\mathcal{D}_\mathcal{H}$, and the design associated with
-$id_p$ is the place design. The dimensioning function $\mathcal{M}$
-sets the value of the generic constants declared in the place design.
-The generic constants of the place design are involved the range and
-index constraints defining the types of the ports and internal signals
-of the same design. The full code of place design is available in
+retrieve from the design store the design associated with the
+component instance, and to elaborate this design. Here, the design
+store is the \hilecop{} design store $\mathcal{D}_\mathcal{H}$, and
+the design associated with $id_p$ is the \texttt{place} design. The
+dimensioning function $\mathcal{M}$ sets the value of the generic
+constants declared in the \texttt{place} design.  The full code of
+\texttt{place} design is available in
 Appendix~\ref{app:place-design}. In
 Figures~\ref{fig:ex-elab-version-of-idp} and
 \ref{fig:ex-default-state-of-idp}, we give the elaborated design
 $\Delta_p$ and the default design state $\sigma_p$ resulting of the
-elaboration of the place design given the dimensioning function
-$\mathcal{M}$.
+elaboration of the \texttt{place} design given the dimensioning
+function $\mathcal{M}$.
 
 \begin{figure}[H]
 \begin{tabular}{@{}rl@{}}
@@ -469,6 +472,7 @@ $\mathcal{M}$.
                              & $(\mathtt{pauths}, array(bool,0,0)),$ \\
                              & $(\mathtt{rtt}, array(bool,0,0))\}$ \\
                  \end{tabular} \\
+                 & \\
                & \begin{tabular}{@{}ll@{}}
                    $Sigs :=$ & $\{(\mathtt{sits}, nat(0,1)),$ \\
                              & $(\mathtt{sm}, nat(0,1)),$ \\
@@ -492,17 +496,17 @@ dimensioning function.]{An elaborated version of the place design
 \label{fig:ex-elab-version-of-idp}
 \end{figure}
 
-In $Delta_p$, all the types associated with ports and internal signals
-of the place design have been \emph{resolved}; i.e. the expressions
-qualifying the upper and lower bounds, in the definition of range and
-index constraints, have been evaluated.  For example,
+In $\Delta_p$, all the types associated with ports and internal
+signals of the \texttt{place} design have been \emph{resolved};
+i.e. the expressions qualifying the bounds of the range and index
+constraints in type indications have been evaluated.  For example,
 \texttt{array(boolean, 0, input_arcs_number-1)} is the type indication
 associated with the \texttt{input_transitions_fired} input port
-(i.e. \texttt{itf}) defined in the port clause of the place
-design. The dimensioning function sets the value of the
-\texttt{input_arcs_number} generic constant (i.e. \texttt{ian}) value
-to 1. After elaboration, the type indication \texttt{array(boolean, 0,
-  input_arcs_number-1)} is transformed into the semantic type
+(i.e. \texttt{itf}) defined in the port clause of the \texttt{place}
+design. The dimensioning function $\mathcal{M}$ sets the value of the
+\texttt{input_arcs_number} (i.e. \texttt{ian}) generic constant to
+1. After the elaboration, the type indication \texttt{array(boolean,
+  0, input_arcs_number-1)} is thus transformed into the semantic type
 $array(bool, 0, 0)$. Thus, we have
 $\Delta_p(\mathtt{itf})=array(bool,0,0)$ in the resulting $\Delta_p$.
 
@@ -530,8 +534,585 @@ state $\sigma_p$ of $\Delta_p$.
 \end{figure}
 
 The component store of design state $\sigma_p$ is empty as there are
-no component instances defining the behavior of the transition design.
+no component instantiation statements in the behavior of the place
+design. The same stands for the $Comps$ sub-environment of $\Delta_p$.
 Also, the set of events of a default design state is always empty.
+
+The final step in the elaboration of a component instantiation
+statement is to check the well-formedness and the well-typedness of
+the input and output port maps. The $\mathtt{valid}_{ipm}$ and
+$\mathtt{valid}_{opm}$ relations, defined in
+Section~\ref{subsec:valid-pm}, state the validity of the port maps.
+The rule of Figure presents a part of the construction of the
+$valid_{opm}$ relation applied to the output port map of the place
+component instance $id_p$. Note that $\Delta_p$ is necessary to check
+the validity of the output port map of $id_p$, as it holds the
+correspondence between port identifiers and port types.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+
+    % Elab of assocop
+    \infer0[\fontsize{7}{10}\selectfont\textsc{LSENat}]{$SE_l(0)$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Nat}]{$0\xrightarrow{e}0$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsCNat}]{$0\in_c{}nat(0,0)$}
+    \infer3[$^1$]{
+      $\Delta_2,\Delta_p,\emptyset,\emptyset\vdash$
+      $(\mathtt{oav}(0), id_{av})$
+      $\xrightarrow{list_{opm}}$
+      $\{(\mathtt{oav}, 0)\},\{id_{av}\}$
+    }
+
+    % Ind. call
+    \hypo{}
+    \ellipsis{\fontsize{7}{10}\selectfont\textsc{ListOPMCons}$_B$}{}
+
+    % List OPM
+    \infer2[\fontsize{7}{10}\selectfont\textsc{ListOPMCons}$_A$]{
+      $\Delta_2,\Delta_p,\emptyset,\emptyset\vdash$
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{oav}(0), id_{av}),$ $(\mathtt{pauths}, \mathtt{open})$ \\
+        $(\mathtt{rtt}(0), id_{rt}),$ $(marked, id_m)$ \\
+      \end{tabular}
+      $\xrightarrow{list_{opm}}$
+      \begin{tabular}{@{}l@{}}
+        $\{(\mathtt{oav}, 0), \mathtt{pauths},$ \\
+        $(\mathtt{rtt}, 0), \mathtt{marked}\}$ \\
+      \end{tabular},
+      \begin{tabular}{@{}l@{}}
+        $\{id_{av}, id_{rt}, id_m\}$ \\
+      \end{tabular}
+    }
+    
+    % Conclusion 
+    \infer1[\fontsize{7}{10}\selectfont\textsc{ValidOPM}]{
+      $\Delta_2,\Delta_p\vdash$
+      $\mathtt{valid}_{opm}\Big($
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{oav}(0), id_{av}),$ $(\mathtt{pauths}, \mathtt{open})$ \\
+        $(\mathtt{rtt}(0), id_{rt}),$ $(\mathtt{marked}, id_m)$ \\
+      \end{tabular}
+      $\Big)$
+    }
+    
+  \end{prooftree}
+  
+  \vspace{40pt}
+  
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}, separation=10pt]
+    % Ind. call
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[\fontsize{7}{10}\selectfont\textsc{ListOPMCons}$_B$]{
+      {$\Delta_2,\Delta_p,\{(\mathtt{oav},0)\},\{id_{av}\}\vdash$
+        \begin{tabular}{@{}l@{}}
+          $(\mathtt{pauths}, \mathtt{open}),$ \\
+          $(\mathtt{rtt}(0), id_{rt}),$ \\
+          $(marked, id_m)$ \\
+        \end{tabular}
+        $\xrightarrow{list_{opm}}$
+        \begin{tabular}{@{}l@{}}
+          $\{(\mathtt{oav}, 0),$ \\
+          $\mathtt{pauths},$ \\
+          $(\mathtt{rtt}, 0),$ \\
+          $\mathtt{marked}\}$ \\
+        \end{tabular},
+        \begin{tabular}{@{}l@{}}
+          $\{id_{av}, id_{rt}, id_m\}$ \\
+        \end{tabular}}
+    }
+
+  \end{prooftree}
+  
+  \caption{An example of validity checking performed on the output
+    port map of the place component instance $id_p$. The bottom proof
+    tree represents the top-right premise of the top proof tree.}
+  \label{fig:ex-valid-opm}
+\end{figure}
+
+\noindent{}where:
+\begin{enumerate}
+\item
+  \begin{tabular}{@{}l@{}}
+    $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
+    $\Delta_2(id_{av})=bool$ \\
+    $\mathtt{oav}\notin\emptyset$ and $(\mathtt{oav},0)\notin\emptyset$ \\
+    $id_{av}\notin\emptyset$ \\
+  \end{tabular}
+\end{enumerate}
+
+At the end of the elaboration of the \texttt{tl} design's behavior,
+the $Comps$ sub-environment of $\Delta$ is as follows:
+$Comps(\Delta):=\{(id_p,\Delta_p), (id_t,\Delta_t)\}$. Here,
+$\Delta_t$ represents the elaborated version of the transition design
+obtained from the elaboration of the transition component instance
+$id_t$.
+
+Also, at the end of the elaboration, the component store of $\sigma_e$
+is as follows:
+$\mathcal{C}(\sigma_e):=\{(id_p,\sigma_p),(id_t,\sigma_t)\}$. Here,
+$\sigma_t$ is the default design state of the transition component
+instance $id_t$.
+
+\subsection{Simulation of the tl design}
+\label{sec:ex-tl-sim}
+
+Let us now present the rules pertaining to the simulation of the
+\texttt{tl} design, that is, pertaining to the execution of the
+\texttt{tl} design's behavior with respect to our formal simulation
+algorithm.
+
+\subsubsection{Initialization}
+\label{sec:ex-init-tl}
+
+The rule of Figure~\ref{fig:ex-init-tl} presents the initialization
+phase in the proceeding of the simulation of the \texttt{tl}
+design. The initialization phase builds the initial state of the
+simulation. The first step of the initialization, formalized by the
+$runinit$ relation, runs the processes and the internal behavior of
+component instances exactly once (with the execution of the first part
+of reset blocks). Then, a stabilization phase follows.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+
+    % Runinit
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $cs_{tl}$
+      $\xrightarrow{runinit}$
+      $\sigma'$
+    }
+    
+    % Stabilization
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $cs_{tl}$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_0$
+    }
+    
+    % Conclusion 
+    \infer2[\fontsize{7}{10}\selectfont\textsc{Init}]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $cs_{tl}$
+      $\xrightarrow{init}$
+      $\sigma_0$
+    }
+    
+  \end{prooftree}
+  
+  \caption{The initialization phase, first step of the simulation of
+    the \texttt{tl} design.}
+  \label{fig:ex-init-tl}
+\end{figure}
+
+The rule in Figure~\ref{fig:ex-runinit-tl} presents the execution of
+the \texttt{tl} design's behavior during the $runinit$ phase. The
+\texttt{tl} design's behavior is defined by the composition of
+concurrent statements. Here, the \texttt{marked} process is at the
+head of the behavior, whereas it is not the case in
+Listing~\ref{lst:tl-design-ex}. We formally proved, with the \coq{}
+proof assistant, that the $\mathtt{||}$ composition operator for
+concurrent statements is commutative and associative with respect to
+the $runinit$ relation. In Figure, the \texttt{marked} process is
+executed and yields the state $\sigma'_e$. Then, the rest of the
+\texttt{tl} design's behavior is executed and yields the state
+$\sigma''_e$. Finally, the starting state $\sigma_e$ and the two
+states $\sigma'_e$ and $\sigma''_e$ are merged into one by the
+\texttt{merge} function.
+
+\begin{figure}[H] \centering
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+    
+    % Runinit marked process
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $\mathtt{process}(\mathtt{marked},\dots)$ $\xrightarrow{runinit}$
+      $\sigma'_e$ }
+
+    % Runinit tail
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$ $cs'_{tl}$
+      $\xrightarrow{runinit}$ $\sigma''_e$ }
+
+    % Conclusion
+    \infer2[\fontsize{7}{10}\selectfont\textsc{CompRunInit}$^1$]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $\mathtt{process}(\mathtt{marked},\dots)~\mathtt{||}~cs'_{tl}$
+      $\xrightarrow{runinit}$
+      $\mathtt{merge}(\sigma_e,\sigma'_e,\sigma''_e)$ }
+
+  \end{prooftree}
+
+  \caption{The $runinit$ phase applied to the concurrent statements
+    composing the behavior of the \texttt{tl} design.}
+  \label{fig:ex-runinit-tl}
+\end{figure}
+
+\noindent{}where:
+\begin{enumerate}
+\item $\mathcal{E}'_e\cap\mathcal{E}''_e$
+\end{enumerate}
+
+In what follows, we detail the execution of a process statement and of
+a component instantiation statement during the first part of the
+initialization, i.e. the $runinit$ phase.
+
+\paragraph{Execution of a process statement with the $runinit$ relation}
+
+The rule in Figure shows the execution of the \texttt{marked} process
+during the $runinit$ phase. The first part of the reset block defining
+the statement body of the \texttt{marked} process is executed. This
+first part assigns the expression $\mathtt{false}$ to signal
+$id_{a0}$.
+
+\begin{figure}[H] \centering
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+
+    \infer0[\fontsize{7}{10}\selectfont\textsc{False}]{$\vdash\mathtt{false}\xrightarrow{e}\bot$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsBool}]{$\bot\in_c{}bool$}
+    
+    % Execute fst part of rst block
+    \infer2[\fontsize{7}{10}\selectfont\textsc{SigAssign}$^2$]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e,\sigma_e\vdash$
+      $id_{a0}\Leftarrow\mathtt{false}$
+      $\xrightarrow{ss_i}$
+      $\sigma'_e,\emptyset$}
+
+    % Execute rst block
+    \infer1[\fontsize{7}{10}\selectfont\textsc{RstExec}]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $\mathtt{rst}(id_{a0}\Leftarrow\mathtt{false})(\dots)$
+      $\xrightarrow{ss_i}$
+      $\sigma'_e,\emptyset$ }
+
+    % Conclusion
+    \infer1[\fontsize{7}{10}\selectfont\textsc{PsRunInit}$^1$]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $\mathtt{process}(\mathtt{marked},\dots)$
+      $\xrightarrow{runinit}$
+      $\sigma'_e$ }
+  \end{prooftree}
+
+  \caption{The $runinit$ phase applied to the concurrent statements
+    composing the behavior of the \texttt{tl} design.}
+  \label{fig:ex-runinit-ps}
+\end{figure}
+
+\noindent{}where:
+
+\begin{enumerate}
+\item $\Delta(\mathtt{marked})=\emptyset$
+\item
+  \begin{tabular}{@{}l@{}}
+    $\Delta(id_{a0})=bool$ \\
+    $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
+    $\mathcal{S}'_e=\mathcal{S}_e(id_{a0})\leftarrow\bot$ \\
+    $\mathcal{E}'_e=\mathcal{E}_e\cup(\mathcal{S}_e\dcap\mathcal{S}'_e)$ \\
+  \end{tabular}
+\end{enumerate}
+
+In the side conditions of the \textsc{SigAssign} rule, an new event
+set $\mathcal{E}'_e$ is computed based on the event set
+$\mathcal{E}_e$ joined to the expression
+$\mathcal{S}_e\dcap\mathcal{S}'_e$. This expression returns the set of
+signals with a different value between signal store $\mathcal{S}_e$
+and singal store $\mathcal{S}'_e$. The only signal that possibly has a
+different value from $\mathcal{S}_e$ to $\mathcal{S}'_e$ is the
+assigned signal $id_{a0}$. Thus, this expression is a shorthand to
+test if the value of signal $id_{a0}$ has changed after the execution
+of the signal assignment statement. If it is the case, then the event
+set receives the signal identifier $id_{a0}$; $id_{a0}$ is then an
+eventful signal. In the present case, the value of signal $id_{a0}$
+was $\bot$ at state $\sigma_e$ and is still $\bot$ after the execution
+of the signal assignment statement. Therefore, no event is registered
+on signal $id_{a0}$. When states $\sigma_e$, $\sigma'_e$ and
+$\sigma''_e$ will be merged (cf. Figure~\ref{fig:ex-runinit-tl}), if
+$id_{a0}$ is part of the event set of state $\sigma''_e$, then, the
+merged state will return the value associated to $id_{a0}$ in state
+$\sigma''_e$. We would have
+$\mathtt{merge}(\sigma_e,\sigma'_e,\sigma''_e)(id_{a0})=\sigma''_e(id_{a0})$.
+However, signal $id_{a0}$ would be a potentially multiply-driven
+signal because both the \texttt{marked} process and the concurrent
+statement $cs'_{tl}$ (cf. Figure~\ref{fig:ex-runinit-tl}) assigns the
+signal value.
+
+\paragraph{Execution of a component instantiation statement with the $runinit$ relation}
+
+The rule of Figure presents the execution of the \texttt{place}
+component instance $id_p$ during the $runinit$ phase. The execution of
+a component instantiation statement is pretty much the same in all the
+phases of the simulation algorithm. The difference lies in the choice
+of the relation used to execute of the internal behavior of the
+component instance. During the $runinit$ phase, it is the $runinit$
+relation that executes the internal behavior of component instances;
+during the falling edge phase, it is the $\downarrow$ relation that
+executes the internal behaviors, etc.
+
+\begin{figure}[H] \centering
+  \begin{prooftree}[template={\fontsize{11}{13}\selectfont\inserttext}]
+    
+    % Execute mapip
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\Delta,\Delta_p,\sigma_e,\sigma_p\vdash$
+      $i_p$
+      $\xrightarrow{mapip}$
+      $\sigma'_p$}
+
+    % Execute internal behavior
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta_p,\sigma'_p\vdash$
+      $cs_p$
+      $\xrightarrow{runinit}$
+      $\sigma''_p$ }
+
+    % Execute mapop
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\Delta,\Delta_p,\sigma_e,\sigma''_p\vdash$
+      $o_p$
+      $\xrightarrow{mapop}$
+      $\sigma'_e$}
+
+    % Conclusion
+    \infer3[\fontsize{7}{10}\selectfont\textsc{CompRunInit}$^1$]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_e\vdash$
+      $\mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p)$
+      $\xrightarrow{runinit}$
+      $\sigma''_e$ }
+  \end{prooftree}
+
+  \caption[The execution of the \texttt{place} component instance
+    $id_p$ during the $runinit$ phase.]{The execution of the \texttt{place} component instance
+    $id_p$ during the $runinit$ phase (first part of the
+    initialization).}
+  \label{fig:ex-runinit-pci-idp}
+\end{figure}
+
+\noindent{}where:
+
+\begin{enumerate}
+\item
+  \begin{tabular}{@{}l@{}}
+    $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
+    $\sigma''_e={<}\mathcal{S}'_e,\mathcal{C}''_e,\mathcal{E}'_e\cup(\mathcal{C}_e\dcap\mathcal{C}''_e){>}$ \\
+    $\mathcal{C}''_e=\mathcal{C}'_e(id_p)\leftarrow{}\sigma''_p$ \\
+  \end{tabular}
+\end{enumerate}
+
+
+
+The execution of a component instantiation statement is decomposed in
+four parts. First, the input ports of the component instance receive
+new values through the evaluation of the input port map. Second, the
+internal behavior of the component instance is executed. Thirdly, the
+evaluation of the output port map propagates the values coming from
+the output interface to the component to the signals of the embedding
+design. Finally, the component instance is assigned to its new
+internal state in the component store of the embedding design; here,
+$\sigma''_p$ is assigned to $id_p$ in component store
+$\mathcal{C}''_e$. Moreover, if the new internal state of the
+component instance is different from its older internal state, then
+the component instance identifier is added to the event set of the
+embedding design. Here, the expression
+$\mathcal{C}_e\dcap\mathcal{C}''_e$ performs the state comparison; we
+have:
+
+{\raggedleft
+  \begin{tabular}{ll}
+    $\mathcal{C}_e\dcap\mathcal{C}''_e$ & $=\mathcal{C}_e\dcap(\mathcal{C}'_e\leftarrow\sigma''_p)$ \\
+                                      & $=\mathcal{C}_e\dcap(\mathcal{C}_e\leftarrow\sigma''_p)$ \\
+                                      &$=
+                                        \begin{cases}
+                                          \{id_p\}~\mathtt{if}~\sigma_p\neq\sigma''_p \\
+                                          \emptyset~otherwise \\
+                                        \end{cases}$
+  \\
+\end{tabular}
+}
+
+In the second line, we have $\mathcal{C}_e=\mathcal{C}'_e$ because the
+evaluation of the output port map (performed by the $mapop$ relation)
+does not change the component store.
+
+The rule of Figure~\ref{fig:ex-eval-ipm} gives a part of the
+evaluation of the input port map of $id_p$.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+
+    % MapipSimple
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Nat}]{$\Delta,\sigma_e\vdash{}1\xrightarrow{e}1$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsCNat}]{$1\in_c{}nat(0,1)$}
+    \infer2[\fontsize{7}{10}\selectfont\textsc{MapipSimple}$^1$]{
+      $\Delta,\Delta_p,\sigma_e,\sigma_p\vdash$
+      $(\mathtt{im}, 1)\xrightarrow{mapip}\sigma'_{p0}$
+    }
+
+    % MapipComp
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\Delta,\Delta_p,\sigma_e,\sigma'_{p0}\vdash$
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{iaw}(0), 1)$ \\
+        $(\mathtt{oat}(0), 0),$ $(\mathtt{oaw}(0), 1),$ \\
+        $(\mathtt{itf}(0), id_{ft}),$ $(\mathtt{otf}(0), id_{ft})$ \\
+      \end{tabular}
+      $\xrightarrow{mapip}$
+      $\sigma'_p$
+    }
+    
+    % Conclusion 
+    \infer2[\fontsize{7}{10}\selectfont\textsc{MapipComp}]{
+      $\Delta,\Delta_p,\sigma_e,\sigma_p\vdash$
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{im}, 1),$ $(\mathtt{iaw}(0), 1)$ \\
+        $(\mathtt{oat}(0), 0),$ $(\mathtt{oaw}(0), 1),$ \\
+        $(\mathtt{itf}(0), id_{ft}),$ $(\mathtt{otf}(0), id_{ft})$ \\
+      \end{tabular}
+      $\xrightarrow{mapip}$
+      $\sigma'_p$
+    }
+    
+  \end{prooftree}
+  
+  \caption{The evaluation of the input port map of the \texttt{place}
+    component instance $id_p$.}
+  \label{fig:ex-eval-ipm}
+\end{figure}
+
+\noindent{}where:
+\begin{enumerate}
+\item
+  \begin{tabular}{@{}l@{}}
+    $\Delta_p(\mathtt{im})=nat(0,1)$ \\
+    $\sigma_p={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+    $\mathcal{S}'=\mathcal{S}(\mathtt{im})\leftarrow{}1$ \\
+    $\sigma'_{p0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}$ \\
+  \end{tabular}
+\end{enumerate}
+
+The evaluation of the input port map of $id_p$ changes the value of
+the \texttt{initial\_marking} input port (i.e. \texttt{im}). We have
+$\sigma_p(\mathtt{im})=0$ and $\sigma'_p(\mathtt{im})=1$. As the value
+of one of its input port has changed, the \texttt{place} component
+instance $id_p$ will be registered as an eventful component instance.
+
+The rule of Figure~\ref{fig:ex-eval-opm} gives a part of the
+evaluation of the output port map of $id_p$.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+
+    % MapipSimple
+    \infer0[]{$\vdash{}0\xrightarrow{e}0$}
+    \infer0{$0\in_c{}nat(0,0)$}
+    \infer2[\fontsize{7}{10}\selectfont\textsc{IdxSig}$^2$]{$\Delta_p,\sigma''_p\vdash\mathtt{oav}(0)\xrightarrow{e_o}\top$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsBool}]{$\top\in_c{}bool$}
+    \infer2[$^1$]{
+      $\Delta,\Delta_p,\sigma_e,\sigma''_p\vdash$
+      $(\mathtt{oav}(0), id_{av})$
+      $\xrightarrow{mapop}\sigma'_{e0}$
+    }
+
+    % MapipComp
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\Delta,\Delta_p,\sigma'_{e0},\sigma''_p\vdash$
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{pauths}, \mathtt{open})$ \\
+        $(\mathtt{rtt}(0), id_{rt}),$ $(\mathtt{marked}, id_m)$ \\
+      \end{tabular}
+      $\xrightarrow{mapop}$
+      $\sigma'_e$
+    }
+    
+    % Conclusion 
+    \infer2[\fontsize{7}{10}\selectfont\textsc{MapopComp}]{
+      $\Delta,\Delta_p,\sigma_e,\sigma''_p\vdash$
+      \begin{tabular}{@{}l@{}}
+        $(\mathtt{oav}(0), id_{av}),$ $(\mathtt{pauths}, \mathtt{open})$ \\
+        $(\mathtt{rtt}(0), id_{rt}),$ $(\mathtt{marked}, id_m)$ \\
+      \end{tabular}
+      $\xrightarrow{mapop}$
+      $\sigma'_e$
+    }
+    
+  \end{prooftree}
+  
+  \caption{The evaluation of the output port map of the \texttt{place}
+    component instance $id_p$.}
+  \label{fig:ex-eval-opm}
+\end{figure}
+
+\noindent{}where:
+\begin{enumerate}
+\item
+  \begin{tabular}{@{}l@{}}
+    $\Delta(id_{av})=bool$ \\
+    $\sigma_e={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+    $\mathcal{S}'=\mathcal{S}(id_{av})\leftarrow{}\top$ \\
+    $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+    $\sigma'_{e0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}$ \\
+  \end{tabular} (Rule~\textsc{MapopPartialToSimple}).
+\item
+  \begin{tabular}{@{}l@{}}
+    $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
+    $\sigma''_p(\mathtt{oav})=(\top)$ \\
+    $\mathtt{get\_at}(0,(\top))=\top$ \\
+  \end{tabular}
+\end{enumerate}
+
+\subsubsection{Stabilization}
+\label{sec:ex-stabilize-tl}
+
+A stabilization phase happens after the $runinit$ during the
+initialization phase, but also after the rising edge phase and the
+falling edge phase in the course of a simulation cycle. The
+stabilization phase executes the combinational parts of the design's
+behavior. The \texttt{tl} design holds no combinational processes in
+its behavior. The \texttt{marked} and \texttt{fired} processes are
+both synchronous. To illustrate the execution of a combinational
+process during a stabilization phase, let us consider the
+\texttt{fired_evaluation} process defined in the behavior of
+\texttt{transition} design. The \texttt{fired_evaluation} process will
+be executed with the internal behavior of the \texttt{transition}
+component instance $id_t$ during the stabilization phase.  The rule of
+Figure presents the execution of the internal behavior of the
+\texttt{transition} component instance $id_t$. As shown, the internal
+behavior $cs_t$ is executed three times before reaching a stable
+state. Here, the number of execution before stabilization is
+arbitrary. In Figure, $\sigma_{t0}$ corresponds to the state of $id_t$
+after the $runinit$ phase and after the evaluation of its input port
+map. Remember that the evaluation of the input port map of a component
+instance always precedes the execution of the internal behavior of the
+same component. Since $\sigma_{t0}$ and $\sigma_{t1}$ are not stable
+states, it means that their event set is not empty. Thus, we have
+$\mathcal{E}(\sigma_{t0})\neq\emptyset$ and
+$\mathcal{E}(\sigma_{t1})\neq\emptyset$. On the contrary,
+$\sigma_{t2}$ is a stable state, and thus,
+$\mathcal{E}(\sigma_{t2})=\emptyset$.
+
 
 
 %%% Local Variables:

@@ -1190,7 +1190,7 @@ part of the association, i.e. an input port
         }]
         {
           \Delta,\Delta_c,\sigma,\sigma_c\vdash
-          \mathrm{id}_s\Rightarrow\mathrm{e}
+          (\mathrm{id}_s,\mathrm{e})
           \xrightarrow{mapip}
           {<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}
         }
@@ -1222,7 +1222,7 @@ part of the association, i.e. an input port
         }]
         {
           \Delta,\Delta_c,\sigma,\sigma_c\vdash
-          \mathrm{id}_s(\mathrm{e}_i)\Rightarrow\mathrm{e}
+          (\mathrm{id}_s(\mathrm{e}_i),\mathrm{e})
           \xrightarrow{mapip}
           {<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}
         }
@@ -1254,7 +1254,7 @@ part of the association, i.e. an input port
     \infer2
     {
       \Delta,\Delta_c,\sigma,\sigma_c\vdash
-      \langle{}\mathrm{assoc}_{ip},~\mathrm{ipmap}\rangle
+      \mathrm{assoc}_{ip},~\mathrm{ipmap}
       \xrightarrow{mapip}
       \sigma''_c
     }
@@ -1529,7 +1529,7 @@ The following rules define the $mapop$ relation.
     \infer2
     {
       \Delta,\Delta_c,\sigma,\sigma_c\vdash
-      \langle{}\mathrm{assoc}_{po},~\mathrm{opmap}\rangle
+      \mathrm{assoc}_{po},~\mathrm{opmap}
       \xrightarrow{mapop}\sigma''
     }
   \end{prooftree}
