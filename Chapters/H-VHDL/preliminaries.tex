@@ -4,29 +4,30 @@ Let $id$ denote the set of identifiers in the semantic domain. We
 write $prefix\mhyphen{}id$ to denote arbitrary subsets of the $id$
 set. The $type$ and $value$ semantical types are defined as follows:
 
-\begin{table}[H]
-  \begin{tabular}{lcl}
-    $type$ & ::= & $bool$ | $nat(n$, $n)$ | $array(type$, $n$, $n)$ \\
-           & & \\
-    $value$ & ::= & $b$ | $n$ | $arr$ \\
-    $b$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
-    $n$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
-    $arr$ & ::= & \texttt{(}$value^{+}$\texttt{)}\\
+\begin{definition}[The $type$ and $value$ semantic types]
+  \label{def:type-value}
+  \begin{table*}[!h]
+    \begin{tabular}{lcl}
+      $type$ & ::= & $bool$ | $nat(n$, $n)$ | $array(type$, $n$, $n)$ \\
+             & & \\a
+      $value$ & ::= & $b$ | $n$ | $arr$ \\
+      $b$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
+      $n$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
+      $arr$ & ::= & \texttt{(}$value^{+}$\texttt{)}\\
 
-  \end{tabular}
-  \caption{The $type$ and $value$ semantical types.}
-  \label{tab:type-value}
-\end{table}
+    \end{tabular}
+  \end{table*}
+\end{definition}
 
-In Table~\ref{tab:type-value}, the $type$ type is in any way similar
-to the $\tau$ entry of the abstract syntax, however, all constraint
-bounds in the \texttt{nat} and \texttt{array} types have been
-evaluated to natural numbers. $\mathtt{NATMAX}$ denotes the maximum
-value for a natural number.  The $\mathtt{NATMAX}$ value depends on
-the implementation of the VHDL language; $\mathtt{NATMAX}$ must at
-least be equal to $2^{31}-1$. Note that the $array$ value contains at
-least one value as an array's index range contains at least one index
-(that is index 0).
+In Definition~\ref{def:type-value}, the $type$ type is in any way
+similar to the $\tau$ entry of the abstract syntax, however, all
+constraint bounds in the \texttt{nat} and \texttt{array} types have
+been evaluated to natural numbers. $\mathtt{NATMAX}$ denotes the
+maximum value for a natural number.  The $\mathtt{NATMAX}$ value
+depends on the implementation of the VHDL language; $\mathtt{NATMAX}$
+must at least be equal to $2^{31}-1$. Note that the $array$ value
+contains at least one value as an array's index range contains at
+least one index (that is index 0).
 
 \begin{notation}[Partial functions]
   Here, we present our notations pertaining to partial functions:
@@ -65,9 +66,11 @@ type indication for input ports). We represent an elaborated design as
 a record where the fields are the sub-environments. An elaborated
 design is defined as follows:
 
-\begin{definition}[Elaborated Design] For a given \hvhdl{} design
-  $d\in{}design$ s.t. $d=$ \vhdle|design| \textit{$id_{e}$ $id_{a}$
-    gens ports sigs behavior} and a given design store
+\begin{definition}[Elaborated Design]
+  \label{def:elab-design}
+  For a given \hvhdl{} design $d\in{}design$ s.t. $d=$ \vhdle|design|
+  \textit{$id_{e}$ $id_{a}$ gens ports sigs behavior} and a given
+  design store
   $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$ is a record
   ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
@@ -132,6 +135,7 @@ elaborated design $\Delta$.  A design state of $\Delta$ is defined as
 follows:
 
 \begin{definition}[Design state]
+  \label{def:design-state}
   A design state $\sigma\in\Sigma(\Delta)$, for a given design
   $d\in{}design$, a given design store $\mathcal{D}$ and an elaborated
   design $\Delta\in{}ElDesign(d,\mathcal{D})$, is a record

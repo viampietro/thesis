@@ -127,7 +127,7 @@ list. The leftmost premise pertains to the elaboration of the behavior
 of the \texttt{tl} design.
 
 \begin{figure}[H]
-  \begin{prooftree}[template={\fontsize{9}{12}\selectfont\inserttext}]
+  \begin{prooftree}[template={\fontsize{10}{12}\selectfont\inserttext},separation=10pt]
 
     % Gens elab.
     \hypo{}
@@ -153,7 +153,7 @@ of the \texttt{tl} design.
     \infer1{$\mathcal{D}_\mathcal{H},\Delta_2,\sigma_{e2}\vdash$
       $cs_{tl}\xrightarrow{ebeh}\Delta,\sigma_e$}
         
-    \infer4[\fontsize{7}{10}\selectfont\textsc{DesignElab}]{
+    \infer4{
       {\fontsize{12}{12}\selectfont
       $\mathcal{D}_\mathcal{H},\emptyset\vdash$
       \vhdle|design tl tla| $gens_{tl}$ $ports_{tl}$ $sigs_{tl}$ $cs_{tl}$
@@ -299,12 +299,12 @@ a derivation.
     \infer2[\fontsize{7}{10}\selectfont\textsc{WTSig}$^1$]{$\vdash{}\mathtt{valid}_{ss}(id_{a0}\Leftarrow{}\mathtt{false})$}
 
     % Second rst block
-    \infer0[\fontsize{7}{10}\selectfont\textsc{Sig}$^{2}$]{$id_m\xrightarrow{e}\bot$}
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Sig}$^{2}$]{$\sigma_{e2}\vdash{}id_m\xrightarrow{e}\bot$}
     \infer0[\fontsize{7}{10}\selectfont\textsc{False}]{$\mathtt{false}\xrightarrow{e}\bot$}
-    \infer2[\fontsize{7}{10}\selectfont\textsc{BoolBinOp}]{$\vdash{}id_m~\mathtt{or}~\mathtt{false}\xrightarrow{e}\bot$}
+    \infer2[\fontsize{7}{10}\selectfont\textsc{BoolBinOp}]{$\sigma_{e2}\vdash{}id_m~\mathtt{or}~\mathtt{false}\xrightarrow{e}\bot$}
     \infer0[\fontsize{7}{10}\selectfont\textsc{IsBool}]{$\bot\in_c{}bool$}
-    \infer2[\fontsize{7}{10}\selectfont\textsc{WTSig}$^{1}$]{$\vdash{}\mathtt{valid}_{ss}(id_{a0}\Leftarrow{}id_m~\mathtt{or}~\mathtt{false})$}
-    \infer1[\fontsize{7}{10}\selectfont\textsc{WTFalling}]{$\vdash{}\mathtt{valid}_{ss}(\mathtt{falling}(id_{a0}\Leftarrow{}id_m~\mathtt{or}~\mathtt{false}))$}
+    \infer2[\fontsize{7}{10}\selectfont\textsc{WTSig}$^{1}$]{$\sigma_{e2}\vdash{}\mathtt{valid}_{ss}(id_{a0}\Leftarrow{}id_m~\mathtt{or}~\mathtt{false})$}
+    \infer1[\fontsize{7}{10}\selectfont\textsc{WTFalling}]{$\sigma_{e2}\vdash{}\mathtt{valid}_{ss}(\mathtt{falling}(id_{a0}\Leftarrow{}id_m~\mathtt{or}~\mathtt{false}))$}
     
     % Conclusion
     \infer2[\fontsize{7}{10}\selectfont\textsc{WTRst}]{$\Delta_2,\sigma_{e2},\emptyset\vdash$
@@ -315,16 +315,18 @@ a derivation.
       \end{tabular}$\Big)$}
     
   \end{prooftree}
+
+  \vspace{10pt}
+  
+  \begin{enumerate*}[label=(\arabic*)]
+  \item $\Delta_2(id_{a0})=bool$
+  \item $\sigma_{e2}(id_m)=\bot$
+  \end{enumerate*}
+  
   \caption{Static type-checking of the \texttt{marked} process
     statement body.}
   \label{fig:ex-wt-marked-ps}
 \end{figure}
-
-\noindent{}where:
-\begin{enumerate}
-\item $\Delta_2(id_{a0})=bool$
-\item $\sigma_{e2}(id_m)=\bot$
-\end{enumerate}
 
 At the end of the elaboration of the \texttt{tl} design's behavior,
 the $Ps$ sub-environment of $Delta$ is as follows:
@@ -375,22 +377,23 @@ the \texttt{tl} design.
     }
     
   \end{prooftree}
+
+  \vspace{10pt}
+
+  \begin{enumerate}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $id_p\notin\Delta_2$ \\
+      $id_p\notin{}\sigma_{e2}$ \\
+      $\mathtt{place}\in\mathcal{D}_\mathcal{H}$ \\
+      $\mathcal{M}\subseteq{}Gens(\Delta_p)$ \\
+    \end{tabular}
+  \end{enumerate}
+  
   \caption{The elaboration of the $id_p$ component instance defined in
     the behavior of the \texttt{tl} design.}
   \label{fig:ex-elab-pci-idp}
 \end{figure}
-
-\noindent{}where:
-
-\begin{enumerate}
-\item
-  \begin{tabular}{@{}l@{}}
-    $id_p\notin\Delta_2$ \\
-    $id_p\notin{}\sigma_{e2}$ \\
-    $\mathtt{place}\in\mathcal{D}_\mathcal{H}$ \\
-    $\mathcal{M}\subseteq{}Gens(\Delta_p)$ \\
-  \end{tabular}
-\end{enumerate}
 
 The elaboration of a component instantiation statement is divided in
 three parts. First, a dimensioning function is built out of the
@@ -424,15 +427,17 @@ Section~\ref{subsubsec:loc-static}).
       $\{(\mathtt{ian},1),(\mathtt{oan},1),(\mathtt{mm},1)\}$}
     
   \end{prooftree}
+
+  \vspace{10pt}
+  
+  \begin{enumerate}[label=(\arabic*)]
+  \item $\mathtt{ian}\notin\emptyset$
+  \end{enumerate}
+  
   \caption{The elaboration of the generic map of the $id_p$ component
     instance defined in the behavior of the \texttt{tl} design.}
   \label{fig:ex-emapg}
 \end{figure}
-
-\noindent{}where:
-\begin{enumerate}
-\item $\mathtt{ian}\notin\emptyset$
-\end{enumerate}
 
 The second step of the elaboration of a component instance is to
 retrieve from the design store the design associated with the
@@ -550,7 +555,6 @@ the validity of the output port map of $id_p$, as it holds the
 correspondence between port identifiers and port types.
 
 \begin{figure}[H]
-  \centering
   \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
 
     % Elab of assocop
@@ -624,6 +628,18 @@ correspondence between port identifiers and port types.
     }
 
   \end{prooftree}
+
+  \vspace{10pt}
+
+  \begin{enumerate}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
+      $\Delta_2(id_{av})=bool$ \\
+      $\mathtt{oav}\notin\emptyset$ and $(\mathtt{oav},0)\notin\emptyset$ \\
+      $id_{av}\notin\emptyset$ \\
+    \end{tabular}
+  \end{enumerate}
   
   \caption{An example of validity checking performed on the output
     port map of the place component instance $id_p$. The bottom proof
@@ -631,16 +647,6 @@ correspondence between port identifiers and port types.
   \label{fig:ex-valid-opm}
 \end{figure}
 
-\noindent{}where:
-\begin{enumerate}
-\item
-  \begin{tabular}{@{}l@{}}
-    $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
-    $\Delta_2(id_{av})=bool$ \\
-    $\mathtt{oav}\notin\emptyset$ and $(\mathtt{oav},0)\notin\emptyset$ \\
-    $id_{av}\notin\emptyset$ \\
-  \end{tabular}
-\end{enumerate}
 
 At the end of the elaboration of the \texttt{tl} design's behavior,
 the $Comps$ sub-environment of $\Delta$ is as follows:
@@ -755,15 +761,14 @@ states $\sigma'_e$ and $\sigma''_e$ are merged into one by the
 
   \end{prooftree}
 
+  \begin{enumerate}[label=(\arabic*)]
+  \item $\mathcal{E}'_e\cap\mathcal{E}''_e$
+  \end{enumerate}
+  
   \caption{The $runinit$ phase applied to the concurrent statements
     composing the behavior of the \texttt{tl} design.}
   \label{fig:ex-runinit-tl}
 \end{figure}
-
-\noindent{}where:
-\begin{enumerate}
-\item $\mathcal{E}'_e\cap\mathcal{E}''_e$
-\end{enumerate}
 
 In what follows, we detail the execution of a process statement and of
 a component instantiation statement during the first part of the
@@ -777,7 +782,7 @@ the statement body of the \texttt{marked} process is executed. This
 first part assigns the expression $\mathtt{false}$ to signal
 $id_{a0}$.
 
-\begin{figure}[H] \centering
+\begin{figure}[H]
   \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
 
     \infer0[\fontsize{7}{10}\selectfont\textsc{False}]{$\vdash\mathtt{false}\xrightarrow{e}\bot$}
@@ -805,23 +810,23 @@ $id_{a0}$.
       $\sigma'_e$ }
   \end{prooftree}
 
+  \vspace{10pt}
+  
+  \begin{enumerate*}[label=(\arabic*)]
+  \item $\Delta(\mathtt{marked})=\emptyset$
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta(id_{a0})=bool$ \\
+      $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
+      $\mathcal{S}'_e=\mathcal{S}_e(id_{a0})\leftarrow\bot$ \\
+      $\mathcal{E}'_e=\mathcal{E}_e\cup(\mathcal{S}_e\dcap\mathcal{S}'_e)$ \\
+    \end{tabular}
+  \end{enumerate*}
+
   \caption{The $runinit$ phase applied to the concurrent statements
     composing the behavior of the \texttt{tl} design.}
   \label{fig:ex-runinit-ps}
 \end{figure}
-
-\noindent{}where:
-
-\begin{enumerate}
-\item $\Delta(\mathtt{marked})=\emptyset$
-\item
-  \begin{tabular}{@{}l@{}}
-    $\Delta(id_{a0})=bool$ \\
-    $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
-    $\mathcal{S}'_e=\mathcal{S}_e(id_{a0})\leftarrow\bot$ \\
-    $\mathcal{E}'_e=\mathcal{E}_e\cup(\mathcal{S}_e\dcap\mathcal{S}'_e)$ \\
-  \end{tabular}
-\end{enumerate}
 
 In the side conditions of the \textsc{SigAssign} rule, an new event
 set $\mathcal{E}'_e$ is computed based on the event set
@@ -898,25 +903,22 @@ executes the internal behaviors, etc.
       $\sigma''_e$ }
   \end{prooftree}
 
+  \begin{enumerate}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
+      $\sigma''_e={<}\mathcal{S}'_e,\mathcal{C}''_e,\mathcal{E}'_e\cup(\mathcal{C}_e\dcap\mathcal{C}''_e){>}$ \\
+      $\mathcal{C}''_e=\mathcal{C}'_e(id_p)\leftarrow{}\sigma''_p$ \\
+    \end{tabular}
+  \end{enumerate}
+
+  
   \caption[The execution of the \texttt{place} component instance
     $id_p$ during the $runinit$ phase.]{The execution of the \texttt{place} component instance
     $id_p$ during the $runinit$ phase (first part of the
     initialization).}
   \label{fig:ex-runinit-pci-idp}
 \end{figure}
-
-\noindent{}where:
-
-\begin{enumerate}
-\item
-  \begin{tabular}{@{}l@{}}
-    $\sigma'_e={<}\mathcal{S}'_e,\mathcal{C}'_e,\mathcal{E}'_e{>}$ \\
-    $\sigma''_e={<}\mathcal{S}'_e,\mathcal{C}''_e,\mathcal{E}'_e\cup(\mathcal{C}_e\dcap\mathcal{C}''_e){>}$ \\
-    $\mathcal{C}''_e=\mathcal{C}'_e(id_p)\leftarrow{}\sigma''_p$ \\
-  \end{tabular}
-\end{enumerate}
-
-
 
 The execution of a component instantiation statement is decomposed in
 four parts. First, the input ports of the component instance receive
@@ -993,22 +995,23 @@ evaluation of the input port map of $id_p$.
     }
     
   \end{prooftree}
+
+  \vspace{10pt}
+  
+  \begin{enumerate}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta_p(\mathtt{im})=nat(0,1)$ \\
+      $\sigma_p={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+      $\mathcal{S}'=\mathcal{S}(\mathtt{im})\leftarrow{}1$ \\
+      $\sigma'_{p0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}$ \\
+    \end{tabular}
+  \end{enumerate}
   
   \caption{The evaluation of the input port map of the \texttt{place}
     component instance $id_p$.}
   \label{fig:ex-eval-ipm}
 \end{figure}
-
-\noindent{}where:
-\begin{enumerate}
-\item
-  \begin{tabular}{@{}l@{}}
-    $\Delta_p(\mathtt{im})=nat(0,1)$ \\
-    $\sigma_p={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-    $\mathcal{S}'=\mathcal{S}(\mathtt{im})\leftarrow{}1$ \\
-    $\sigma'_{p0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}{>}$ \\
-  \end{tabular}
-\end{enumerate}
 
 The evaluation of the input port map of $id_p$ changes the value of
 the \texttt{initial\_marking} input port (i.e. \texttt{im}). We have
@@ -1020,8 +1023,7 @@ The rule of Figure~\ref{fig:ex-eval-opm} gives a part of the
 evaluation of the output port map of $id_p$.
 
 \begin{figure}[H]
-  \centering
-  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext},separation=5pt]
 
     % MapipSimple
     \infer0[]{$\vdash{}0\xrightarrow{e}0$}
@@ -1059,29 +1061,30 @@ evaluation of the output port map of $id_p$.
     }
     
   \end{prooftree}
+
+  \vspace{10pt}
+  
+  \begin{enumerate*}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta(id_{av})=bool$ \\
+      $\sigma_e={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+      $\mathcal{S}'=\mathcal{S}(id_{av})\leftarrow{}\top$ \\
+      $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+      $\sigma'_{e0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}$ \\
+    \end{tabular}
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
+      $\sigma''_p(\mathtt{oav})=(\top)$ \\
+      $\mathtt{get\_at}(0,(\top))=\top$ \\
+    \end{tabular}
+  \end{enumerate*}
   
   \caption{The evaluation of the output port map of the \texttt{place}
     component instance $id_p$.}
   \label{fig:ex-eval-opm}
 \end{figure}
-
-\noindent{}where:
-\begin{enumerate}
-\item
-  \begin{tabular}{@{}l@{}}
-    $\Delta(id_{av})=bool$ \\
-    $\sigma_e={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
-    $\mathcal{S}'=\mathcal{S}(id_{av})\leftarrow{}\top$ \\
-    $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
-    $\sigma'_{e0}={<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}$ \\
-  \end{tabular} (Rule~\textsc{MapopPartialToSimple}).
-\item
-  \begin{tabular}{@{}l@{}}
-    $\Delta_p(\mathtt{oav})=array(bool,0,0)$ \\
-    $\sigma''_p(\mathtt{oav})=(\top)$ \\
-    $\mathtt{get\_at}(0,(\top))=\top$ \\
-  \end{tabular}
-\end{enumerate}
 
 \subsubsection{Stabilization}
 \label{sec:ex-stabilize-tl}
@@ -1098,20 +1101,389 @@ process during a stabilization phase, let us consider the
 \texttt{transition} design. The \texttt{fired_evaluation} process will
 be executed with the internal behavior of the \texttt{transition}
 component instance $id_t$ during the stabilization phase.  The rule of
-Figure presents the execution of the internal behavior of the
-\texttt{transition} component instance $id_t$. As shown, the internal
-behavior $cs_t$ is executed three times before reaching a stable
-state. Here, the number of execution before stabilization is
-arbitrary. In Figure, $\sigma_{t0}$ corresponds to the state of $id_t$
-after the $runinit$ phase and after the evaluation of its input port
-map. Remember that the evaluation of the input port map of a component
-instance always precedes the execution of the internal behavior of the
-same component. Since $\sigma_{t0}$ and $\sigma_{t1}$ are not stable
+Figure~\ref{fig:ex-stab-idp} presents the execution of the internal
+behavior of the \texttt{transition} component instance $id_t$. As
+shown, the internal behavior $cs_t$ is executed three times before
+reaching a stable state. Here, the number of execution before
+stabilization is arbitrary. In Figure~\ref{fig:ex-stab-idp},
+$\sigma_{t0}$ corresponds to the state of $id_t$ after the $runinit$
+phase and after the evaluation of its input port map. Remember that
+the evaluation of the input port map of a component instance always
+precedes the execution of the internal behavior of the
+component. Since $\sigma_{t0}$ and $\sigma_{t1}$ are not stable
 states, it means that their event set is not empty. Thus, we have
 $\mathcal{E}(\sigma_{t0})\neq\emptyset$ and
 $\mathcal{E}(\sigma_{t1})\neq\emptyset$. On the contrary,
 $\sigma_{t2}$ is a stable state, and thus,
 $\mathcal{E}(\sigma_{t2})=\emptyset$.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+
+    % 1st comb exec.
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t0}\vdash$
+      $cs_t$
+      $\xrightarrow{comb}$
+      $\sigma_{t1}$
+    }
+
+    % 2nd stabilize
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t1}\vdash$
+      $cs_t$
+      $\xrightarrow{comb}$
+      $\sigma_{t2}$
+    }
+
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t2}\vdash$
+      $cs_t$
+      $\xrightarrow{comb}$
+      $\sigma_{t2}$
+    }
+    \infer1[\fontsize{7}{10}\selectfont\textsc{StabilizeEnd}]{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t2}\vdash$
+      $cs_t$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_{t2}$
+    }
+    
+    \infer2[\fontsize{7}{10}\selectfont\textsc{StabilizeLoop}]{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t0}\vdash$
+      $cs_t$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_{t2}$
+    }
+
+    
+    % Conclusion 
+    \infer2[\fontsize{7}{10}\selectfont\textsc{StabilizeLoop}]{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t0}\vdash$
+      $cs_t$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_{t2}$
+    }
+    
+  \end{prooftree}
+  
+  \caption{Three rounds of execution of the combinational parts of the
+    \texttt{place} component instance $id_p$ during a stabilization
+    phase.}
+  \label{fig:ex-stab-idp}
+\end{figure}
+
+Now, let us illustrate the execution of the \texttt{fired_evaluation}
+process, which is a part of $cs_t$, happening during the stabilization
+phase. The rule of Figure details the execution of the body of process
+\texttt{fired_evaluation} performed by the $comb$ relation.
+
+\begin{figure}[H]
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Sig}]{
+      $\Delta_t,\sigma_{t0}\vdash$ \vhdle|sfa|
+      $\xrightarrow{e}$
+      $\bot$
+    }
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Sig}]{
+      $\Delta_t,\sigma_{t0}\vdash$ \vhdle|spc| $\xrightarrow{e}$ $\top$
+    }
+    \infer2[\fontsize{7}{10}\selectfont\textsc{BoolBinOp}]{
+      $\Delta_t,\sigma_{t0}\vdash$
+      \vhdle|sfa and spc|
+      $\xrightarrow{e}$
+      $\bot$
+    }
+    
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsBool}]{
+      $\bot\in_c{}bool$
+    }
+    
+    \infer2[\fontsize{7}{10}\selectfont\textsc{SigAssign}$^2$]{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t0},NoEv(\sigma_{t0}),\emptyset\vdash$
+      \vhdle|fired <= sfa and spc|
+      $\xrightarrow{ss_c}$
+      $\sigma'_{t0},\emptyset$
+    }
+    
+    % Conclusion 
+    \infer1[\fontsize{7}{10}\selectfont\textsc{PsComb}$^1$]{
+      $\mathcal{D}_\mathcal{H},\Delta_t,\sigma_{t0}\vdash$
+      \begin{tabular}{@{}l@{}}
+        \vhdle|process|$(\mathtt{fired\_evaluation},\{\mathtt{sfa},\mathtt{spc}\},\emptyset,$ \\
+        \vhdle|fired <= sfa and spc|$)$ \\
+      \end{tabular}
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma'_{t0}$
+    }
+    
+  \end{prooftree}
+
+  \vspace{10pt}
+  
+  \begin{enumerate*}[label=(\arabic*),itemjoin=\hspace{30pt}]
+  \item $\Delta_t(\mathtt{fired\_evaluation})=\emptyset$
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta_t(\mathtt{fired})=bool$ \\
+      $NoEv(\sigma_{t0})={<}\mathcal{S},\mathcal{C},\emptyset{>}$ \\
+      $\mathcal{S}'=\mathcal{S}(\mathtt{fired})\leftarrow\bot$ \\
+      $\sigma'_{t0}={<}\mathcal{S}',\mathcal{C},\mathcal{S}\dcap\mathcal{S'}{>}$\\
+    \end{tabular}
+  \end{enumerate*}
+  
+  \caption{The execution of the \texttt{fired_evaluation} process
+    during a stabilization phase. The \texttt{fired_evaluation}
+    process is defined in the \texttt{transition} design's behavior.}
+  \label{fig:ex-fired-eval-comb}
+\end{figure}
+
+Let us consider that the value of the \texttt{fired} signal was $\top$
+at state $\sigma_{t0}$, i.e. $\sigma_{t0}(\mathtt{fired})=\top$. Then,
+since $\sigma'_{t0}(\mathtt{fired})=\bot$, we have
+$\mathcal{S}\dcap\mathcal{S'}=\{\mathtt{fired}\}$. When state
+$\sigma'_{t0}$ will be merged with the other states generated by the
+concurrent execution of processes defining the \texttt{transition}
+design behavior, the resulting merged state will have a non-empty set
+of events. Thus, another round of execution will be triggered. A
+stable state has been reached when the execution of the combinational
+parts of the behavior does not generate any event anymore.
+
+\subsubsection{Simulation cycle and clock phases}
+\label{sec:ex-sim-cycle-and-clock}
+
+We describe here the execution of the \texttt{tl} design over one
+clock cycle. After the initialization phase, the design under
+simulation will execute $\tau$ simulation cycles, where $\tau$ is a
+natural numbers passed as a parameter. In the rule of
+Figure~\ref{fig:ex-sim-loop-tl}, $\tau$ equals 1. Thus, the behavior
+of the \texttt{tl} design is executed during one clock cycle and then
+the simulation stalls. In Figure~\ref{fig:ex-sim-loop-tl}, $\sigma_0$
+is the initial simulation state, i.e. the one at the end of the
+initialization phase. One simulation cycle yiels two states $\sigma_1$
+and $\sigma_2$, where $\sigma_1$ is the state in the middle of the
+first cycle, and $\sigma_2$ is the state at the end of the first
+cycle. The resulting simulation trace is only composed of states
+$\sigma_1$ and $\sigma_2$.
+
+\begin{figure}[H]
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[\fontsize{7}{10}\selectfont\textsc{SimCyc}]{
+      $\mathcal{D}_\mathcal{H},E_p,\Delta,1,\sigma_0\vdash$
+      $cs_{tl}$      
+      $\xrightarrow{\uparrow,\downarrow}$
+      $\sigma_1,\sigma_2$
+    }
+
+    \infer0[\fontsize{7}{10}\selectfont\textsc{SimEnd}]{
+      $\mathcal{D}_\mathcal{H},E_p,\Delta,0,\sigma_2\vdash$
+      $cs_{tl}$      
+      $\rightarrow$
+      $[]$
+    }
+    
+    % Conclusion 
+    \infer2[\fontsize{7}{10}\selectfont\textsc{SimLoop}$^1$]{
+      $\mathcal{D}_\mathcal{H},E_p,\Delta,1,\sigma_0\vdash$
+      $cs_{tl}$
+      $\rightarrow$
+      $(\sigma_1::\sigma_2::[])$
+    }
+    
+  \end{prooftree}
+
+  \begin{enumerate}[label=(\arabic*)]
+  \item $1>0$
+  \end{enumerate}
+  
+  \caption{The execution of the \texttt{tl} design's behavior during
+    one clock cycle. }
+  \label{fig:ex-sim-loop-tl}
+\end{figure}
+
+The rule of Figure zooms in the first simulation cycle. The state
+$\sigma_1$ is produced by a rising edge phase followed by a
+stabilization phase. The state $\sigma_2$ is produced by a falling
+edge phase followed by a stabilization phase. The value of the primary
+input ports of the \texttt{tl} design are updated before each clock
+event phase. States $\sigma_{0i}$ and $\sigma_{1i}$ are the new states
+obtained after the update of the primary input port values. The update
+corresponds to the capture of values yielded by the given simulation
+environment $E_p$. The \texttt{tl} design has only one primary input
+port, i.e. the input port $id_{c0}$. The value of $id_{c0}$ at state
+$\sigma_{0i}$ is equal to the value yielded by the environment $E_p$
+at the rising edge of clock during the first clock cycle. Thus, we
+have $\sigma_{0i}(id_{c0})=E_p(1,\uparrow)(id_{c0})$. To perform the
+proof that the \hilecop{} transformation is semantic preserving, we
+need the hypothesis that the primary input ports of the top-level
+design stay stable during clock cycle. For instance, the value of
+$id_{c0}$ must be the same during the first clock cycle independently
+of the considered clock event. Thus, we have
+$E_p(1,\uparrow)(id_{c0})=E_p(1,\downarrow)(id_{c0})$. In this
+setting, we only need to capture the value of primary input ports at
+the beginning a clock cycle. However, to keep the definition of the
+\hvhdl{} semantics as general as possible, we preserve the update of
+primary input ports at each clock event.
+
+\begin{figure}[H]
+  \centering
+  \begin{prooftree}[template={\fontsize{10}{13}\selectfont\inserttext}]
+
+    % RISING EDGE
+    \hypo{}
+    \ellipsis{}{}
+    \infer1[]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_{0i}\vdash$
+      $cs_{tl}$
+      $\xrightarrow{\uparrow}$
+      $\sigma_\uparrow$
+    }
+    
+    % STABILIZE 1
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_\uparrow\vdash$
+      $cs_{tl}$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_1$
+    }
+
+    % FALLING EDGE
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_{1i}\vdash$
+      $cs_{tl}$
+      $\xrightarrow{\downarrow}$
+      $\sigma_\downarrow$
+    }
+
+    % STABILIZE 2
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_\downarrow\vdash$
+      $\xrightarrow{\rightsquigarrow}$
+      $\sigma_2$
+    }
+
+    % CONCLUSION
+    \infer4[\fontsize{7}{10}\selectfont\textsc{SimCyc}$^1$]{
+      $\mathcal{D}_\mathcal{H},E_p,\Delta,1,\sigma_0\vdash$
+      $\xrightarrow{\uparrow,\downarrow}$
+      $\sigma_1,\sigma_2$
+    }
+    
+  \end{prooftree}
+
+  \begin{enumerate}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\mathtt{Inject}_{\uparrow}(\sigma_0,E_p,1,\sigma_{0i})$ \\
+      $\mathtt{Inject}_{\downarrow}(\sigma_1,E_p,1,\sigma_{1i})$ \\
+    \end{tabular}
+  \end{enumerate}
+  
+  \caption{Details of the execution of the \texttt{tl} design's
+    behavior during the first clock cycle. }
+  \label{fig:ex-fst-sim-cycle-tl}
+\end{figure}
+
+The rule of Figure~\ref{fig:ex-re-ps-exec} describes the execution of
+the \texttt{fired} process, defined in the \texttt{tl} design's
+behavior, during the rising edge phase of the first simulation
+cycle. During the rising edge phase, rising blocks are executed. Thus,
+the $\uparrow$ relation triggers the execution of the rising block
+defined in the body of the \texttt{fired} process.
+
+\begin{figure}[H]
+  \begin{prooftree}[template={\fontsize{12}{13}\selectfont\inserttext}]
+
+    \infer0[\fontsize{7}{10}\selectfont\textsc{Sig}$^3$]{
+      $\Delta,\sigma_{0i}\vdash{}id_{ft}$
+      $\xrightarrow{e}\top$
+    }
+    \infer0[\fontsize{7}{10}\selectfont\textsc{False}]{
+      $\mathtt{false}$
+      $\xrightarrow{e}\bot$
+    }
+    \infer2[\fontsize{7}{10}\selectfont\textsc{BoolBinOp}]{
+      $\Delta,\sigma_{0i}\vdash{}id_{ft}$ \vhdle|or false|
+      $\xrightarrow{e}\top$
+    }
+    \infer0[\fontsize{7}{10}\selectfont\textsc{IsBool}]{$\top\in_c{}bool$}
+    
+    % Execute sig. assignment
+    \infer2[\fontsize{7}{10}\selectfont\textsc{SigAssign}$^2$]{
+      $\Delta,\sigma_{0i},\sigma_{0i},\emptyset\vdash$
+      $id_{f0}\Leftarrow{}id_{ft}$ \vhdle|or false|
+      $\xrightarrow{ss_\uparrow}$
+      $\sigma'_{0i},\emptyset$}
+
+    % Execute rising block
+    \infer1[\fontsize{7}{10}\selectfont\textsc{RisingEdgeExec}]{
+      $\Delta,\sigma_{0i},\sigma_{0i},\emptyset\vdash$
+      \vhdle|rising (|$id_{f0}\Leftarrow{}id_{ft}$ \vhdle|or false)|
+      $\xrightarrow{ss_\uparrow}$
+      $\sigma'_{0i},\emptyset$}
+    
+    % Execute default rst block
+    \infer1[\fontsize{7}{10}\selectfont\textsc{RstDefault}]{
+      $\Delta,\sigma_{0i},\sigma_{0i},\emptyset\vdash$
+      \vhdle|(rst (|$id_{f0}$ \vhdle|<= false) (rising (|$id_{f0}$ \vhdle|<=| $id_{ft}$ \vhdle|or false)))|
+      $\xrightarrow{ss_\uparrow}$
+      $\sigma'_{0i},\emptyset$}
+
+    % Conclusion
+    \infer1[\fontsize{7}{10}\selectfont\textsc{PsREClk}$^1$]{
+      $\mathcal{D}_\mathcal{H},\Delta,\sigma_{0i}\vdash$
+      \begin{tabular}{@{}l@{}}
+        \vhdle|process| $(\mathtt{fired},\{\mathtt{clk}\},\emptyset,$ \\
+        \vhdle|(rst (|$id_{f0}$ \vhdle|<= false) (rising (|$id_{f0}$ \vhdle|<=| $id_{ft}$ \vhdle|or false)))|$)$ \\
+      \end{tabular}
+      $\xrightarrow{\uparrow}$
+      $\sigma'_e$ }
+  \end{prooftree}
+
+  \vspace{10pt}
+
+  % SIDE CONDITIONS  
+  \begin{enumerate*}[label=(\arabic*)]
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\mathtt{clk}\in\{\mathtt{clk}\}$ \\
+      $\Delta(\mathtt{fired})=\emptyset$ \\
+    \end{tabular}
+    
+  \item
+    \begin{tabular}{@{}l@{}}
+      $\Delta(id_{f0})=bool$ \\
+      $\sigma_{0i}={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ \\
+      $\mathcal{S}'=\mathcal{S}(id_{f0})\leftarrow\top$ \\
+      $\mathcal{E}'=\mathcal{E}\cup(\mathcal{S}\dcap\mathcal{S}')$ \\
+      $\sigma'_{0i}={<}\mathcal{S}',\mathcal{C},\mathcal{E}'{>}$ \\
+    \end{tabular}
+  \item $\sigma_{0i}(id_{ft})=\top$  
+  \end{enumerate*}
+
+  \caption{The execution of the \texttt{fired} process during a rising
+    edge phase. The \texttt{fired} process is a part of the
+    \texttt{tl} design's behavior.}
+  \label{fig:ex-re-ps-exec}
+\end{figure}
+
 
 
 

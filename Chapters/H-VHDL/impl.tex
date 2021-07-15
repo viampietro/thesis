@@ -1,0 +1,238 @@
+This section presents the implementation of the \hvhdl{} abstract
+syntax, and also of the elaboration and the simulation semantics of
+\hvhdl{} designs with the \coq{} proof assistant. The full code is
+available under the \texttt{hvhdl} folder of the following repository:
+\url{https://github.com/viampietro/ver-hilecop}.
+
+\subsection{Implementation of the \hvhdl{} abstract syntax, elaborated design and design state}
+\label{sec:impl-abss-and-env}
+
+\paragraph{\hvhdl{} abstract syntax}
+
+The implementation of the \hvhdl{} abstract syntax is naturally done
+leveraging the \texttt{Inductive} construct of the \coq{} proof
+assistant. The result is strictly similar to the formal definition of
+the abstract syntax given in Section~\ref{sec:abstractSyntax}. The
+reader can refer to the \texttt{AbstractSyntax.v} under the
+\texttt{hvhdl} folder for the details of the implementation.
+
+\paragraph{Elaborated design}
+
+Listing~\ref{lst:elab-design-struct} presents the implementation of
+the elaborated design structure
+(cf. Definition~\ref{def:elab-design}). Two definitions are involved
+in the implementation of the elaborated design structure.  The first
+one defines the \texttt{SemanticObject} inductive type. Each
+constructor of this type corresponds to a sub-environment of the
+elaborated design. For instance, the \texttt{Generic} constructor
+correspond to the couple $(type\times{}value)$ associated with a
+generic constant identifier in the $Gens$ sub-environment of
+Definition~\ref{def:elab-design}. The \texttt{Process} constructor
+corresponds to the local variable environment associated with the
+process identifiers in the $Ps$ sub-environment. A local variable
+environment is implemented by the \texttt{LEnv} type. The
+\texttt{LEnv} type is a map between identifiers and couples
+$(type\times{}value)$. Identifiers are implemented by the
+\texttt{ident} type, an alias of the \texttt{nat} type. The
+\texttt{type} and \texttt{value} types are the implementation of the
+semantic $type$ and $value$ presented in
+Definition~\ref{def:type-value}. The \texttt{ElDesign} type implements
+the elaborated design structure. It is an alias to the \texttt{IdMap
+  SemanticObject} type. The \texttt{IdMap} is the type of maps from
+identifiers (i.e. belonging to the \texttt{ident} type) to instances
+of the type passed as a parameter. Here, the parameter is the
+\texttt{SemanticObject} type. Thus, an elaborated design is
+implemented as a map between identifiers and objects of the
+\texttt{SemanticObject} type. We leverage the \texttt{FMaps} module
+defined in the \coq{} standard library to implement the \texttt{IdMap}
+type. The \texttt{IdMap} type ensures that an identifier is only
+mapped once. Thus, the implementation of the elaborated design
+structure verifies that there are no intersection between the domains
+of sub-environments. For instance, a generic constant identifier can
+not be a input port identifier, and, as it is implemented an
+identifier \texttt{id} can not be mapped to a \texttt{Generic} object
+and to an \texttt{Input} object in the same instance of
+\texttt{ElDesign}.
+ 
+\begin{lstlisting}[language=coq,label={lst:elab-design-struct},
+caption={[\coq{} implementation of the elaborated design structure.]The implementation of the elaborated design structure with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Inductive SemanticObject : Type :=
+| Generic (t : type) (v : value)
+| Input (t : type)
+| Output (t : type)
+| Declared (t : type)
+| Process (lenv : LEnv)
+| Component ($\Delta_c$ : IdMap SemanticObject).
+
+Definition ElDesign := IdMap SemanticObject.
+\end{lstlisting}
+
+\paragraph{Design state}
+
+Listing~\ref{lst:design-state-impl} gives the implementation of the
+design state structure through the definition of the \texttt{DState}
+inductive type. The constructor of the \texttt{DState} type defines
+three fields: \texttt{sigstore}, implementing the signal store
+$\mathcal{S}$ of the design state, \texttt{compstore}, implementing
+the component store $C$, and \texttt{events}, implementing the set of
+events $\mathcal{E}$ of the design state. The \texttt{sigstore} field
+is a map from idenfifiers to values. The \texttt{compstore} field is a
+map from idenfifiers to design states, justifying the inductive
+definition of the \texttt{DState} type. The \texttt{events} field is
+an instance of the \texttt{IdSet} type. The \texttt{IdSet} is the type
+of sets of identifiers (i.e. sets of natural numbers). The
+\texttt{IdSet} type is defined leveraging the \texttt{MSets} module of
+the \coq{} standard library.
+
+\begin{lstlisting}[language=coq,label={lst:design-state-impl},
+  caption={[\coq{} implementation of the design state structure.]The implementation of the design state structure with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+  numberstyle=\tiny\ttfamily]
+Inductive DState : Type := MkDState {
+  sigstore  : IdMap value;
+  compstore : IdMap DState;
+  events    : IdSet;
+}.
+\end{lstlisting}
+
+\subsection{Implementation of the elaboration phase}
+\label{sec:impl-elaboration}
+
+The design elaboration relation, as presented in
+Section~\ref{subsubsec:design-elab}, is implemented in \coq{} by the
+\texttt{edesign} relation. Listing presents the definition of the
+\texttt{edesign} relation as an inductive type. As usual, a n-ary
+relation is implemented in \coq{} by a type defined with $n$
+parameters and projecting to the \texttt{Prop} type. The
+\texttt{edesign} relation as five parameters. The first parameter is
+the design store $\mathcal{D}$ of type \texttt{IdMap design}, i.e. a
+map from identifiers to \hvhdl{} designs as defined by the abstract
+syntax. The second parameter is the dimensioning function
+$\mathcal{M}$ of type \texttt{IdMap value}, i.e. a map from
+identifiers to values. The third parameter is the design being
+elaborated, of type \texttt{design}. The fifth and sixth parameters
+are the elaborated design (of type \texttt{ElDesign} and the default
+design state (of type \texttt{DState}) resulting from the elaboration.
+In Listing~\ref{lst:design-elab-rel-impl}, the \texttt{EDesign}
+constructor implements the \textsc{DesignElaboration} rule presented
+in Section~\ref{subsubsec:design-elab}. From Line~7 to Line~10, the
+constructor defines the premises of Rule~\textsc{DesignElaboration}.
+The empty elaborated design structure, denoted $\Delta_\emptyset$, is
+implemented by the \texttt{EmptyElDesign} definition, and the empty
+design state structure, denoted by $\sigma_\emptyset$, is implemented
+by the \texttt{EmptyDState} definition. Line~13 implements the
+conclusion of Rule~\textsc{DesignElaboration}. 
+
+\begin{lstlisting}[language=coq,label={lst:design-elab-rel-impl},
+  caption={[\coq{} implementation of the design elaboration relation.]The implementation of the design elaboration relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+  numberstyle=\tiny\ttfamily]
+Inductive edesign ($\mathcal{D}$ : IdMap design) : IdMap value -> design -> ElDesign -> DState -> Prop :=
+| EDesign :
+    forall $\mathcal{M}$ $id_e$ $id_a$ gens ports sigs behavior
+           $\Delta$ $\Delta'$ $\Delta''$ $\Delta'''$ $\sigma$ $\sigma'$ $\sigma''$,
+
+      (* Premises *)
+      egens EmptyElDesign $\mathcal{M}$ gens $\Delta$ ->
+      eports $\Delta$ EmptyDState ports $\Delta'$ $\sigma$ ->
+      edecls $\Delta'$ $\sigma$ sigs $\Delta''$ $\sigma'$ ->
+      ebeh $\mathcal{D}$ $\Delta''$ $\sigma'$ behavior $\Delta'''$ $\sigma''$ ->
+      
+      (* Conclusion *)
+      edesign $\mathcal{D}$ $\mathcal{M}$ (design_ $id_e$ $id_a$ gens ports sigs behavior) $\Delta'''$ $\sigma''$
+
+with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign -> DState -> Prop :=
+$\dots$
+\end{lstlisting}
+
+The \texttt{edesign} relation necesitates a mutually recursive
+definition with the \texttt{ebeh} relation. The mutually recursive
+definition is performed leveraging the \texttt{with} clause at the end
+of Listing~\ref{lst:design-elab-rel-impl}. The \texttt{ebeh} relation
+needs the \texttt{edesign} relation to elaborate the component
+instances found in the behavior of a
+design. Listing~\ref{lst:ebeh-rel-impl} gives the details of the
+\texttt{with} clause defining the \texttt{ebeh} relation.  At Line~2,
+the \texttt{EBehPs} constructor implements the Rule~\textsc{PsElab}
+defining the elaboration of a process statement
+(cf. Section~\ref{subsubsec:ps-elab}). Lines~6 and 7 implement the
+premises of the rule; the \texttt{evars} relation implements the
+elaboration of the local variable declaration list of the process; the
+\texttt{validss} relation implements the relation that type-checks the
+statement body of the process. Lines~10 to 14 implement the side
+conditions of the rule. The term \texttt{~NatMap.In $id_p$ $\Delta$}
+implements the side condition $id_p\notin{}\Delta$. The
+\texttt{NatMap.In id m} relation states that a given identifier
+\texttt{id} is a key of the \texttt{m} map. At Line~14, the
+\texttt{NatSet.In $id_s$ sl} term states that $id_s$ belongs to the
+identifier set \texttt{sl}. At Line~14, the \texttt{MapsTo} relation
+states that a given key is mapped to a given value in a given map. At
+Line~14, the term \texttt{MapsTo $id_s$ (Input t) $\Delta$} states
+that the identifier $id_s$ is mapped to the \texttt{Input t} in the
+elaborated design $\Delta$,
+i.e. $Ins(\Delta)(id_s)=\mathtt{t}$. Line~17 implements the conclusion
+of Rule~\textsc{PsElab}. The \texttt{NatMap.add} function binds the
+process identifier $id_p$ to the term \texttt{Process $\Lambda$} in
+the elaborated design $\Delta$, i.e. $\Delta\cup(id_p,\Lambda)$.
+
+\begin{lstlisting}[language=coq,label={lst:ebeh-rel-impl},
+  caption={[\coq{} implementation of the behavior elaboration relation.]The implementation of the \texttt{ebeh} behavior elaboration relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+  numberstyle=\tiny\ttfamily]
+with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign -> DState -> Prop :=
+| EBehPs :
+    forall $id_p$ sl vars stmt $\Lambda$ $\Delta$ $\sigma$,
+
+      (* Premises *)
+      evars $\Delta$ EmptyLEnv vars $\Lambda$ ->
+      validss $\Delta$ $\sigma$ $\Lambda$ stmt ->
+
+      (* Side conditions *)
+      ~NatMap.In $id_p$ $\Delta$ ->
+
+      (forall $id_s$,
+          NatSet.In $id_s$ sl ->
+          exists t, MapsTo $id_s$ (Declared t) $\Delta$ \/ MapsTo $id_s$ (Input t) $\Delta$) ->
+
+      (* Conclusion *)
+      ebeh $\mathcal{D}$ $\Delta$ $\sigma$ (cs_ps $id_p$ sl vars stmt) (NatMap.add $id_p$ (Process $\Lambda$) $\Delta$) $\sigma$
+
+| EBehComp :
+    forall $\Delta$ $\sigma$ $id_c$ $id_e$ gmap ipmap opmap
+           $\mathcal{M}$ $\Delta_c$ $\sigma_c$ formals actuals cdesign,
+
+      (* Premises *)
+      emapg (NatMap.empty value) gmap $\mathcal{M}$ ->
+      edesign $\mathcal{D}$ $\mathcal{M}$ cdesign $\Delta_c$ $\sigma_c$ ->
+      validipm $\Delta$ $\Delta_c$ $\sigma$ ipmap formals ->
+      validopm $\Delta$ $\Delta_c$ opmap formals actuals ->
+      
+      (* Side conditions *)
+      ~NatMap.In $id_c$ $\Delta$ ->
+      ~NatMap.In $id_c$ (compstore $\sigma$) ->
+      MapsTo $id_e$ cdesign $\mathcal{D}$ ->
+      (forall g, NatMap.In g $\mathcal{M}$ -> exists t v, MapsTo g (Generic t v) $\Delta_c$) ->
+      
+      (* Conclusion *)
+      ebeh $\mathcal{D}$ $\Delta$ $\sigma$
+           (cs_comp $id_c$ $id_e$ gmap ipmap opmap)
+           (NatMap.add $id_c$ (Component $\Delta_c$) $\Delta$)
+           (cstore_add $id_c$ $\sigma_c$ $\sigma$)
+           
+| EBehNull:
+    forall $\Delta$ $\sigma$, ebeh $\mathcal{D}$ $\Delta$ $\sigma$ cs_null $\Delta$ $\sigma$
+
+| EBehPar:
+    forall $\Delta$ $\Delta'$ $\Delta''$ $\sigma$ $\sigma'$ $\sigma''$ cstmt cstmt',
+      ebeh $\mathcal{D}$ $\Delta$ $\sigma$ cstmt $\Delta'$ $\sigma'$ ->
+      ebeh $\mathcal{D}$ $\Delta'$ $\sigma'$ cstmt' $\Delta''$ $\sigma''$ ->
+      ebeh $\mathcal{D}$ $\Delta$ $\sigma$ (cs_par cstmt cstmt') $\Delta''$ $\sigma''$.
+
+\end{lstlisting}
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
