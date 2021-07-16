@@ -85,6 +85,12 @@ process, i.e. the part that will be executed during the simulation.
 
 \subsubsection{Component instantiation statement}
 
+In the LRM, there are two kinds of component instantiation statement:
+the instantiation of a component instance \cite[p.139]{VHDL2000} and
+the instantiation of a design entity \cite[p.141]{VHDL2000}. The
+component instantiation statement used in the \hvhdl{} syntax
+corresponds to the instantiation of a design entity.
+
 \begin{table*}[!h]
 \begin{tabular}{lcl}
   cistmt & ::= & \vhdle|comp| \texttt{(}id$_c$\texttt{,} id$_e$\texttt{,} gmap\texttt{,} ipmap\texttt{,} opmap\texttt{)} \\

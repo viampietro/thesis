@@ -274,7 +274,7 @@ of the formal part.
         }]
         {
           $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
-          ~\mathrm{id}_f\Rightarrow\mathrm{e}~$
+          ~(\mathrm{id}_f,\mathrm{e})~$
           $\xrightarrow{list_{ipm}}\mathcal{L}\cup{}\{id_f\}$
         }
       \end{prooftree}} \\
@@ -323,7 +323,7 @@ of the formal part.
     }]
     {
       $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
-      ~\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{e}~$
+      ~(\mathrm{id}_f(\mathrm{e}_i),\mathrm{e})~$
       $\xrightarrow{list_{ipm}}
       \mathcal{L}\cup\{~(id_f,v_i)~\}$
     }
@@ -457,7 +457,7 @@ output ports are \texttt{open} by default.
           \end{tabular}
         }] {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-          $\mathrm{id}_f\Rightarrow\mathrm{id}_a$
+          $(\mathrm{id}_f,\mathrm{id}_a)$
           $\xrightarrow{list_{opm}}$
           $\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}\cup{}\{id_a\}$ }
       \end{prooftree}} \\
@@ -501,7 +501,7 @@ output ports are \texttt{open} by default.
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
-          ~\mathrm{id}_f\Rightarrow\mathrm{id}_a(\mathrm{e}_i)~$
+          ~(\mathrm{id}_f,\mathrm{id}_a(\mathrm{e}_i))~$
           $\xrightarrow{list_{opm}}
           \mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}\cup{}\{(id_a,v_i)\}$
         }
@@ -525,7 +525,7 @@ output ports are \texttt{open} by default.
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash
-          ~\mathrm{id}_f\Rightarrow\mathtt{open}~$
+          ~(\mathrm{id}_f,\mathtt{open})~$
           $\xrightarrow{list_{opm}}\mathcal{L}\cup{}\{id_f\},\mathcal{L}_{ids}$
         }
       \end{prooftree}} \\
@@ -568,7 +568,7 @@ output ports are \texttt{open} by default.
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-          $\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{id}_a$
+          $(\mathrm{id}_f(\mathrm{e}_i),\mathrm{id}_a)$
           $\xrightarrow{list_{opm}}$
           $\mathcal{L}\cup\{(id_f,v_i)\},\mathcal{L}_{ids}\cup\{id_a\}$
         }
@@ -608,7 +608,7 @@ output ports are \texttt{open} by default.
         }]
         {
           $\Delta,\Delta_c,\mathcal{L},\mathcal{L}_{ids}\vdash$
-          $\mathrm{id}_f(\mathrm{e}_i)\Rightarrow\mathrm{id}_a(\mathrm{e'}_i)$
+          $(\mathrm{id}_f(\mathrm{e}_i),\mathrm{id}_a(\mathrm{e'}_i))$
           $\xrightarrow{list_{opm}}$
           \begin{tabular}{@{}l@{}}
             $\mathcal{L}\cup\{(id_f,v_i)\},$ \\
