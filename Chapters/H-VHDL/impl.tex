@@ -151,32 +151,63 @@ of Listing~\ref{lst:design-elab-rel-impl}. The \texttt{ebeh} relation
 needs the \texttt{edesign} relation to elaborate the component
 instances found in the behavior of a
 design. Listing~\ref{lst:ebeh-rel-impl} gives the details of the
-\texttt{with} clause defining the \texttt{ebeh} relation.  At Line~2,
-the \texttt{EBehPs} constructor implements the Rule~\textsc{PsElab}
-defining the elaboration of a process statement
+\texttt{with} clause defining the \texttt{ebeh} relation.
+
+At Line~2, the \texttt{EBehPs} constructor implements the
+Rule~\textsc{PsElab} defining the elaboration of a process statement
 (cf. Section~\ref{subsubsec:ps-elab}). Lines~6 and 7 implement the
 premises of the rule; the \texttt{evars} relation implements the
 elaboration of the local variable declaration list of the process; the
 \texttt{validss} relation implements the relation that type-checks the
 statement body of the process. Lines~10 to 14 implement the side
-conditions of the rule. The term \texttt{~NatMap.In $id_p$ $\Delta$}
+conditions of the rule. The term \coqe|~NatMap.In| $id_p$ $\Delta$
 implements the side condition $id_p\notin{}\Delta$. The
-\texttt{NatMap.In id m} relation states that a given identifier
-\texttt{id} is a key of the \texttt{m} map. At Line~14, the
-\texttt{NatSet.In $id_s$ sl} term states that $id_s$ belongs to the
-identifier set \texttt{sl}. At Line~14, the \texttt{MapsTo} relation
-states that a given key is mapped to a given value in a given map. At
-Line~14, the term \texttt{MapsTo $id_s$ (Input t) $\Delta$} states
-that the identifier $id_s$ is mapped to the \texttt{Input t} in the
-elaborated design $\Delta$,
-i.e. $Ins(\Delta)(id_s)=\mathtt{t}$. Line~17 implements the conclusion
-of Rule~\textsc{PsElab}. The \texttt{NatMap.add} function binds the
-process identifier $id_p$ to the term \texttt{Process $\Lambda$} in
-the elaborated design $\Delta$, i.e. $\Delta\cup(id_p,\Lambda)$.
+\coqe|NatMap.In id m| relation states that a given identifier
+\texttt{id} is a key of the \texttt{m} map. At Line~13, the
+\coqe|NatSet.In $id_s$ sl| term states that $id_s$ belongs to the
+identifier set \texttt{sl}. At Line~14, . At Line~14, the term
+\texttt{MapsTo $id_s$ (Input t) $\Delta$} states that the identifier
+$id_s$ is mapped to the \texttt{Input t} in the elaborated design
+$\Delta$, i.e. $Ins(\Delta)(id_s)=\mathtt{t}$. More generally,
+\texttt{MapsTo} is a ternary relation stating that a given key
+\texttt{k} of type \texttt{nat}, is mapped to a value \texttt{v} of a
+type \texttt{A}, in a given map \texttt{m}, i.e. \coqe|Mapsto k v m|.
+Line~17 implements the conclusion of Rule~\textsc{PsElab}. The
+\texttt{NatMap.add} function binds the process identifier $id_p$ to
+the term \texttt{Process $\Lambda$} in the elaborated design $\Delta$,
+i.e. $\Delta\cup(id_p,\Lambda)$.
+
+At Line~19, the \texttt{EBehComp} constructor implements the
+Rule~\textsc{CompElab}
+(cf. Section~\ref{subsubsec:comp-inst-elab}). This rules describes the
+elaboration of a component instantiation statement. Lines~24 to 27
+implement the premises of the rule. Line~25 appeals to the
+\texttt{edesign} relation to elaborate the \texttt{cdesign} design
+associated with the component instance $id_c$; thence, the mutually
+recursive definition with the \texttt{ebeh} relation. As it is stated
+at Line~32, the \texttt{cdesign} design is associated to identifier
+$id_e$, i.e. the entity identifier of component instance $id_c$, in
+the design store $\mathcal{D}$. Lines~30 to 33 implement the side
+conditions of the rule. Line~30 checks that the identifier $id_c$ is
+not an already bound to a semantic object in the elaborated design
+$\Delta$. Line~31 checks that the identifier $id_c$ is not already
+bound in the component store of $\sigma$. Line~33 checks that all
+identifiers defined in the domain of map $\mathcal{M}$, i.e. the
+dimensioning function, are bound to generic constants in the
+elaborated design $\Delta_c$
+(i.e. $\mathcal{M}\subseteq{}Gens(\Delta_c)$). Lines~36 to 38
+implement the conclusion of Rule~\textsc{CompElab}. At Line~39, the
+\texttt{cstore_add} function binds $id_c$ to design state $\sigma_c$
+in the component store of state $\sigma$ and returns the resulting state.
+
+At Line~41, the \texttt{EBehNull} constructor implements
+Rule~\textsc{CsNullElab}. At Line~43, the \texttt{EBehPar} constructor
+implements Rule~\textsc{CsParElab}.
 
 \begin{lstlisting}[language=coq,label={lst:ebeh-rel-impl},
   caption={[\coq{} implementation of the behavior elaboration relation.]The implementation of the \texttt{ebeh} behavior elaboration relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
   numberstyle=\tiny\ttfamily]
+$\dots$
 with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign -> DState -> Prop :=
 | EBehPs :
     forall $id_p$ sl vars stmt $\Lambda$ $\Delta$ $\sigma$,
@@ -212,13 +243,11 @@ with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign 
       (forall g, NatMap.In g $\mathcal{M}$ -> exists t v, MapsTo g (Generic t v) $\Delta_c$) ->
       
       (* Conclusion *)
-      ebeh $\mathcal{D}$ $\Delta$ $\sigma$
-           (cs_comp $id_c$ $id_e$ gmap ipmap opmap)
-           (NatMap.add $id_c$ (Component $\Delta_c$) $\Delta$)
-           (cstore_add $id_c$ $\sigma_c$ $\sigma$)
+      ebeh $\mathcal{D}$ $\Delta$ $\sigma$ (cs_comp $id_c$ $id_e$ gmap ipmap opmap)
+                  (NatMap.add $id_c$ (Component $\Delta_c$) $\Delta$)
+                  (cstore_add $id_c$ $\sigma_c$ $\sigma$)
            
-| EBehNull:
-    forall $\Delta$ $\sigma$, ebeh $\mathcal{D}$ $\Delta$ $\sigma$ cs_null $\Delta$ $\sigma$
+| EBehNull: forall $\Delta$ $\sigma$, ebeh $\mathcal{D}$ $\Delta$ $\sigma$ cs_null $\Delta$ $\sigma$
 
 | EBehPar:
     forall $\Delta$ $\Delta'$ $\Delta''$ $\sigma$ $\sigma'$ $\sigma''$ cstmt cstmt',
@@ -228,8 +257,81 @@ with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign 
 
 \end{lstlisting}
 
+\subsection{Implementation of the simulation algorithm}
+\label{sec:impl-simulation}
 
+The full simulation relation (cf. Section~\ref{sec:full-sim})
+formalizes the \hvhdl{} simulation algorithm. The \coq{}
+implementation of the full simulation relation, presented in
+Listing~\ref{lst:full-sim-impl}, is a strict translation of
+Rule~\textsc{FullSim}. At Lines~14 and 15, the term \texttt{(behavior
+  d)} represents the concurrent statements defining the behavior of
+the \hvhdl{} design \texttt{d} (i.e. d.cs in the formal rule). Line~13
+corresponds to the elaboration phase, Line~14 to the initialization
+phase, and Line~15 to the main simulation loop.
 
+\begin{lstlisting}[language=coq,label={lst:full-sim-impl},
+  caption={[\coq{} implementation of the full simulation relation.]The implementation of the full simulation relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+  numberstyle=\tiny\ttfamily]
+Inductive fullsim
+          ($\mathcal{D}$ : IdMap design)
+          ($\mathcal{M}$ : IdMap value)
+          ($E_p$ : nat -> Clk -> IdMap value)
+          ($\tau$ : nat)
+          ($\Delta$ : ElDesign) 
+          (d : design) : list DState -> Prop :=
+  
+| FullSim :
+    forall $\sigma_e$ $\sigma_0$ $\theta$,
+      
+      (* * Premises * *)
+      edesign $\mathcal{D}$ $\mathcal{M}$ d $\Delta$ $\sigma_e$ ->
+      init $\mathcal{D}$ $\Delta$ $\sigma_e$ (behavior d) $\sigma_0$ ->
+      simloop $\mathcal{D}$ $E_p$ $\Delta$ $\sigma_0$ (behavior d) $\tau$ $\theta$ ->
+                    
+      (* * Conclusion * *)
+      fullsim $\mathcal{D}$ $\mathcal{M}$ $E_p$ $\tau$ $\Delta$ d ($\sigma_0$ :: $\theta$).
+\end{lstlisting}
+
+The \texttt{simloop} relation appeals to the \texttt{simcycle} that
+implements the simulation cycle relation defined in
+Section~\ref{sec:sim-cycle}. Listing presents the implementation of
+the \texttt{simcycle} relation. The \texttt{simcycle} relation is a
+strict transcription of the \textsc{SimCyc} rule. At Line~13, the
+\texttt{vrising} relation implements the $\uparrow$ relation, i.e. the
+rising edge phase of the cycle. At Line 15, the \texttt{vfalling}
+relation implements the $\downarrow$ relation, i.e. the falling edge
+phase of the cycle. At Lines~14 and 16, the \texttt{stabilize}
+relation implements the $\rightsquigarrow$ relation, i.e. the
+stabilization phases of the simulation cycle. At Lines~18 and 19, the
+\texttt{IsInjectedDState} relation implements the
+\texttt{Inject}$_\downarrow$ and \texttt{Inject}$_\uparrow$
+relations. Line~18 states that the $\sigma_i$ state is the result of
+the injection of the map \coqe|($E_p$ $\tau$ $\uparrow$)| in the
+signal store of state $\sigma$.
+
+\begin{lstlisting}[language=coq,label={lst:full-sim-impl},
+  caption={[\coq{} implementation of the simulation cycle relation.]The implementation of the simulation cycle relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+  numberstyle=\tiny\ttfamily]
+  Inductive simcycle ($\mathcal{D}$ : IdMap design) ($E_p$ : nat ->
+  Clk -> IdMap value) ($\Delta$ : ElDesign) ($\tau$ : nat) ($\sigma$ :
+  DState) (behavior : cs) ($\sigma'$ $\sigma''$ : DState) : Prop := |
+  SimCycle : forall $\sigma_i$ $\sigma_\uparrow$ $\sigma'_i$
+  $\sigma_\downarrow$,
+      
+      (* * Premises * *)      
+      vrising $\mathcal{D}$ $\Delta$ $\sigma_i$ behavior $\sigma_\uparrow$ ->
+      stabilize $\mathcal{D}$ $\Delta$ $\sigma_\uparrow$ behavior $\sigma'$ ->
+      vfalling $\mathcal{D}$ $\Delta$ $\sigma'_i$ behavior $\sigma_\downarrow$ ->
+      stabilize $\mathcal{D}$ $\Delta$ $\sigma_\downarrow$ behavior $\sigma$'' ->
+
+      (* * Side conditions * *)
+      IsInjectedDState $\sigma$ ($E_p$ $\tau$ $\uparrow$) $\sigma_i$ ->
+      IsInjectedDState $\sigma'$ ($E_p$ $\tau$ $\downarrow$) $\sigma'_i$ ->
+      
+      (* * Conclusion * *)
+      simcycle $\mathcal{D}$ $E_p$ $\Delta$ $\tau$ $\sigma$ behavior $\sigma''$.
+\end{lstlisting}
 
 
 %%% Local Variables:

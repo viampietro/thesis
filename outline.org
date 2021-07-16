@@ -16,13 +16,13 @@
 ** DONE formal definition of SITPNs & semantics [100%]
 ** DONE Coq implementation of SITPNs [100%]
 ** DONE conclusion
-* TODO H-VHDL: a target hardware description language [33%]
-** TODO introduction [10%] 
+* DONE H-VHDL: a target hardware description language [100%]
+** DONE introduction [100%] 
 ** DONE presentation of the VHDL language [100%]
 ** DONE choosing a semantics for VHDL [100%]
-** TODO a natural semantics for H-VHDL [75%]
-** TODO Coq implementation of H-VHDL syntax and semantics [%]
-** TODO conclusion [%]
+** DONE a natural semantics for H-VHDL [100%]
+** DONE Coq implementation of H-VHDL syntax and semantics [100%]
+** DONE conclusion [100%]
 * TODO The HILECOP model-to-text transformation [16%]
 ** TODO introduction [%]
 ** DONE expressing transformation functions
