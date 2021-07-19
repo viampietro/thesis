@@ -40,18 +40,19 @@ language. Section~\ref{sec:ex-full-sim} illustrates the formal
 Section~\ref{sec:hvhdl-impl} outlines the implementation of the
 \hvhdl{} syntax and semantics with the \coq{} proof assistant.
 
-As explained in Chapter~\ref{chap:hilecop}, the hilecop{}
-transformation generates a VHDL design implementing the input SITPN
+As explained in Chapter~\ref{chap:hilecop}, the \hilecop{}
+transformation generates a VHDL design implementing an input SITPN
 model. To do so, the transformation generates and connects the
 component instances of two previously defined VHDL designs: the
-\emph{place} design that implements the concept of a SITPN place, and
-the \emph{transition} design that implements a SITPN transition. These
-designs were defined by the INRIA CAMIN team at the creation of the
-\hilecop{} methodology. In the following sections, we will be using
-excerpts of the definition of the place and transition designs to
-illustrate the content of VHDL programs and the rules of the VHDL
-language semantics. The reader will find the source code of the place
-and transition designs in concrete and abstract syntax in
+\texttt{place} design, i.e. a VHDL implementation of a SITPN place,
+and the \texttt{transition} design, i.e. a VHDL implementation of a
+SITPN transition. These designs were defined by the INRIA CAMIN team
+at the creation of the \hilecop{} methodology. In the following
+sections, we will be using excerpts of the definition of the
+\texttt{place} and \texttt{transition} designs to illustrate the
+content of VHDL programs and the rules of the VHDL language
+semantics. The reader will find the source code of the \texttt{place}
+and \texttt{transition} designs in concrete and abstract syntax in
 Appendices~\ref{app:place-design} and \ref{app:trans-design}.
 
 \section{Presentation of the VHDL language}

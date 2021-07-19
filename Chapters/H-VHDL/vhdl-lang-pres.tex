@@ -15,22 +15,7 @@ about the VHDL language can refer to \cite{VHDL2000},
 The VHDL acronym stands for Very high speed integrated circuit
 Hardware Description Language. The main purpose
 of the VHDL language is to describe hardware circuits.
-% 
-% There are two approaches to the description of circuits. The first
-% aims at the simulation of the described circuits, and the second
-% aims at the synthesis of described circuits on physical supports.
-% Thus, the constructs of the VHDL language must be interpreted
-% depending on the purpose of the designer.  For instance, the
-% language gives the possibility to describe the connection of wires
-% inside a circuit. A wire is represented by the concept of
-% \textit{signal}.  In the context of circuit simulation, a
-% \textit{signal} can be compared to a variable; it has a given type
-% and holds a value that fluctuates in the course of the
-% simulation. In the context of synthesis, a signal really describes a
-% physical wire and must be considered as so. From these two
-% approaches to circuit description arise two ways of considering the
-% semantics of the language (see Section~\ref{sec:choosing-vhdl}).
-% 
+ 
 A top-level VHDL program is called a \emph{design}.  A VHDL design is
 composed of two descriptive parts. The first part is called the entity
 and describes the interfaces of a circuit, namely: the input and
@@ -376,6 +361,20 @@ input and output port interfaces inside the \texttt{toplevel} design.
 \subsection{Informal semantics of the VHDL language}
 \label{sec:vhdl-informal-sem}
 
+There are two approaches to the description of circuits with the VHDL
+language. The first aims at the simulation of the described circuits,
+and the second aims at the synthesis of described circuits on physical
+supports. These two approaches arise from the practice and the use of
+the VHDL language by electronicians.
+% Thus, the constructs of the VHDL language must be
+% interpreted depending on the purpose of the designer.  For instance,
+% the language gives the possibility to describe the connection of wires
+% inside a circuit. A wire is represented by the concept of
+% \textit{signal}.  In the context of circuit simulation, a
+% \textit{signal} can be compared to a variable; it has a given type and
+% holds a value that fluctuates in the course of the simulation. In the
+% context of synthesis, a signal describes a physical wire and must be
+% considered as so.
 Even though, in practice, there are two ways to consider a VHDL
 design, i.e. a synthesis-oriented way and a simulation-oriented way,
 the LRM does not define a synthesis-oriented semantics for the VHDL
@@ -385,24 +384,28 @@ to the physical circuit. For instance, the Verilog language gives a
 synthesis-oriented semantics to its programs by defining an equivalent
 RTL level description \cite{Verilog2005}.  The LRM gives an informal
 semantics to VHDL designs through the definition of a simulation
-algorithm. The purpose of simulation is to compute the evolution of
-the values of signals during a certain time interval. Through the
-simulation process, the designer is able to control the behavior of
-the modeled circuits and to detect flaws in the evolution of the
-signal values.
+algorithm \cite[p.167]{VHDL2000}. The purpose of simulation is to
+compute the evolution of the values of signals during a certain time
+interval. Through the simulation process, the designer is able to
+control the behavior of the modeled circuits and to detect flaws in
+the evolution of the signal values.
 
-Former to the simulation, the LRM defines an elaboration phase that
-permits to transform a design into a simulation-ready execution
-model. The elaboration phase has several goals. First, it builds the
-simulation environment and a starting design simulation state. The
-simulation environment is built based on the declarative parts of the
-top-level design; it maps the signals to their types. In the design
-simulation state, each signal is associated with a current value and
-with a driver. A driver maps time points to values and the association
-between a given time point and a signal value is called a
-transaction. The necessity of drivers is explained by the presence of
-unit-delay signal assignments. A unit-delay signal assignment specify
-a time clause indicating when a giving assignment must be performed,
+Former to the simulation, the LRM defines an elaboration phase.  The
+elaboration phase operates syntactic and semantic controls over the
+design code. It also describes code transformations over the design's
+behavioral part to obtain a simulation-ready execution model. More
+specifically, the elaboration phase builds the simulation environment
+and the default simulation state associated with the design under
+simulation. The simulation environment is built based on the
+declarative parts of the top-level design; it maps the signals to
+their types. In the default simulation state, each signal is
+associated with a current value (i.e. the default value of the
+signal's type) and with a driver. A driver maps time points to values
+and the association between a given time point and a signal value is
+called a transaction. The need for drivers the values associated with
+a given singal is explained by the presence of unit-delay signal
+assignments. A unit-delay signal assignment specify a time clause
+indicating when a giving assignment must be performed,
 e.g. \texttt{$a\Leftarrow{}b$ in 3ms} (signal \texttt{a} takes the
 value of signal \texttt{b} in 3 milliseconds). Thus, when a unit-delay
 signal assignment is executed in the course of a simulation, its
@@ -412,8 +415,8 @@ the execution of statement \texttt{$a\Leftarrow$ true in 2ns} sets a
 new transaction in the driver of signal $a$. The new transaction
 associates the value \texttt{true} to the time point
 $T_c+\mathtt{2ns}$. Note that without unit-delay signal assignments,
-drivers are not needed as all assignments take their effects at the
-current simulation time.
+i.e. without a specified time clause, drivers are not needed as all
+assignments take effect at the current simulation time.
 % Also, each signal is associated with a
 % graph representing the relation to its source, i.e. the signals
 % involved in the computation of the target signal value. For instance,
@@ -421,7 +424,7 @@ current simulation time.
 % Figure~\ref{fig:trans-design-arch-excerpt-1} are the
 % \texttt{s_firable} and the \texttt{s_priority_combination}
 % signals. 
-Second, the elaboration checks the well-formedness of the design by
+Moreover, the elaboration checks the well-formedness of the design by
 performing static type-checking on the behavioral part of the
 design. It also checks that the connection between signals respect
 certain rules, for instance, that there are no multiply-driven
@@ -435,13 +438,13 @@ processes.
 After the elaboration, the top-level design, or rather its
 corresponding execution model, is ready to be simulated. Two entities
 are involved in the simulation: the \emph{sea} of processes obtained
-after the elaboration of the top-level design, and a \emph{kernel}
-process. The kernel process orchestrates the simulation; it handles
-the time of the simulation, i.e. it holds a variable describing the
-current time of the simulation, and resumes the execution of
-processes. Figure~\ref{fig:vhdl-sim-alg}, which is an excerpt from
-\cite{Borger1995}, describes the structure of the VHDL simulation
-algorithm.
+after the elaboration of the top-level design's behavior, and a
+\emph{kernel} process. The kernel process orchestrates the simulation;
+it handles the time of the simulation, i.e. it holds a variable
+describing the current time of the simulation, and controls the
+execution of processes. Figure~\ref{fig:vhdl-sim-alg}, which is an
+excerpt from \cite{Borger1995}, describes the structure of the VHDL
+simulation algorithm.
 
 \begin{figure}[H]
   \centering
@@ -450,8 +453,7 @@ algorithm.
   \label{fig:vhdl-sim-alg}
 \end{figure}
 
-
-The simulation starts with the initialization phase. During the
+The simulation starts with an initialization phase. During the
 initialization phase all processes are run exactly once. Then, the
 simulation cycles are structured as follows.  All processes execute
 their statement body concurrently. New transactions are posted in the
@@ -474,26 +476,26 @@ with the kernel process.
   \label{fig:kernel-ps}
 \end{figure}
 
-As shown in Figure~\ref{fig:kernel-ps}, the kernel process will then
-determine the kind of simulation cycle that will be performed next.
-There are two kinds of cycles: delta cycle or time cycle. If the value
-of a signal changes at the current time point, i.e. its driver holds a
-transaction at the current time point with a new value, then a delta
-cycle must be performed.  Then, the simulation time does not change.
-The kernel process updates the current value of signals and their
-drivers, and wakes up the processes sensitive to the signals that
-obtained new values. The repetition of multiple delta cycles
-corresponds to the stabilization of signal values, i.e. the
-propagation of values through the wires, that takes effect in a
-negligeable $\delta$ time. If all signal values are stable at the
-current time point, then a time cycle must be performed.  The kernel
-process looks up the drivers for the next time point where the value
-of a given signal will change. Then, the kernel process advances the
-simulation time to this next time point before updating the signal
-values and resuming the execution of processes.  The simulation goes
-on like this, alternating between delta and time cycles, until the
-current time value reaches the time specified for the end of the
-simulation.
+As shown in Figure~\ref{fig:kernel-ps}, after the suspension of all
+processes, the kernel process will then determine the kind of
+simulation cycle that will be performed next.  There are two kinds of
+cycles: delta cycles or time cycles. If the value of a signal changes
+at the current time point, i.e. its driver holds a transaction at the
+current time point with a new value, then a delta cycle must be
+performed.  Then, the simulation time does not change.  The kernel
+process updates the current value of signals and their drivers, and
+wakes up the processes sensitive to the signals that obtained new
+values. The repetition of multiple delta cycles corresponds to the
+stabilization of signal values, i.e. the propagation of values through
+the wires, that takes effect in a negligeable $\delta$ time. If all
+signal values are stable at the current time point, then a time cycle
+must be performed.  The kernel process looks up the drivers for the
+next time point where the value of a given signal will change. Then,
+the kernel process advances the simulation time to this next time
+point before updating the signal values and resuming the execution of
+processes.  The simulation goes on like this, alternating between
+delta and time cycles, until the current time value reaches the time
+specified for the end of the simulation.
 
 %%% Local Variables:
 %%% mode: latex
