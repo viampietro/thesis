@@ -36,20 +36,20 @@ $(type\times{}value)$. Identifiers are implemented by the
 \texttt{ident} type, an alias of the \texttt{nat} type. The
 \texttt{type} and \texttt{value} types are the implementation of the
 semantic $type$ and $value$ presented in
-Table~\ref{tab:type-value}. The \texttt{ElDesign} type implements
-the elaborated design structure. It is an alias to the \texttt{IdMap
+Table~\ref{tab:type-value}. The \texttt{ElDesign} type implements the
+elaborated design structure. It is an alias to the \texttt{IdMap
   SemanticObject} type. The \texttt{IdMap} is the type of maps from
 identifiers (i.e. belonging to the \texttt{ident} type) to instances
 of the type passed as a parameter. Here, the parameter is the
 \texttt{SemanticObject} type. Thus, an elaborated design is
-implemented as a map between identifiers and objects of the
+implemented as a map between identifiers and terms of the
 \texttt{SemanticObject} type. We leverage the \texttt{FMaps} module
 defined in the \coq{} standard library to implement the \texttt{IdMap}
 type. The \texttt{IdMap} type ensures that an identifier is only
 mapped once. Thus, the implementation of the elaborated design
 structure verifies that there are no intersection between the domains
 of sub-environments. For instance, a generic constant identifier can
-not be a input port identifier, and, as it is implemented an
+not be a input port identifier, and, as it is implemented, an
 identifier \texttt{id} can not be mapped to a \texttt{Generic} object
 and to an \texttt{Input} object in the same instance of
 \texttt{ElDesign}.
@@ -100,28 +100,28 @@ Inductive DState : Type := MkDState {
 
 The design elaboration relation, as presented in
 Section~\ref{subsubsec:design-elab}, is implemented in \coq{} by the
-\texttt{edesign} relation. Listing presents the definition of the
-\texttt{edesign} relation as an inductive type. As usual, a n-ary
-relation is implemented in \coq{} by a type defined with $n$
-parameters and projecting to the \texttt{Prop} type. The
-\texttt{edesign} relation as five parameters. The first parameter is
-the design store $\mathcal{D}$ of type \texttt{IdMap design}, i.e. a
-map from identifiers to \hvhdl{} designs as defined by the abstract
-syntax. The second parameter is the dimensioning function
-$\mathcal{M}$ of type \texttt{IdMap value}, i.e. a map from
+\texttt{edesign} relation. Listing~\ref{lst:design-elab-rel-impl}
+presents the definition of the \texttt{edesign} relation as an
+inductive type. As usual, a n-ary relation is implemented in \coq{} by
+a type defined with $n$ parameters and projecting to the \texttt{Prop}
+type. The \texttt{edesign} relation as five parameters. The first
+parameter is the design store $\mathcal{D}$ of type \texttt{IdMap
+  design}, i.e. a map from identifiers to \hvhdl{} designs as defined
+by the abstract syntax. The second parameter is the dimensioning
+function $\mathcal{M}$ of type \texttt{IdMap value}, i.e. a map from
 identifiers to values. The third parameter is the design being
 elaborated, of type \texttt{design}. The fifth and sixth parameters
 are the elaborated design (of type \texttt{ElDesign} and the default
 design state (of type \texttt{DState}) resulting from the elaboration.
 In Listing~\ref{lst:design-elab-rel-impl}, the \texttt{EDesign}
-constructor implements the \textsc{DesignElaboration} rule presented
-in Section~\ref{subsubsec:design-elab}. From Line~7 to Line~10, the
-constructor defines the premises of Rule~\textsc{DesignElaboration}.
-The empty elaborated design structure, denoted $\Delta_\emptyset$, is
+constructor implements the \textsc{DesignElab} rule presented in
+Section~\ref{subsubsec:design-elab}. From Line~7 to Line~10, the
+constructor defines the premises of Rule~\textsc{DesignElab}.  The
+empty elaborated design structure, denoted $\Delta_\emptyset$, is
 implemented by the \texttt{EmptyElDesign} definition, and the empty
 design state structure, denoted by $\sigma_\emptyset$, is implemented
 by the \texttt{EmptyDState} definition. Line~13 implements the
-conclusion of Rule~\textsc{DesignElaboration}. 
+conclusion of Rule~\textsc{DesignElab}.
 
 \begin{lstlisting}[language=coq,label={lst:design-elab-rel-impl},
   caption={[\coq{} implementation of the design elaboration relation.]The implementation of the design elaboration relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
@@ -165,21 +165,21 @@ implements the side condition $id_p\notin{}\Delta$. The
 \coqe|NatMap.In id m| relation states that a given identifier
 \texttt{id} is a key of the \texttt{m} map. At Line~13, the
 \coqe|NatSet.In $id_s$ sl| term states that $id_s$ belongs to the
-identifier set \texttt{sl}. At Line~14, . At Line~14, the term
-\texttt{MapsTo $id_s$ (Input t) $\Delta$} states that the identifier
-$id_s$ is mapped to the \texttt{Input t} in the elaborated design
-$\Delta$, i.e. $Ins(\Delta)(id_s)=\mathtt{t}$. More generally,
-\texttt{MapsTo} is a ternary relation stating that a given key
-\texttt{k} of type \texttt{nat}, is mapped to a value \texttt{v} of a
-type \texttt{A}, in a given map \texttt{m}, i.e. \coqe|Mapsto k v m|.
-Line~17 implements the conclusion of Rule~\textsc{PsElab}. The
-\texttt{NatMap.add} function binds the process identifier $id_p$ to
-the term \texttt{Process $\Lambda$} in the elaborated design $\Delta$,
+identifier set \texttt{sl}. At Line~14, the term \texttt{MapsTo $id_s$
+  (Input t) $\Delta$} states that the identifier $id_s$ is mapped to
+\texttt{Input t} in the elaborated design $\Delta$,
+i.e. $Ins(\Delta)(id_s)=\mathtt{t}$. More generally, \texttt{MapsTo}
+is a ternary relation stating that a given key \texttt{k} of type
+\texttt{nat}, is mapped to a value \texttt{v} of a type \texttt{A}, in
+a given map \texttt{m}, i.e. \coqe|Mapsto k v m|.  Line~17 implements
+the conclusion of Rule~\textsc{PsElab}. The \texttt{NatMap.add}
+function binds the process identifier $id_p$ to the term
+\texttt{Process $\Lambda$} in the elaborated design $\Delta$,
 i.e. $\Delta\cup(id_p,\Lambda)$.
 
 At Line~19, the \texttt{EBehComp} constructor implements the
 Rule~\textsc{CompElab}
-(cf. Section~\ref{subsubsec:comp-inst-elab}). This rules describes the
+(cf. Section~\ref{subsubsec:comp-inst-elab}). This rule describes the
 elaboration of a component instantiation statement. Lines~24 to 27
 implement the premises of the rule. Line~25 appeals to the
 \texttt{edesign} relation to elaborate the \texttt{cdesign} design
@@ -189,7 +189,7 @@ at Line~32, the \texttt{cdesign} design is associated to identifier
 $id_e$, i.e. the entity identifier of component instance $id_c$, in
 the design store $\mathcal{D}$. Lines~30 to 33 implement the side
 conditions of the rule. Line~30 checks that the identifier $id_c$ is
-not an already bound to a semantic object in the elaborated design
+not already bound to a semantic object in the elaborated design
 $\Delta$. Line~31 checks that the identifier $id_c$ is not already
 bound in the component store of $\sigma$. Line~33 checks that all
 identifiers defined in the domain of map $\mathcal{M}$, i.e. the
@@ -198,7 +198,8 @@ elaborated design $\Delta_c$
 (i.e. $\mathcal{M}\subseteq{}Gens(\Delta_c)$). Lines~36 to 38
 implement the conclusion of Rule~\textsc{CompElab}. At Line~39, the
 \texttt{cstore_add} function binds $id_c$ to design state $\sigma_c$
-in the component store of state $\sigma$ and returns the resulting state.
+in the component store of state $\sigma$ and returns the resulting
+state.
 
 At Line~41, the \texttt{EBehNull} constructor implements
 Rule~\textsc{CsNullElab}. At Line~43, the \texttt{EBehPar} constructor
@@ -207,7 +208,6 @@ implements Rule~\textsc{CsParElab}.
 \begin{lstlisting}[language=coq,label={lst:ebeh-rel-impl},
   caption={[\coq{} implementation of the behavior elaboration relation.]The implementation of the \texttt{ebeh} behavior elaboration relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
   numberstyle=\tiny\ttfamily]
-$\dots$
 with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign -> DState -> Prop :=
 | EBehPs :
     forall $id_p$ sl vars stmt $\Lambda$ $\Delta$ $\sigma$,
@@ -295,24 +295,28 @@ Inductive fullsim
 
 The \texttt{simloop} relation appeals to the \texttt{simcycle} that
 implements the simulation cycle relation defined in
-Section~\ref{sec:sim-cycle}. Listing presents the implementation of
-the \texttt{simcycle} relation. The \texttt{simcycle} relation is a
-strict transcription of the \textsc{SimCyc} rule. At Line~13, the
-\texttt{vrising} relation implements the $\uparrow$ relation, i.e. the
-rising edge phase of the cycle. At Line 15, the \texttt{vfalling}
-relation implements the $\downarrow$ relation, i.e. the falling edge
-phase of the cycle. At Lines~14 and 16, the \texttt{stabilize}
-relation implements the $\rightsquigarrow$ relation, i.e. the
-stabilization phases of the simulation cycle. At Lines~18 and 19, the
-\texttt{IsInjectedDState} relation implements the
-\texttt{Inject}$_\downarrow$ and \texttt{Inject}$_\uparrow$
-relations. Line~18 states that the $\sigma_i$ state is the result of
-the injection of the map \coqe|($E_p$ $\tau$ $\uparrow$)| in the
-signal store of state $\sigma$.
+Section~\ref{sec:sim-cycle}. Listing~\ref{lst:sim-cycle-impl} presents
+the implementation of the \texttt{simcycle} relation. The
+\texttt{simcycle} relation is a strict transcription of the
+\textsc{SimCyc} rule. At Line~13, the \texttt{vrising} relation
+implements the $\uparrow$ relation, i.e. the rising edge phase of the
+cycle. At Line 15, the \texttt{vfalling} relation implements the
+$\downarrow$ relation, i.e. the falling edge phase of the cycle. At
+Lines~14 and 16, the \texttt{stabilize} relation implements the
+$\rightsquigarrow$ relation, i.e. the stabilization phases of the
+simulation cycle. At Lines~18 and 19, the \texttt{IsInjectedDState}
+relation implements the \texttt{Inject}$_\downarrow$ and
+\texttt{Inject}$_\uparrow$ relations. Line~18 states that the
+$\sigma_i$ state is the result of the injection of the map
+\coqe|($E_p$ $\tau$ $\uparrow$)| in the signal store of state
+$\sigma$.
 
-\begin{lstlisting}[language=coq,label={lst:full-sim-impl},
-  caption={[\coq{} implementation of the simulation cycle relation.]The implementation of the simulation cycle relation with the \coq{} proof assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
-  numberstyle=\tiny\ttfamily]
+\begin{lstlisting}[language=coq,label={lst:sim-cycle-impl},
+caption={[\coq{} implementation of the simulation cycle relation.]The
+  implementation of the simulation cycle relation with the \coq{}
+  proof
+  assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
   Inductive simcycle ($\mathcal{D}$ : IdMap design) ($E_p$ : nat ->
   Clk -> IdMap value) ($\Delta$ : ElDesign) ($\tau$ : nat) ($\sigma$ :
   DState) (behavior : cs) ($\sigma'$ $\sigma''$ : DState) : Prop := |

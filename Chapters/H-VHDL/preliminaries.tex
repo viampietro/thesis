@@ -2,7 +2,7 @@
 
 Let $id$ denote the set of identifiers in the semantic domain. We
 write $prefix\mhyphen{}id$ to denote arbitrary subsets of the $id$
-set. The $type$ and $value$ semantical types are defined as follows:
+set. The $type$ and $value$ semantic types are defined as follows:
 
 \begin{table}[H]
   \caption{The $type$ and $value$ semantic types.}
@@ -20,21 +20,22 @@ set. The $type$ and $value$ semantical types are defined as follows:
 \end{table}
 
 In Table~\ref{tab:type-value}, the $type$ type is in any way similar
-to the $\tau$ entry of the abstract syntax, however, all constraint
-bounds in the \texttt{nat} and \texttt{array} types have been
+to the $\tau$ entry of the \hvhdl{} abstract syntax. However, all
+constraint bounds, that were taking the form of expressions in the
+constrained natural and the array type indications, have been
 evaluated to natural numbers. $\mathtt{NATMAX}$ denotes the maximum
 value for a natural number.  The $\mathtt{NATMAX}$ value depends on
 the implementation of the VHDL language; $\mathtt{NATMAX}$ must at
 least be equal to $2^{31}-1$. Note that the $array$ value contains at
-least one value as an array's index range contains at least one index
-(that is index 0).
+least one value as an array's index range contains at least one index.
 
 \begin{notation}[Partial functions]
-  Here, we present our notations pertaining to partial functions:
+  In the following sections, when the context is free from any
+  ambiguity, we adopt the following notations:
   \begin{itemize}[label=-]
-  \item The $\nrightarrow$ arrow denotes a partial function.
-  \item The $\rightarrow$ denotes an application (i.e, a total
-    function).
+  % \item The $\nrightarrow$ arrow denotes a partial function.
+  % \item The $\rightarrow$ denotes an application (i.e, a total
+  %   function).
   \item For all $f\in{}A\nrightarrow{}B$, $x\in{}f$ states that x is in
     the domain of function $f$.
   \item For all $f\in{}A\nrightarrow{}B$ and $g\in{}A\nrightarrow{}C$,
@@ -75,28 +76,25 @@ design is defined as follows:
   elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$ is a record
   ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
   \begin{itemize}[label=$-$]
-  \item
-    $Gens\in{}generic\mhyphen{}id\rightarrow{}(type\times{}value)$
-    where
-    $generic\mhyphen{}id=\{id~\vert~(id,\tau,e)\in{}gens\}$,
-    is the partial function yielding the type and the value of generic
-    constants.
+  \item $Gens\in{}generic\mhyphen{}id\rightarrow{}(type\times{}value)$
+    where $generic\mhyphen{}id=\{id~\vert~(id,\tau,e)\in{}gens\}$, is
+    the function yielding the type and the value of generic constants.
   \item $Ins\in{}input\mhyphen{}id\rightarrow{}type$ where
     $input\mhyphen{}id=\{id~\vert~(\mathtt{in},id,\tau)\in{}ports\}$,
-    is the partial function yielding the type of input ports.
+    is the function yielding the type of input ports.
   \item $Outs\in{}output\mhyphen{}id\rightarrow{}type$ where
     $output\mhyphen{}id=\{id~\vert~(\mathtt{out},id,\tau)\in{}ports\}$,
-    the partial function yielding the type of output ports.
+    is the function yielding the type of output ports.
   \item
     $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\rightarrow{}type$
     where
     $declared\mhyphen{}signal\mhyphen{}id=\{id~\vert~(id,\tau)\in{}sigs\}$,
-    the partial function yelding the type of declared signals.
+    is the function yelding the type of declared signals.
   \item
     $Ps\in{}process\mhyphen{}id\rightarrow{}(variable\mhyphen{}id(id_p)\rightarrow{}(type\times{}value))$
     where\\
     $process\mhyphen{}id=\{id_p~\vert~\mathtt{process}(id_p,sl,vars,ss)\in{}behavior\}$,
-    the partial function associating processes to their local
+    is the function associating processes to their local
     environment. Local environments are functions mapping local
     variable identifiers to their corresponding type and
     value. Therefore, each set of local variable identifiers
@@ -107,8 +105,8 @@ design is defined as follows:
     $Comps\in{}component\mhyphen{}id\rightarrow{}ElDesign(d_e,\mathcal{D})$,
     where\\
     $component\mhyphen{}id=\{id_c~\vert~\mathtt{comp}(id_c,id_e,gm,ipm,opm)\in{}behavior\}$,
-    the partial function mapping component instance ids to their
-    elaborated design version. The set $ElDesign(d_e,\mathcal{D})$
+    is the function mapping component instance identifiers to their
+    own elaborated design version. The set $ElDesign(d_e,\mathcal{D})$
     depends on the design $d_e$ from which the component identifier
     $id_c$, passed as the first argument of the $Comps$ function, is
     an instance. Design $d_e$ is retrieved from the design store
@@ -124,9 +122,9 @@ in the appropriate field of $\Delta$. We write $x\in\Delta$ to state
 that identifier $x$ is defined in one of $\Delta$'s fields. We note
 $\Delta(x)\leftarrow{}v$ the overriding of the value associated to
 identifier $x$ with value $v$ in the appropriate field of $\Delta$,
-$\Delta\cup{}(x,v)$ to note the addition the mapping from identifier
-$x$ to value $v$ in the appropriate field of $\Delta$, that assuming
-$x\notin\Delta$. We write $x\in\mathcal{F}(\Delta)$, where
+$\Delta\cup{}(x,v)$ to note the addition of the mapping from
+identifier $x$ to value $v$ in the appropriate field of $\Delta$, that
+assuming $x\notin\Delta$. We write $x\in\mathcal{F}(\Delta)$, where
 $\mathcal{F}$ is a field of $\Delta$, when more precision is needed
 regarding the lookup of identifier $x$ in the record $\Delta$.
 
@@ -141,19 +139,18 @@ follows:
   design $\Delta\in{}ElDesign(d,\mathcal{D})$, is a record
   ${<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ where:
   \begin{itemize}[label=$-$]
-  \item $\mathcal{S}\in{}signal\mhyphen{}id\rightarrow{}value$, the
-    partial function yielding the current values of the design's
-    signals (ports and declared signals).
+  \item $\mathcal{S}\in{}signal\mhyphen{}id\rightarrow{}value$, is the
+    function yielding the current values of the design's signals
+    (ports and declared signals).
   \item
     $\mathcal{C}\in{}component\mhyphen{}id\rightarrow{}\Sigma(\Delta_c)$,
-    the partial function yielding the current state of design's
-    component instances, where $\Delta_c=\Delta(id_c)$ and
-    $id_c\in{}component\mhyphen{}id$ is the component identifier
-    passed to function $\mathcal{C}$.
+    is the function yielding the current state of component instances,
+    where $\Delta_c=\Delta(id_c)$ and $id_c\in{}component\mhyphen{}id$
+    is the component identifier passed to the $\mathcal{C}$ function.
   \item
     $\mathcal{E}\subseteq{}signal\mhyphen{}id\sqcup{}component\mhyphen{}id$,
-    the set of signal and component instance identifiers that
-    generated an event at the considered design state.
+    is the set of signal and component instance identifiers that
+    generated an event at the current design state.
   \end{itemize}
 \end{definition}
 
@@ -176,7 +173,7 @@ the set of events of design state $\sigma'$, etc.
   For a given \hvhdl{} design $d$, a design store $\mathcal{D}$, and
   an elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, the
   function $NoEv\in\Sigma(\Delta)\rightarrow\Sigma(\Delta)$ returns a
-  design state similar to the one passed in parameter only with an
+  design state similar to the one passed in parameter but with an
   empty set of events. I.e, for all design state
   $\sigma\in\Sigma(\Delta)$
   s.t. $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$,

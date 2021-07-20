@@ -190,10 +190,10 @@ expression is globally static is a given context $\Delta$.
 
 \paragraph{Valid input port map}
 
-The $\mathtt{valid}_{ipm}$ predicate states that an \emph{input} port
-map is valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
+The $\mathtt{valid}_{ipm}$ predicate states that an input port map is
+valid in the context $\Delta,\Delta_c$, where $\Delta$ is the
 embedding design structure and $\Delta_c$ denotes the component
-instance owner of the input port map, if:
+instance, owner of the input port map, if:
 
 \begin{itemize}[label=-]
 \item All ports defined in $\Delta_c$ are exactly mapped once in the
@@ -234,13 +234,12 @@ instance owner of the input port map, if:
   \end{tabular}
 \end{table}
 
-The $list_{ipm}$ relation builds a set of identifiers and couples
-(identifier, natural number) collected from the identifiers and
-indexed identifiers in the formal part (i.e. at the left of the
-association arrow) of an input port map. It also checks, for each
-association of the input port map, that the expression of the actual
-part are is of the same type than the identifier or indexed identifier
-of the formal part.
+The $list_{ipm}$ relation builds a set composed of identifiers and/or
+couples \textit{(identifier, natural number)} collected from the
+identifiers and indexed identifiers found in the formal parts of an
+input port map. It also checks, for each association of the input port
+map, that the expression of the actual part is of the same type than
+the identifier or indexed identifier of the formal part.
 
 \begin{sideconds}
   \begin{itemize}
@@ -355,10 +354,10 @@ of the formal part.
 
 The $\mathtt{check}_{pm}(Ports,\mathcal{L})$ predicate states that all
 port identifiers referenced in the domain of
-$Ports\in{}id\nrightarrow{}type$ appear in $\mathcal{L}$ as a
-simple identifier, or if the port identifier is of type array, then
-all couples ($id$,$i$) must belong to $\mathcal{L}$, where $i$ denotes
-all indexes of the array range and $id$, the port id.
+$Ports\in{}id\nrightarrow{}type$ appear in $\mathcal{L}$ as a simple
+identifier, or if the port identifier is of the $array$ type, then all
+couples ($id$,$i$) must belong to $\mathcal{L}$, where $i$ denotes all
+indexes of the index range and $id$ denotes the port identifier.
 
 \begin{equation*}
   \begin{split}
@@ -382,8 +381,7 @@ instance owner of the port map, if:
 \item Two different output port identifiers cannot be connected to the
   same signal.
 \item For each output port map entry, the formal and the actual part
-  are of the exact same type (i.e, in the sense of the Leibniz
-  equality).
+  are of the exact same type.
 \end{itemize}
 
 We allow partially connected output port map; i.e, an output port map
@@ -393,7 +391,7 @@ output ports are \texttt{open} by default.
 \begin{premises}
   $list_{opm}$ builds two sets
   $\mathcal{L},\mathcal{L}_{ids}\subseteq{}id\sqcup{}(id\times\mathbb{N})$
-  out of the port map $\textrm{opmap}$. $\mathcal{L}_{ids}$ is
+  out of the output port map $\textrm{opmap}$. $\mathcal{L}_{ids}$ is
   built incrementally to check that there are no multiply-driven
   signals resulting of the port map connection.
 \end{premises}
@@ -535,9 +533,9 @@ output ports are \texttt{open} by default.
 \begin{remark}[Unconnected output port.]
   We forbid the case where an indexed formal part corresponding to the
   subelement of a composite output port is unconnected, i.e
-  $\mathrm{id}_f(e_i)\Rightarrow\mathtt{open}$, as it could lead to
-  the case where some subelements of a composite output port are
-  connected while others are not (error case in \cite[p.7]{VHDL2000}).
+  $(\mathrm{id}_f(e_i),\mathtt{open})$, as it could lead to the case
+  where some subelements of a composite output port are connected
+  while others are not (error case in \cite[p.7]{VHDL2000}).
 \end{remark}
 
 \begin{table}[H]
@@ -667,9 +665,9 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
   \begin{itemize}
   \item $\Delta,\sigma,\Lambda\vdash{}e\xrightarrow{e}v$ evaluates the
     expression assigned to signal $\mathrm{id}_s$ in the context
-    $\Delta,\sigma,\Lambda$. During the elaboration, $\sigma$
-    corresponds to the default design state, i.e. where each signal is
-    associated to its type default value.
+    $\Delta,\sigma,\Lambda$.%  During the elaboration, $\sigma$
+    % corresponds to the default design state, i.e. where each signal is
+    % associated to its type default value.
   \item $v\in_c{}T$ checks that the value of expression $e$ conforms
     to the type of signal $\mathrm{id}_s$.
   \end{itemize}
