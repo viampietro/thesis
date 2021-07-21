@@ -39,9 +39,11 @@ morekeywords=[1]{is, generic, port, begin, end, range, to, downto,
   out, if, map, wait, on, until, inertial, transport, after},
 %
 % Types
-morekeywords=[2]{natural, std_logic, std_logic_vector},
+morekeywords=[2]{natural, std_logic, std_logic_vector, array, boolean},
 % Time units and use statements.
 morekeywords=[3]{ns,ps,work},
+% H-VHDL special statements.
+morekeywords=[7]{falling, rising, rst},
 %
 % Comments delimiters, we do turn this off for the manual
 morecomment=[l]--,
@@ -95,7 +97,7 @@ keywordstyle=[4]{\ttfamily\color{dkblue}},
 % Style for terminators keywords
 keywordstyle=[5]{\ttfamily\color{dkred}},
 % Style for Hilecop identifiers
-keywordstyle=[7]{\ttfamily\color{lochmara}},
+keywordstyle=[7]{\ttfamily\color{dkred}},
 % Style for Hilecop parameters and fields
 keywordstyle=[8]{\ttfamily\color{darkmagenta}},
 %Style for iterators

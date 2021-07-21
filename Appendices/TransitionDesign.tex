@@ -94,22 +94,15 @@ begin
     if ( (s_condition_combination = '1')
          and (s_enabled = '1')
          and ( (transition_type = transition_t(NOT_TEMPORAL))
-         
                or ( (transition_type = transition_t(TEMPORAL_A_B))
                     and (s_reinit_time_counter = '0')
                     and (s_time_counter >= (time_A_value-1))
-                    and (s_time_counter < time_B_value)
-                    and (time_A_value /= 0)
-                    and (time_B_value /= 0) )
-               
+                    and (s_time_counter < time_B_value))
                or ( (s_reinit_time_counter = '0')
-                    and (time_A_value /= 0)
                     and ( ((transition_type = transition_t(TEMPORAL_A_A))
                           and (s_time_counter = (time_A_value-1)))
-                    or ( (transition_type = transition_t(TEMPORAL_A_INFINITE))
-                         and (s_time_counter >= (time_A_value-1)) )
-               )
-                              
+                        or ( (transition_type = transition_t(TEMPORAL_A_INFINITE))
+                             and (s_time_counter >= (time_A_value-1)) ))
                or ( (transition_type /= transition_t(NOT_TEMPORAL))
                     and (s_reinit_time_counter = '1')
                     and (time_A_value = 1) )
@@ -149,6 +142,96 @@ begin
   
 end transition_architecture;
   
+\end{lstlisting}
+
+\begin{lstlisting}[language=VHDL,label={lst:trans-design-abss},caption={The \texttt{transition} design in \hvhdl{} abstract syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left, numberstyle=\tiny\ttfamily]
+design transition transition_architecture
+
+-- Generic clause
+((transition_type, natural(0,3), 0),
+ (input_arcs_number, natural(0,NATMAX), 1),
+ (conditions_number, natural(0,NATMAX), 1),
+ (maximal_time_counter, natural(0,NATMAX),1))
+
+-- Port clause
+((in, input_conditions, array(boolean, 0, conditions_number$-$1),
+ (in, time_A_value, natural(0, maximal_time_counter)),
+ (in, time_B_value, natural(0, maximal_time_counter)),
+ (in, input_arcs_valid, array(boolean, 0, input_arcs_number$-$1)),
+ (in, reinit_time, array(boolean, 0, input_arcs_number$-$1)),
+ (in, priority_authorizations, array(boolean, 0, input_arcs_number$-$1)),
+ (out, fired, boolean))
+
+-- Architecture declarative part
+((s_condition_combination, boolean),
+ (s_enabled, boolean),
+ (s_firable, boolean),
+ (s_firing, boolean),
+ (s_priority, boolean),
+ (s_reinit, boolean),
+ (s_time_counter, natural(0, maximal_time_counter)),
+
+-- Behavior
+
+process (condition_evaluation, (input_conditions), ((v_internal_condition, boolean)),
+(v_internal_condition := true;
+ (for (i, 0, conditions_number$-$1)
+      (v_internal_condition := v_internal_condition and input_conditions(i)));
+ s_condition_combination <= v_internal_condition))
+  
+process (enable_evaluation, (input_arcs_valid), ((v_internal_enabled, boolean)),
+(v_internal_enabled := true;
+ (for (i, 0, input_arcs_number$-$1)
+      (v_internal_enabled := v_internal_enabled and input_arcs_valid(i)));
+ s_enabled <= v_internal_enabled))
+
+process (reinit_time_counter_evaluation, (reinit_time, s_enabled),
+         ((v_internal_reinit_time_counter, boolean)),
+(v_internal_reinit_time_counter := false;
+ (for (i, 0, input_arcs_number$-$1)
+      (v_internal_reinit_time_counter := v_internal_reinit_time_counter or reinit_time(i)));
+ (s_reinit_time_counter <= v_internal_reinit_time_counter)))
+
+process (time_counter, (clk), $\emptyset$,
+(rst 
+ (s_time_counter <= 0)
+ (falling
+  (if ((s_enabled = true) and (transition_type $\neq$ 0)) 
+      (if (s_reinit_time_counter = false)
+          (if (s_time_counter < maximal_time_counter)
+              (s_time_counter <= s_time_counter + 1))
+          (s_time_counter <= 1))
+      (s_time_counter <= 0)))))
+
+process (firing_condition_evaluation, 
+         (s_enabled, s_condition_combination, s_reinit_time_counter, s_time_counter),
+         $\emptyset$,
+(s_firing_condition <= 
+ (s_condition_combination = true)
+ and (s_enabled = true)
+ and ( (transition_type = 0)
+       or ((s_reinit_time_counter = false) and
+            (((transition_type = 1) and (s_time_counter >= (time_A_value-1)) 
+                                    and (s_time_counter < time_B_value))
+              or ((transition_type = 2) and (s_time_counter = (time_A_value-1)))
+              or ((transition_type = 3) and (s_time_counter >= (time_A_value-1)))))                              
+       or ((s_reinit_time_counter = true)
+           and (transition_type $\neq$ 0)
+           and (time_A_value = 1)))))
+  
+process (priority_authorization_evaluation, (priority_authorizations),
+         ((v_priority_combination, boolean)),
+(v_priority_combination := true;
+ (for (i, 0, input_arcs_number$-$1)
+      (v_priority_combination := v_priority_combination and priority_authorizations(i)));
+ s_priority_combination <= v_priority_combination))
+
+process (firable, (clk), $\emptyset$,
+(rst (s_firable <= false)
+     (falling (s_firable <= s_firing_condition))))
+
+process (fired_evaluation, (s_firable, s_priority_combination), $\emptyset$,
+(fired <= s_firable and s_priority_combination))
 \end{lstlisting}
 
 %%% Local Variables:
