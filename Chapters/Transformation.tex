@@ -1,31 +1,25 @@
 \chapter{The \hilecop{} model-to-text transformation}
 \label{chap:transformation}
 
-\textsc{Research question of the chapter:}\\
-\fbox{\parbox{\textwidth}{\sc Is there a proper way to express our
-    (i.e, \hilecop{}'s) transformation function?}}
+The aim of this chapter is to present in details the \hilecop{}
+model-to-text transformation that we propose to verify as semantic
+preserving. The chapter is structured as follows. First, we present,
+in Section~\ref{sec:transf-lit-rev}, a literature review of the works
+pertaining to transformation functions in the context of formal
+verification. The literature review focuses on the expression of
+transformation functions and on their implementation. In
+Section~\ref{sec:trans-alg}, we detail the \hilecop{} transformation
+function in the form of an algorithm. Finally, in
+Section~\ref{sec:trans-coq-impl}, we describe the \coq{}
+implementation of the algorithm.
+
+\section{Informal presentation of the \hilecop{} transformation}
+\label{sec:informal-transf}
+\input{Chapters/Transformation/informal-transf}
 
 \section{Expressing transformation functions}
 \label{sec:transf-lit-rev}
 \input{Chapters/Transformation/lit-rev}
-
-\section{Informal presentation of the transformation}
-\label{sec:informal-transf}
-
-
-\begin{itemize}
-\item High-level presentation of the transformation\\
-  \pnote{use the figures of the 2nd CSI}
-\item point out the particularities of \hilecop{}'s transformation
-  function compared to what have been presented in the lit. review.\\
-
-  \pnote{don't know if the lit. review will give enough material to do
-    so}
-
-  \pnote{are there cases of model-to-text transformation close enough
-    to our case to enable comparison?}
-\item Give an example of transformation in the form of schematic figure.
-\end{itemize}
 
 \textsc{Conclusion of the section:} Hard to express our trans. fun. in
 a way that facilitate compositional reasoning (if compositional

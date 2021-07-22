@@ -1,0 +1,160 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+% Arrow positioning in a path
+
+\tikzset{->-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{>}}},postaction={decorate}}}
+
+\tikzset{-<-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{<}}},postaction={decorate}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node (pn) {
+    \begin{tikzpicture}
+
+      % PLACES AND TRANSITIONS
+      
+      \node[place,tokens=1] (p0) {};
+      
+      \node[transition] (t0) at ($(p0)-(0,1)$) {};
+      
+      \node[place] (p1) at ($(t0)-(0,1)$) {};
+
+      \node[transition] (t1) at ($(p1)-(0,1)$) {};
+
+      % LABELS
+
+      \node (pzLabel) at ($(p0)-(.7,-.2)$) { $P_0$};
+      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$T_0$};
+      \node (poLabel) at ($(p1)-(.7,0)$) { $P_1$};
+      \node (tzLabel) at ($(t1)-(.5,.2)$) { $T_1$};
+
+      % ACTIONS, FUNCTIONS, CONDITIONS AND TIME ITVALS
+
+      \node (a0) at ($(p0.east)+(.3,0)$) {$a_0$};
+      \node (a1) at ($(p1.east)+(.3,0)$) {$a_1$};
+      \node (i0) at ($(t0.west)-(.4,.2)$) {\small $[1,3]$};
+      \node (c0) at ($(t0.east)+(.3,0)$) {$c_0$};
+      \node (c0) at ($(t1.east)+(.3,0)$) {$c_1$};
+      \node (f0) at ($(t1.east)+(.2,-.4)$) {$f_0$};
+      
+      % ARCS
+      
+      \draw (p0) edge[post] (t0);
+      \draw (t0) edge[post] (p1);
+      \draw (t1) edge[pre] (p1);
+      \draw ($(t1.west)$) edge[bend left=90,post] ($(p0.west)$);
+    \end{tikzpicture}
+  };
+
+  \node(pnlabel) at ($(pn.south)-(0,.3)$) {SITPN};
+  
+  \node[draw, black, inner sep=2mm, % minimum height=4cm, minimum width=3cm
+  ] (vhdl) at ($(pn.east)+(4.5,0)$) {
+    \begin{tikzpicture}      
+      
+      % P0 Component + I/O
+      
+      \node[draw, black, inner sep=2mm] (compP0) {$P_0$};
+
+      \node at ($(compP0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node (compP0arrows) at ($(compP0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
+      \node (labelP0arrows) at ($(compP0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
+      
+      % T0 Component + I/O
+      
+      \node[draw, black, inner sep=2mm] (compT0) at ($(compP0)+(1.5,-1.5)$) {$T_0$};
+      \node at ($(compT0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node (compT0arrows) at ($(compT0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
+      \node (labelT0arrows) at ($(compT0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};            
+
+      % P1 Component + I/O
+      
+      \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$P_1$};
+      \node at ($(compP1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node (compP1arrows) at ($(compP1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
+      \node (labelP1arrows) at ($(compP1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
+      
+      % T1 Component + I/O
+      
+      \node[draw, black, inner sep=2mm] (compT1) at ($(compP1)+(-1.5,1.5)$) {$T_1$};
+      \node at ($(compT1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node (compT1arrows) at ($(compT1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
+      \node (labelT1arrows) at ($(compT1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
+                  
+    \end{tikzpicture}
+  };
+
+  \node(vhdllabel) at ($(vhdl.south)-(0,.3)$) {VHDL top-level design};
+  
+  \draw (pn.east)
+  edge[double, ->, thick]
+  node[yshift=1em] {\ssmall Transformation}
+  ($(vhdl.west)-(.2,0)$);
+  
+\end{tikzpicture}
+
+\end{document}

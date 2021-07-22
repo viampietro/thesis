@@ -1,0 +1,38 @@
+Here, we give an overview of the \hilecop{} transformation
+function. The goal is to give to the reader the means to appreciate
+the difference and the similarities between the \hilecop{}
+transformation and the other transformations presented in the
+literature review of Section~\ref{sec:transf-lit-rev}. Then,
+Section~\ref{sec:trans-alg} will enter the details of the
+transformation by presenting the transformation algorithm.
+
+The \hilecop{} model-to-text transformation function takes an SITPN
+model as an input; then, it generates a top-level \hvhdl{} design out
+of the input model. We will illustrate the \hilecop{} model-to-text
+transformation on the input SITPN model presented in
+Figure~\ref{fig:transf-toplevel}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=\textwidth]{Figures/Transformation/transl-fun-toplevel}
+  \caption[Transformation of an input SITPN model.]{Transformation of an input SITPN model into a top-level \hvhdl{} design.}
+  \label{fig:transf-toplevel}
+\end{figure}
+
+The generated top-level design implements the structure of the input
+SITPN. The places and transitions of the SITPN are transformed into
+instances of the \texttt{place} and \texttt{transition} designs; the
+instances define the behavior of the top-level design.
+
+
+
+Also, the \texttt{place} and \texttt{transition} component instances
+are connected together through their input and output port
+interfaces. These interconnections implement the arc interconnection
+between the places and transitions of the input SITPN.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

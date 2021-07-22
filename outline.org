@@ -23,10 +23,10 @@
 ** DONE a natural semantics for H-VHDL [100%]
 ** DONE Coq implementation of H-VHDL syntax and semantics [100%]
 ** DONE conclusion [100%]
-* TODO The HILECOP model-to-text transformation [16%]
-** TODO introduction [%]
-** DONE expressing transformation functions
+* TODO The HILECOP model-to-text transformation [33%]
+** DONE introduction [100%]
 ** TODO informal presentation of the transformation
+** DONE expressing transformation functions [100%]
 ** TODO the transformation algorithm
 ** TODO coq implementation of the HILECOP model-to-text transformation
 ** TODO conclusion
