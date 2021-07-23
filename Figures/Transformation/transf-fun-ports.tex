@@ -1,28 +1,15 @@
 \documentclass{standalone}
 
 \usepackage[english]{babel}
-\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
-
-\usepackage{caption}
-
-% to create listings
-
-\usepackage{listings, lstautogobble}
-\lstset{
-  autogobble=true,
-  frame=single,
-}
-
-\lstdefinelanguage{coq}[Objective]{Caml}{
-  morekeywords={Structure, Definition, Inductive, list, return},
-  sensitive=true
-}
 
 % to define font size
 
-\usepackage{ulem}
 \usepackage{moresize}
 \usepackage{anyfontsize}
+
+% Colors
+
+\usepackage[dvipsnames]{xcolor}
 
 % to use tikz and its libraries
 
@@ -47,7 +34,7 @@
 \tikzstyle{test}=[pre, *-]
 \tikzstyle{inhib}=[pre, o-]
 
-% Arrow positioning in a path
+% Arrows position in a path
 
 \tikzset{->-/.style={decoration={
   markings,
@@ -57,9 +44,6 @@
   markings,
   mark=at position #1 with {\arrow{<}}},postaction={decorate}}}
 
-% to use colors
-
-\usepackage{xcolor}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                  BEGIN DOCUMENT                %
@@ -85,10 +69,10 @@
 
       % LABELS
 
-      \node (pzLabel) at ($(p0)-(.7,-.2)$) { $P_0$};
-      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$T_0$};
-      \node (poLabel) at ($(p1)-(.7,0)$) { $P_1$};
-      \node (tzLabel) at ($(t1)-(.5,.2)$) { $T_1$};
+      \node (pzLabel) at ($(p0)-(.7,-.2)$) {$p_0$};
+      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$t_0$};
+      \node (poLabel) at ($(p1)-(.7,0)$) {$p_1$};
+      \node (tzLabel) at ($(t1)-(.5,.2)$) {$t_1$};
 
       % ACTIONS, FUNCTIONS, CONDITIONS AND TIME ITVALS
 
@@ -114,39 +98,38 @@
   ] (vhdl) at ($(pn.east)+(4.5,0)$) {
     \begin{tikzpicture}      
 
-      % \draw[help lines,step=8pt] (-2.4cm,1cm) grid (2.4cm,-3.7cm);
-      \clip (-2.3cm, 1cm) rectangle (2.2cm,-3.7cm);
+      % \draw[help lines,step=8pt] (-2.4cm,1cm) grid (2.4cm,-5.5cm);
+      \clip (-2.3cm, 1cm) rectangle (2.4cm,-5.5cm);
       
       % P0 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compP0) {$P_0$};
-
-      \node at ($(compP0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compP0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compP0) {$\mathtt{id}_{p_0}$};
+      \node at ($(compP0.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP0arrows) at ($(compP0.north west)+(0,2mm)$) {$\Downarrow$};
       \node (labelP0arrows) at ($(compP0arrows.north)$){\ssmall\it \textcolor{blue}{const.}};
       
       % T0 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compT0) at ($(compP0)+(1.5,-1.5)$) {$T_0$};
-      \node at ($(compT0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compT0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compT0) at ($(compP0)+(1.5,-1.5)$) {$\mathtt{id}_{t_0}$};
+      \node at ($(compT0.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT0arrows) at ($(compT0.north west)+(0,2mm)$) {$\Downarrow$};
       \node (labelT0arrows) at ($(compT0arrows.north)$){\ssmall\it \textcolor{blue}{const.}};            
 
       % P1 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$P_1$};
-      \node at ($(compP1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compP1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$\mathtt{id}_{p_1}$};
+      \node at ($(compP1.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP1arrows) at ($(compP1.north west)+(0,2mm)$) {$\Downarrow$};
       \node (labelP1arrows) at ($(compP1arrows.north)$){\ssmall\it \textcolor{blue}{const.}};
       
       % T1 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compT1) at ($(compP1)+(-1.5,1.5)$) {$T_1$};
-      \node at ($(compT1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compT1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compT1) at ($(compP1)+(-1.5,1.5)$) {$\mathtt{id}_{t_1}$};
+      \node at ($(compT1.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT1arrows) at ($(compT1.north west)+(0,2mm)$) {$\Downarrow$};
       \node (labelT1arrows) at ($(compT1arrows.north)$){\ssmall\it \textcolor{blue}{const.}};
 
@@ -161,10 +144,52 @@
       \draw ($(compP1.south)$) edge[red,->-=.5,out=-135,in=20,looseness=1.4] ($(compT1.north)+(1ex,0)$);
       \draw ($(compT1.south)$) edge[red,->-=.3,out=-90,in=90] ($(compP1.north)-(1ex,0)$);
       \draw ($(compT1.south)$) edge[red,->-=.3,out=-140,in=135,looseness=2] ($(compP0.north)-(1ex,0)$);
+
+
+      % ACTION AND FUNCTION PSS
+
+      \node[draw, black] (actionps) at ($(compP1.south west)-(1,1)$) {action};
+      \node[draw, black] (funps) at ($(compP1.south east)+(1,-1)$) {function};
+      
     \end{tikzpicture}
   };
 
-  \node(vhdllabel) at ($(vhdl.south)-(0,.3)$) {VHDL top-level design};
+  % PORTS and PORTS LABELS
+
+  %% In ports
+
+  \node[draw,black,fill,inner sep=1mm] (portc0) at ($(vhdl.north)+(1.5,0)$) {};
+  \node[draw,black,fill,inner sep=1mm] (portc1) at ($(vhdl.north)-(1.5,0)$) {};
+  \node (labelportc0) at ($(portc0.north)+(0,6pt)$) {$\mathtt{id}_{c_0}$};
+  \node (labelportc1) at ($(portc1.north)+(0,6pt)$) {$\mathtt{id}_{c_1}$};
+  
+  %% Out ports
+  
+  \node[draw,black,fill,inner sep=1mm] (porta0) at ($(vhdl.south)-(10ex,0)$) {};
+  \node[draw,black,fill,inner sep=1mm] (porta1) at ($(vhdl.south)-(6ex,0)$) {};
+  \node[draw,black,fill,inner sep=1mm] (portf0) at ($(vhdl.south)+(10ex,0)$) {};
+  \node (labelporta0) at ($(porta0.south)-(0,6pt)$) {$\mathtt{id}_{a_0}$};
+  \node (labelporta1) at ($(porta1.south)-(-3pt,6pt)$) {$\mathtt{id}_{a_1}$};
+  \node (labelportf0) at ($(portf0.south)-(0,6pt)$) {$\mathtt{id}_{f_0}$};
+  
+  % PORTS INTERCONNECTIONS
+
+  \draw ($(compP0.south)$) edge[orange,->-=.7,out=-90,in=90] ($(actionps.north west)+(2ex,0)$);
+  \draw ($(compP1.south)$) edge[orange,->-=.7,out=-90,in=90] ($(actionps.north)+(2ex,0)$);
+  \draw ($(compT1.south)$) edge[orange,->-=.7,out=-90,in=170] ($(funps.north)$);
+
+  \draw ($(actionps.south)-(1ex,0)$) edge[Purple,->-=.5,out=-135,in=90] ($(porta0.north)$);
+  \draw ($(actionps.south)+(1ex,0)$) edge[Purple,->-=.5,out=-135,in=90] ($(porta1.north)$);
+  \draw ($(funps.south)$) edge[Purple,->-=.5,out=-45,in=90] ($(portf0.north)$);
+
+  \draw ($(portc0.south)$) edge[ForestGreen,->-=.5,out=-45] ($(compT0.north)$);
+  \draw ($(portc1.south)$) edge[ForestGreen,->-=.5,out=-90,in=135] ($(compT1.north)$); 
+  
+  % VHDL LABEL
+  
+  \node(vhdllabel) at ($(vhdl.south)-(0,.8)$) {$\mathcal{H}$-VHDL top-level design};
+
+  % TRANSLATION ARROW
   
   \draw (pn.east)
   edge[double, ->, thick]

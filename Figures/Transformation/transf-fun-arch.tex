@@ -83,10 +83,10 @@
 
       % LABELS
 
-      \node (pzLabel) at ($(p0)-(.7,-.2)$) { $P_0$};
-      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$T_0$};
-      \node (poLabel) at ($(p1)-(.7,0)$) { $P_1$};
-      \node (tzLabel) at ($(t1)-(.5,.2)$) { $T_1$};
+      \node (pzLabel) at ($(p0)-(.7,-.2)$) { $p_0$};
+      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$t_0$};
+      \node (poLabel) at ($(p1)-(.7,0)$) { $p_1$};
+      \node (tzLabel) at ($(t1)-(.5,.2)$) { $t_1$};
 
       % ACTIONS, FUNCTIONS, CONDITIONS AND TIME ITVALS
 
@@ -114,41 +114,40 @@
       
       % P0 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compP0) {$P_0$};
-
-      \node at ($(compP0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compP0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compP0) {$\mathtt{id}_{p_0}$};
+      \node at ($(compP0.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP0arrows) at ($(compP0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelP0arrows) at ($(compP0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
       
       % T0 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compT0) at ($(compP0)+(1.5,-1.5)$) {$T_0$};
-      \node at ($(compT0.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compT0.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compT0) at ($(compP0)+(1.5,-1.5)$) {$\mathtt{id}_{t_0}$};
+      \node at ($(compT0.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT0arrows) at ($(compT0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelT0arrows) at ($(compT0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};            
 
       % P1 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$P_1$};
-      \node at ($(compP1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compP1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$\mathtt{id}_{p_1}$};
+      \node at ($(compP1.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compP1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP1arrows) at ($(compP1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelP1arrows) at ($(compP1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
       
       % T1 Component + I/O
       
-      \node[draw, black, inner sep=2mm] (compT1) at ($(compP1)+(-1.5,1.5)$) {$T_1$};
-      \node at ($(compT1.north)-(.5,0)$) {\fontsize{4}{6}\selectfont\itshape in};
-      \node at ($(compT1.south)-(.55,0)$) {\fontsize{4}{6}\selectfont\itshape out};
+      \node[draw, black, inner sep=2mm] (compT1) at ($(compP1)+(-1.5,1.5)$) {$\mathtt{id}_{t_1}$};
+      \node at ($(compT1.north west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape in};
+      \node at ($(compT1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT1arrows) at ($(compT1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelT1arrows) at ($(compT1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
                   
     \end{tikzpicture}
   };
 
-  \node(vhdllabel) at ($(vhdl.south)-(0,.3)$) {VHDL top-level design};
+  \node(vhdllabel) at ($(vhdl.south)-(0,.3)$) {$\mathcal{H}$-VHDL top-level design};
   
   \draw (pn.east)
   edge[double, ->, thick]

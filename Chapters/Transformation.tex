@@ -1,6 +1,18 @@
 \chapter{The \hilecop{} model-to-text transformation}
 \label{chap:transformation}
 
+\begin{todobox}
+  \begin{itemize}
+  \item Motivate the interest of the transformation in the
+    introduction. Why the models are not hand-coded in VHDL directly?
+    Because graphics help the design and communication, automatic
+    generation because places and transitions interconnections to complex\dots
+  \item Pciples of SITPNs implementation in VHDL: place pivot, keep
+    place and transition design as simple as possible,
+    interconnections via Boolean signals only
+  \end{itemize}
+\end{todobox}
+
 The aim of this chapter is to present in details the \hilecop{}
 model-to-text transformation that we propose to verify as semantic
 preserving. The chapter is structured as follows. First, we present,
@@ -21,36 +33,37 @@ implementation of the algorithm.
 \label{sec:transf-lit-rev}
 \input{Chapters/Transformation/lit-rev}
 
-\textsc{Conclusion of the section:} Hard to express our trans. fun. in
-a way that facilitate compositional reasoning (if compositional
-reasoning is at all possible), partly because component instances are
-connected. However, the lit. review pointed out the necessity to keep
-a binding between elements of the source models and elements of the
-target programs (introduction of the $\gamma$ binder) to enable state
-comparison, i.e on which relies the proof of semantic preservation.
+% \textsc{Conclusion of the section:} Hard to express our trans. fun. in
+% a way that facilitate compositional reasoning (if compositional
+% reasoning is at all possible), partly because component instances are
+% connected. However, the lit. review pointed out the necessity to keep
+% a binding between elements of the source models and elements of the
+% target programs (introduction of the $\gamma$ binder) to enable state
+% comparison, i.e on which relies the proof of semantic preservation.
 
 \section{The transformation algorithm}
 \label{sec:trans-alg}
+\input{Chapters/Transformation/transf-alg}
 
-\bnote{maybe talk about the fact that the transformation algorithm has
-  been established by observing the behavior of the current \hilecop{}
-  implementation, and through discussions with the \hilecop{} designer
-  (a.k.a David Andreu)}
+% \bnote{maybe talk about the fact that the transformation algorithm has
+%   been established by observing the behavior of the current \hilecop{}
+%   implementation, and through discussions with the \hilecop{} designer
+%   (a.k.a David Andreu)}
 
-\begin{itemize}
-\item Give the model-to-text transformation algorithm\\
-  \pnote{give the alg. as established through our meetings, or maybe
-    use a simpler alg. (without the generate infos part, maybe too
-    much implementation oriented)}
-\item Give the formal specification of the transformation, i.e which
-  structural properties between SITPN elements and \hvhdl{} constructs\\
-  \rnote{don't know if I'll have the time to do that, but it would be
-    great to have it, and use it in the proof. Each time the proof
-    says ``by construction'', then the reader can refer to the formal
-    spec}
-\item Give a concrete example of generated \hvhdl{} code from a simple
-  SITPN
-\end{itemize}
+% \begin{itemize}
+% \item Give the model-to-text transformation algorithm\\
+%   \pnote{give the alg. as established through our meetings, or maybe
+%     use a simpler alg. (without the generate infos part, maybe too
+%     much implementation oriented)}
+% \item Give the formal specification of the transformation, i.e which
+%   structural properties between SITPN elements and \hvhdl{} constructs\\
+%   \rnote{don't know if I'll have the time to do that, but it would be
+%     great to have it, and use it in the proof. Each time the proof
+%     says ``by construction'', then the reader can refer to the formal
+%     spec}
+% \item Give a concrete example of generated \hvhdl{} code from a simple
+%   SITPN
+% \end{itemize}
 
 \section{\coq{} implementation of the \hilecop{} model-to-text transformation}
 \label{sec:trans-coq-impl}

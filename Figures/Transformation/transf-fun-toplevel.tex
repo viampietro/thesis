@@ -1,0 +1,113 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+
+  \node (pn) {
+    \begin{tikzpicture}
+
+      % PLACES AND TRANSITIONS
+      
+      \node[place,tokens=1] (p0) {};
+      
+      \node[transition] (t0) at ($(p0)-(0,1)$) {};
+      
+      \node[place] (p1) at ($(t0)-(0,1)$) {};
+
+      \node[transition] (t1) at ($(p1)-(0,1)$) {};
+
+      % LABELS
+
+      \node (pzLabel) at ($(p0)-(.7,-.2)$) { $p_0$};
+      \node (tzLabel) at ($(t0.west)-(.3,-.2)$) {$t_0$};
+      \node (poLabel) at ($(p1)-(.7,0)$) { $p_1$};
+      \node (tzLabel) at ($(t1)-(.5,.2)$) { $t_1$};
+
+      % ACTIONS, FUNCTIONS, CONDITIONS AND TIME ITVALS
+
+      \node (a0) at ($(p0.east)+(.3,0)$) {$a_0$};
+      \node (a1) at ($(p1.east)+(.3,0)$) {$a_1$};
+      \node (i0) at ($(t0.west)-(.4,.2)$) {\small $[1,3]$};
+      \node (c0) at ($(t0.east)+(.3,0)$) {$c_0$};
+      \node (c0) at ($(t1.east)+(.3,0)$) {$c_1$};
+      \node (f0) at ($(t1.east)+(.2,-.4)$) {$f_0$};
+      
+      % ARCS
+      
+      \draw (p0) edge[post] (t0);
+      \draw (t0) edge[post] (p1);
+      \draw (t1) edge[pre] (p1);
+      \draw ($(t1.west)$) edge[bend left=90,post] ($(p0.west)$);
+    \end{tikzpicture}
+  };
+
+  \node(pnlabel) at ($(pn.south)-(0,.3)$) {SITPN};
+  
+  \node[draw, black, minimum height=4cm, minimum width=3cm] (vhdl) at ($(pn.east)+(4,0)$) {};
+
+  \node(vhdllabel) at ($(vhdl.south)-(0,.3)$) {$\mathcal{H}$-VHDL top-level design};
+  
+  \draw (pn.east)
+  edge[double, ->, thick]
+  node[yshift=1em] {\small Transformation}
+  ($(vhdl.west)-(.2,0)$);
+  
+\end{tikzpicture}
+
+\end{document}
