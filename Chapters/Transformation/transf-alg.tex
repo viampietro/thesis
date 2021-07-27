@@ -1,30 +1,359 @@
-\begin{definition}[SITPN-to-\hvhdl{} Design Binder]
+In this section, we give the algorithm underlying the \hilecop{}
+model-to-text transformation. This algorithm is the base of the \coq{}
+implementation of the \hilecop{} transformation; the implementation is
+presented in Section~\ref{sec:trans-coq-impl}. As stated in
+Chapter~\ref{chap:hilecop}, there exists a Java implementation of the
+\hilecop{} methodology. This implementation embeds the generation of
+VHDL code from an SITPN model. However, the algorithm of the
+transformation has never been devised, nor a formal specification
+given. The following algorithm is one of the contribution of this
+thesis. It has been devised through the examination of the code of the
+existing Java implementation, and through the discussions with the
+designers of the \hilecop{} methodology.
+
+\subsection{The \texttt{sitpn_to_hvhdl} function}
+\label{sec:sitpn-to-hvhdl}
+
+The \hilecop{} transformation algorithm, presented in
+Algorithm~\ref{alg:sitpn2hvhdl}, generates a \hvhdl{} design and a
+SITPN-to-\hvhdl{} binder from an input SITPN. A SITPN-to-\hvhdl{}
+design binder is a structure that binds the elements of an SITPN
+(places, transitions, actions\dots) to the elements of a \hvhdl{}
+design (component instances or signals). As it is generated along the
+transformation, the binder links a SITPN element to its \hvhdl{}
+\textit{implementation}, i.e. the \hvhdl{} element that will
+supposedly behave similarly to the source SITPN element at
+runtime. Thus, the SITPN-to-\hvhdl{} design binder is at the center of
+the state similarity relation, presented in Chapter~\ref{chap:proof},
+and that enables the comparison between an SITPN state and an \hvhdl{}
+design state. The formal definition of an SITPN-to-\hvhdl{} design
+binder is as follows.
+
+\begin{definition}[SITPN-to-\hvhdl{} design binder]
+  \label{def:sitpn-to-hvhdl-binder}
   Given a $sitpn\in{}SITPN$ and a \hvhdl{} design $d\in{}design$, a
   SITPN-to-\hvhdl{} design binder $\gamma\in{}WM(sitpn,d)$ is a tuple\\
-  ${<}PMap,TMap,\mathcal{C}_{id},\mathcal{A}_{id},\mathcal{F}_{id},CMap,AMap,FMap{>}$
+  ${<}PMap,TMap,CMap,AMap,FMap{>}$
   where:
   \begin{itemize}
   \item
     $sitpn={<}P,T,pre,test,inhib,post,M_0,{\succ},\mathcal{A},\mathcal{C},\mathcal{F},
     \mathbb{A},\mathbb{C},\mathbb{F},{I_s}{>}$
-  \item $d=$ \vhdle|design| \textit{$id_{ent}$ $id_{arch}$ gens ports sigs behavior}
-  \item $PMap\in{}P\rightarrow{}P_{id}$ where $P_{id}=\{id~|~\mathtt{comp}(id,"place",gm,ipm,opm)\in{}behavior\}$
-  \item $TMap\in{}T\rightarrow{}T_{id}$ where $T_{id}=\{id~|~\mathtt{comp}(id,"transition",gm,ipm,opm)\in{}behavior\}$
-  \item $\mathcal{C}_{id}\subseteq\{id~|~(\mathtt{in}, id, t)\in{}ports\wedge{}id\notin\{"clk","rst"\}\}$
-  \item $\mathcal{A}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
-  \item $\mathcal{F}_{id}\subseteq\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
-  \item $CMap\in\mathcal{C}\rightarrow\mathcal{C}_{id}$
-  \item $AMap\in\mathcal{A}\rightarrow\mathcal{A}_{id}$
-  \item $FMap\in\mathcal{F}\rightarrow\mathcal{F}_{id}$        
+  \item $d=$ \vhdle|design| \textit{$id_{e}$ $id_{a}$ gens ports sigs cs}
+  \item $PMap\in{}P\rightarrow{}\{id~|~\mathtt{comp}(id,\mathtt{place},g,i,o)\in{}cs\}$
+  \item $TMap\in{}T\rightarrow{}\{id~|~\mathtt{comp}(id,\mathtt{transition},g,i,o)\in{}cs\}$
+  \item $CMap\in\mathcal{C}\rightarrow\{id~|~(\mathtt{in}, id, t)\in{}ports\}$
+  \item $AMap\in\mathcal{A}\rightarrow\{id~|~(\mathtt{out}, id, t)\in{}ports\}$
+  \item $FMap\in\mathcal{F}\rightarrow\{id~|~(\mathtt{out}, id, t)\in{}ports\}$        
   \end{itemize}
 \end{definition}
 
-Afterwards, for a given binder $\gamma$ and an element of an SITPN
-structure
+As presented in Definition~\ref{def:sitpn-to-hvhdl-binder}, the binder
+is composed of five sub-environments that map the different SITPN sets
+to identifiers. The $PMap$ and $TMap$ sub-environments map the places
+to their corresponding PCI identifiers, and the transitions to their
+corresponding TCI identifiers. The $CMap$ sub-environment maps the
+conditions to input port identifiers. The $AMap$ and $FMap$
+sub-environments map the actions and functions to output port
+identifiers. In what follows, for a given binder $\gamma$ and an
+element of an SITPN structure
 $e\in{}P\sqcup{}T\sqcup\mathcal{C}\sqcup\mathcal{A}\sqcup\mathcal{F}$,
 we write $\gamma(e)$ where $e$ is looked up in the appropriate
 function. For instance, for a given $f\in\mathcal{F}$, $\gamma(f)$ is
 a shorthand for $FMap(f)$ where $\gamma={<}\dots,FMap{>}$.
+
+Algorithm~\ref{alg:sitpn2hvhdl} is the algorithm of the \hilecop{}
+model-to-text transformation. The algorithm as four parameters; the
+first one is the input SITPN model; $id_e$ and $id_a$ are the entity
+and the architecture identifiers for the generated \hvhdl{} design;
+$mmf\in{}P\rightarrow\mathbb{N}$ is the function associating a maximal
+marking value to each place of the input SITPN. This function is the
+result of the analysis of the input SITPN.
+
+\begin{remark}[Bounded SITPN]
+  \label{rem:bounded-sitpn}
+  A part of the analysis is interested in determining the maximal
+  number of tokens that a place can hold during the execution of a
+  SITPN. If each place of the SITPN can only hold a limited number of
+  tokens during the execution, then the model is said to be
+  bounded. In that case, a function associated the places with a
+  maximal marking value can be computed. Thus, the presence of the
+  $mmf$ function as a parameter of the \texttt{sitpn\_to\_hvhdl}
+  function implies that the input SITPN model is bounded. In the case
+  of an unbounded input model, there exists a place that can
+  accumulate an infinite number of tokens during the model
+  execution. In the world of hardware description, and especially when
+  aiming at the hardware synthesis, every element must have a finite
+  dimension. In the definition of the \texttt{place} design, the
+  internal signal \texttt{s\_marking} represents the marking value of
+  a place. The maximal value of the \texttt{s\_marking} signal is
+  bounded by the generic constant \texttt{maximal\_marking}. Thus,
+  when generating, a PCI from a place in the course of the
+  transformation, we must be able to give a value to the
+  \texttt{maximal\_marking} generic constant. However, even with a
+  settled \texttt{maximal\_marking} value, the execution of a \hvhdl{}
+  design, resulting from the transformation of an unbounded SITPN
+  model, could lead to the overflow of the value of the
+  \texttt{s\_marking} signals in the internal states of PCIs.  Thus,
+  it is impossible to prove the equivalence between the behavior of an
+  unbounded SITPN model and its corresponding \hvhdl{} design. 
+\end{remark}
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{sitpn\_to\_hvhdl}($sitpn$, $id_e$, $id_a$, $mmf$)}
+  \label{alg:sitpn2hvhdl}
+  
+  \AlFnt % overriding the new font
+
+  $d\leftarrow\mathtt{design}$ $id_e$ $id_a$ $\emptyset$ $\emptyset$ $\emptyset$ $\mathtt{null}$\; \label{line:init-design}
+  $\gamma\leftarrow\emptyset$\; \label{line:init-binder}
+  \BlankLine
+
+  \texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $mmf$)\; \label{line:genarch}
+  \texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)\; \label{line:geninter}
+  \texttt{generate\_ports}($sitpn$, $d$, $\gamma$)\; \label{line:genports}
+  \BlankLine  
+
+  \Return{($d$,$\gamma$)}\;
+\end{algorithm}
+
+In Algorithm~\ref{alg:sitpn2hvhdl}, Line~\ref{line:init-design}
+creates the \hvhdl{} design. Initially, the design has an empty port
+declaration set, an empty internal signal declaration set, and a
+behavior defined by the \texttt{null} statement. The design generated
+by the \texttt{sitpn\_to\_hvhdl} function has an empty set of generic
+constant, even at the end of the
+transformation. Line~\ref{line:init-binder} initializes the $\gamma$
+binder with empty sub-environments. From Lines~\ref{line:genarch} to
+\ref{line:genports}, the called procedures modify the design and the
+binder structures. Each part of the sequence corresponds to one step
+of the transformation, which were outlined in
+Section~\ref{sec:informal-transf}. The content of the
+\texttt{generate\_architecture} function is detailled in Algorithms,
+the content of the \texttt{generate\_interconnections} function is
+detailled in Algorithms, and the content of the
+\texttt{generate\_ports} function is detailled in Algorithms.
+
+\subsection{Primitive functions and sets}
+\label{sec:prim-funs}
+
+The description of further functions and algorithms appeals to some
+primitive functions and set definitions that we introduce here. Below
+are all the sets that we use in the description of the algorithms.
+
+\begin{itemize}
+\item
+  \texttt{input}$(p)=\{t~\vert~\exists\omega~s.t.~post(t,p)=\omega\}$,
+  the set of input transitions of a place $p$.
+\item
+  \texttt{output}$(p)=\{t~\vert~\exists{}\omega,a~s.t.~pre(p,t)=(\omega,a)\}$,
+  the set of output transitions of a place $p$.
+\item\texttt{output}$_c(p)$, the set of output transitions of $p$ that
+  are in conflict, in the case where conflicts are solved with the
+  firing priority relation. The set is ordered by level of firing
+  priority, the first transition of the set being the transition of
+  top-level firing priority. If all conflicts between the output
+  transitions of $p$ are solved by means of mutual exclusion, then the
+  \texttt{output}$_c(p)$ set is empty.
+\item\texttt{output}$_{nc}(p)$, the set of output transitions of $p$
+  that are not in conflict or for which conficts are solved by means
+  of mutual exclusion.
+\item \texttt{acts}$(p)=\{a~\vert~\mathbb{A}(p,a)=\mathtt{true}\}$,
+  the set of actions associated with a place $p$.
+\item
+  \texttt{input}$(t)=\{p~\vert~\exists\omega,a~s.t.~pre(p,t)=(\omega,a)\}$,
+  the set of input places of a transition $t$.
+\item
+  \texttt{output}$(t)=\{p~\vert~\exists\omega~s.t.~post(t,p)=\omega\}$,
+  the set of output places of a transition $t$.
+\item
+  \texttt{conds}$(t)=\{c~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$,
+  the set of conditions associated with a transition $t$.
+\item
+  \texttt{trs}$(c)=\{t~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$,
+  the set of transitions to which a condition $c$ is associated.
+\item \texttt{pls}$(a)=\{p~\vert~\mathbb{A}(p,a)=\mathtt{true}\}$, the
+  set of places to which an action $a$ is associated.
+\item \texttt{trs}$(f)=\{t~\vert~\mathbb{F}(t,f)=\mathtt{true}\}$, the
+  set of transitions to which a function $f$ is associated.
+\end{itemize}
+
+Now, let us introduce some primitive functions and procedures that we
+use in the description of the algorithms.
+
+\begin{itemize}
+\item \texttt{cassoc}$(map,id,x)$ where $map$ is either a generic map,
+  an input port map or an output port map, $id$ is an identifier, $x$
+  is an expression, a name (i.e. an simple or indexed identifier) or
+  the \texttt{open} keyword. The \texttt{cassoc} procedure adds an
+  association of the form $(id(i),x)$ to the $map$ structure. The
+  index $i$ is computed as follows based on the content of $map$:
+  \begin{enumerate}
+  \item looks up $id(j)$ with $max(j)$ in the formal parts of $map$
+  \item if no such $j$, adds $(id(0),x)$ in $map$
+  \item if such $j$, adds $(id(j+1),x)$ in $map$
+  \end{enumerate}
+
+  \noindent{}\textit{Examples:}
+  \begin{itemize}
+  \item
+    \texttt{cassoc}$(~\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}))},~\mathtt{s},~\mathtt{true})$
+    yields the resulting map \\
+    $\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}),(s(2),\mathtt{true}))}$.
+  \item
+    \texttt{cassoc}$(~\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}))},~\mathtt{a},~\mathtt{open})$
+    yields the resulting map \\
+    $\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{open}))}$.
+  \end{itemize}
+
+\item \texttt{sassoc}$(map,id,x)$ where $map$ is either a generic map,
+  an input port map or an output port map, $id$ is an identifier, $x$
+  is an expression, a name (i.e. an simple or indexed identifier) or
+  the \texttt{open} keyword. The \texttt{sassoc} procedure adds an
+  association of the form $(id,x)$ to the $map$ structure.
+\item \texttt{get\_comp}$(id_c, cstmt)$ where $id_c$ is an
+  identifier, and $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent
+  statement. The \texttt{get\_comp} function looks up $cstmt$ for a
+  component instantiation statement labelled with $id_c$ as a
+  component instance identifier, and returns the component
+  instantiation statement when found. The \texttt{get\_comp} function
+  throws an error if no component instantiation statement with
+  identifier $id_c$ exists in $cstmt$, or if there ecist multiple
+  component instantiation statements with identifier $id_c$ in
+  $cstmt$.
+\item \texttt{put\_comp}$(id_c,cistmt,cstmt)$ where $id_c$ is an
+  identifier, $cistmt$ is a component instantiation statement, and
+  $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent statement. The
+  \texttt{put\_comp} procedure looks up in $cstmt$ for a component
+  instantiation statement with identifier $id_c$, and replaces the
+  statement with $cistmt$ in $cstmt$. If no CIS with identifier $id_c$
+  exists in $cstmt$, then $cistmt$ is composed with $cstmt$ with the
+  \texttt{||} operator. The \texttt{put\_comp} procedure throws an
+  error if multiple CIS with identifier $id_c$ exist in $cstmt$.
+\item \texttt{actual}$(id,map)$ where $id$ is an identifier and $map$
+  is a generic, an input port or an output port map. The
+  \texttt{actual} function returns the actual part associated with the
+  formal part $id$ in $map$, i.e. returns $a$ if $(id,a)\in{}map$. The
+  function throws an error if $id$ is not a formal part in $map$, or
+  if there are multiple association with $id$ as a formal part in
+  $map$.
+\item \texttt{genid}$()$. The \texttt{genid} function returns a fresh
+  and unique identifier. During the transformation, we appeal to it
+  when a new internal signal, a new port or a new component instance
+  must be declared or generated.
+\end{itemize}
+
+\subsection{Generation of component instances and constant parts}
+\label{sec:genarch}
+
+The first step of the transformation generates the PCIs and TCIs,
+their generic map, and the constant part of their input port maps, in
+the behavior of the \hvhdl{} design. This is when places are bound to
+PCI identifiers, and transitions are bound to TCI identifiers in the
+$\gamma$ binder. Also, the \texttt{marked} output port and the
+\texttt{fired} output port are connected in the output port map of
+PCIs and TCIs during this first generation
+step. Algorithm~\ref{alg:genarch} presents the content of the
+\texttt{generate\_architecture} procedure that implements this first
+part of code generation. The \texttt{generate\_architecture} procedure
+is decomposed in two procedures: \texttt{generate\_PCIs} generates the
+PCIs in the behavior of $d$, and binds the PCI identifiers to places
+in the $\gamma$ binder; \texttt{generate\_TCIs} generates the TCIs in
+the behavior of $d$, and binds the TCI identifiers to transitions in
+the $\gamma$ binder.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $mmf$)}
+  \label{alg:genarch}
+  
+  \AlFnt % overriding the new font
+
+  \texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $mmf$)\; \label{line:genpcis}
+  \texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)\; \label{line:gentcis}
+
+\end{algorithm}
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $mmf$)}
+  \label{alg:genpcis}
+  
+  \AlFnt % overriding the new font
+
+  \ForEach{$p\in{}P$}{
+    \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{
+      \texttt{err}$("p~is~an~isolated~place")$
+    }
+
+    $g_p\leftarrow((\mathtt{ian},
+    \begin{cases}1~\mathtt{if}~\mathtt{input}(p)=\emptyset\\
+      \vert\mathtt{input}(p)\vert~otherwise
+    \end{cases}),
+    (\mathtt{oan},
+    \begin{cases}1~\mathtt{if}~\mathtt{output}(p)=\emptyset\\
+      \vert\mathtt{output}(p)\vert~otherwise 
+    \end{cases}),
+    (\mathtt{mm},mmf(p)))$\;
+
+    \BlankLine
+    $i_p\leftarrow\mathtt{()}$\;
+    \lIf{$\mathtt{input}(p)=\emptyset$}{\texttt{cassoc}$(i_p,\mathtt{iaw},0)$}
+    \Else{
+      \ForEach{$t\in\mathtt{input}(p)$}{
+        \texttt{cassoc}$(i_p,\mathtt{iaw},post(t,p))$\;
+      }
+    }
+    \If{$\mathtt{output}(p)=\emptyset$}{
+      \texttt{cassoc}$(i_p,\mathtt{oaw},0)$\;
+      \texttt{cassoc}$(i_p,\mathtt{oat},\mathtt{basic})$\;
+    }
+    \Else{
+      \ForEach{$t\in\mathtt{output}_c(p)\cup\mathtt{output}_{nc}(p)$}{
+        $(\omega,a)\leftarrow{}pre(p,t)$\;
+        \texttt{cassoc}$(i_p,\mathtt{oaw},\omega)$\;
+        \texttt{cassoc}$(i_p,\mathtt{oat},a)$\;
+      }
+    }
+
+    \BlankLine
+    $o_p\leftarrow\mathtt{()}$\;
+    \lIf{$\mathtt{acts}(p)=\emptyset$}{\texttt{sassoc}$(o_p,\mathtt{marked},\mathtt{open})$}
+    \Else{
+      $\mathtt{id}_s\leftarrow{}\mathtt{genid}()$\;
+      $d.sigs\leftarrow{}d.sigs\cup(\mathtt{id}_s,\mathtt{boolean})$\;
+      \texttt{sassoc}$(o_p,\mathtt{marked},\mathtt{id}_s)$\;
+    }
+
+    \BlankLine
+    $\mathtt{id}_p\leftarrow{}\mathtt{genid}()$\;
+    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;
+    $\gamma\leftarrow\gamma\cup(p,\mathtt{id}_p)$\;
+  }
+\end{algorithm}
+
 
 %%% Local Variables:
 %%% mode: latex
