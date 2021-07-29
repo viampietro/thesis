@@ -238,11 +238,6 @@ use in the description of the following algorithms.
     $\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{open}))}$.
   \end{itemize}
 
-\item \texttt{sassoc}$(map,id,x)$ where $map$ is either a generic map,
-  an input port map or an output port map, $id$ is an identifier, $x$
-  is an expression, a name (i.e. an simple or indexed identifier) or
-  the \texttt{open} keyword. The \texttt{sassoc} procedure adds an
-  association of the form $(id,x)$ to the $map$ structure.
 \item \texttt{get\_comp}$(id_c, cstmt)$ where $id_c$ is an
   identifier, and $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent
   statement. The \texttt{get\_comp} function looks up $cstmt$ for a
@@ -274,6 +269,41 @@ use in the description of the following algorithms.
   when a new internal signal, a new port or a new component instance
   must be declared or generated.
 \end{itemize}
+
+Algorithm~\ref{alg:connect} presents the \texttt{connect} procedure.
+The procedure takes an output port map $o$, an input port map $i$, two
+identifiers $id_1,id_2$ and a \hvhdl{} design $d$ as parameters. The
+procedure generates an internal signal $id_s$ and adds it to the
+internal signal declaration list of design $d$. Then, the procedure
+connects a subelement of port $id_1$ (resp. $id_2$) to the internal
+signal $id_s$ in the output port map $o$ (resp. input port map $i$).
+As the result, a subelement of $id_1$ is connected to a subelement of
+$id_2$ through the internal signal $id_s$.
+
+\begin{algorithm}[H] \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont} % \NoCaptionOfAlgo
+
+  \caption{\texttt{connect}($o$, $i$, $n$, $id$, $d$)}
+  \label{alg:connect}
+
+  $id_s\leftarrow\mathtt{genid}()$\;
+  $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
+  $o\leftarrow{}o\cup(n,id_s)$\; \texttt{cassoc}$(i,id,id_s)$\;
+\end{algorithm}
+
+\paragraph{Complementary notations}
+When there is no ambiguity, $id_p$ (resp. $id_t$) denotes the PCI
+(resp. TCI) identifier associated to a given place $p$
+(resp. transition $t$) through $\gamma(p)=id_p$
+(resp. $\gamma(t)=id_t$), where $\gamma$ is the binder returned by the
+transformation function. Similarly, $id_c$ (resp. $id_a$ and $id_f$)
+denotes the input port (resp. output port) identifier associated to a
+given condition $c$ (resp. action $a$ and function $f$) through
+$\gamma(c)=id_c$.
 
 \subsection{Generation of component instances and constant parts}
 \label{sec:genarch}
@@ -395,49 +425,53 @@ $p$ and the PCI identifier $id_p$ to the $\gamma$ binder.
   \AlFnt % overriding the new font
 
   \ForEach{$p\in{}P$}{
+
     \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{
       \texttt{err}$("p~is~an~isolated~place")$\label{line:p-isolated}
     }
-
-    $g_p\leftarrow((\mathtt{ian},
-    \begin{cases}1~\mathtt{if}~\mathtt{input}(p)=\emptyset\\
-      \vert\mathtt{input}(p)\vert~otherwise
-    \end{cases}),
-    (\mathtt{oan},
-    \begin{cases}1~\mathtt{if}~\mathtt{output}(p)=\emptyset\\
-      \vert\mathtt{output}(p)\vert~otherwise 
-    \end{cases}),
-    (\mathtt{mm},mmf(p)))$\; \label{line:build-gmap}
+    
+    \BlankLine
+    $g_p\leftarrow\{(\mathtt{mm},mmf(p))\}$; 
+    $i_p\leftarrow\mathtt{()}$; 
+    $o_p\leftarrow\mathtt{()}$\; \label{line:init-pcomp}
 
     \BlankLine
-    $i_p\leftarrow\mathtt{()}$\; \label{line:init-ipmap}
-    \lIf{$\mathtt{input}(p)=\emptyset$}{\texttt{cassoc}$(i_p,\mathtt{iaw},0)$} \label{line:iaw-empty}
+    \uIf{$\mathtt{input}(p)=\emptyset$}{
+      $g_p\leftarrow{}g_p\cup\{(\mathtt{ian},1)\}$\; \label{line:ian-empty}
+      $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(0),0),(\mathtt{itf}(0),\mathtt{false})\}$\; \label{line:iaw-itf-empty}
+    }
     \Else{
+      $g_p\leftarrow{}g_p\cup\{(\mathtt{ian},\vert\mathtt{input}(p)\vert)\}$\; \label{line:ian-not-empty}
+      $i\leftarrow{}0$\;
       \ForEach{$t\in\mathtt{input}(p)$}{ \label{line:foreach-iaw}
-        \texttt{cassoc}$(i_p,\mathtt{iaw},post(t,p))$\;
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(i),post(t,p))\}$\;
+        $i\leftarrow{}i+1$\;
       }
     }
-    \If{$\mathtt{output}(p)=\emptyset$}{\label{line:oaw-empty}
-      \texttt{cassoc}$(i_p,\mathtt{oaw},0)$\;
-      \texttt{cassoc}$(i_p,\mathtt{oat},\mathtt{basic})$\;
+
+    \BlankLine
+    \uIf{$\mathtt{output}(p)=\emptyset$}{\label{line:oaw-empty}
+      $g_p\leftarrow{}g_p\cup\{(\mathtt{oan},1)\}$\; \label{line:oan-empty}
+      $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(0),0),(\mathtt{oat}(0),\mathtt{basic}),(\mathtt{otf}(0),\mathtt{false})\}$\;
+      $o_p\leftarrow{}o_p\cup\{(\mathtt{oav},\mathtt{open}),(\mathtt{pauths},\mathtt{open}),(\mathtt{rtt},\mathtt{open})\}$\;
     }
     \Else{
+      $i\leftarrow{}0$\;
       \ForEach{$t\in\mathtt{output}_c(p)\cup\mathtt{output}_{nc}(p)$}{\label{line:begin-oaw}
         $(\omega,a)\leftarrow{}pre(p,t)$\;
-        \texttt{cassoc}$(i_p,\mathtt{oaw},\omega)$\;
-        \texttt{cassoc}$(i_p,\mathtt{oat},a)$\; \label{line:end-ipmap}
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(i),\omega),(\mathtt{oat}(i),a)\}$\;
+        $i\leftarrow{}i+1$\;
       }
     }
 
     \BlankLine
-    $o_p\leftarrow\mathtt{()}$\; \label{line:init-opmap}
-    \lIf{$\mathtt{acts}(p)=\emptyset$}{\texttt{sassoc}$(o_p,\mathtt{marked},\mathtt{open})$}\label{line:acts-empty}
+    \lIf{$\mathtt{acts}(p)=\emptyset$}{$o_p\leftarrow{}o_p\cup\{(\mathtt{marked},\mathtt{open})\}$}\label{line:acts-empty}
     \Else{
       $id_s\leftarrow{}\mathtt{genid}()$\;
       $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
-      \texttt{sassoc}$(o_p,\mathtt{marked},id_s)$\; \label{line:end-opmap}
+      $o_p\leftarrow{}o_p\cup(\mathtt{marked},id_s)$\; \label{line:end-opmap}
     }
-
+    
     \BlankLine
     $id_p\leftarrow{}\mathtt{genid}()$\;\label{line:gen-comp-id}
     $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;\label{line:gen-comp}
@@ -579,41 +613,43 @@ and the TCI identifier $id_t$ to the $\gamma$ binder.
   \AlFnt % overriding the new font
 
   \ForEach{$t\in{}T$}{
+
     \lIf{$\mathtt{input}(t)=\emptyset$ and $\mathtt{output}(t)=\emptyset$}{
       \texttt{err}$("t~is~an~isolated~transition")$\label{line:t-isolated}
     }
 
-    $g_t\leftarrow((\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t)),$
-    $(\mathtt{ian},
-    \begin{cases}1~\mathtt{if}~\mathtt{input}(t)=\emptyset\\
-      \vert\mathtt{input}(t)\vert~otherwise 
-    \end{cases}),
-    (\mathtt{cn},
-    \begin{cases}1~\mathtt{if}~\mathtt{conds}(t)=\emptyset\\
-      \vert\mathtt{conds}(t)\vert~otherwise 
-    \end{cases}))$\; \label{line:build-gt}
-
     \BlankLine
-    $i_t\leftarrow\mathtt{()}$\; \label{line:init-it}
-    \lIf{$\mathtt{conds}(t)=\emptyset$}{\texttt{cassoc}$(i_t,\mathtt{ic},0)$} \label{line:conds-empty}
-    \texttt{sassoc}$(i_t,\mathtt{A},
+    $g_t\leftarrow\{(\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t))\}$\;
+    $i_t\leftarrow\{(\mathtt{A},
     \begin{cases}
       0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
       lower(I_s(t))~otherwise\\
-    \end{cases})$\; \label{line:A}
-    \texttt{sassoc}$(i_t,\mathtt{B},
+    \end{cases}), (\mathtt{B},
     \begin{cases}
       0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}upper(I_s(t))=\infty \\
       upper(I_s(t))~otherwise\\
-    \end{cases})$\;\label{line:B}
-    
-    \BlankLine
-    $o_t\leftarrow\mathtt{()}$\;
+    \end{cases})\}$\;
+
     $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
     $d.sigs\leftarrow{}d.sigs\cup(id_s,boolean)$\;\label{line:declid-fired}
-    \texttt{sassoc}$(o_t,\mathtt{fired},id_s)$\;\label{line:connect-fired}
-    \lIf{$\mathtt{input}(t)=\emptyset$}{\label{line:input-empty-rt}
-      \texttt{cassoc}$(i_t,\mathtt{rt},id_s)$
+    $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
+    
+    \BlankLine
+    \uIf{$\mathtt{input}(t)=\emptyset$}{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},1)\}$\;
+      $i_t\leftarrow{}i_t\cup\{(\mathtt{iav}(0),\mathtt{true}),(\mathtt{pauths}(0),\mathtt{true}),(\mathtt{rt}(0),id_s)\}$\;
+    }
+    \Else{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},\vert{}\mathtt{input}(t)\vert)\}$\;
+    }
+    
+    \BlankLine
+    \uIf{$\mathtt{conds}(t)=\emptyset$}{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},1)\}$\; \label{line:conds-empty}
+      $i_t\leftarrow{}i_t\cup\{(\mathtt{ic}(0),\mathtt{true})\}$\;
+    } 
+    \Else{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},\vert{}\mathtt{conds}(t)\vert)\}$\;
     }
     
     \BlankLine
@@ -626,22 +662,233 @@ and the TCI identifier $id_t$ to the $\gamma$ binder.
 \subsection{Interconnection of the component instances}
 \label{sec:geninter}
 
-\begin{remark}[Indices consistency]
-  We remind the reader of the fact that a \textbf{foreach} loop always
-  iterates in the same order over the elements of a set. When
-  generating the input and output port maps of PCIs, there must be
-  some kind of correspondence between the subelements of two ports,
-  when the subelements share the same index. If the subelement of
-  index 0 in the \texttt{input\_arcs\_weights} input port
-  (i.e. \texttt{iaw}$(0)$) is associated with the weight of the arc
-  $(t_0,p)$, then, during the generation of interconnections, the
-  subelement \texttt{itf}$(0)$ will be connected to the \texttt{fired}
-  port of the TCI implementing transition $t_0$. The subelement of
-  index 0 in the \texttt{iaw} and \texttt{itf} input ports both refer
-  to transition $t_0$. This is why a \textbf{foreach} loop must always
-  iterates in the same order over the elements of a set to preserve
-  the consistency between the indices of input and output ports.
+After the generation of PCIs and TCIs, and of all constant
+associations in their generic and input port maps, the next step of
+the transformation performs the interconnections between the
+interfaces of PCIs and TCIs. The \texttt{generate\_interconnections}
+procedure, presented in Algorithm~\ref{alg:geninter}, iterates over
+the set of places of the $sitpn$ parameter. For each place $p$, the
+\texttt{connect\_input\_trs} (resp. \texttt{connect\_output\_trs})
+procedure generates the interconnection between the PCI $id_p$ and the
+TCIs that implement the input (resp. output) transitions of $p$.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)}
+  \label{alg:geninter}
+  
+  \AlFnt % overriding the new font
+
+  \ForEach{$p\in{}P$}{
+    \texttt{connect\_input\_trs}$(p,sitpn,d,\gamma)$\;
+    \texttt{connect\_output\_trs}$(p,sitpn,d,\gamma)$\;
+  }
+\end{algorithm}
+
+Algorithm~\ref{alg:connect-in-trs} presents the
+\texttt{connect\_input\_trs} procedure.  At
+Line~\ref{line:getpcomp-cit}, the \texttt{get\_comp} returns the PCI
+associated with the identifier $\gamma(p)$ (i.e. the PCI identifier
+associated with place $p$ in $\gamma$) by looking up the behavior of
+the design $d$. Then, the procedure modifies the input port map of PCI
+$id_p$, and finally replaces the old PCI by the modified one in the
+behavior of design $d$ (Line~\ref{line:putpcomp-cit}). Between Lines,
+the procedure connects the \texttt{input\_transitions\_fired} input
+port of PCI $id_p$ to the \texttt{fired} output port of the TCIs
+implementing the input transitions of place $p$. At Line, for each
+input transition $t$ of place $p$, the \texttt{get\_comp} function
+returns the TCI $id_t$ looked up in the behavior of design $d$. Then,
+Line~\ref{line:connect-itf-fired} modifies the input port map of PCI
+$id_p$. It connects a subelement of the
+\texttt{input\_transitions\_fired} input port to the actual part
+associated with the \texttt{fired} output port in the output port map
+of TCI $id_t$ (i.e. \texttt{actual}$(\mathtt{fired},o_t)$).
+Line~\ref{line:input-empty-itf} deals with the particular case where
+the set of input transitions of place $p$ is empty.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{connect\_input\_trs}($p$, $sitpn$, $d$, $\gamma$)}
+  \label{alg:connect-in-trs}
+  
+  \AlFnt % overriding the new font
+
+  \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;\label{line:getpcomp-cit}
+  
+  \BlankLine
+  $i\leftarrow{}0$\;
+  \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
+    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+    $i_p\leftarrow\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
+    $i\leftarrow{}i+1$\;
+  }
+
+  \BlankLine
+  \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;\label{line:putpcomp-cit}  
+\end{algorithm}
+
+\begin{remark}[Connections consistency]
+  In the behavior of the \texttt{place} design, some processes access
+  to the subelements of composite ports through the use of
+  indices. For instance, the \texttt{input\_tokens\_sum} process (see
+  Appendix~\ref{app:place-design}) increments a local variable $i$ in
+  range $0$ to $\mathtt{input\_arcs\_number}-1$ in a for loop. The
+  process tests the value of the \texttt{input\_transitions\_fired}
+  port's subelement with index $i$. If the test suceeds, the process
+  adds the value of the \texttt{input\_arcs\_weights} port's
+  subelement with index $i$ to the local variable
+  \texttt{v\_internal\_input\_token\_sum}. Thus, the subelement with
+  index $i$ of the \texttt{input\_transitions\_fired} and
+  \texttt{input\_arcs\_weights} ports must refer to the connection to
+  the same transition. Otherwise, the process does not compute a
+  correct input tokens sum. Figure~\ref{fig:consistent-connections}
+  illustrates the correct connection of the
+  \texttt{input\_transitions\_fired} and \texttt{input\_arcs\_weights}
+  ports in the input port map of PCI $id_p$ w.r.t. to the connection
+  between transitions $t_a$, $t_b$, $t_c$ and place $p$. 
+
+  \begin{figure}[H]
+    \centering
+    \includegraphics[keepaspectratio,width=.8\textwidth]{Figures/Transformation/consistent-indexes}
+    \caption[An example of correct connections between several TCIs
+    and a PCI.]{An example of correct connections between the PCI
+      $id_p$ and TCIs $id_{t_a}$, $id_{t_b}$ and $id_{t_c}$. On the
+      left, the input SITPN model showing the connections of the
+      transitions $t_a$, $t_b$ and $t_c$ to the place $p$. The dots
+      indicate that the place $p$ possibly has other input
+      transitions. On the right, the TCIs and the PCI generated by the
+      transformation. In the input port map of PCI $id_p$, the
+      subelements of the \texttt{itf} input port are connected to the
+      \texttt{fired} port of TCIs; the subelements of the \texttt{iaw}
+      port are connected to constant values, i.e. the weight of the
+      arcs between place $p$ and the input transitions of $p$.}
+    \label{fig:consistent-connections}
+  \end{figure}
+
+  It is the rôle of the transformation function to ensure the
+  consistency of the connections of the subelements in the input and
+  output port maps of PCIs. The input and output port maps of TCIs are
+  not subject to such a constraint. The fact that a \textbf{foreach}
+  loop always iterates in the same order over the elements of a set
+  ensures the consistency of the connections.
+
 \end{remark}
+
+Algorithm~\ref{alg:connect-out-trs} presents the
+\texttt{connect\_output\_trs} procedure. The procedure interconnects
+the input and output port maps of PCI $id_p$ to the input and output
+port maps of the TCIs implementing the output transitions of place
+$p$. From Lines~\ref{line:foreach-outc} to
+\ref{line:end-foreach-outc}, the procedure connects the TCIs bound to
+the conflicting output transitions of $p$. From
+Lines~\ref{line:foreach-outnc} to \ref{line:end-foreach-outnc}, the
+procedure connects the TCIs bound to the output transitions of $p$
+that are not in conflict. The difference between the two loops lies in
+the connection the \texttt{priority\_authorizations} ports. Between
+the PCI $id_p$ and its \textit{conflicting} TCIs, the
+\texttt{priority\_authorizations} ports must be connected. Between the
+PCI $id_p$ and its \textit{non-conflicting} TCIs, the
+\texttt{priority\_authorizations} are not connected together. This
+reflects the fact that output transitions that are not in conflict are
+not concerned with the sensitization by the residual marking (see
+Section~\ref{sec:fired-trans} for explanations about the residual
+marking). The information of the sensitization by the residual marking
+passes by the \texttt{priority\_authorizations} ports. At the
+exception of the \texttt{priority\_authorizations} ports, the two
+loops perform the same interconnections. Lines~\ref{line:otf-fired-1}
+and \ref{line:otf-fired-2} connect a subelement of the
+\texttt{output\_transitions\_fired} input port to the actual part
+associated with the \texttt{fired} output port in the output port map
+of TCI $id_t$
+(i.e. \texttt{actual}$(\mathtt{fired},o_t)$). Lines~\ref{line:oav-iav-1}
+and \ref{line:oav-iav-2} connect a subelement of the
+\texttt{output_arcs_valid} output port to a subelement of the
+\texttt{input_arcs_valid} input port. The connection passes through an
+internal signal that is generated by the \texttt{connect} procedure
+(presented in Algorithm~\ref{alg:connect}), and added to the internal
+signal declaration list of design $d$.  The \texttt{output_arcs_valid}
+port is an output port of the \texttt{place} design, and the
+\texttt{input_arcs_valid} port is an input port of the
+\texttt{transition} design. Lines~\ref{line:rtt-rt-1} and
+\ref{line:rtt-rt-2} connect a subelement of the
+\texttt{reinit\_transitions\_time} output port to a subelement of the
+\texttt{reinit_time} input port through an internal signal. The
+\texttt{reinit\_transitions\_time} port is an output port of the
+\texttt{place} design, and the \texttt{reinit_time} port is an input
+port of the \texttt{transition} design.
+ 
+From Lines~\ref{line:out-empty-cot} to \ref{line:end-out-empty-cot},
+the procedure deals with the case where the set of input transitions
+of $p$ is empty. In that case, the subelement of the
+\texttt{output\_transitions\_fired} port with index $0$ is connected
+to \texttt{false} in the input port map $i_p$; also, the
+\texttt{output\_arcs\_valid}, \texttt{priority\_authorizations} and
+\texttt{reinit\_transitions\_time} ports are left unconnected in the
+output port map $o_p$.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{connect\_output\_trs}($p$, $sitpn$, $d$, $\gamma$)}
+  \label{alg:connect-out-trs}
+  
+  \AlFnt % overriding the new font
+
+  \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;
+  
+  \BlankLine
+  $i\leftarrow{}0$\;
+  \ForEach{$t\in\mathtt{output}_c(p)$}{\label{line:foreach-outc}
+    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+    $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-1}
+    \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-1}
+    \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-1}
+    \texttt{connect}$(o_p,i_t,\mathtt{pauths}(i),\mathtt{pauths},d)$\;
+    \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outc}
+    $i\leftarrow{}i+1$\;
+  }
+  \ForEach{$t\in\mathtt{output}_{nc}(p)$}{
+    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;\label{line:foreach-outnc}
+    $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(j),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-2}
+    \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-2}
+    \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-2}
+
+    $id_s\leftarrow\mathtt{genid}()$\;
+    $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
+    $o_p\leftarrow{}o_p\cup\{(\mathtt{pauths}(i),id_s)\}$\;
+    \texttt{cassoc}$(i_t,\mathtt{pauths},\mathtt{true})$\;
+    
+    \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outnc}
+    $i\leftarrow{}i+1$\;
+  }
+
+  
+  \BlankLine
+  \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;
+  
+\end{algorithm}
+
+
 
 \subsection{Generation of ports, the \texttt{action} and the
   \texttt{function} process}

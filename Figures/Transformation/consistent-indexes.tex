@@ -1,0 +1,134 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% to use colors
+
+\usepackage{xcolor}
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node[] (pn) {
+    \begin{tikzpicture}
+      \node[transition] (ta) [label={right:$t_a$}] {};
+      \node[transition] (tb) at ($(ta.west)-(1,0)$) [label={right:$t_b$}] {};
+      \node[transition] (tc) at ($(ta.east)+(1,0)$) [label={right:$t_c$}] {};
+     
+      \node[place] (p) at ($(ta.south)-(0,1)$) [label={right:$p$}] {};
+      
+      \draw (ta.south) edge[->] (p.north);
+      \draw (tb.south) edge[->] (p.north west);
+      \draw (tc.south) edge[->] (p.north east);
+
+      \coordinate (mw) at ($(ta.south)!.5!(p.north)$);
+      \node[anchor=east] at (mw.west) {\dots};
+      \node[anchor=west] at (mw.east) {\dots};
+    \end{tikzpicture}
+  };
+
+  \node (vhdl) at ($(pn.east)+(5,0)$)
+  {
+    \begin{circuitikz}
+      % \draw[help lines, step=8pt] (-5.5cm,5.5cm) grid (15.5,-2.5cm);
+      % \clip (-5.7cm,5.5cm) rectangle (15.5cm,-2.5cm);
+      \ctikzset{multipoles/dipchip/width=2.5}
+
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0] (idtb) {\Large$id_{t_b}$};
+      
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0] (idta) at ($(idtb.south)-(0,1)$) {\Large$id_{t_a}$};
+
+      \node [dipchip, num pins=6, hide numbers,
+      no topmark, external pins width=0] (idtc) at ($(idta.south)-(0,1)$) {\Large$id_{t_c}$};
+      
+      \node [dipchip, num pins=18, hide numbers,
+      no topmark, external pins width=0, anchor=west] (idp) at ($(idta.east)+(2.5,0)$) {\Large$id_p$};
+
+      % PORT LABELS
+      \node[anchor=west] at ($(idp.bpin 2)$) {\texttt{itf(i)}};
+      \node[anchor=west] at ($(idp.bpin 3)$) {\texttt{itf(j)}};
+      \node[anchor=west] at ($(idp.bpin 4)$) {\texttt{itf(k)}};
+      \node[anchor=west] at ($(idp.bpin 6)$) {\texttt{iaw(i)}};
+      \node[anchor=west] at ($(idp.bpin 7)$) {\texttt{iaw(j)}};
+      \node[anchor=west] at ($(idp.bpin 8)$) {\texttt{iaw(k)}};
+      \node[anchor=east] at ($(idtb.bpin 5)$) {\texttt{fired}};
+      \node[anchor=east] at ($(idta.bpin 5)$) {\texttt{fired}};
+      \node[anchor=east] at ($(idtc.bpin 5)$) {\texttt{fired}};
+
+      % PORT PINS
+      \draw ($(idp.bpin 6)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_b,p)$};
+      \draw ($(idp.bpin 7)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_a,p)$};
+      \draw ($(idp.bpin 8)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_c,p)$};
+      
+      % PORT CONNECTIONS
+      \draw ($(idtb.bpin 5)$) -- ++(1.8,0) |- ($(idp.bpin 2)$);
+      \draw ($(idta.bpin 5)$) -- ++(.2,0) |- ($(idp.bpin 3)$);
+      \draw ($(idtc.bpin 5)$) -- ++(.4,0) |- ($(idp.bpin 4)$);
+      
+      % \draw (idp.bpin 1) -++ (idp.bpin 1); 
+      
+    \end{circuitikz}
+  };
+\end{tikzpicture}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
