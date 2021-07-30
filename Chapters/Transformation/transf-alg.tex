@@ -318,14 +318,8 @@ PCIs and TCIs during this first generation
 step. Algorithm~\ref{alg:genarch} presents the content of the
 \texttt{generate\_architecture} procedure that implements this first
 part of code generation. The \texttt{generate\_architecture} procedure
-is decomposed in two procedures: \texttt{generate\_PCIs} generates the
-PCIs in the behavior of $d$, and binds the PCI identifiers to places
-in the $\gamma$ binder; \texttt{generate\_TCIs} generates the TCIs in
-the behavior of $d$, and binds the TCI identifiers to transitions in
-the $\gamma$ binder. Note that in the following algorithms, the
-generic constant, internal signal and port identifiers defined in the
-\texttt{place} and \texttt{transition} designs are referred to by
-their alias names (see Table~\ref{tab:consts-and-sigs-ref}).
+is decomposed in two procedures: the \texttt{generate\_PCIs} and the
+\texttt{generate\_TCIs} procedures.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -346,69 +340,10 @@ their alias names (see Table~\ref{tab:consts-and-sigs-ref}).
 
 \end{algorithm}
 
-Algorithm~\ref{alg:genpcis} presents the content of the
-\texttt{generate\_PCIs} procedure. The procedure has four parameters:
-$sitpn\in{}SITPN$, the input SITPN model; $d\in{}design$, the \hvhdl{}
-design being generated; $\gamma\in{}WM(sitpn,d)$, the binder between
-$sitpn$ and $d$; $mmf\in{}P\rightarrow\mathbb{N}$, the function
-assigning a maximal marking value to each place. The procedure
-iterates over the set of places $P$ of the $sitpn$ parameter.  At
-Line~\ref{line:p-isolated}, the procedure checks if place $p$ is
-isolated, i.e. without input nor output transitions. An error, with an
-associated message, is raised with the \texttt{err} primitive if one
-place of $sitpn$ is isolated. The \hilecop{} transformation raises
-errors in the presence of an input SITPN model that does not meet the
-well-definition property (see Definition~\ref{def:wd-sitpn}). One part
-of the well-definition property pertains to the absence of isolated
-place in the input model. Then, for each place in set $P$, the
-procedure generates a corresponding PCI.
-
-Line~\ref{line:build-gmap} builds the generic map of the PCI. The
-three generic constants defined in the generic clause of the
-\texttt{place} design receive a value.  In the generated generic map,
-the \texttt{input\_arcs\_number} (resp. \texttt{output\_arcs\_number})
-generic constant is associated with 1 if the set of input
-(resp. output) transitions of $p$ is empty, or with the size of the
-set otherwise. The \texttt{maximal\_marking} constant is associated
-with the value returned by the $mmf$ function for the place $p$.
-
-From Lines~\ref{line:init-ipmap} to \ref{line:end-ipmap}, the
-procedure partially builds the input port map of the PCI; the
-generated associations only pertain to the input ports associated with
-constant values. At Line~\ref{line:foreach-iaw}, each subelement of
-the \texttt{input\_arcs\_weights} input port is associated with the
-weight of the arc between place $p$ and one of its input
-transition. For example, let us take a place $p$, and
-$\{t_0,t_1,t_2\}$, the set of input transitions of $p$; the
-\textbf{foreach} loop of Line~\ref{line:foreach-iaw} generates the
-following input port map:
-$((\mathtt{iaw}(0),post(t_0,p)),(\mathtt{iaw}(1),post(t_1,p)),(\mathtt{iaw}(2),post(t_2,p)))$.
-Line~\ref{line:iaw-empty} deals with the particular case where the set
-of input transitions of $p$ is empty. From Lines~\ref{line:begin-oaw}
-to \ref{line:end-ipmap}, each subelement of the
-\texttt{output_arcs_weights} (resp. the \texttt{output_arcs_types})
-input port is associated with the weight (resp. type) of the arc
-between place $p$ and one of its output
-transition. Line~\ref{line:oaw-empty} deals with the case where the
-set of output transitions of $p$ is empty.
-
-From Lines~\ref{line:init-opmap} to \ref{line:end-opmap}, the
-procedure connects the \texttt{marked} output port in the output port
-map $o_p$. In the case where place $p$ is not associated with any
-action (Line~\ref{line:acts-empty}), the \texttt{marked} output port
-is connected to the \texttt{open} keyword, i.e. not
-connected. Otherwise, the \texttt{marked} output port is connected to
-a newly generated internal signal of the Boolean type. This connection
-will be used later, during the generation of the \texttt{action}
-process (see Section~\ref{sec:genports}).
-
-Finally, from Lines~\ref{line:gen-comp-id} to \ref{line:gen-bind-p},
-the procedure generates a fresh component identifier for place $p$,
-builds a new PCI that holds the previously generated generic map,
-input and output port maps, and adds the PCI to the behavior of design
-$d$ by composition with the \texttt{||}
-operator. Line~\ref{line:gen-bind-p} adds the binding between place
-$p$ and the PCI identifier $id_p$ to the $\gamma$ binder.
+Note that, in the following algorithms and explanations, we refer to
+the generic constant, internal signal and port identifiers defined in
+the \texttt{place} and \texttt{transition} designs through their
+abbreviated names (see Table~\ref{tab:consts-and-sigs-ref}).
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -426,17 +361,17 @@ $p$ and the PCI identifier $id_p$ to the $\gamma$ binder.
 
   \ForEach{$p\in{}P$}{
 
-    \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{
-      \texttt{err}$("p~is~an~isolated~place")$\label{line:p-isolated}
+    \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{\label{line:p-isolated}
+      \texttt{err}$("p~is~an~isolated~place")$\label{line:p-isolated-err}
     }
     
     \BlankLine
     $g_p\leftarrow\{(\mathtt{mm},mmf(p))\}$; 
-    $i_p\leftarrow\mathtt{()}$; 
-    $o_p\leftarrow\mathtt{()}$\; \label{line:init-pcomp}
+    $i_p\leftarrow\emptyset$; 
+    $o_p\leftarrow\emptyset$\; \label{line:init-pcomp}
 
     \BlankLine
-    \uIf{$\mathtt{input}(p)=\emptyset$}{
+    \uIf{$\mathtt{input}(p)=\emptyset$}{ \label{line:genpcis-inp-p-empty}
       $g_p\leftarrow{}g_p\cup\{(\mathtt{ian},1)\}$\; \label{line:ian-empty}
       $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(0),0),(\mathtt{itf}(0),\mathtt{false})\}$\; \label{line:iaw-itf-empty}
     }
@@ -450,10 +385,12 @@ $p$ and the PCI identifier $id_p$ to the $\gamma$ binder.
     }
 
     \BlankLine
-    \uIf{$\mathtt{output}(p)=\emptyset$}{\label{line:oaw-empty}
+    \uIf{$\mathtt{output}(p)=\emptyset$}{\label{line:genpcis-out-p-empty}
       $g_p\leftarrow{}g_p\cup\{(\mathtt{oan},1)\}$\; \label{line:oan-empty}
       $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(0),0),(\mathtt{oat}(0),\mathtt{basic}),(\mathtt{otf}(0),\mathtt{false})\}$\;
+      \label{line:genpcis-out-p-empty-ip}
       $o_p\leftarrow{}o_p\cup\{(\mathtt{oav},\mathtt{open}),(\mathtt{pauths},\mathtt{open}),(\mathtt{rtt},\mathtt{open})\}$\;
+      \label{line:genpcis-out-p-empty-op}
     }
     \Else{
       $i\leftarrow{}0$\;
@@ -465,36 +402,208 @@ $p$ and the PCI identifier $id_p$ to the $\gamma$ binder.
     }
 
     \BlankLine
-    \lIf{$\mathtt{acts}(p)=\emptyset$}{$o_p\leftarrow{}o_p\cup\{(\mathtt{marked},\mathtt{open})\}$}\label{line:acts-empty}
+    \lIf{$\mathtt{acts}(p)=\emptyset$}{$o_p\leftarrow{}o_p\cup\{(\mathtt{marked},\mathtt{open})\}$}\label{line:genpcis-acts-empty}
     \Else{
       $id_s\leftarrow{}\mathtt{genid}()$\;
-      $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
-      $o_p\leftarrow{}o_p\cup(\mathtt{marked},id_s)$\; \label{line:end-opmap}
+      $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
+      $o_p\leftarrow{}o_p\cup\{(\mathtt{marked},id_s)\}$\; \label{line:end-op}
     }
     
     \BlankLine
-    $id_p\leftarrow{}\mathtt{genid}()$\;\label{line:gen-comp-id}
-    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;\label{line:gen-comp}
-    $\gamma\leftarrow\gamma\cup(p,\mathtt{id}_p)$\;\label{line:gen-bind-p}
+    $id_p\leftarrow{}\mathtt{genid}()$\;\label{line:gen-pcomp-id}
+    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;\label{line:gen-pcomp}
+    $\gamma\leftarrow\gamma\cup\{(p,\mathtt{id}_p)\}$\;\label{line:gen-bind-p}
   }
 \end{algorithm}
 
-Algorithm~\ref{alg:gentcis} presents the content of the
-\texttt{generate\_TCIs} procedure. The procedure iterates over the set
-of transitions $T$ of the $sitpn$ parameter, and generates a
-corresponding TCI for every transition $t\in{}T$.  At
-Line~\ref{line:t-isolated}, the procedure checks if transition $t$ is
-isolated, i.e. without input nor output places.
+The \texttt{generate\_PCIs} procedure, presented in
+Algorithm~\ref{alg:genpcis}, has four parameters: $sitpn\in{}SITPN$,
+the input SITPN model; $d\in{}design$, the \hvhdl{} design being
+generated; $\gamma\in{}WM(sitpn,d)$, the binder between $sitpn$ and
+$d$; $mmf\in{}P\rightarrow\mathbb{N}$, the function assigning a
+maximal marking value to each place. The procedure iterates over the
+set of places of the $sitpn$ parameter. For each place $p$ in the set,
+the procedure produces a corresponding PCI $id_p$, and generates its
+generic map $g_p$, and its partially-built input and output port maps
+$i_p$ and $o_p$. As said before, the only associations generated in
+the input and output port maps during this phase pertain to the
+association of ports to constant values. At the end of the procedure
+(Lines~\ref{line:gen-pcomp-id} to \ref{line:gen-bind-p}), a fresh and
+unique component identifier $id_p$ is generated, and a new CI
+statement, corresponding to the instantiation of PCI $id_p$, is
+composed with the current behavior of design $d$. Finally, the
+$\gamma$ binder receives a new couple corresponding to binding of
+place $p$ to identifier $id_p$.
 
-Line~\ref{line:build-gt} builds the generic map of the TCI.  The
-\texttt{transition\_type} generic constant is associated with the
-result of the function call \texttt{get\_ttype}$(t)$. The
-\texttt{get\_ttype} function returns the type of transition $t$,
+From Line~\ref{line:p-isolated} to Line~\ref{line:end-op}, the
+procedure generates the generic map, the input port map, and the
+output port map of the PCI. First, the procedure checks if the current
+place $p$ is isolated, i.e. without input nor output transitions. An
+error, with an associated message, is raised with the \texttt{err}
+primitive if the test succeeds. The \hilecop{} transformation raises
+errors in the presence of an input SITPN model that does not meet the
+well-definition property (see Definition~\ref{def:wd-sitpn}). One part
+of the well-definition property pertains to the absence of isolated
+place in the input model. Line~\ref{line:init-pcomp} initializes the
+variables $g_p$, $i_p$ and $o_p$, respectively holding the generic
+map, the input port map and the output port map of the generated
+PCI. The generic map $g_p$ initially takes a single association that
+binds the \texttt{mm} constant to the maximal marking value returned
+by the $mmf$ function for place $p$. The input port map $i_p$ and the
+output port map $o_p$ are initialized with empty sets.
+
+Line~\ref{line:genpcis-inp-p-empty} tests if the set of input
+transitions of $p$ is empty. If the test succeeds, the \texttt{ian}
+constant is associated to $1$ in the generic map $g_p$. The size of
+the \texttt{iaw} and \texttt{itf} input ports, which are of the array
+type, is equal to the value of the \texttt{ian} constant minus
+one. Thus, the \texttt{iaw} and \texttt{itf} input ports are composed
+of one subelement with index $0$. At Line~\ref{line:iaw-itf-empty},
+the sole subelement of the \texttt{iaw} port is associated with $0$,
+and the sole subelement of the \texttt{itf} port is associated with
+\texttt{false} in the input port map $i_p$. If the set of input
+transitions of $p$ is not empty, the \texttt{ian} constant is
+associated with the size of the set in the generic map $g_p$. Then,
+each subelement of the \texttt{iaw} port is associated with the weight
+of the arc between place $p$ and an input transition $t$.  Note that,
+in that case, the procedure does not deal with the connection of the
+\texttt{itf} port. As the set of input transitions of $p$ is not
+empty, the connection of the \texttt{itf} port will be performed by
+the \texttt{connect_input_trs} procedure during the generation of the
+interconnections between PCIs and TCIs.
+
+Line~\ref{line:genpcis-out-p-empty} tests if the set of output
+transitions of $p$ is empty. If the test succeeds, the \texttt{oan}
+constant is associated to $1$ in the generic map $g_p$. The size of
+the \texttt{oaw}, \texttt{oat} and \texttt{otf} input ports, which are
+of the array type, is equal to the value of the \texttt{oan} constant
+minus one. Thus, the \texttt{oaw}, \texttt{oat} and \texttt{otf} input
+ports are composed of one subelement with index $0$. At
+Line~\ref{line:genpcis-out-p-empty-ip}, the sole subelement of the
+\texttt{oaw} port is associated with $0$, the sole subelement of the
+\texttt{oat} port is associated with \texttt{basic}, and the sole
+subelement of the \texttt{otf} port is associated with \texttt{false}
+in the input port map $i_p$. Also, in the abscence of output
+transitions, the \texttt{oav}, \texttt{pauths} and \texttt{rtt} output
+ports are left unconnected, i.e. they are associated with the
+\texttt{open} keyword of output port map $o_p$.
+
+If the set of output transitions of $p$ is not empty, the \texttt{oan}
+constant is associated with the size of this set in the generic map
+$g_p$. Then, each subelement of the \texttt{oaw} (resp. the
+\texttt{oat}) port is associated with the weight (resp. the type) of
+the arc between place $p$ and an output transition $t$.  Note that, in
+that case, the procedure does not handle the connection of the
+\texttt{otf} input port, nor the connection of the \texttt{oav},
+\texttt{pauths} and \texttt{rtt} output ports. As the set of output
+transitions of $p$ is not empty, these connections will be performed
+by the \texttt{connect_output_trs} procedure during the generation of
+the interconnections between PCIs and TCIs.
+
+From Line~\ref{line:genpcis-acts-empty} to Line~\ref{line:end-op}, the
+procedure connects the \texttt{marked} output port in the output port
+map $o_p$. If the place $p$ is not associated with any action, the
+\texttt{marked} output port is left unconnected, i.e. connected to the
+\texttt{open} keyword. Otherwise, the \texttt{marked} output port is
+connected to a newly generated internal signal of the Boolean
+type. This generated signal joins the internal signal declaration list
+of design $d$. The connection between the \texttt{marked} output port
+and the internal signal will be used later, during the generation of
+the \texttt{action} process (see Section~\ref{sec:genports}).
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \caption{\texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)}
+  \label{alg:gentcis}
+  
+  \AlFnt % overriding the new font
+
+  \ForEach{$t\in{}T$}{
+
+    \lIf{$\mathtt{input}(t)=\emptyset$ and $\mathtt{output}(t)=\emptyset$}{
+      \texttt{err}$("t~is~an~isolated~transition")$\label{line:t-isolated}
+    }
+
+    \BlankLine
+    $g_t\leftarrow\{(\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t))\}$\;\label{line:init-gt}
+    $i_t\leftarrow\{(\mathtt{A},
+    \begin{cases}
+      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
+      lower(I_s(t))~otherwise\\
+    \end{cases}), (\mathtt{B},
+    \begin{cases}
+      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}upper(I_s(t))=\infty \\
+      upper(I_s(t))~otherwise\\
+    \end{cases})\}$\;\label{line:init-it}
+
+    $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
+    $d.sigs\leftarrow{}d.sigs\cup(id_s,boolean)$\;\label{line:declid-fired}
+    $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
+    
+    \BlankLine
+    \uIf{$\mathtt{input}(t)=\emptyset$}{\label{line:gentcis-input-empty}
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},1)\}$\;
+      $i_t\leftarrow{}i_t\cup\{(\mathtt{iav}(0),\mathtt{true}),(\mathtt{pauths}(0),\mathtt{true}),(\mathtt{rt}(0),id_s)\}$\;
+      \label{line:gentcis-in-empty-it}
+    }
+    \Else{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},\vert{}\mathtt{input}(t)\vert)\}$\;
+    }
+    
+    \BlankLine
+    \uIf{$\mathtt{conds}(t)=\emptyset$}{ \label{line:gentcis-conds-empty}
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},1)\}$\;
+      $i_t\leftarrow{}i_t\cup\{(\mathtt{ic}(0),\mathtt{true})\}$\;
+    } 
+    \Else{
+      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},\vert{}\mathtt{conds}(t)\vert)\}$\;
+    }
+    
+    \BlankLine
+    $id_t\leftarrow{}\mathtt{genid}()$\;\label{line:gen-tcomp-id}
+    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_t,\mathtt{transition},g_t,i_t,o_t)$\;\label{line:gen-tcomp}
+    $\gamma\leftarrow\gamma\cup(t,\mathtt{id}_t)$\;\label{line:gen-bind-t}
+  }
+\end{algorithm}
+
+The \texttt{generate\_TCIs} procedure, presented in
+Algorithm~\ref{alg:gentcis}, iterates over the set of transitions $T$
+of the $sitpn$ parameter. For each transition $t$ in the set, the
+procedure produces a corresponding TCI $id_t$, and generates its
+generic map $g_t$, and its partially-built input and output port maps
+$i_t$ and $o_t$.  At the end of the procedure
+(Lines~\ref{line:gen-tcomp-id} to \ref{line:gen-bind-t}), a fresh and
+unique component identifier $id_t$ is generated, and a new CI
+statement, corresponding to the instantiation of TCI $id_t$, is
+composed with the current behavior of design $d$. Finally, the
+$\gamma$ binder receives a new couple corresponding to binding of
+transition $t$ to identifier $id_t$.
+
+At Line~\ref{line:t-isolated}, the procedure checks if transition $t$
+is isolated, and raises an error accordingly.
+Lines~\ref{line:init-gt} to \ref{line:connect-fired} initialize the
+variables $g_t$, $i_t$ and $o_t$, respectively holding the generic
+map, the input port map and the output port map of the generated
+TCI. The generic map $g_t$ initially takes two associations: the one
+between the \texttt{tt} constant and the result of the function call
+\texttt{get\_ttype}$(t)$, and the one between the \texttt{mtc}
+constant and the result of the function call \texttt{get\_mtc}$(t)$.
+The \texttt{get\_ttype} function returns the type of transition $t$,
 i.e. either \texttt{NOT\_TEMPORAL}, \texttt{TEMPORAL\_A\_A},
 \texttt{TEMPORAL\_A\_B} or \texttt{TEMPORAL\_A\_INFINITE}, based on
-the form of the time interval associated to
-$t$. Algorithm~\ref{alg:getttype} describes function
-\texttt{get\_ttype}.
+the form of the time interval associated with
+$t$. Algorithm~\ref{alg:getttype} describes the \texttt{get\_ttype}
+function. The \texttt{get\_mtc} function determines the maximal value
+for the time counter of $t$ based on the form of the time interval
+associated with transition $t$. Algorithm~\ref{alg:getmtc} describes
+the \texttt{get\_mtc} function.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -523,13 +632,6 @@ $t$. Algorithm~\ref{alg:getttype} describes function
   
 \end{algorithm}
 
-The \texttt{maximal\_time\_counter} generic constant is associated
-with the result of the function call \texttt{get\_mtc}$(t)$. The
-\texttt{get\_mtc} function determines the maximal value for the time
-counter based on the form of the time interval associated with
-transition $t$. Algorithm~\ref{alg:getmtc} describes function
-\texttt{get\_mtc}.
-
 \begin{algorithm}[H]
   \DontPrintSemicolon
 
@@ -556,121 +658,71 @@ transition $t$. Algorithm~\ref{alg:getmtc} describes function
   
 \end{algorithm}
 
-The \texttt{input\_arcs\_number} (resp. \texttt{conditions\_number})
-generic constant is associated with 1 if the set of input places
-(resp. conditions) of $t$ is empty, or with the size of the set
-otherwise.
-
-From Lines~\ref{line:init-it} to \ref{line:B}, the procedure builds
-the input port map of the TCI. Line~\ref{line:conds-empty} deals with
-the particular case where the set of conditions of $t$ is empty; in
-that case, the $(\mathtt{ic(0)},0)$ association is appended to the
-$i_t$ map. In the case where the set of conditions of $t$ is not
-empty, the \texttt{genarate\_conds} procedure, presented in
-Algorithm~\ref{alg:genconds}, will handle the connection of the
-\texttt{input\_conditions} input port in the input port map of TCIs.
-Line~\ref{line:A} adds the association $(\mathtt{A},0)$ to the $i_t$
-map if $t$ is not a time transition (i.e. $t$ has no associated time
-interval, it is not in the domain of function $I_s$), or
-$(\mathtt{A},upper(I_s(t)))$ otherwise. Line~\ref{line:B} adds the
-association $(\mathtt{B},0)$ to the $i_t$ map if $t$ is not a time
-transition or has an infinite upper bound.  Otherwise, the association
-$(\mathtt{B},upper(I_s(t)))$ joins the $i_t$ map.
-
-From Lines~\ref{line:genid-fired} to \ref{line:connect-fired}, the
-procedure connects the \texttt{fired} input port to a newly generated
-internal signal in the output port of the TCI. This internal signal
+Line~\ref{line:init-it} sets the value of the \texttt{A} and
+\texttt{B} input ports while initializing the input port map
+$i_t$. The \texttt{A} port is associated with $0$ if the transition
+$t$ is not a time transition (i.e. $t$ has no associated time
+interval, it is not in the domain of function $I_s$); otherwise, the
+\texttt{A} port is associated with the lower bound of the time
+interval of $t$.  The \texttt{B} input port is associated with $0$ if
+transition $t$ is not a time transition or if its time interval has an
+infinite upper bound; otherwise, the \texttt{B} port is associated
+with the upper bound of the time interval of $t$. From
+Lines~\ref{line:genid-fired} to \ref{line:connect-fired}, the
+procedure connects the \texttt{fired} output port to a newly generated
+internal signal in the output port map $o_p$. This internal signal
 will then be connected to the input port map of PCIs during the
 interconnection phase of the transformation (see
-Section~\ref{sec:geninter}). At Line~\ref{line:input-empty-rt}, if the
-set of input places of $t$ is empty, then the subelement of index $0$
-of the \texttt{reinit\_time} input port must be connected to the
-\texttt{fired} output port of the same TCI through the newly generated
-internal signal $id_s$. This connection represents the fact that, in
-the absence of input places, resetting the value of a transition's
-time counter only depends on the firing status of the transition.
+Section~\ref{sec:geninter}).
 
-Finally, from Lines~\ref{line:gen-tcomp-id} to \ref{line:gen-bind-t},
-the procedure generates a fresh component identifier for transition
-$t$, builds a new TCI that holds the previously generated generic map,
-input and output port maps, and adds the TCI to the behavior of design
-$d$ by composition with the \texttt{||}
-operator. Line~\ref{line:gen-bind-t} adds the binding transition $t$
-and the TCI identifier $id_t$ to the $\gamma$ binder.
+Line~\ref{line:gentcis-input-empty} checks if the set of input places
+of $t$ is empty. If the test succeeds, the \texttt{ian} constant is
+associated with $1$ in the generic map $g_t$. The size of the
+\texttt{iav}, \texttt{pauths} and \texttt{rt} input ports, which are
+of the array type, is equal to the value of the \texttt{ian} constant
+minus one. Thus, in the case where the set of input places of $t$ is
+empty, the \texttt{iav}, \texttt{pauths} and \texttt{rt} input ports
+are composed of one subelement with index $0$. At
+Line~\ref{line:gentcis-in-empty-it}, the sole subelements of the
+\texttt{iav} and the \texttt{pauths} ports are associated with
+\texttt{true}, and the sole subelement of the \texttt{rt} port is
+associated with the signal identifier $id_s$. Remember that the
+\texttt{fired} output port has been previously connected to the
+internal signal $id_s$ in the output port map $o_t$. Thus, the
+\texttt{fired} output port is connected to the subelement of the
+\texttt{rt} input port with index $0$ through the $id_s$ signal.  This
+connection is mandatory to reset the value of the
+\texttt{s\_time\_counter} signal (which is an internal signal of the
+\texttt{transition} design) in the abscence of input places. If the
+set of input places of $t$ is not empty, then the \texttt{ian}
+constant is associated with the size of the set in the generic map
+$g_t$.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+Line~\ref{line:gentcis-conds-empty} checks if the set of conditions
+attached to $t$ is empty. If the test succeeds, the \texttt{cn}
+constant is associated with $1$ in the generic map $g_t$. The size of
+the \texttt{ic} input port, which is of the array type, is equal to
+the value of the \texttt{cn} constant minus one. Thus, in the case
+where the set of conditions attached to $t$ is empty, the \texttt{ic}
+input port is composed of one subelement with index $0$. Then, the
+sole subelement of the \texttt{ic} port is associated with
+\texttt{true} in the input port map $i_t$. If the set of conditions
+attached to $t$ is not empty, the \texttt{cn} constant is associated
+with the size of the set in the generic map $g_t$. In that case, the
+\texttt{generate\_conds} procedure, presented in
+Algorithm~\ref{alg:genconds}, will handle the connection of the
+subelements of the \texttt{ic} input port.
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \caption{\texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)}
-  \label{alg:gentcis}
-  
-  \AlFnt % overriding the new font
-
-  \ForEach{$t\in{}T$}{
-
-    \lIf{$\mathtt{input}(t)=\emptyset$ and $\mathtt{output}(t)=\emptyset$}{
-      \texttt{err}$("t~is~an~isolated~transition")$\label{line:t-isolated}
-    }
-
-    \BlankLine
-    $g_t\leftarrow\{(\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t))\}$\;
-    $i_t\leftarrow\{(\mathtt{A},
-    \begin{cases}
-      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
-      lower(I_s(t))~otherwise\\
-    \end{cases}), (\mathtt{B},
-    \begin{cases}
-      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}upper(I_s(t))=\infty \\
-      upper(I_s(t))~otherwise\\
-    \end{cases})\}$\;
-
-    $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
-    $d.sigs\leftarrow{}d.sigs\cup(id_s,boolean)$\;\label{line:declid-fired}
-    $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
-    
-    \BlankLine
-    \uIf{$\mathtt{input}(t)=\emptyset$}{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},1)\}$\;
-      $i_t\leftarrow{}i_t\cup\{(\mathtt{iav}(0),\mathtt{true}),(\mathtt{pauths}(0),\mathtt{true}),(\mathtt{rt}(0),id_s)\}$\;
-    }
-    \Else{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},\vert{}\mathtt{input}(t)\vert)\}$\;
-    }
-    
-    \BlankLine
-    \uIf{$\mathtt{conds}(t)=\emptyset$}{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},1)\}$\; \label{line:conds-empty}
-      $i_t\leftarrow{}i_t\cup\{(\mathtt{ic}(0),\mathtt{true})\}$\;
-    } 
-    \Else{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},\vert{}\mathtt{conds}(t)\vert)\}$\;
-    }
-    
-    \BlankLine
-    $id_t\leftarrow{}\mathtt{genid}()$\;\label{line:gen-tcomp-id}
-    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_t,\mathtt{transition},g_t,i_t,o_t)$\;\label{line:gen-tcomp}
-    $\gamma\leftarrow\gamma\cup(t,\mathtt{id}_t)$\;\label{line:gen-bind-t}
-  }
-\end{algorithm}
-
-\subsection{Interconnection of the component instances}
+\subsection{Interconnection of the place and transition component
+  instances}
 \label{sec:geninter}
 
 After the generation of PCIs and TCIs, and of all constant
 associations in their generic and input port maps, the next step of
 the transformation performs the interconnections between the
 interfaces of PCIs and TCIs. The \texttt{generate\_interconnections}
-procedure, presented in Algorithm~\ref{alg:geninter}, iterates over
-the set of places of the $sitpn$ parameter. For each place $p$, the
-\texttt{connect\_input\_trs} (resp. \texttt{connect\_output\_trs})
-procedure generates the interconnection between the PCI $id_p$ and the
-TCIs that implement the input (resp. output) transitions of $p$.
+procedure, presented in Algorithm~\ref{alg:geninter}, produces these
+interconnections.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -687,79 +739,105 @@ TCIs that implement the input (resp. output) transitions of $p$.
   \AlFnt % overriding the new font
 
   \ForEach{$p\in{}P$}{
-    \texttt{connect\_input\_trs}$(p,sitpn,d,\gamma)$\;
-    \texttt{connect\_output\_trs}$(p,sitpn,d,\gamma)$\;
+    \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;\label{line:geninter-getpcomp}
+
+    \BlankLine
+    $i\leftarrow{}0$\; \label{geninter-start}
+    \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
+      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+      $i_p\leftarrow\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
+      $i\leftarrow{}i+1$\;
+    }\label{line:geninter-end-input}
+
+    \BlankLine
+    $i\leftarrow{}0$\;
+    \ForEach{$t\in\mathtt{output}_c(p)$}{\label{line:foreach-outc}
+      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+      $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-1}
+      \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-1}
+      \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-1}
+      \texttt{connect}$(o_p,i_t,\mathtt{pauths}(i),\mathtt{pauths},d)$\; \label{line:pauths-pauths-1}
+      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\; \label{geninter-puttcomp}
+      $i\leftarrow{}i+1$\;
+    }\label{line:end-foreach-outc}
+    
+    \ForEach{$t\in\mathtt{output}_{nc}(p)$}{
+      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;\label{line:foreach-outnc}
+      $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-2}
+      \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-2}
+      \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-2}
+
+      $id_s\leftarrow\mathtt{genid}()$\;\label{line:genid-for-pauths}
+      $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
+      $o_p\leftarrow{}o_p\cup\{(\mathtt{pauths}(i),id_s)\}$\;\label{line:pauths-assoc}
+      \texttt{cassoc}$(i_t,\mathtt{pauths},\mathtt{true})$\; \label{line:pauths-true}
+      
+      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outnc}
+      $i\leftarrow{}i+1$\;
+    } \label{geninter-end}
+    
+    \BlankLine
+    \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;\label{line:putpcomp-cit}
   }
 \end{algorithm}
 
-Algorithm~\ref{alg:connect-in-trs} presents the
-\texttt{connect\_input\_trs} procedure.  At
-Line~\ref{line:getpcomp-cit}, the \texttt{get\_comp} returns the PCI
-associated with the identifier $\gamma(p)$ (i.e. the PCI identifier
-associated with place $p$ in $\gamma$) by looking up the behavior of
-the design $d$. Then, the procedure modifies the input port map of PCI
-$id_p$, and finally replaces the old PCI by the modified one in the
-behavior of design $d$ (Line~\ref{line:putpcomp-cit}). Between Lines,
-the procedure connects the \texttt{input\_transitions\_fired} input
-port of PCI $id_p$ to the \texttt{fired} output port of the TCIs
-implementing the input transitions of place $p$. At Line, for each
-input transition $t$ of place $p$, the \texttt{get\_comp} function
-returns the TCI $id_t$ looked up in the behavior of design $d$. Then,
-Line~\ref{line:connect-itf-fired} modifies the input port map of PCI
-$id_p$. It connects a subelement of the
-\texttt{input\_transitions\_fired} input port to the actual part
-associated with the \texttt{fired} output port in the output port map
-of TCI $id_t$ (i.e. \texttt{actual}$(\mathtt{fired},o_t)$).
-Line~\ref{line:input-empty-itf} deals with the particular case where
-the set of input transitions of place $p$ is empty.
+The \texttt{generate\_interconnections} procedure iterates over the
+set of places of the $sitpn$ parameter. For each place $p$, the
+procedure generates the interconnections between the PCI $id_p$ and
+the TCIs that implement the input and output transitions of $p$; we
+will refer to them as the input and output TCIs of PCI $id_p$.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+At Line~\ref{line:geninter-getpcomp}, the \texttt{get\_comp} function
+returns the PCI associated with the identifier $\gamma(p)$ (i.e. the
+PCI identifier associated with place $p$ in $\gamma$) by looking up
+the behavior of the design $d$. At this step, we assume that all PCIs
+and TCIs, and all bindings pertaining to places and transitions in the
+$\gamma$ binder, have been previously generated by the
+\texttt{generate\_architecture} procedure. Otherwise, the
+\texttt{get\_comp} function raises an error if it is not able to find
+the PCI $id_p$ in the behavior of design $d$.
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+Then, from Line~\ref{geninter-start} to Line~\ref{geninter-end}, the
+procedure modifies the input and output port map of PCI $id_p$ and the
+input port map of its input and output TCIs. Finally,
+Line~\ref{line:putpcomp-cit} replaces the old PCI $id_p$ by the
+modified one in the behavior of design $d$.
 
-  \caption{\texttt{connect\_input\_trs}($p$, $sitpn$, $d$, $\gamma$)}
-  \label{alg:connect-in-trs}
-  
-  \AlFnt % overriding the new font
-
-  \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;\label{line:getpcomp-cit}
-  
-  \BlankLine
-  $i\leftarrow{}0$\;
-  \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
-    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-    $i_p\leftarrow\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
-    $i\leftarrow{}i+1$\;
-  }
-
-  \BlankLine
-  \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;\label{line:putpcomp-cit}  
-\end{algorithm}
+From Line~\ref{geninter-start} to Line~\ref{line:geninter-end-input},
+the procedure iterates over the input transitions of place $p$. Note
+that the iteration is performed in the same order than the iteration
+performed by the \textbf{foreach} loop at Line~\ref{line:foreach-iaw}
+of the \texttt{generate_PCIs} procedure; this is mandatory to preserve
+a consistency between the index $i$ and the connection to a given
+transition (see Remark~\ref{rem:connections-consistency}).  For each
+input transition $t$ of $p$, the corresponding TCI $id_t$ is retrieved
+from the behavior of design $d$. Then, the internal signal associated
+with the \texttt{fired} output port in the output port map of TCI
+$id_t$ is retrieved (i.e. \texttt{actual}$(\mathtt{fired},o_t)$), and
+the signal is associated with the subelement of the \texttt{itf} input
+port with index $i$. We know that the \texttt{generate_TCIs} function
+has generated the association between the \texttt{fired} output port
+and an internal signal in the output port map of all TCIs. Thus, the
+\texttt{actual} function never raises an error.
 
 \begin{remark}[Connections consistency]
+  \label{rem:connections-consistency}
   In the behavior of the \texttt{place} design, some processes access
   to the subelements of composite ports through the use of
   indices. For instance, the \texttt{input\_tokens\_sum} process (see
   Appendix~\ref{app:place-design}) increments a local variable $i$ in
   range $0$ to $\mathtt{input\_arcs\_number}-1$ in a for loop. The
-  process tests the value of the \texttt{input\_transitions\_fired}
-  port's subelement with index $i$. If the test suceeds, the process
-  adds the value of the \texttt{input\_arcs\_weights} port's
-  subelement with index $i$ to the local variable
+  process tests the value of the \texttt{itf} port's subelement with
+  index $i$. If the test suceeds, the process adds the value of the
+  \texttt{iaw} port's subelement with index $i$ to the local variable
   \texttt{v\_internal\_input\_token\_sum}. Thus, the subelement with
-  index $i$ of the \texttt{input\_transitions\_fired} and
-  \texttt{input\_arcs\_weights} ports must refer to the connection to
-  the same transition. Otherwise, the process does not compute a
-  correct input tokens sum. Figure~\ref{fig:consistent-connections}
-  illustrates the correct connection of the
-  \texttt{input\_transitions\_fired} and \texttt{input\_arcs\_weights}
-  ports in the input port map of PCI $id_p$ w.r.t. to the connection
-  between transitions $t_a$, $t_b$, $t_c$ and place $p$. 
+  index $i$ of the \texttt{itf} and \texttt{iaw} ports must refer to
+  the connection to the same transition. Otherwise, the process does
+  not compute a correct input tokens
+  sum. Figure~\ref{fig:consistent-connections} illustrates the correct
+  connection of the \texttt{itf} and \texttt{iaw} ports in the input
+  port map of PCI $id_p$ w.r.t. to the connection between transitions
+  $t_a$, $t_b$, $t_c$ and place $p$.
 
   \begin{figure}[H]
     \centering
@@ -785,110 +863,52 @@ the set of input transitions of place $p$ is empty.
   not subject to such a constraint. The fact that a \textbf{foreach}
   loop always iterates in the same order over the elements of a set
   ensures the consistency of the connections.
-
 \end{remark}
 
-Algorithm~\ref{alg:connect-out-trs} presents the
-\texttt{connect\_output\_trs} procedure. The procedure interconnects
-the input and output port maps of PCI $id_p$ to the input and output
-port maps of the TCIs implementing the output transitions of place
-$p$. From Lines~\ref{line:foreach-outc} to
-\ref{line:end-foreach-outc}, the procedure connects the TCIs bound to
-the conflicting output transitions of $p$. From
-Lines~\ref{line:foreach-outnc} to \ref{line:end-foreach-outnc}, the
-procedure connects the TCIs bound to the output transitions of $p$
-that are not in conflict. The difference between the two loops lies in
-the connection the \texttt{priority\_authorizations} ports. Between
-the PCI $id_p$ and its \textit{conflicting} TCIs, the
-\texttt{priority\_authorizations} ports must be connected. Between the
-PCI $id_p$ and its \textit{non-conflicting} TCIs, the
-\texttt{priority\_authorizations} are not connected together. This
-reflects the fact that output transitions that are not in conflict are
-not concerned with the sensitization by the residual marking (see
-Section~\ref{sec:fired-trans} for explanations about the residual
-marking). The information of the sensitization by the residual marking
-passes by the \texttt{priority\_authorizations} ports. At the
-exception of the \texttt{priority\_authorizations} ports, the two
-loops perform the same interconnections. Lines~\ref{line:otf-fired-1}
-and \ref{line:otf-fired-2} connect a subelement of the
-\texttt{output\_transitions\_fired} input port to the actual part
+From Line~\ref{line:foreach-outc} to Line~\ref{line:end-foreach-outc},
+the procedure connects the PCI $id_p$ to the TCIs implementing the
+conflicting output transitions of place $p$. For each conflicting
+output transition $t$ of $p$, the corresponding TCI $id_t$ is
+retrieved from the behavior of design $d$. The function call
+\texttt{actual}$(\mathtt{fired},o_t)$ returns the internal signal
 associated with the \texttt{fired} output port in the output port map
-of TCI $id_t$
-(i.e. \texttt{actual}$(\mathtt{fired},o_t)$). Lines~\ref{line:oav-iav-1}
-and \ref{line:oav-iav-2} connect a subelement of the
-\texttt{output_arcs_valid} output port to a subelement of the
-\texttt{input_arcs_valid} input port. The connection passes through an
-internal signal that is generated by the \texttt{connect} procedure
-(presented in Algorithm~\ref{alg:connect}), and added to the internal
-signal declaration list of design $d$.  The \texttt{output_arcs_valid}
-port is an output port of the \texttt{place} design, and the
-\texttt{input_arcs_valid} port is an input port of the
-\texttt{transition} design. Lines~\ref{line:rtt-rt-1} and
-\ref{line:rtt-rt-2} connect a subelement of the
-\texttt{reinit\_transitions\_time} output port to a subelement of the
-\texttt{reinit_time} input port through an internal signal. The
-\texttt{reinit\_transitions\_time} port is an output port of the
-\texttt{place} design, and the \texttt{reinit_time} port is an input
-port of the \texttt{transition} design.
- 
-From Lines~\ref{line:out-empty-cot} to \ref{line:end-out-empty-cot},
-the procedure deals with the case where the set of input transitions
-of $p$ is empty. In that case, the subelement of the
-\texttt{output\_transitions\_fired} port with index $0$ is connected
-to \texttt{false} in the input port map $i_p$; also, the
-\texttt{output\_arcs\_valid}, \texttt{priority\_authorizations} and
-\texttt{reinit\_transitions\_time} ports are left unconnected in the
-output port map $o_p$.
+of TCI $id_t$. This internal signal is then connected to the
+subelement of the \texttt{otf} input port with index $i$ in the input
+port map of PCI $id_p$. At Line~\ref{line:oav-iav-1}, the
+\texttt{connect} function generates an internal signal $id$ and adds
+it to the internal signal declaration list of design $d$. Then, the
+function associates the subelement \texttt{oav}$(i)$ (i.e. the
+subelement of the \texttt{oav} input port with index $i$) with the
+internal signal $id$ in the output port map $o_p$, and it associates
+one subelement of the \texttt{iav} input port to the internal signal
+$id$ in the input port map $i_t$. The \texttt{connect} function
+operates similarly on the \texttt{rtt} output port and the \texttt{rt}
+input port at Line~\ref{line:rtt-rt-1}, and on the \texttt{pauths}
+input port and the \texttt{pauths} output port at
+Line~\ref{line:pauths-pauths-1}. Finally, at
+Line~\ref{geninter-puttcomp}, the old TCI $id_t$ is replaced by the
+modified one in the behavior of design $d$.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
-
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \caption{\texttt{connect\_output\_trs}($p$, $sitpn$, $d$, $\gamma$)}
-  \label{alg:connect-out-trs}
-  
-  \AlFnt % overriding the new font
-
-  \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;
-  
-  \BlankLine
-  $i\leftarrow{}0$\;
-  \ForEach{$t\in\mathtt{output}_c(p)$}{\label{line:foreach-outc}
-    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-    $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-1}
-    \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-1}
-    \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-1}
-    \texttt{connect}$(o_p,i_t,\mathtt{pauths}(i),\mathtt{pauths},d)$\;
-    \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outc}
-    $i\leftarrow{}i+1$\;
-  }
-  \ForEach{$t\in\mathtt{output}_{nc}(p)$}{
-    \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;\label{line:foreach-outnc}
-    $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(j),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-2}
-    \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-2}
-    \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-2}
-
-    $id_s\leftarrow\mathtt{genid}()$\;
-    $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
-    $o_p\leftarrow{}o_p\cup\{(\mathtt{pauths}(i),id_s)\}$\;
-    \texttt{cassoc}$(i_t,\mathtt{pauths},\mathtt{true})$\;
-    
-    \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outnc}
-    $i\leftarrow{}i+1$\;
-  }
-
-  
-  \BlankLine
-  \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;
-  
-\end{algorithm}
-
-
+From Line~\ref{line:foreach-outnc} to
+Line~\ref{line:end-foreach-outnc}, the procedure connects the TCIs
+implementing to the output transitions of $p$ that are not in
+conflict. Note that the variable $i$ is not reset between the two
+\textbf{foreach} loops to preserve the continuity of indices.  For
+each non-conflicting output transition $t$ of $p$, the corresponding
+TCI $id_t$ is retrieved from the behavior of design $d$. Then, the
+interconnections between PCI $id_p$ and TCI $id_t$ are similarly to
+the ones that have been performed for the conflicting transitions of
+$p$. The difference lies in the connection the \texttt{pauths} ports.
+Between the PCI $id_p$ and its \textit{non-conflicting} TCIs, the
+\texttt{pauths} are not connected together; this to reflect the
+independence of non-conflicting output transitions regarding the
+priority authorizations. Instead, the subelement of the
+\texttt{pauths} output port with index $i$ is connected to a newly
+generated internal signal $id_s$ in the output port map $o_p$
+(Line~\ref{line:genid-for-pauths} to
+Line~\ref{line:pauths-assoc}). Also, one subelement of the
+\texttt{pauths} input port is associated with \texttt{true} in the
+input port map $i_t$ (Line~\ref{line:pauths-true}).
 
 \subsection{Generation of ports, the \texttt{action} and the
   \texttt{function} process}
