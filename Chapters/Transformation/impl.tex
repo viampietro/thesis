@@ -1,0 +1,115 @@
+This section presents the implementation of the \hilecop{}
+model-to-text transformation with the \coq{} proof assistant. The
+\texttt{sitpn\_to\_hvhdl} function presented in
+Algorithm~\ref{alg:sitpn2hvhdl} has been implemented in \coq{} by the
+function \texttt{sitpn\_to\_hvhdl} function presented in
+Listing~\ref{lst:sitpn2hvhdl}.
+
+\begin{lstlisting}[language=coq,label={lst:sitpn2hvhdl},
+caption={[The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.] The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Definition sitpn_to_hvhdl (sitpn : Sitpn)
+   (decpr : forall x y : T sitpn, {pr x y} + {~pr x y})
+   ($id_e$ $id_a$ : ident) (mmf : P sitpn -> nat) :
+   (design * Sitpn2HVhdlMap sitpn) + string :=
+  RedV 
+    ((do _ <- generate_sitpn_infos sitpn decpr;
+      do _ <- generate_architecture sitpn mmf;
+      do _ <- generate_ports sitpn;
+      do _ <- generate_comp_insts sitpn;
+      generate_design_and_binder $id_e$ $id_a$)
+      (InitS2HState sitpn Petri.ffid)).
+\end{lstlisting}
+
+In Listing~\ref{lst:sitpn2hvhdl}, the \texttt{sitpn\_to\_hvhdl}
+function has five parameter: \texttt{sitpn}, the input SITPN model;
+\texttt{decpr}, a proof that the \texttt{pr} relation (i.e. the
+implementation of the firing priority relation) is decidable over the
+set of transitions of \texttt{sitpn} (i.e. \texttt{T sitpn}); $id_e$
+and $id_a$, the entity and architecture idenfifiers for the generated
+\hvhdl{}; the \texttt{mmf} function that maps places of \texttt{sitpn}
+to a maximal marking value. The \texttt{sitpn\_to\_hvhdl} function
+returns a couple composed of the generated \hvhdl{} design, of type
+\texttt{design}, and the generated $\gamma$ binder, of type
+\texttt{Sitpn2HVhdlMap sitpn}; or, the \texttt{sitpn\_to\_hvhdl}
+function returns a \texttt{string} corresponding to an error message.
+
+In the body of the \texttt{sitpn\_to\_hvhdl} function, the
+\texttt{RedV} is a notation that reduces a monadic function call to a
+value. Our implementation of the \hilecop{} transformation function
+relies on the state-and-error monad \cite{Wadler1992}. Each function
+that implements a part of the transformation function takes a
+\texttt{compile-time} state as a parameter, and returns either a value
+and a new compile-time state or an error message. The \texttt{bind}
+construct of the state-and-error monad permits to pipeline multiple
+function calls, and, combined with the \texttt{do} notation, it
+permits to write functional programs in the style of imperative
+languages. Thus, the \texttt{do} sequence defined in the body of the
+\texttt{sitpn\_to\_hvhdl} function constitutes a single monadic
+function. Here, the \texttt{RedV} notation reduces the result of the
+application of the monadic function to the parameter
+\texttt{(InitS2HState sitpn Petri.ffid)}, i.e. the initial
+compile-time state. The four first function calls do not return values
+that are relevant; thus, we use the underscore notation to notify that
+we are not interested in the value returned by these function calls.
+Indeed, the \texttt{generate\_sitpn\_infos},
+\texttt{generate\_architecture}, \texttt{generate\_ports} and
+\texttt{generate\_comp\_insts} functions directly modify the
+compile-time state without returning a value. They are the functional
+implementation of the procedures described in the previous section.
+ 
+Now, let us present the compile-time state that is carried and
+modified through the multiple function calls composing the
+transformation.  Listing~\ref{lst:comp-time-state} gives the
+implementation of the compile-time state structure.
+
+\begin{lstlisting}[language=coq,label={lst:comp-time-state},
+caption={[The compile-time state structure.] The compile-time state structure defined as the \coq{} \texttt{Sitpn2HVhdlState} record type.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Record Sitpn2HVhdlState (sitpn : Sitpn) : Type :=
+  MkS2HState {
+     lofPs : list (P sitpn);
+     lofTs : list (T sitpn);
+     lofCs : list (C sitpn);
+     lofAs : list (A sitpn);
+     lofFs : list (F sitpn);
+     nextid : ident;
+     sitpninfos : SitpnInfos sitpn;
+     iports : list pdecl;
+     oports : list pdecl;
+     arch : Architecture sitpn;
+     beh : cs;
+     $\gamma$ : Sitpn2HVhdlMap sitpn;
+
+  }.
+\end{lstlisting}
+
+The compile-time structure is implemented by the
+\texttt{Sitpn2HVhdlState} record type. This type depends on a given
+\texttt{sitpn} passed as a parameter. It is composed of eleven
+fields. The first five fields are the list versions of the finite sets
+of places, transitions, conditions, actions and functions of the
+\texttt{sitpn} parameter. The fields are built at the very beginning
+of the transformation by the \texttt{generate\_sitpn\_infos} function,
+and are convenient to write functions in the context of dependent
+types. The \texttt{nextid} field permits to generate fresh and unique
+identifiers all along the transformation. The \texttt{sitpinfos} field
+is an instance of the \texttt{SitpnInfos} type that depends on the
+\texttt{sitpn} parameter. The \texttt{sitpninfos} field is filled up
+by the \texttt{generate\_sitpn\_infos} function. It is a convenient
+way to represent the information associated with the places,
+transitions, conditions, actions and functions of the \texttt{sitpn}
+parameter. The \texttt{iports} (resp. \texttt{oports}) field gathers
+the list of input port declarations of the generated \hvhdl{}
+design. The \texttt{arch} is an intermediary representation of the
+behavior of the generated \hvhdl{} design. This representation is
+easier to modify and to handle than a \hvhdl{} concurrent
+statement. The \texttt{beh} field is the behavior of the generated
+\hvhdl{} design. The $\gamma$ field is the SITPN-to-\hvhdl{} binder
+also generated alongside the \hvhdl{} design, and returned at the end
+of the transformation.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
