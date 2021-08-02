@@ -569,7 +569,7 @@ the \texttt{action} process (see Section~\ref{sec:genports}).
     \BlankLine
     $id_t\leftarrow{}\mathtt{genid}()$\;\label{line:gen-tcomp-id}
     $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_t,\mathtt{transition},g_t,i_t,o_t)$\;\label{line:gen-tcomp}
-    $\gamma\leftarrow\gamma\cup(t,\mathtt{id}_t)$\;\label{line:gen-bind-t}
+    $\gamma\leftarrow\gamma\cup\{(t,\mathtt{id}_t)\}$\;\label{line:gen-bind-t}
   }
 \end{algorithm}
 
@@ -914,6 +914,28 @@ input port map $i_t$ (Line~\ref{line:pauths-true}).
   \texttt{function} process}
 \label{sec:genports}
 
+The last part of the transformation pertains to the generation of the
+input and output ports of the \hvhdl{} design. The input ports
+implement the conditions declared in the input SITPN model. Each input
+port is associated with a condition through the $\gamma$ binder. This
+binding is built during the transformation. The output ports of the
+\hvhdl{} design implement the action and function of the input
+SITPN. Each output port is associated with an action or a function
+through the $\gamma$ binder. During the simulation of a \hvhdl{}
+design, the value of an output port represent the activation/execution
+status of the associated action/function. Algorithm presents the
+\texttt{generate\_ports} procedure. This procedure calls three
+procedures, namely: the \texttt{generate\_conditions} procedure,
+responsible for the generation and the connection of input ports
+implementing conditions; the \texttt{generate\_action\_ports}
+procedure, responsible for the generation of output ports implementing
+actions, and for the generation of the \texttt{action} process; the
+\texttt{generate\_function\_ports} procedure, responsible for the
+generation of output ports implementing functions, and for the
+generation of the \texttt{function} process. These three procedures
+are detailled in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
+\ref{alg:genfuns}.
+
 \begin{algorithm}[H]
   \DontPrintSemicolon
 
@@ -923,11 +945,268 @@ input port map $i_t$ (Line~\ref{line:pauths-true}).
   \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
   % \NoCaptionOfAlgo
 
-  \caption{\texttt{generate\_conds}($sitpn$, $d$, $\gamma$)}
+  \texttt{generate\_conditions}($sitpn$, $d$, $\gamma$)\;
+  \texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)\;
+  \texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)\;
+  
+  \caption{\texttt{generate\_ports}($sitpn$, $d$, $\gamma$)}
+  \label{alg:genports}
+  
+  \AlFnt % overriding the new font
+\end{algorithm}
+
+Algorithm~\ref{alg:genconds} describes the
+\texttt{generate\_conditions} procedure.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  \ForEach{$c\in\mathcal{C}$}{
+    $id_c\leftarrow\mathtt{genid}()$\;
+    $d.ports\leftarrow{}d.ports\cup(\mathtt{in},id_c,\mathtt{boolean})$\;
+    $\gamma\leftarrow\gamma\cup\{(c,id_c)\}$\;
+    
+    \BlankLine
+    \ForEach{$t\in\mathtt{trs}(c)$}{\label{line:foreach-trans-of-c}
+      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+      \lIf{$\mathbf{C}(t,c)=1$}{\texttt{cassoc}$(i_t,\mathtt{ic},id_c)$}
+      \lElseIf{$\mathbf{C}(t,c)=-1$}{\texttt{cassoc}$(i_t,\mathtt{ic},\mathtt{not}~id_c)$}
+      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;
+    }
+  }
+  
+  \caption{\texttt{generate\_conditions}($sitpn$, $d$, $\gamma$)}
   \label{alg:genconds}
   
   \AlFnt % overriding the new font
 \end{algorithm}
+
+The \texttt{generate\_conditions} procedure iterates over the set of
+conditions of the $sitpn$ parameter. For each condition of the set,
+the \texttt{generate\_conditions} procedure produces a corresponding
+input port identifier $id_c$, and adds an input port declaration entry
+in the port declaration list of design $d$. The declared input port is
+of the Boolean type. Also, a binding between condition $c$ and
+identifier $id_c$ is added to $\gamma$. Then, the procedure performs
+the connection between the input port $id_c$ and the \texttt{ic} input
+port present in the input interface of TCIs. The \texttt{ic} input
+port is an array composed of Boolean subelements. Indeed, as multiple
+conditions can be attached to a given transition, a given TCI is
+possibly connected to multiple input ports implementing conditions
+through its \texttt{ic} port. At Line~\ref{line:foreach-trans-of-c},
+the \textbf{foreach} loop iterates over the set of transitions
+attached to condition $c$. For each such transition $t$, the
+corresponding TCI $id_t$ is retrieved from the behavior of design
+$d$. Then, depending on the relation that exists between condition $c$
+and transition $t$, an association between $id_c$ and one subelement
+of the \texttt{ic} input port is added to the input port map $i_t$. At
+the end of the loop, the old TCI $id_t$ is replaced by a new TCI, with
+an updated input port map, in the behavior of design $d$.
+
+Algorithm~\ref{alg:genacts} describes the
+\texttt{generate\_action\_ports} procedure.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  $rstss\leftarrow{}\mathtt{null}$\;
+  $fss\leftarrow{}\mathtt{null}$\;
+
+  \BlankLine
+  \ForEach{$a\in\mathcal{A}$}{\label{line:foreach-acts}
+    $id_a\leftarrow\mathtt{genid}()$\;
+    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_a,\mathtt{boolean})\}$\;
+    $\gamma\leftarrow{}\gamma\cup\{(a,id_a)\}$\;
+    $e_{id_a}\leftarrow{}\mathtt{false}$\;\label{line:init-expr-a}
+
+    \BlankLine
+    \ForEach{$p\in{}\mathtt{pls}(a)$}{
+      \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;
+      $id_s\leftarrow{}\mathtt{actual}(\mathtt{marked},o_p)$\;
+      $e_{id_a}\leftarrow{}id_s~\mathtt{or}~e_{id_a}$\;
+    }
+
+    \BlankLine
+    $rstss\leftarrow{}rstss;~id_a\Leftarrow{}\mathtt{false}$\;
+    $fss\leftarrow{}fss;~id_a\Leftarrow{}e_{id_a}$\;\label{line:add-assign-fss}
+  }
+
+  $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{action},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{falling}~fss))$\;
+  
+  \caption{\texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)}
+  \label{alg:genacts}
+  
+  \AlFnt % overriding the new font
+\end{algorithm}
+
+The \texttt{generate\_action\_ports} procedure does two things. First,
+it generates an output port for each action of the input SITPN;
+second, it builds the \texttt{action} process that is responsible for
+the assignment of the value of \textit{action} ports depending on the
+value of the \texttt{marked} output ports of PCIs. The \texttt{action}
+process is a synchronous process; its statement body is composed of a
+single \texttt{rst} block. A \texttt{rst} block is composed of two
+blocks of sequential statements; the first block is executed only
+during an initialization phase, otherwise, the second block is
+executed. Here, the second block corresponds to a \texttt{falling}
+block, i.e. a block that is only executed during a falling edge
+phase. Thus, the \texttt{generate\_action\_ports} procedure builds two
+blocks of sequential statements: the first one, hold in the $rstss$
+variable, corresponds to the first part of the \texttt{rst} block
+(i.e. the one executed during the initialization phase); the second
+one, hold in the $fss$ variable, corresponds to the second part of the
+\texttt{rst} block, i.e. a falling edge block. The first two lines of
+the procedure initialize the $rstss$ and $fss$ with the \texttt{null}
+sequential statements. Then, in the abscence of actions defined in the
+input SITPN, the statement body of the \texttt{action} process is
+composed of \texttt{null} statements; the execution of \texttt{null}
+statements has no effect on the state of design during a simulation.
+At Line~\ref{line:foreach-acts}, the procedure iterates over the set
+of actions of the $sitpn$ parameter. For each action $a$ in the set,
+an output port identifier $id_a$ is generated, an output port
+declaration entry is added to the port declaration list of design $d$,
+the binding between action $a$ and identifier $id_a$ joins the
+$\gamma$ binder.
+
+An action is activated at given state if one of its attached place is
+marked, i.e. its marking is greater than zero. An output port
+identifier that implements the activation status of a given action is
+assigned in the falling block of the \texttt{action} process. The
+expression assigned to the output port $id_a$ corresponds to the
+\texttt{or} sum between each \texttt{marked} port of the PCIs
+implementing the places attached to the action $a$. From
+Line~\ref{line:init-expr-a} to Line~\ref{line:add-assign-fss}, the
+\texttt{generate\_action\_ports} procedure builds this \texttt{or} sum
+expression. For each place $p$ associated with the action $a$, the
+corresponding PCI $id_p$ is retrieved from the behavior of design
+$d$. The internal signal $id_s$ associated with the \texttt{marked}
+port is looked up in the output port map of PCI $id_p$. Then, the
+signal identifier $id_s$ is composed with the expression $e_{id_a}$
+with the \texttt{or} operator. At the end of the loop started at
+Line~\ref{line:foreach-acts}, the procedure adds a new signal
+assignment statement to the $rstss$ and to the $fss$ variables by
+composition with the $;$ operator. In the $rstss$ variable, i.e. in
+the part of the \texttt{action} process executed during an
+initialization phase, the $id_a$ output port is assigned to
+\texttt{false}. In the $fss$ variable, i.e. the part of the
+\texttt{action} process executed during a falling edge phase, the
+$id_a$ output port is assigned to the previously built \texttt{or} sum
+expression $e_{id_a}$. The last line of the procedure builds and adds
+the \texttt{action} process to the behavior of design $d$. The
+\texttt{action} process is a synchronous process, thus, it declares
+the \texttt{clk} signal in its sensitivity list. The \texttt{action}
+process has an empty set of local variables. Finally, its statement
+body is composed of a \texttt{rst} block with $rstss$ as a first
+block, and a \texttt{falling} edge block wrapping $fss$ as a second
+block.
+
+Algorithm~\ref{alg:genfuns} describes the
+\texttt{generate\_function\_ports} procedure.
+
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+
+  \SetAlFnt{\fontsize{11}{13}\selectfont}
+  
+  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+  % \NoCaptionOfAlgo
+
+  $rstss\leftarrow{}\mathtt{null}$\;
+  $rss\leftarrow{}\mathtt{null}$\;
+
+  \BlankLine
+  \ForEach{$f\in\mathcal{F}$}{\label{line:foreach-funs}
+    $id_f\leftarrow\mathtt{genid}()$\;
+    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_f,\mathtt{boolean})\}$\;
+    $\gamma\leftarrow{}\gamma\cup\{(f,id_f)\}$\;
+    $e_{id_f}\leftarrow{}\mathtt{false}$\; \label{line:init-expr-f}
+
+    \BlankLine
+    \ForEach{$t\in{}\mathtt{trs}(f)$}{
+      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+      $id_s\leftarrow{}\mathtt{actual}(\mathtt{fired},o_t)$\;
+      $e_{id_f}\leftarrow{}id_s~\mathtt{or}~e_{id_f}$\;
+    }
+
+    \BlankLine
+    $rstss\leftarrow{}rstss;~id_f\Leftarrow{}\mathtt{false}$\;
+    $rss\leftarrow{}rss;~id_f\Leftarrow{}e_{id_f}$\;\label{line:add-assign-rss}
+  }
+
+  $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{function},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{rising}~rss))$\;
+  
+  \caption{\texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)}
+  \label{alg:genfuns}
+  
+  \AlFnt % overriding the new font
+\end{algorithm}
+
+The \texttt{generate\_function\_ports} procedure does two
+things. First, it generates an output port for each function of the
+input SITPN; second, it builds the \texttt{function} process that is
+responsible for the assignment of the value of \textit{function} ports
+depending on the value of the \texttt{fired} output ports of
+PCIs. Similarly to the \texttt{function} process, the \texttt{fired}
+process is a synchronous process with a statement body composed of a
+single \texttt{rst} block. The second part of the \texttt{rst} block
+is a \texttt{rising} block, i.e. a block that is only executed during
+a rising edge phase. Thus, the \texttt{generate\_action\_ports}
+procedure builds two blocks of sequential statements: the first one,
+hold in the $rstss$ variable, corresponds to the first part of the
+\texttt{rst} block (i.e. the one executed during the initialization
+phase); the second one, hold in the $rss$ variable, corresponds to the
+second part of the \texttt{rst} block, i.e. a rising edge block. The
+first two lines of the procedure initialize the $rstss$ and $rss$ with
+the \texttt{null} sequential statements. At
+Line~\ref{line:foreach-funs}, the procedure iterates over the set of
+functions of the $sitpn$ parameter. For each function $f$ in the set,
+an output port identifier $id_f$ is generated, an output port
+declaration entry is added to the port declaration list of design $d$,
+the binding between function $f$ and identifier $id_f$ joins the
+$\gamma$ binder.
+
+An function is executed at given state if one of its attached
+transition is fired. An output port identifier that implements the
+execution status of a given function is assigned in the rising block
+of the \texttt{function} process. The expression assigned to the
+output port $id_f$ corresponds to the \texttt{or} sum between each
+\texttt{fired} port of the TCIs implementing the transitions attached
+to the function $f$. From Line~\ref{line:init-expr-f} to
+Line~\ref{line:add-assign-rss}, the \texttt{generate\_function\_ports}
+procedure builds this \texttt{or} sum expression. For each transition
+$t$ associated with the function $f$, the corresponding TCI $id_t$ is
+retrieved from the behavior of design $d$. The internal signal $id_s$
+associated with the \texttt{fired} port is looked up in the output
+port map of TCI $id_t$. Then, the signal identifier $id_s$ is composed
+with the expression $e_{id_f}$ with the \texttt{or} operator. At the
+end of the loop started at Line~\ref{line:foreach-funs}, the procedure
+adds a new signal assignment statement to the $rstss$ and to the $rss$
+variables by composition with the $;$ operator. In the $rstss$
+variable, i.e. in the part of the \texttt{function} process executed
+during an initialization phase, the $id_f$ output port is assigned to
+\texttt{false}. In the $rss$ variable, i.e. the part of the
+\texttt{function} process executed during a rising edge phase, the
+$id_f$ output port is assigned to the previously built \texttt{or} sum
+expression $e_{id_f}$. The last line of the procedure builds and adds
+the \texttt{function} process to the behavior of design $d$. The
+\texttt{function} process is a synchronous process, thus, it declares
+the \texttt{clk} signal in its sensitivity list. The \texttt{function}
+process has an empty set of local variables. Finally, its statement
+body is composed of a \texttt{rst} block with $rstss$ as a first
+block, and a \texttt{rising} edge block wrapping $rss$.
 
 %%% Local Variables:
 %%% mode: latex
