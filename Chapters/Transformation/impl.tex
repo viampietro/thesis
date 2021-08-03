@@ -1,12 +1,15 @@
 This section presents the implementation of the \hilecop{}
-model-to-text transformation with the \coq{} proof assistant. The
-\texttt{sitpn\_to\_hvhdl} function presented in
-Algorithm~\ref{alg:sitpn2hvhdl} has been implemented in \coq{} by the
-function \texttt{sitpn\_to\_hvhdl} function presented in
-Listing~\ref{lst:sitpn2hvhdl}.
+model-to-text transformation with the \coq{} proof assistant.  The
+full implementation is available under the \texttt{sitpn2hvhdl} folder
+of the following Git repository:
+\url{https://github.com/viampietro/ver-hilecop}
+
+Listing~\ref{lst:sitpn2hvhdl} gives the \coq{} implementation of the
+\texttt{sitpn\_to\_hvhdl} function presented in an imperative
+pseudo-code version in Algorithm~\ref{alg:sitpn2hvhdl}.
 
 \begin{lstlisting}[language=coq,label={lst:sitpn2hvhdl},
-caption={[The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.] The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+caption={[The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.] The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function presented in Algorithm~\ref{alg:sitpn2hvhdl}.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 Definition sitpn_to_hvhdl (sitpn : Sitpn)
    (decpr : forall x y : T sitpn, {pr x y} + {~pr x y})
@@ -27,12 +30,13 @@ function has five parameter: \texttt{sitpn}, the input SITPN model;
 implementation of the firing priority relation) is decidable over the
 set of transitions of \texttt{sitpn} (i.e. \texttt{T sitpn}); $id_e$
 and $id_a$, the entity and architecture idenfifiers for the generated
-\hvhdl{}; the \texttt{mmf} function that maps places of \texttt{sitpn}
-to a maximal marking value. The \texttt{sitpn\_to\_hvhdl} function
-returns a couple composed of the generated \hvhdl{} design, of type
-\texttt{design}, and the generated $\gamma$ binder, of type
-\texttt{Sitpn2HVhdlMap sitpn}; or, the \texttt{sitpn\_to\_hvhdl}
-function returns a \texttt{string} corresponding to an error message.
+\hvhdl{} design; the \texttt{mmf} function that maps the places of the
+\texttt{sitpn} parameter to a maximal marking value, i.e. a natural
+number. The \texttt{sitpn\_to\_hvhdl} function returns a couple
+composed of the generated \hvhdl{} design, of type \texttt{design},
+and the generated $\gamma$ binder, of type \texttt{Sitpn2HVhdlMap
+  sitpn}; or, the \texttt{sitpn\_to\_hvhdl} function returns a
+\texttt{string} corresponding to an error message.
 
 In the body of the \texttt{sitpn\_to\_hvhdl} function, the
 \texttt{RedV} is a notation that reduces a monadic function call to a
@@ -44,24 +48,32 @@ and a new compile-time state or an error message. The \texttt{bind}
 construct of the state-and-error monad permits to pipeline multiple
 function calls, and, combined with the \texttt{do} notation, it
 permits to write functional programs in the style of imperative
-languages. Thus, the \texttt{do} sequence defined in the body of the
-\texttt{sitpn\_to\_hvhdl} function constitutes a single monadic
-function. Here, the \texttt{RedV} notation reduces the result of the
-application of the monadic function to the parameter
-\texttt{(InitS2HState sitpn Petri.ffid)}, i.e. the initial
-compile-time state. The four first function calls do not return values
-that are relevant; thus, we use the underscore notation to notify that
-we are not interested in the value returned by these function calls.
-Indeed, the \texttt{generate\_sitpn\_infos},
+languages. Thus, the sequence defined in the body of the
+\texttt{sitpn\_to\_hvhdl} function gives an example of what can be
+achieved with the combination of the state-and-error monad and the
+\texttt{do} notation. This sequence constitutes a single monadic
+function that takes a state of the \texttt{Sitpn2HVhdlState} type (see
+Listing~\ref{lst:comp-time-state}) as input, and yields a value with a
+new state, or an error message. Here, the \texttt{RedV} notation
+retrieves only the value returned by the application of the monadic
+function to the parameter \texttt{(InitS2HState sitpn Petri.ffid)}
+(i.e. the initial compile-time state), or it retrieves the error
+message.
+
+In the sequence of the monadic function, the four first function calls
+do not return values that are relevant; thus, we use the underscore
+notation to notify that we are not interested in the value returned by
+these function calls.  Indeed, the \texttt{generate\_sitpn\_infos},
 \texttt{generate\_architecture}, \texttt{generate\_ports} and
 \texttt{generate\_comp\_insts} functions directly modify the
 compile-time state without returning a value. They are the functional
 implementation of the procedures described in the previous section.
  
-Now, let us present the compile-time state that is carried and
-modified through the multiple function calls composing the
-transformation.  Listing~\ref{lst:comp-time-state} gives the
-implementation of the compile-time state structure.
+Now, let us present the content of the compile-time state. As said
+above, the compile-time state is carried from function to function and
+modified all along the transformation.
+Listing~\ref{lst:comp-time-state} gives the implementation of the
+compile-time state structure.
 
 \begin{lstlisting}[language=coq,label={lst:comp-time-state},
 caption={[The compile-time state structure.] The compile-time state structure defined as the \coq{} \texttt{Sitpn2HVhdlState} record type.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
@@ -84,30 +96,388 @@ Record Sitpn2HVhdlState (sitpn : Sitpn) : Type :=
   }.
 \end{lstlisting}
 
-The compile-time structure is implemented by the
+The compile-time state structure is implemented by the
 \texttt{Sitpn2HVhdlState} record type. This type depends on a given
 \texttt{sitpn} passed as a parameter. It is composed of eleven
 fields. The first five fields are the list versions of the finite sets
 of places, transitions, conditions, actions and functions of the
-\texttt{sitpn} parameter. The fields are built at the very beginning
-of the transformation by the \texttt{generate\_sitpn\_infos} function,
-and are convenient to write functions in the context of dependent
-types. The \texttt{nextid} field permits to generate fresh and unique
-identifiers all along the transformation. The \texttt{sitpinfos} field
-is an instance of the \texttt{SitpnInfos} type that depends on the
-\texttt{sitpn} parameter. The \texttt{sitpninfos} field is filled up
-by the \texttt{generate\_sitpn\_infos} function. It is a convenient
-way to represent the information associated with the places,
-transitions, conditions, actions and functions of the \texttt{sitpn}
-parameter. The \texttt{iports} (resp. \texttt{oports}) field gathers
-the list of input port declarations of the generated \hvhdl{}
-design. The \texttt{arch} is an intermediary representation of the
-behavior of the generated \hvhdl{} design. This representation is
-easier to modify and to handle than a \hvhdl{} concurrent
-statement. The \texttt{beh} field is the behavior of the generated
-\hvhdl{} design. The $\gamma$ field is the SITPN-to-\hvhdl{} binder
-also generated alongside the \hvhdl{} design, and returned at the end
-of the transformation.
+\texttt{sitpn} parameter. These fields are filled at the very
+beginning of the transformation by the \texttt{generate\_sitpn\_infos}
+function, and are convenient to write functions in the context of
+dependent types. The \texttt{nextid} field permits to generate fresh
+and unique identifiers all along the transformation. The
+\texttt{sitpinfos} field is an instance of the \texttt{SitpnInfos}
+type that depends on the \texttt{sitpn} parameter. The
+\texttt{sitpninfos} field is filled up by the
+\texttt{generate\_sitpn\_infos} function. It is a convenient way to
+represent the information associated with the places, transitions,
+conditions, actions and functions of the \texttt{sitpn} parameter. The
+\texttt{iports} (resp. \texttt{oports}) field gathers the list of
+input port declarations of the generated \hvhdl{} design. The
+\texttt{arch} is an intermediary representation of the behavior of the
+generated \hvhdl{} design. This representation is easier to modify and
+to handle than a \hvhdl{} concurrent statement. The \texttt{beh} field
+is the behavior of the generated \hvhdl{} design; it is an instance of
+the \texttt{cs} type, i.e. the type of concurrent statements defined
+in the abstract syntax of \hvhdl{}. The $\gamma$ field is the
+SITPN-to-\hvhdl{} binder also generated alongside the \hvhdl{} design,
+and returned at the end of the transformation.
+
+At the beginning of the transformation, an initial compile-time state
+is built with the \texttt{Init\-S2HState} function. The
+\texttt{InitS2HState} function gives a initial value to the fields of
+the state structure; mostly, the fields are initialized with empty
+lists, and the \texttt{beh} field is initialized with the
+\texttt{null} statement. The \texttt{InitS2HState} function takes an
+\texttt{Sitpn} instance and an identifier as inputs. The identifier
+parameter represents the initial value of the \texttt{nextid}
+field. In Listing~\ref{lst:sitpn2hvhdl}, the second parameter of the
+\texttt{InitS2HState} function is \texttt{Petri.ffid}. It corresponds
+to the \emph{first fresh} identifier that the transformation can use
+to produce a \hvhdl{} design that respects the uniqueness of
+identifiers. 
+
+Let us now present the functions composing the \texttt{do} sequence of
+the \texttt{sitpn\_to\_hvhdl} function, and how they modify the
+compile-time state to produce the final \hvhdl{} design and the
+$\gamma$ binder.
+
+\subsection{The \texttt{generate\_sitpn\_infos} function}
+\label{sec:gen-sitpn-infos}
+
+Listing~\ref{lst:gen-infos} presents a part of the
+\texttt{generate\_sitpn\_infos}. The part that is let aside,
+represented by little dots, pertains to the creation of the
+dependently-typed lists constituting the first fields of the
+compile-time state structure (see Listing~\ref{lst:comp-time-state}).
+
+\begin{lstlisting}[language=coq,label={lst:gen-infos},
+caption={[The \texttt{generate\_sitpn\_infos} function.] A part of the \texttt{generate\_sitpn\_infos} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Definition generate_sitpn_infos
+           (sitpn : Sitpn)
+           (decpr : forall x y : T sitpn, {pr x y} + {~pr x y}) :
+    Mon (Sitpn2HVhdlState sitpn) unit :=
+  #\dots#
+  do _ <- check_wd_sitpn sitpn decpr;
+  do _ <- generate_trans_infos sitpn;
+  do _ <- generate_place_infos sitpn decpr;
+  do _ <- generate_cond_infos sitpn; 
+  do _ <- generate_action_infos sitpn;
+  generate_fun_infos sitpn.
+\end{lstlisting}
+
+The \texttt{generate\_sitpn\_infos} function takes an \texttt{Sitpn}
+instance and a proof of decidability for the \texttt{pr} relation as
+parameters. It returns a value of type \texttt{Mon (Sitpn2HVhdlState
+  sitpn) unit}. A value of this type can either be a couple
+$(state,value)$, where $state$ is of type \texttt{(Sitpn2HVhdlState
+  sitpn)} and $value$ is of type \texttt{unit}, or an error
+message. The \texttt{unit} type as only one possible value
+\texttt{tt}. The \texttt{unit} type is used here to represent a
+function that modifies the compile-time state without returning a
+value.
+
+The aim of the \texttt{generate\_sitpn\_infos} function is to fill the
+\texttt{sitpninfos} field of the compile-time state; the
+\texttt{sitpninfos} field is an instance of the \texttt{SitpnInfos}
+record type. Listing~\ref{lst:infos-types} presents the definition of
+the \texttt{SitpnInfos} record type, along with the definition of the
+\texttt{PlaceInfo} and \texttt{TransInfo} record types.
+
+\begin{lstlisting}[language=coq,label={lst:infos-types},
+caption={[The \texttt{PlaceInfo}, \texttt{TransInfo} and \texttt{SitpnInfos} types.]The \texttt{PlaceInfo}, \texttt{TransInfo} and \texttt{SitpnInfos} record types.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Record PlaceInfo (sitpn : Sitpn) : Type :=
+  MkPlaceInfo { tinputs : list (T sitpn);
+                tconflict : list (T sitpn);
+                toutputs : list (T sitpn) }.
+
+Record TransInfo (sitpn : Sitpn) : Type :=
+  MkTransInfo { pinputs : list (P sitpn); conds : list (C sitpn) }.
+  
+Record SitpnInfos (sitpn : Sitpn) : Type :=
+  MkSitpnInfos {
+      pinfos : list (P sitpn * PlaceInfo);
+      tinfos : list (T sitpn * TransInfo);
+      cinfos : list (C sitpn * list (T sitpn));
+      ainfos : list (A sitpn * list (P sitpn));
+      finfos : list (F sitpn * list (T sitpn));
+    }.
+\end{lstlisting}
+
+The \texttt{PlaceInfo} record type is composed of three lists that
+represent the input transitions, \texttt{tinputs}, the conflicting
+output transitions, \texttt{tconflict}, and the non-conflicting output
+transitions, \texttt{toutputs}, of a place. In the \texttt{SitpnInfos}
+structure, the \texttt{pinfos} field maps the places of the
+\texttt{sitpn} parameter to their respective informations, i.e. an
+instance of the \texttt{PlaceInfo} type. This mapping is built by the
+\texttt{generate\_place\_infos} function called in the body of
+\texttt{generate\_sitpn\_infos} function. While building an instance
+of the \texttt{PlaceInfo} type for a given place $p$, the
+\texttt{generate_place_infos} function computes the list of output
+transitions of $p$ that are conflict. First, it computes the list of
+output transitions that are linked to the place $p$ through a
+\texttt{basic} arc; then, the function checks if all conflicts between
+the transitions of this list are solved by means of mutual
+exclusion. If it is the case, the \texttt{tconflict} field is left
+empty, and all transitions of the list join the \texttt{toutputs}
+list. Otherwise, the function tries to establish a strict total order
+over the transitions of the list, by decreasing level of priority. If
+no such order can be established, the function raises an error;
+otherwise, the \texttt{tconflict} field is filled with the ordered
+list.
+
+The \texttt{TransInfo} record type is composed of two lists that
+represent the input places, \texttt{pinputs}, and the output places,
+\texttt{poutputs}, of a transition. In the \texttt{SitpnInfos}
+structure, the \texttt{tinfos} field maps the transitions of the
+\texttt{sitpn} parameter to their respective informations, i.e. an
+instance of the \texttt{TransInfo} type. This mapping is built by the
+\texttt{generate\_trans\_infos} function called in the body of
+\texttt{generate\_sitpn\_infos} function.
+
+In the \texttt{SitpnInfos} structure, the \texttt{cinfos}
+(resp. \texttt{ainfos} and \texttt{finfos}) field maps the conditions
+(resp. actions and functions) of the \texttt{sitpn} parameter to the
+list of transitions (resp. places and transitions) they are attached
+to. This mapping is built by the \texttt{generate\_cond\_infos}
+(resp. \texttt{generate\_action\_infos} and
+\texttt{generate\_fun\_infos}) function called in the body of
+\texttt{generate\_sitpn\_infos} function.
+
+At the beginning of the \texttt{generate\_sitpn\_infos} function, the
+\texttt{check\_wd\_sitpn} function partly checks the well-definition
+of the \texttt{sitpn} parameter. Precisely, it checks that the set of
+places and transitions of the \texttt{sitpn} parameter are not empty,
+and that the priority relation is a strict order, i.e. transitive and
+reflexive, over the set of transitions. The other parts of the
+well-definition checking are performed later during the
+transformation. For instance, the \texttt{generate\_place\_infos}
+function checks that, for each group of transitions in conflict, the
+conflicts are either solved by means of mutual exclusion or the
+priority relation is a strict total order over this group. It also
+checks that there are no isolated places in the input \texttt{sitpn}
+parameter.
+
+\subsection{The \texttt{generate\_architecture} function}
+\label{sec:impl-gen-arch}
+
+Listing~\ref{lst:gen-arch} presents the
+\texttt{generate\_architecture} function. The
+\texttt{generate\_architecture} function implements the
+\texttt{generate\_architecture} and the
+\texttt{generate\_interconnections} procedures detailled in
+Algorithms~\ref{alg:genarch} and \ref{alg:geninter}.  The composition
+of the \texttt{generate\_place\_map} and the
+\texttt{generate\_trans\_map} functions implements
+\texttt{generate\_architecture} procedure of
+Algorithm~\ref{alg:genarch}. Precisely, the
+\texttt{generate\_place\_map} function implements the
+\texttt{generate\_PCIs} procedure presented in
+Algorithm~\ref{alg:genpcis}, and the \texttt{generate\_trans\_map}
+function implements the \texttt{generate\_TCIs} procedure presented in
+Algorithm~\ref{alg:gentcis}.
+
+\begin{lstlisting}[language=coq,label={lst:gen-arch},
+caption={[The \texttt{generate\_architecture} function.]The \texttt{generate\_architecture} function that implements the \texttt{generate\_architecture} procedure of Algorithm~\ref{alg:genarch}.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Definition generate_architecture (sitpn : Sitpn) (mmf : P sitpn -> nat) :
+  Mon (Sitpn2HVhdlState sitpn) unit :=
+  do _ <- generate_place_map sitpn mmf;
+  do _ <- generate_trans_map sitpn;
+  generate_interconnections.
+\end{lstlisting}
+
+The \texttt{generate\_architecture} function takes an \texttt{Sitpn}
+instance and the \texttt{mmf} function as inputs, and modifies the
+compile-time state. The \texttt{generate\_architecture} function fills
+the \texttt{arch} field of the compile-time state; the \texttt{arch}
+field is an instance of the \texttt{Architecture} record
+type. Listing~\ref{lst:infos-types} presents the definition of the
+\texttt{Architecture} record type, along with the definition of the
+\texttt{InputMap}, \texttt{OutputMap} and \texttt{HComponent} type
+aliases.
+
+\begin{lstlisting}[language=coq,label={lst:arch-types},
+caption={[The \texttt{Architecture} record type.]The \texttt{Architecture} record type, and the \texttt{InputMap}, \texttt{OutputMap} and \texttt{HComponent} subsidiary types. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Definition InputMap := list (ident * (expr + list expr)).
+Definition OutputMap := list (ident * ((option name) + list name)).
+Definition HComponent := (genmap * InputMap * OutputMap).
+
+Record Architecture (sitpn : Sitpn) := MkArch {
+  sigs  : list sdecl;
+  plmap : list (P sitpn * HComponent);
+  trmap : list (T sitpn * HComponent);
+  fmap  : list (F sitpn * list expr);
+  amap  : list (A sitpn * list expr) }.
+\end{lstlisting}
+
+The \texttt{HComponent} type is an intermediate representation of an
+\hvhdl{} component instantiation statement. This type has been devised
+to ease the construction of PCIs and TCIs, and of their generic, input
+port and output port maps all along the transformation.  The
+\texttt{HComponent} type is a triplet composed of a generic map as
+defined in the \hvhdl{} abstract syntax, an instance of the
+\texttt{InputMap} type, and an instance of the \texttt{OutputMap}
+type.  The \texttt{InputMap} type maps an input port identifier to a
+either a simple expression or to a list of expressions, where the
+\texttt{expr} type is the type of expressions defined in the \hvhdl{}
+abstract syntax. In an \texttt{InputMap} instance, an input port
+identifier of a scalar type (i.e. Boolean or constrained natural) is
+mapped to a simple expressions, whereas an input port identifier of
+the array type is mapped to a list of expressions. Each expression of
+the list represents the actual part associated with one subelement of
+the input port. Similarly to the \texttt{InputMap} type, the
+\texttt{OutputMap} type maps an output port identifier to either an
+option to a signal (the \texttt{None} value representing the
+connection to the \texttt{open} keyword) name, or to a list of signal
+names. In the definition of the \texttt{OutputMap} type, the
+\texttt{name} type represents the type of simple identifiers or
+indexed identifiers defined in the \hvhdl{} abstract syntax.
+
+The \texttt{Architecture} record type is an intermediary
+representation of the behavioral and declarative part of an \hvhdl{}
+design's architecture.  The \texttt{sigs} field of the
+\texttt{Architecture} type represents the internal signal declaration
+list constituting the declarative part of an \hvhdl{} design's
+architecture. The transformation adds a new signal declaration entry
+to the \texttt{sigs} field every time a internal signal must be
+generated, for example, during the generation of interconnections
+between PCIs and TCIs.  The \texttt{plmap} (resp. the \texttt{trmap})
+field maps the places (resp. transitions) of the \texttt{sitpn}
+parameter to their corresponding PCI (resp. TCI) implemented in an
+intermediate format, i.e. an instance of the \texttt{HComponent}
+type. The \texttt{fmap} field of the \texttt{Architecture} type maps
+the functions of the \texttt{sitpn} parameter to a list of
+expressions. For a given function $f$, the associated list of
+expressions corresponds to the list of internal signals associated
+with the \texttt{fired} port of the TCIs implementing the transitions
+of the \texttt{trs}$(f)$ set (i.e. the set of transitions associated
+with function $f$). The \texttt{fmap} field is filled by the
+\texttt{generate\_ports} function. The \texttt{amap} field is the twin
+of the \texttt{fmap} field but on the side of the actions of the
+\texttt{sitpn} parameter. Thus, in the \texttt{amap} field, the list
+of expressions associated with an action $a$ corresponds to the list
+of internal signals connected to the \texttt{marked} port of the PCIs
+implementing the places of $a$.
+
+In the body of the \texttt{generate\_architecture} function, the
+\texttt{generate\_place\_map} function implements the
+\texttt{generate\_PCIs} procedure described in
+Algorithm~\ref{alg:genpcis}. For each place of the \texttt{sitpn}
+parameter, the \texttt{generate\_place\_map} function builds an
+instance of the \texttt{HComponent} type, and adds an association
+between place and \texttt{HComponent} instance in the \texttt{plmap}
+field. The \texttt{generate\_place\_map} function fills the generic,
+input port and output port map of the \texttt{HComponent} instances as
+described in the \texttt{generate\_PCIs} procedure. Following the
+\texttt{generate\_place\_map} function, the
+\texttt{generate\_trans\_map} function implements the
+\texttt{generate\_TCIs} procedure described in
+Algorithm~\ref{alg:gentcis}. For each transition of the \texttt{sitpn}
+parameter, the \texttt{generate\_trans\_map} function builds an
+instance of the \texttt{HComponent} type, and adds an association
+between transition and \texttt{HComponent} instance in the
+\texttt{trmap} field. The \texttt{generate\_trans\_map} function fills
+the generic, input port and output port map of the \texttt{HComponent}
+instances as described in the \texttt{generate\_TCIs} procedure.
+Finally, the \texttt{generate\_interconnections} function modifies the
+input and output port maps of the \texttt{HComponent} instances in the
+\texttt{plmap} and \texttt{trmap} fields, and thus, implements the
+interconnections described in the \texttt{generate\_interconnections}
+procedure of Algorithm~\ref{alg:geninter}.
+
+\subsection{The \texttt{generate\_ports} function}
+\label{sec:impl-gen-ports}
+
+Listing~\ref{lst:impl-gen-ports} presents the \texttt{generate\_ports}
+function called in the body of the \texttt{sitpn\_to\_hvhdl} function
+(see Listing~\ref{lst:sitpn2hvhdl}). The \texttt{generate\_ports}
+function implements the \texttt{generate\_ports} procedure described
+in Algorithm~\ref{alg:genports}. The \texttt{generate\_ports} function
+calls three functions: the \texttt{generate\_action\_ports\_and\_ps}
+function that implements the \texttt{generate_action_ports} procedure
+of Algorithm~\ref{alg:genacts}, the
+\texttt{generate\_fun\_ports\_and\_ps} function that implements the
+\texttt{generate_function_ports} procedure of
+Algorithm~\ref{alg:genfuns}, and the
+\texttt{generate_and_connect_cond_ports} that implements the
+\texttt{generate\_conditions} procedure of
+Algorithm~\ref{alg:genconds}.
+
+\begin{lstlisting}[language=coq,label={lst:impl-gen-ports},
+caption={[The \texttt{generate\_ports} function.]The \texttt{generate\_ports} function implementing the \texttt{generate\_ports} procedure presented in Algorithm~\ref{alg:genports}. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+numberstyle=\tiny\ttfamily]
+Definition generate_ports (sitpn : Sitpn) : Mon (Sitpn2HVhdlState sitpn) unit :=
+  do _ <- generate_action_ports_and_ps;
+  do _ <- generate_fun_ports_and_ps;
+  generate_and_connect_cond_ports.
+\end{lstlisting}
+
+For every action of the \texttt{sitpn} parameter, the
+\texttt{generate\_action_ports_and_ps} function adds a port
+declaration entry to the \texttt{oports} field of the compile-time
+state, and adds a binding between action and output port identifier in
+the $\gamma$ field. It also builds the \texttt{action} process as
+described in the \texttt{generate_action_ports} procedure, and adds
+the process to the \texttt{beh} field of the compile-time state.  The
+\texttt{generate_fun_ports_and_ps} does the same for the functions of
+the \texttt{sitpn} parameter, and similarly builds the
+\texttt{function} process and adds it to the \texttt{beh} field. The
+\texttt{generate_and_connect_cond_ports} function add a port
+declaration entry for every condition of the \texttt{sitpn} parameter
+to the \texttt{iports} field of the compile-time state. Then, it
+modifies the input port map of \texttt{HComponent} instances in the
+\texttt{trmap} of the compile-time state's \texttt{arch} field. The
+modifications pertain to the connection of input ports to the
+\texttt{ic} input port of TCIs, as described in the
+\texttt{generate\_conditions} procedure (see
+Algorithm~\ref{alg:genconds}).
+
+\subsection{The \texttt{generate\_comp\_insts} and
+  \texttt{generate\_design\_and\_binder} functions}
+\label{sec:impl-gen-comp-insts}
+
+At the end of the \texttt{sitpn\_to\_hvhdl} function (see
+Listing~\ref{lst:sitpn2hvhdl}), the \texttt{generate\_comp_insts}
+function transforms the \texttt{HComponent} instances, associated to
+places and transitions in the compile-time state's \texttt{arch}
+field, into real component instantiation statements as defined in the
+\hvhdl{} abstract syntax. For instance, let us consider an instance of
+\texttt{InputMap} that is an intermediary representation of the input
+port map of a TCI. In this \texttt{InputMap} instance, the \texttt{rt}
+port, which is a composite input port of the \texttt{transition}
+design, is associated with the list $[id_a, id_b, id_c]$. The
+\texttt{generate\_trans\_comp\_insts} function generates the following
+associations is the concrete input port map: $(\mathtt{rt}(0), id_a)$,
+$(\mathtt{rt}(1), id_b)$ and $(\mathtt{rt}(2), id_c)$. Each generated
+CI statements is composed with the \texttt{beh} field of the
+compile-time state (i.e. with the \texttt{||} operator).  Moreover,
+the \texttt{generate\_comp\_insts} adds the binding between places and
+PCI identifiers (resp. transitions and TCI identifiers) to the
+$\gamma$ field.  The \texttt{generate\_comp\_insts} function is needed
+here because we are using an intermediary representation for the
+component instantiation statements. Even though this representation is
+convenient to manipulate data during the different phases of the
+transformation, it also implies an extra generation step to complete
+the generation of the \hvhdl{} design and the $\gamma$ binder.
+
+\begin{lstlisting}[language=coq,label={lst:gen-comp-insts},
+caption={[The \texttt{generate\_comp\_insts} and the \texttt{generate_design_and_binder} function.]The \texttt{generate\_comp\_insts} and the \texttt{generate_design_and_binder} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,numberstyle=\tiny\ttfamily]
+Definition generate_comp_insts (sitpn : Sitpn) : Mon (Sitpn2HVhdlstate sitpn) unit :=
+  do _ <- generate_place_comp_insts sitpn; generate_trans_comp_insts sitpn.
+
+Definition generate_design_and_binder (sitpn : Sitpn) ($id_e$ $id_a$ : ident) :
+    Mon (Sitpn2HVhdlstate sitpn) (design * Sitpn2HVhdlMap sitpn) :=
+  do s <- Get;
+  Ret ((design_ $id_e$ $id_a$ [] ((iports s) ++ (oports s)) (sigs (arch s)) (beh s)), ($\gamma$ s)).
+\end{lstlisting}
+
+
+
 
 %%% Local Variables:
 %%% mode: latex

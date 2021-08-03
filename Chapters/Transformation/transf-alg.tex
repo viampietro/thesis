@@ -544,7 +544,7 @@ the \texttt{action} process (see Section~\ref{sec:genports}).
     \end{cases})\}$\;\label{line:init-it}
 
     $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
-    $d.sigs\leftarrow{}d.sigs\cup(id_s,boolean)$\;\label{line:declid-fired}
+    $d.sigs\leftarrow{}d.sigs\cup\{(id_s,boolean)\}$\;\label{line:declid-fired}
     $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
     
     \BlankLine
@@ -745,7 +745,7 @@ interconnections.
     $i\leftarrow{}0$\; \label{geninter-start}
     \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
       \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-      $i_p\leftarrow\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
+      $i_p\leftarrow{}i_p\cup\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
       $i\leftarrow{}i+1$\;
     }\label{line:geninter-end-input}
 
@@ -969,7 +969,7 @@ Algorithm~\ref{alg:genconds} describes the
 
   \ForEach{$c\in\mathcal{C}$}{
     $id_c\leftarrow\mathtt{genid}()$\;
-    $d.ports\leftarrow{}d.ports\cup(\mathtt{in},id_c,\mathtt{boolean})$\;
+    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{in},id_c,\mathtt{boolean})\}$\;
     $\gamma\leftarrow\gamma\cup\{(c,id_c)\}$\;
     
     \BlankLine
