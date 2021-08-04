@@ -443,27 +443,14 @@ Algorithm~\ref{alg:genconds}).
 
 At the end of the \texttt{sitpn\_to\_hvhdl} function (see
 Listing~\ref{lst:sitpn2hvhdl}), the \texttt{generate\_comp_insts}
-function transforms the \texttt{HComponent} instances, associated to
+function transforms the \texttt{HComponent} instances, associated with
 places and transitions in the compile-time state's \texttt{arch}
 field, into real component instantiation statements as defined in the
-\hvhdl{} abstract syntax. For instance, let us consider an instance of
-\texttt{InputMap} that is an intermediary representation of the input
-port map of a TCI. In this \texttt{InputMap} instance, the \texttt{rt}
-port, which is a composite input port of the \texttt{transition}
-design, is associated with the list $[id_a, id_b, id_c]$. The
-\texttt{generate\_trans\_comp\_insts} function generates the following
-associations is the concrete input port map: $(\mathtt{rt}(0), id_a)$,
-$(\mathtt{rt}(1), id_b)$ and $(\mathtt{rt}(2), id_c)$. Each generated
-CI statements is composed with the \texttt{beh} field of the
-compile-time state (i.e. with the \texttt{||} operator).  Moreover,
-the \texttt{generate\_comp\_insts} adds the binding between places and
-PCI identifiers (resp. transitions and TCI identifiers) to the
-$\gamma$ field.  The \texttt{generate\_comp\_insts} function is needed
-here because we are using an intermediary representation for the
-component instantiation statements. Even though this representation is
-convenient to manipulate data during the different phases of the
-transformation, it also implies an extra generation step to complete
-the generation of the \hvhdl{} design and the $\gamma$ binder.
+\hvhdl{} abstract syntax. Then, the \texttt{generate_design_and_binder} builds
+up the final \hvhdl{} design and the $\gamma$ binder, and returns the couple.
+Listing~\ref{lst:gen-comp-insts} presents the 
+\texttt{generate_comp_insts} function and the \texttt{generate_design_and_binder} 
+function. 
 
 \begin{lstlisting}[language=coq,label={lst:gen-comp-insts},
 caption={[The \texttt{generate\_comp\_insts} and the \texttt{generate_design_and_binder} function.]The \texttt{generate\_comp\_insts} and the \texttt{generate_design_and_binder} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,numberstyle=\tiny\ttfamily]
@@ -473,8 +460,72 @@ Definition generate_comp_insts (sitpn : Sitpn) : Mon (Sitpn2HVhdlstate sitpn) un
 Definition generate_design_and_binder (sitpn : Sitpn) ($id_e$ $id_a$ : ident) :
     Mon (Sitpn2HVhdlstate sitpn) (design * Sitpn2HVhdlMap sitpn) :=
   do s <- Get;
-  Ret ((design_ $id_e$ $id_a$ [] ((iports s) ++ (oports s)) (sigs (arch s)) (beh s)), ($\gamma$ s)).
+  Ret ((design_ $id_e$ $id_a$ [] ((iports s) $\mdoubleplus$ (oports s)) (sigs (arch s)) (beh s)), ($\gamma$ s)).
 \end{lstlisting}
+
+The \texttt{generate\_comp\_insts} function is needed
+because we are using an intermediary representation for the
+component instantiation statements. Even though this representation is
+convenient to manipulate data during the different phases of the
+transformation, it also implies an extra generation step to complete
+the generation of the \hvhdl{} design and the $\gamma$ binder.
+The \texttt{generate_comp_insts} function calls the 
+\texttt{generate_place_comp_insts} and the \texttt{generate_trans_comp_insts} functions.
+These two functions being similar in all points, except for their type of the inputs, we are
+only presenting the \texttt{generate_place_comp_insts} function here.
+The \texttt{generate_place_comp_insts} function calls the \texttt{generate\_place\_comp\_inst} function
+for each place defined in the set of places of the \texttt{sitpn}
+parameter. Listing~\ref{lst:gen-pcomp-inst} presents the code the \texttt{generate\_place\_comp\_inst} function.   
+
+\begin{lstlisting}[language=coq,label={lst:gen-pcomp-inst},
+caption={[The \texttt{generate\_place\_comp\_inst} function.]The \texttt{generate\_place\_comp\_inst} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,numberstyle=\tiny\ttfamily]
+Definition generate_place_comp_inst (sitpn : Sitpn) (p : P sitpn) :
+      Mon (Sitpn2HVhdlstate sitpn) unit :=
+
+      do $id_p$ <- get_nextid;
+      do _      <- bind_place p $id_p$;
+      do pcomp  <- get_pcomp p;
+      do pci    <- HComponent_to_comp_inst $id_p$ place_entid pcomp;
+      add_cs pci.
+\end{lstlisting}
+
+The \texttt{generate_place_comp_inst} function generates a fresh and unique PCI identifier 
+by appealing to the \texttt{get_nextid} function. The \texttt{get_nextid} function returns
+and increments the current value of the \texttt{nextid} field, defined in the compile-time state.
+Then, the \texttt{bind_place} function adds a binding between the place \texttt{p} and the identifier
+$id_p$ in the $\gamma$ field of the compile-time state. The \texttt{get_pcomp} function looks up the 
+\texttt{plmap} field (defined under the \texttt{arch} field of the compile-time state) and returns
+the \texttt{HComponent} instance associated with the place \texttt{p}, i.e. \texttt{pcomp}.
+The \texttt{HComponent_to_comp_inst} function translates the \texttt{HComponent} instance \texttt{pcomp}
+into a PCI with the identifier $id_p$. Finally, the \texttt{add_cs} function composes 
+the returned PCI with the current \hvhdl{} design behavior, hold in the \texttt{beh} field of the 
+compile-time state. 
+
+The transformation of a \texttt{HComponent}
+instance into a PCI implies the translation of the input and output port map,
+which are instances of the \texttt{InputMap} and \texttt{OutputMap} types, into their equivalent
+representation in \hvhdl{} abstract syntax. The translation especially concerns the association
+between a port identifier of the array type and a list of expressions, or names.
+For instance, let us consider an instance of
+\texttt{InputMap} that is an intermediary representation of the input
+port map of a PCI $id_p$. In this \texttt{InputMap} instance, the \texttt{itf}
+port, which is a composite input port of the \texttt{place}
+design, is associated with the list $[id_a, id_b, id_c]$. Then, based on the previous association, the
+\texttt{HComponent_to_comp_inst} function generates the following
+associations is the concrete input port map of PCI $id_p$: $(\mathtt{rt}(0), id_a)$,
+$(\mathtt{rt}(1), id_b)$ and $(\mathtt{rt}(2), id_c)$. 
+
+Getting back to Listing~\ref{lst:gen-comp-insts}, the \texttt{generate_design_and_binder} function
+retrieves the current compile-time state \texttt{s} with the \texttt{Get} function. Then, based on the value of the different fields
+of the compile-time state, the function builds an \hvhdl{} design and returns it along with the $\gamma$ binder.
+The \hvhdl{} design receives the $id_e$ and $id_a$ identifiers passed as parameters as its entity and architecture identifiers.
+The generic constant declaration list of the \hvhdl{} design is empty, i.e. it receives the empty list value.
+The port declaration list of the\hvhdl{} is built by concatenating the content of the \texttt{iports} and \texttt{oports} fields defined
+in state \texttt{s}. The internal signal declaration list is filled by the \texttt{sigs} field, defined under the \texttt{arch} field
+of state \texttt{s}. Finally, the \texttt{beh} field fills the behavior of the \hvhdl{} design.
+
+
+
 
 
 

@@ -13,15 +13,16 @@
   \end{itemize}
 \end{todobox}
 
-The aim of this chapter is to present in details the \hilecop{}
+The aim of this chapter is to present the details of the \hilecop{}
 model-to-text transformation that we propose to verify as semantic
-preserving. The chapter is structured as follows. First, we present,
+preserving. The chapter is structured as follows. First, we make an overall 
+description of the \hilecop{} transformation. Then, we present,
 in Section~\ref{sec:transf-lit-rev}, a literature review of the works
 pertaining to transformation functions in the context of formal
 verification. The literature review focuses on the expression of
 transformation functions and on their implementation. In
-Section~\ref{sec:trans-alg}, we detail the \hilecop{} transformation
-function in the form of an algorithm. Finally, in
+Section~\ref{sec:trans-alg}, we thoroughly present the \hilecop{} transformation
+function in the form of a pseudo-code algorithm. Finally, in
 Section~\ref{sec:trans-coq-impl}, we describe the \coq{}
 implementation of the algorithm.
 
@@ -40,6 +41,10 @@ implementation of the algorithm.
 \section{\coq{} implementation of the \hilecop{} model-to-text transformation}
 \label{sec:trans-coq-impl}
 \input{Chapters/Transformation/impl}
+
+\section{Conclusion}
+\label{sec:trans-concl}
+\input{Chapters/Transformation/concl}
 
 %%% Local Variables:
 %%% mode: latex
