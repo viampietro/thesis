@@ -1,30 +1,23 @@
 \chapter{The \hilecop{} model-to-text transformation}
 \label{chap:transformation}
 
-\begin{todobox}
-  \begin{itemize}
-  \item Motivate the interest of the transformation in the
-    introduction. Why the models are not hand-coded in VHDL directly?
-    Because graphics help the design and communication, automatic
-    generation because places and transitions interconnections to complex\dots
-  \item Pciples of SITPNs implementation in VHDL: place pivot, keep
-    place and transition design as simple as possible,
-    interconnections via Boolean signals only
-  \end{itemize}
-\end{todobox}
-
 The aim of this chapter is to present the details of the \hilecop{}
 model-to-text transformation that we propose to verify as semantic
-preserving. The chapter is structured as follows. First, we make an overall 
-description of the \hilecop{} transformation. Then, we present,
-in Section~\ref{sec:transf-lit-rev}, a literature review of the works
-pertaining to transformation functions in the context of formal
-verification. The literature review focuses on the expression of
-transformation functions and on their implementation. In
-Section~\ref{sec:trans-alg}, we thoroughly present the \hilecop{} transformation
-function in the form of a pseudo-code algorithm. Finally, in
-Section~\ref{sec:trans-coq-impl}, we describe the \coq{}
-implementation of the algorithm.
+preserving. The chapter is structured as follows. First, we make an
+overall description of the \hilecop{} transformation. Then, we
+present, in Section~\ref{sec:transf-lit-rev}, a literature review of
+the works pertaining to transformation functions in the context of
+formal verification. The literature review focuses on the expression
+of transformation functions and on their implementation. In
+Section~\ref{sec:trans-alg}, we thoroughly present the \hilecop{}
+transformation function in the form of a pseudo-code
+algorithm. Finally, in Section~\ref{sec:trans-coq-impl}, we describe
+the \coq{} implementation of the algorithm. Note that, in the
+following chapter, we refer to the generic constant, internal signal
+and port identifiers defined in the \texttt{place} and
+\texttt{transition} designs through their abbreviated names (see
+Table~\ref{tab:consts-and-sigs-ref}).
+
 
 \section{Informal presentation of the \hilecop{} transformation}
 \label{sec:informal-transf}

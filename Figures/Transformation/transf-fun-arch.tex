@@ -119,6 +119,7 @@
       \node at ($(compP0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP0arrows) at ($(compP0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelP0arrows) at ($(compP0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
+      \draw[red] ($(compP0.south)$) --++(0,-.2);
       
       % T0 Component + I/O
       
@@ -127,7 +128,8 @@
       \node at ($(compT0.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT0arrows) at ($(compT0.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelT0arrows) at ($(compT0arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};            
-
+      \draw[red] ($(compT0.south)$) --++(0,-.2);
+      
       % P1 Component + I/O
       
       \node[draw, black, inner sep=2mm] (compP1) at ($(compT0)-(1.5,1.5)$) {$\mathtt{id}_{p_1}$};
@@ -135,6 +137,7 @@
       \node at ($(compP1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compP1arrows) at ($(compP1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelP1arrows) at ($(compP1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
+      \draw[red] ($(compP1.south)$) --++(0,-.2);
       
       % T1 Component + I/O
       
@@ -143,7 +146,8 @@
       \node at ($(compT1.south west)-(.2,0)$) {\fontsize{4}{6}\selectfont\itshape out};
       \node (compT1arrows) at ($(compT1.north)+(0,2mm)$) {$\Downarrow\Downarrow\Downarrow$};
       \node (labelT1arrows) at ($(compT1arrows.north)$){\ssmall\it \textcolor{blue}{constant values}};
-                  
+      \draw[red] ($(compT1.south)$) --++(0,-.2);
+      
     \end{tikzpicture}
   };
 

@@ -1,10 +1,36 @@
+Before detailling the algorithm underlying the \hilecop{}
+model-to-text transformation, we want to explain why this
+transformation must be automatized. Judging by the appearance of the
+\hvhdl{} design generated from the input SITPN model, the reader could
+rightly ask why the designers of hardware circuits that are using the
+\hilecop{} methodology do not start directly by writing down the VHDL
+code. The reasons are many. First, handling the interconnections
+between PCIs and TCIs is simple enough when the number of places and
+transitions of the input SITPN is few, however, it becomes a lot more
+tedious with the increase of the size of models. To give an example,
+the \textsf{Neurrinov} company\footnote{\url{https://neurinnov.com/}},
+which follows the \hilecop{} methodology to design critical digital
+circuits, has developed a digital circuit model for the control of the
+electro-stimulation in neuroprotheses. Once flattened down, the model
+is composed of 1097 places and 1666 transitions. The top-level VHDL
+design generated from this model represents up to 140000 lines of
+code. Obviously, the hand-coding of this input model into a VHDL
+design would be too error-prone. Moreover, the PN models offer a lot
+of opportunities in terms of analysis and model-checking compared to
+the ones that exist for VHDL code. Finally, the graphical aspect of
+PNs appears to be more fit for the task of circuit design in
+comparison to plain source code, as it facilitates the discussions
+between designers. For these reasons, we choose to preserve SITPNs as
+the input models of the \hilecop{} methodology, and to automatize the
+transformation into top-level \hvhdl{} designs.
+
 In this section, we give the algorithm underlying the \hilecop{}
 model-to-text transformation. This algorithm is the base of the \coq{}
 implementation of the \hilecop{} transformation; the implementation is
 presented in Section~\ref{sec:trans-coq-impl}. As stated in
 Chapter~\ref{chap:hilecop}, there exists a Java implementation of the
-\hilecop{} methodology. This implementation embeds the generation of
-VHDL code from an SITPN model. However, the algorithm of the
+\hilecop{} methodology. This implementation performs the generation of
+VHDL code from a SITPN model. However, the algorithm of the
 transformation has never been devised, nor a formal specification
 given. The following algorithm is one of the contribution of this
 thesis. It has been devised through the examination of the code of the
@@ -19,8 +45,8 @@ Algorithm~\ref{alg:sitpn2hvhdl}, generates a \hvhdl{} design and a
 SITPN-to-\hvhdl{} binder from an input SITPN. A SITPN-to-\hvhdl{}
 design binder is a structure that binds the elements of an SITPN
 (places, transitions, actions\dots) to the elements of a \hvhdl{}
-design (component instances or signals). As it is generated along the
-transformation, the binder links a SITPN element to its \hvhdl{}
+design (component instances or signals). Such a binder is generated
+alongside the transformation and links a SITPN element to its \hvhdl{}
 \textit{implementation}, i.e. the \hvhdl{} element that will
 supposedly behave similarly to the source SITPN element at
 runtime. Thus, the SITPN-to-\hvhdl{} design binder is at the center of
@@ -76,27 +102,27 @@ result of the analysis of the input SITPN.
   number of tokens that a place can hold during the execution of a
   SITPN. If each place of the SITPN can only hold a limited number of
   tokens during the execution, then the model is said to be
-  bounded. In that case, a function associated the places with a
-  maximal marking value can be computed. Thus, the presence of the
-  $mmf$ function as a parameter of the \texttt{sitpn\_to\_hvhdl}
-  function implies that the input SITPN model is bounded. In the case
-  of an unbounded input model, there exists a place that can
-  accumulate an infinite number of tokens during the model
-  execution. In the world of hardware description, and especially when
-  aiming at the hardware synthesis, every element must have a finite
-  dimension. In the definition of the \texttt{place} design, the
-  internal signal \texttt{s\_marking} represents the marking value of
-  a place. The maximal value of the \texttt{s\_marking} signal is
-  bounded by the generic constant \texttt{maximal\_marking}. Thus,
-  when generating, a PCI from a place in the course of the
-  transformation, we must be able to give a value to the
-  \texttt{maximal\_marking} generic constant. However, even with a
-  settled \texttt{maximal\_marking} value, the execution of a \hvhdl{}
-  design, resulting from the transformation of an unbounded SITPN
-  model, could lead to the overflow of the value of the
+  \emph{bounded}. In that case, it is possible to compute a function
+  that associates the places of the SITPN with a maximal marking
+  value. Thus, the presence of the $mmf$ function as a parameter of
+  the \texttt{sitpn\_to\_hvhdl} function implies that the input SITPN
+  model is bounded. In the case of an unbounded input model, there
+  exists a place that can accumulate an infinite number of tokens
+  during the model execution. In the world of hardware description,
+  and especially when aiming at hardware synthesis, every element must
+  have a finite dimension. In the definition of the \texttt{place}
+  design, the internal signal \texttt{s\_marking} represents the
+  marking value of a place. The maximal value of the
+  \texttt{s\_marking} signal is bounded by the generic constant
+  \texttt{maximal\_marking}. Thus, when generating, a PCI from a place
+  in the course of the transformation, we must be able to give a value
+  to the \texttt{maximal\_marking} generic constant. However, even
+  with a settled \texttt{maximal\_marking} value, the execution of a
+  \hvhdl{} design, resulting from the transformation of an unbounded
+  SITPN model, could lead to the overflow of the value of the
   \texttt{s\_marking} signals in the internal states of PCIs.  Thus,
   it is impossible to prove the equivalence between the behavior of an
-  unbounded SITPN model and its corresponding \hvhdl{} design. 
+  unbounded SITPN model and its corresponding \hvhdl{} design.
 \end{remark}
 
 \begin{algorithm}[H]
@@ -126,21 +152,25 @@ result of the analysis of the input SITPN.
 \end{algorithm}
 
 In Algorithm~\ref{alg:sitpn2hvhdl}, Line~\ref{line:init-design}
-creates the \hvhdl{} design. Initially, the design has an empty port
-declaration set, an empty internal signal declaration set, and a
-behavior defined by the \texttt{null} statement. The design generated
-by the \texttt{sitpn\_to\_hvhdl} function has an empty set of generic
-constant, even at the end of the
+creates the initial \hvhdl{} design structure and assigns it to the
+variable $d$. Initially, the design has an empty port declaration set,
+an empty internal signal declaration set, and a behavior defined by
+the \texttt{null} statement. The design generated by the
+\texttt{sitpn\_to\_hvhdl} function has an empty set of generic
+constants; this set stays empty even at the end of the
 transformation. Line~\ref{line:init-binder} initializes the $\gamma$
 binder with empty sub-environments. From Lines~\ref{line:genarch} to
 \ref{line:genports}, the called procedures modify the design and the
 binder structures. Each part of the sequence corresponds to one step
 of the transformation, which were outlined in
 Section~\ref{sec:informal-transf}. The content of the
-\texttt{generate\_architecture} function is detailled in Algorithms,
-the content of the \texttt{generate\_interconnections} function is
-detailled in Algorithms, and the content of the
-\texttt{generate\_ports} function is detailled in Algorithms.
+\texttt{generate\_architecture} function is detailled in
+Algorithms~\ref{alg:genarch}, \ref{alg:genpcis} and \ref{alg:gentcis}.
+The content of the \texttt{generate\_interconnections} function is
+detailled in Algorithm~\ref{alg:geninter}. The content of the
+\texttt{generate\_ports} function is detailled in
+Algorithms~\ref{alg:genports}, \ref{alg:genconds}, \ref{alg:genacts}
+and \ref{alg:genfuns}.
 
 \subsection{Primitive functions and sets}
 \label{sec:prim-funs}
@@ -177,42 +207,53 @@ are all the sets that we use in the description of the algorithms.
   set of transitions to which a function $f$ is associated.
 \end{itemize}
 
-Every above set are unordered. However, we assume that, every time we
-iterate over the elements of an unordered set with a \textbf{foreach}
-statement, the iteration respects an arbitrary order. This order is
-always the same through the multiple calls to \textbf{foreach}
-statements.
+Every set presented above are \emph{unordered}. However, we assume
+that, every time we iterate over the elements of an unordered set with
+a \textbf{foreach} statement, the iteration respects an arbitrary
+order. This order is always the same through the multiple calls to
+\textbf{foreach} statements. Of course, the iteration over the
+elements of an \emph{ordered} set with a \textbf{foreach} statement
+respects natural order of the set.
 
 Now, let us introduce some primitive functions and procedures that we
 use in the description of the following algorithms.
 
 \begin{itemize}
-\item \texttt{output}$_c(p)$. The function operates the following
-  sequence:
+\item \texttt{output}$_c\in{}P\rightarrow{}2^T$.  The
+  \texttt{output}$_c$ function takes a place $p$ as input and yields
+  an ordered set of transitions computed as follows:
   \begin{enumerate}
   \item if all conflicts between the output transitions of $p$ are
     solved by mutual exclusion, or if the set of conflicting
-    transitions of $p$ is a singleton, then returns an empty set.
-  \item otherwise, tries to establish a total ordering over the set of
-    conflicting transitions of $p$ w.r.t the firing priority relation:
+    transitions of $p$ is a singleton, then \texttt{output}$_c$
+    returns an empty set.
+  \item otherwise, the function tries to establish a total ordering
+    over the set of conflicting transitions of $p$ w.r.t the firing
+    priority relation:
     \begin{itemize}
-    \item raises an error if no such ordering can be established (in
-      that case, the firing priority relation is ill-formed, and the
-      input SITPN is not well-defined).
-    \item returns the ordered set, with the top-level priority
-      transition at the head.
+    \item if no such ordering can be established (in that case, the
+      firing priority relation is ill-formed, and the input SITPN is
+      not well-defined), \texttt{output}$_c$ raises an error.
+    \item otherwise, the function returns the ordered set, with the
+      top-level priority transition at the head.
     \end{itemize}
   \end{enumerate}
 
-\item \texttt{output}$_{nc}(p)$. If all conflicts between the output
-  transitions of $p$ are solved by mutual exclusion, or if the set of
-  conflicting transitions of $p$ is a singleton, then, the function
-  returns the set of output transitions of $p$, i.e
-  \texttt{output}$(p)$ as defined above. Otherwise, the function
-  returns the set of output transitions of $p$ connected through a
-  \texttt{test} or an \texttt{inhib} arc,
-  i.e.
-  $\{t~\vert~\exists\omega~s.t.~pre(p,t)=(\omega,\mathtt{test})\lor{}pre(p,t)=(\omega,\mathtt{inhib})\}$.
+\item \texttt{output}$_{nc}\in{}P\rightarrow{}2^T$.  The
+  \texttt{output}$_{nc}$ function takes a place $p$ as input and
+  yields an unordered set of transitions computed as follows:
+  \begin{itemize}
+  \item If all conflicts between the output transitions of $p$ are
+    solved by mutual exclusion, or if the set of conflicting
+    transitions of $p$ is a singleton, then, the function returns the
+    set of output transitions of $p$, i.e \texttt{output}$(p)$ as
+    defined above.
+  
+  \item Otherwise, the function returns the set of output transitions
+    of $p$ connected through a \texttt{test} or an \texttt{inhib} arc,
+    i.e.
+    $\{t~\vert~\exists\omega~s.t.~pre(p,t)=(\omega,\mathtt{test})\lor{}pre(p,t)=(\omega,\mathtt{inhib})\}$.
+  \end{itemize}
 
 \item \texttt{cassoc}$(map,id,x)$ where $map$ is either a generic map,
   an input port map or an output port map, $id$ is an identifier, $x$
@@ -229,34 +270,34 @@ use in the description of the following algorithms.
   \noindent{}\textit{Examples:}
   \begin{itemize}
   \item
-    \texttt{cassoc}$(~\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}))},~\mathtt{s},~\mathtt{true})$
+    \texttt{cassoc}$(~\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false})\}},~\mathtt{s},~\mathtt{true})$
     yields the resulting map \\
-    $\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}),(s(2),\mathtt{true}))}$.
+    $\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false}),(s(2),\mathtt{true})\}}$.
   \item
-    \texttt{cassoc}$(~\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}))},~\mathtt{a},~\mathtt{open})$
+    \texttt{cassoc}$(~\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false})\}},~\mathtt{a},~\mathtt{open})$
     yields the resulting map \\
-    $\mathtt{((s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{open}))}$.
+    $\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{open})\}}$.
   \end{itemize}
 
-\item \texttt{get\_comp}$(id_c, cstmt)$ where $id_c$ is an
-  identifier, and $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent
-  statement. The \texttt{get\_comp} function looks up $cstmt$ for a
-  component instantiation statement labelled with $id_c$ as a
-  component instance identifier, and returns the component
-  instantiation statement when found. The \texttt{get\_comp} function
-  throws an error if no component instantiation statement with
-  identifier $id_c$ exists in $cstmt$, or if there ecist multiple
-  component instantiation statements with identifier $id_c$ in
-  $cstmt$.
+\item \texttt{get\_comp}$(id_c, cstmt)$ where $id_c$ is an identifier,
+  and $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent statement. The
+  \texttt{get\_comp} function looks up $cstmt$ for a component
+  instantiation statement labelled with $id_c$ as a component instance
+  identifier, and returns the component instantiation statement when
+  found. The \texttt{get\_comp} function throws an error if no
+  component instantiation statement with identifier $id_c$ exists in
+  $cstmt$, or if there exist multiple component instantiation
+  statements with identifier $id_c$ in $cstmt$.
 \item \texttt{put\_comp}$(id_c,cistmt,cstmt)$ where $id_c$ is an
   identifier, $cistmt$ is a component instantiation statement, and
   $cstmt\in{}\mathrm{cs}$ is a \hvhdl{} concurrent statement. The
   \texttt{put\_comp} procedure looks up in $cstmt$ for a component
   instantiation statement with identifier $id_c$, and replaces the
   statement with $cistmt$ in $cstmt$. If no CIS with identifier $id_c$
-  exists in $cstmt$, then $cistmt$ is composed with $cstmt$ with the
-  \texttt{||} operator. The \texttt{put\_comp} procedure throws an
-  error if multiple CIS with identifier $id_c$ exist in $cstmt$.
+  exists in $cstmt$, then $cistmt$ is directly composed with $cstmt$
+  with the \texttt{||} operator. The \texttt{put\_comp} procedure
+  throws an error if multiple CIS with identifier $id_c$ exist in
+  $cstmt$.
 \item \texttt{actual}$(id,map)$ where $id$ is an identifier and $map$
   is a generic, an input port or an output port map. The
   \texttt{actual} function returns the actual part associated with the
@@ -271,14 +312,17 @@ use in the description of the following algorithms.
 \end{itemize}
 
 Algorithm~\ref{alg:connect} presents the \texttt{connect} procedure.
-The procedure takes an output port map $o$, an input port map $i$, two
-identifiers $id_1,id_2$ and a \hvhdl{} design $d$ as parameters. The
-procedure generates an internal signal $id_s$ and adds it to the
-internal signal declaration list of design $d$. Then, the procedure
-connects a subelement of port $id_1$ (resp. $id_2$) to the internal
-signal $id_s$ in the output port map $o$ (resp. input port map $i$).
-As the result, a subelement of $id_1$ is connected to a subelement of
-$id_2$ through the internal signal $id_s$.
+This procedure takes an output port map $o$, an input port map $i$, a
+name $n$ (i.e. a simple or indexed identifier), an identifier $id$ and
+a \hvhdl{} design $d$ as parameters. It generates an internal signal
+$id_s$ and adds it to the internal signal declaration list of design
+$d$. Then, the procedure adds the association between the $n$ name and
+the internal signal $id_s$ to the output port map $o$. Moreover, the
+procedure adds an association between a subelement of $id$, which
+element will be determined by the \texttt{cassoc} function, and the
+internal signal $id_s$ to the input port map $i$. As the result, $n$
+is connected to a subelement of $id$ through the internal signal
+$id_s$.
 
 \begin{algorithm}[H] \DontPrintSemicolon
 
@@ -291,18 +335,19 @@ $id_2$ through the internal signal $id_s$.
   \label{alg:connect}
 
   $id_s\leftarrow\mathtt{genid}()$\;
-  $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
-  $o\leftarrow{}o\cup(n,id_s)$\; \texttt{cassoc}$(i,id,id_s)$\;
+  $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
+  $o\leftarrow{}o\cup\{(n,id_s)\}$\;
+  \texttt{cassoc}$(i,id,id_s)$\;
 \end{algorithm}
 
 \paragraph{Complementary notations}
 When there is no ambiguity, $id_p$ (resp. $id_t$) denotes the PCI
-(resp. TCI) identifier associated to a given place $p$
+(resp. TCI) identifier associated with a given place $p$
 (resp. transition $t$) through $\gamma(p)=id_p$
 (resp. $\gamma(t)=id_t$), where $\gamma$ is the binder returned by the
 transformation function. Similarly, $id_c$ (resp. $id_a$ and $id_f$)
-denotes the input port (resp. output port) identifier associated to a
-given condition $c$ (resp. action $a$ and function $f$) through
+denotes the input port (resp. output port) identifier associated with
+a given condition $c$ (resp. action $a$ and function $f$) through
 $\gamma(c)=id_c$.
 
 \subsection{Generation of component instances and constant parts}
@@ -310,12 +355,12 @@ $\gamma(c)=id_c$.
 
 The first step of the transformation generates the PCIs and TCIs,
 their generic map, and the constant part of their input port maps, in
-the behavior of the \hvhdl{} design. This is when places are bound to
-PCI identifiers, and transitions are bound to TCI identifiers in the
-$\gamma$ binder. Also, the \texttt{marked} output port and the
-\texttt{fired} output port are connected in the output port map of
-PCIs and TCIs during this first generation
-step. Algorithm~\ref{alg:genarch} presents the content of the
+the behavior of the \hvhdl{} design. At this moment of the
+transformation, places are bound to PCI identifiers, and transitions
+are bound to TCI identifiers in the $\gamma$ binder. Also, the
+\texttt{marked} output port and the \texttt{fired} output port are
+connected to internal signals in the output port map of PCIs and
+TCIs. Algorithm~\ref{alg:genarch} presents the content of the
 \texttt{generate\_architecture} procedure that implements this first
 part of code generation. The \texttt{generate\_architecture} procedure
 is decomposed in two procedures: the \texttt{generate\_PCIs} and the
@@ -340,10 +385,22 @@ is decomposed in two procedures: the \texttt{generate\_PCIs} and the
 
 \end{algorithm}
 
-Note that, in the following algorithms and explanations, we refer to
-the generic constant, internal signal and port identifiers defined in
-the \texttt{place} and \texttt{transition} designs through their
-abbreviated names (see Table~\ref{tab:consts-and-sigs-ref}).
+The \texttt{generate\_PCIs} procedure, presented in
+Algorithm~\ref{alg:genpcis}, has four parameters: $sitpn\in{}SITPN$,
+the input SITPN model; $d\in{}design$, the \hvhdl{} design being
+generated; $\gamma\in{}WM(sit\-pn,d)$, the binder between $sitpn$ and
+$d$; $mmf\in{}P\rightarrow\mathbb{N}$, the function assigning a
+maximal marking value to each place. The procedure iterates over the
+set of places of the $sitpn$ parameter. For each place $p$ in the set,
+the procedure produces a corresponding PCI $id_p$, and generates its
+generic map $g_p$, and its partially-built input and output port maps
+$i_p$ and $o_p$.  At the end of the procedure
+(Lines~\ref{line:gen-pcomp-id} to \ref{line:gen-bind-p}), a fresh and
+unique component identifier $id_p$ is generated, and a new component
+instantiation statement, corresponding to the instantiation of the PCI
+$id_p$, is composed with the current behavior of design $d$. Finally,
+the $\gamma$ binder receives a new couple corresponding to binding of
+place $p$ to identifier $id_p$.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -416,77 +473,61 @@ abbreviated names (see Table~\ref{tab:consts-and-sigs-ref}).
   }
 \end{algorithm}
 
-The \texttt{generate\_PCIs} procedure, presented in
-Algorithm~\ref{alg:genpcis}, has four parameters: $sitpn\in{}SITPN$,
-the input SITPN model; $d\in{}design$, the \hvhdl{} design being
-generated; $\gamma\in{}WM(sitpn,d)$, the binder between $sitpn$ and
-$d$; $mmf\in{}P\rightarrow\mathbb{N}$, the function assigning a
-maximal marking value to each place. The procedure iterates over the
-set of places of the $sitpn$ parameter. For each place $p$ in the set,
-the procedure produces a corresponding PCI $id_p$, and generates its
-generic map $g_p$, and its partially-built input and output port maps
-$i_p$ and $o_p$. As said before, the only associations generated in
-the input and output port maps during this phase pertain to the
-association of ports to constant values. At the end of the procedure
-(Lines~\ref{line:gen-pcomp-id} to \ref{line:gen-bind-p}), a fresh and
-unique component identifier $id_p$ is generated, and a new CI
-statement, corresponding to the instantiation of PCI $id_p$, is
-composed with the current behavior of design $d$. Finally, the
-$\gamma$ binder receives a new couple corresponding to binding of
-place $p$ to identifier $id_p$.
-
 From Line~\ref{line:p-isolated} to Line~\ref{line:end-op}, the
 procedure generates the generic map, the input port map, and the
-output port map of the PCI. First, the procedure checks if the current
-place $p$ is isolated, i.e. without input nor output transitions. An
-error, with an associated message, is raised with the \texttt{err}
-primitive if the test succeeds. The \hilecop{} transformation raises
-errors in the presence of an input SITPN model that does not meet the
-well-definition property (see Definition~\ref{def:wd-sitpn}). One part
-of the well-definition property pertains to the absence of isolated
-place in the input model. Line~\ref{line:init-pcomp} initializes the
-variables $g_p$, $i_p$ and $o_p$, respectively holding the generic
-map, the input port map and the output port map of the generated
-PCI. The generic map $g_p$ initially takes a single association that
-binds the \texttt{mm} constant to the maximal marking value returned
-by the $mmf$ function for place $p$. The input port map $i_p$ and the
-output port map $o_p$ are initialized with empty sets.
+output port map of the PCI that implements place $p$. First, the
+procedure checks if the current place $p$ is isolated, i.e. without
+input nor output transitions. An error, with an associated message, is
+raised with the \texttt{err} primitive if the test succeeds. The
+\hilecop{} transformation raises errors in the presence of an input
+SITPN model that does not meet the well-definition property (see
+Definition~\ref{def:wd-sitpn}). One part of the well-definition
+property pertains to the absence of isolated place in the input
+model. Line~\ref{line:init-pcomp} initializes the variables $g_p$,
+$i_p$ and $o_p$, respectively holding the generic map, the input port
+map and the output port map of the PCI being generated. The generic
+map $g_p$ initially takes a single association that binds the
+\texttt{mm} constant to the maximal marking value returned by the
+$mmf$ function for place $p$. The input port map $i_p$ and the output
+port map $o_p$ are initialized with empty sets.
 
 Line~\ref{line:genpcis-inp-p-empty} tests if the set of input
 transitions of $p$ is empty. If the test succeeds, the \texttt{ian}
 constant is associated to $1$ in the generic map $g_p$. The size of
 the \texttt{iaw} and \texttt{itf} input ports, which are of the array
 type, is equal to the value of the \texttt{ian} constant minus
-one. Thus, the \texttt{iaw} and \texttt{itf} input ports are composed
-of one subelement with index $0$. At Line~\ref{line:iaw-itf-empty},
-the sole subelement of the \texttt{iaw} port is associated with $0$,
-and the sole subelement of the \texttt{itf} port is associated with
-\texttt{false} in the input port map $i_p$. If the set of input
-transitions of $p$ is not empty, the \texttt{ian} constant is
-associated with the size of the set in the generic map $g_p$. Then,
-each subelement of the \texttt{iaw} port is associated with the weight
-of the arc between place $p$ and an input transition $t$.  Note that,
-in that case, the procedure does not deal with the connection of the
-\texttt{itf} port. As the set of input transitions of $p$ is not
-empty, the connection of the \texttt{itf} port will be performed by
-the \texttt{connect_input_trs} procedure during the generation of the
-interconnections between PCIs and TCIs.
+one. Thus, in the case where the \texttt{ian} constant is associated
+to $1$ in the generic map $g_p$, the \texttt{iaw} and \texttt{itf}
+input ports are composed of one subelement with index $0$. At
+Line~\ref{line:iaw-itf-empty}, the sole subelement of the \texttt{iaw}
+port is associated with $0$, and the sole subelement of the
+\texttt{itf} port is associated with \texttt{false} in the input port
+map $i_p$. If the set of input transitions of $p$ is not empty, the
+\texttt{ian} constant is associated with the size of the set in the
+generic map $g_p$. Then, each subelement of the \texttt{iaw} port is
+associated with the weight of the arc between place $p$ and an input
+transition $t$.  Note that, in that case, the procedure does not deal
+with the connection of the \texttt{itf} port. As the set of input
+transitions of $p$ is not empty, the connection of the \texttt{itf}
+port will be performed by the \texttt{generate\_interconnections}
+described in Algorithm~\ref{alg:geninter}.
 
 Line~\ref{line:genpcis-out-p-empty} tests if the set of output
 transitions of $p$ is empty. If the test succeeds, the \texttt{oan}
 constant is associated to $1$ in the generic map $g_p$. The size of
 the \texttt{oaw}, \texttt{oat} and \texttt{otf} input ports, which are
 of the array type, is equal to the value of the \texttt{oan} constant
-minus one. Thus, the \texttt{oaw}, \texttt{oat} and \texttt{otf} input
-ports are composed of one subelement with index $0$. At
-Line~\ref{line:genpcis-out-p-empty-ip}, the sole subelement of the
-\texttt{oaw} port is associated with $0$, the sole subelement of the
-\texttt{oat} port is associated with \texttt{basic}, and the sole
-subelement of the \texttt{otf} port is associated with \texttt{false}
-in the input port map $i_p$. Also, in the abscence of output
-transitions, the \texttt{oav}, \texttt{pauths} and \texttt{rtt} output
-ports are left unconnected, i.e. they are associated with the
-\texttt{open} keyword of output port map $o_p$.
+minus one. Thus, in the case where the \texttt{oan} constant is
+associated to $1$ in the generic map $g_p$, the \texttt{oaw},
+\texttt{oat} and \texttt{otf} input ports are composed of one
+subelement with index $0$. At Line~\ref{line:genpcis-out-p-empty-ip},
+the sole subelement of the \texttt{oaw} port is associated with $0$,
+the sole subelement of the \texttt{oat} port is associated with
+\texttt{basic}, and the sole subelement of the \texttt{otf} port is
+associated with \texttt{false} in the input port map $i_p$. Also, in
+the abscence of output transitions, the \texttt{oav}, \texttt{pauths}
+and \texttt{rtt} output ports are left unconnected, i.e. they are
+associated with the \texttt{open} keyword of output port map $o_p$.
 
 If the set of output transitions of $p$ is not empty, the \texttt{oan}
 constant is associated with the size of this set in the generic map
@@ -497,19 +538,33 @@ that case, the procedure does not handle the connection of the
 \texttt{otf} input port, nor the connection of the \texttt{oav},
 \texttt{pauths} and \texttt{rtt} output ports. As the set of output
 transitions of $p$ is not empty, these connections will be performed
-by the \texttt{connect_output_trs} procedure during the generation of
-the interconnections between PCIs and TCIs.
+by the \texttt{generate\_interconnections} described in
+Algorithm~\ref{alg:geninter}.
 
 From Line~\ref{line:genpcis-acts-empty} to Line~\ref{line:end-op}, the
-procedure connects the \texttt{marked} output port in the output port
-map $o_p$. If the place $p$ is not associated with any action, the
-\texttt{marked} output port is left unconnected, i.e. connected to the
-\texttt{open} keyword. Otherwise, the \texttt{marked} output port is
-connected to a newly generated internal signal of the Boolean
-type. This generated signal joins the internal signal declaration list
-of design $d$. The connection between the \texttt{marked} output port
-and the internal signal will be used later, during the generation of
-the \texttt{action} process (see Section~\ref{sec:genports}).
+\texttt{generate\_PCIs} procedure connects the \texttt{marked} output
+port in the output port map $o_p$. If the place $p$ is not associated
+with any action, the \texttt{marked} output port is left unconnected,
+i.e. connected to the \texttt{open} keyword. Otherwise, the
+\texttt{marked} output port is connected to a newly generated internal
+signal of the Boolean type. This generated signal joins the internal
+signal declaration list of design $d$. The connection between the
+\texttt{marked} output port and the internal signal will be used
+later, during the generation of the \texttt{action} process (see
+Section~\ref{sec:genports}). \\
+
+The \texttt{generate\_TCIs} procedure, presented in
+Algorithm~\ref{alg:gentcis}, iterates over the set of transitions $T$
+of the $sitpn$ parameter. For each transition $t$ in the set, the
+procedure produces a corresponding TCI $id_t$, and generates its
+generic map $g_t$, and its partially-built input and output port maps
+$i_t$ and $o_t$.  At the end of the procedure
+(Lines~\ref{line:gen-tcomp-id} to \ref{line:gen-bind-t}), a fresh and
+unique component identifier $id_t$ is generated, and a new component
+instantiation statement, corresponding to the instantiation of the TCI
+$id_t$, is composed with the current behavior of design $d$. Finally,
+the $\gamma$ binder receives a new couple corresponding to binding of
+transition $t$ to identifier $id_t$.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -573,37 +628,22 @@ the \texttt{action} process (see Section~\ref{sec:genports}).
   }
 \end{algorithm}
 
-The \texttt{generate\_TCIs} procedure, presented in
-Algorithm~\ref{alg:gentcis}, iterates over the set of transitions $T$
-of the $sitpn$ parameter. For each transition $t$ in the set, the
-procedure produces a corresponding TCI $id_t$, and generates its
-generic map $g_t$, and its partially-built input and output port maps
-$i_t$ and $o_t$.  At the end of the procedure
-(Lines~\ref{line:gen-tcomp-id} to \ref{line:gen-bind-t}), a fresh and
-unique component identifier $id_t$ is generated, and a new CI
-statement, corresponding to the instantiation of TCI $id_t$, is
-composed with the current behavior of design $d$. Finally, the
-$\gamma$ binder receives a new couple corresponding to binding of
-transition $t$ to identifier $id_t$.
 
 At Line~\ref{line:t-isolated}, the procedure checks if transition $t$
 is isolated, and raises an error accordingly.
 Lines~\ref{line:init-gt} to \ref{line:connect-fired} initialize the
 variables $g_t$, $i_t$ and $o_t$, respectively holding the generic
-map, the input port map and the output port map of the generated
-TCI. The generic map $g_t$ initially takes two associations: the one
-between the \texttt{tt} constant and the result of the function call
-\texttt{get\_ttype}$(t)$, and the one between the \texttt{mtc}
-constant and the result of the function call \texttt{get\_mtc}$(t)$.
-The \texttt{get\_ttype} function returns the type of transition $t$,
-i.e. either \texttt{NOT\_TEMPORAL}, \texttt{TEMPORAL\_A\_A},
-\texttt{TEMPORAL\_A\_B} or \texttt{TEMPORAL\_A\_INFINITE}, based on
-the form of the time interval associated with
-$t$. Algorithm~\ref{alg:getttype} describes the \texttt{get\_ttype}
-function. The \texttt{get\_mtc} function determines the maximal value
-for the time counter of $t$ based on the form of the time interval
-associated with transition $t$. Algorithm~\ref{alg:getmtc} describes
-the \texttt{get\_mtc} function.
+map, the input port map and the output port map of the TCI
+being-generated. The generic map $g_t$ initially takes two
+associations: the one between the \texttt{tt} constant and the result
+of the function call \texttt{get\_ttype}$(t)$, and the one between the
+\texttt{mtc} constant and the result of the function call
+\texttt{get\_mtc}$(t)$.  The \texttt{get\_ttype} function returns the
+type of transition $t$, i.e. either \texttt{NOT\_TEMPORAL},
+\texttt{TEMPORAL\_A\_A}, \texttt{TEMPORAL\_A\_B} or
+\texttt{TEMPORAL\_A\_INFINITE}, based on the form of the time interval
+associated with $t$. Algorithm~\ref{alg:getttype} describes the
+\texttt{get\_ttype} function. 
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -632,6 +672,11 @@ the \texttt{get\_mtc} function.
   
 \end{algorithm}
 
+The \texttt{get\_mtc} function determines the maximal value for the
+time counter of $t$ based on the form of the time interval associated
+with transition $t$. Algorithm~\ref{alg:getmtc} describes the
+\texttt{get\_mtc} function.
+
 \begin{algorithm}[H]
   \DontPrintSemicolon
 
@@ -658,22 +703,22 @@ the \texttt{get\_mtc} function.
   
 \end{algorithm}
 
-Line~\ref{line:init-it} sets the value of the \texttt{A} and
-\texttt{B} input ports while initializing the input port map
-$i_t$. The \texttt{A} port is associated with $0$ if the transition
-$t$ is not a time transition (i.e. $t$ has no associated time
-interval, it is not in the domain of function $I_s$); otherwise, the
-\texttt{A} port is associated with the lower bound of the time
-interval of $t$.  The \texttt{B} input port is associated with $0$ if
-transition $t$ is not a time transition or if its time interval has an
-infinite upper bound; otherwise, the \texttt{B} port is associated
-with the upper bound of the time interval of $t$. From
-Lines~\ref{line:genid-fired} to \ref{line:connect-fired}, the
-procedure connects the \texttt{fired} output port to a newly generated
-internal signal in the output port map $o_p$. This internal signal
-will then be connected to the input port map of PCIs during the
-interconnection phase of the transformation (see
-Section~\ref{sec:geninter}).
+In the \texttt{generate\_TCIs} procedure, Line~\ref{line:init-it} sets
+the value of the \texttt{A} and \texttt{B} input ports while
+initializing the input port map $i_t$. The \texttt{A} port is
+associated with $0$ if the transition $t$ is not a time transition
+(i.e. $t$ has no associated time interval, it is not in the domain of
+function $I_s$); otherwise, the \texttt{A} port is associated with the
+lower bound of the time interval of $t$.  The \texttt{B} input port is
+associated with $0$ if transition $t$ is not a time transition or if
+its time interval has an infinite upper bound; otherwise, the
+\texttt{B} port is associated with the upper bound of the time
+interval of $t$. From Lines~\ref{line:genid-fired} to
+\ref{line:connect-fired}, the procedure connects the \texttt{fired}
+output port to a newly generated internal signal in the output port
+map $o_p$. This internal signal will then be connected to the input
+port map of PCIs during the interconnection phase of the
+transformation (see Section~\ref{sec:geninter}).
 
 Line~\ref{line:gentcis-input-empty} checks if the set of input places
 of $t$ is empty. If the test succeeds, the \texttt{ian} constant is

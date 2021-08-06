@@ -44,33 +44,44 @@ shows the behavior of the top-level design resulting of this first generation st
     \texttt{transition} component instances based on the set of places
     and transitions of the input SITPN. The \texttt{PCI}
     $\mathtt{id}_{p_0}$ implements the place $p_0$, TCI
-    $\mathtt{id}_{t_0}$ the transition $t_0$,\dots}
+    $\mathtt{id}_{t_0}$ the transition $t_0$\dots{} In
+    \textcolor{red}{red}, the internal signals connected to the
+    \texttt{marked} port of PCIs and to the \texttt{fired} port of
+    TCIs.}
   \label{fig:transf-arch}
 \end{figure}
 
 During this step, each PCI and TCI receive a value for each of their
-generic constants through the creation of generic maps.
-In the generic map of a TCI $id_t$ (implementing a transition $t$),  the \texttt{ian} constant is associated with
-the number of input arcs of $t$, the \texttt{cn} constant with the number of conditions attached to $t$, etc. 
-In the generic map of a PCI $id_p$, the \texttt{ian} constant is associated with the number of input arcs of $p$,
-the \texttt{oan} constant with the number of output arcs of $p$, and the \texttt{mm} constant with the maximal marking value of $p$. The maximal marking value 
-associated with a given
-place $p$ of the input SITPN is an information passed as a parameter to
-the transformation function. This information comes from the analysis
-of the input SITPN pertaining to the \textit{boundedness} of the input
-model. In the definition of the \hilecop{} methodology, this analysis takes place before the transformation of the input SITPN into a
-\hvhdl{} design.  
+generic constants through the creation of generic maps.  In the
+generic map of a TCI $id_t$ (implementing a transition $t$), the
+\texttt{ian} constant is associated with the number of input arcs of
+$t$, the \texttt{cn} constant with the number of conditions attached
+to $t$, etc.  In the generic map of a PCI $id_p$, the \texttt{ian}
+constant is associated with the number of input arcs of $p$, the
+\texttt{oan} constant with the number of output arcs of $p$, and the
+\texttt{mm} constant with the maximal marking value of $p$. The
+maximal marking value associated with a given place $p$ of the input
+SITPN is an information passed as a parameter to the transformation
+function. This information comes from the analysis of the input SITPN
+pertaining to the \textit{boundedness} of the input model. In the
+definition of the \hilecop{} methodology, this analysis takes place
+before the transformation of the input SITPN into a \hvhdl{} design.
 
-During the first transformation step, illustrated in Figure~\ref{fig:transf-arch}, the input and output port maps of PCIs
-and TCIs are also partly generated. In the manner of the
-generic constants in generic maps, some input ports are associated with constant values in the input port maps 
-of PCIs and TCIs. All these associations are generated during this first step. Also, the \texttt{marked} output port of every
-PCI is associated with an internal signal in the output port map of the PCI. The internal signal will be connected later in the course
-of the transformation. The same holds for the \texttt{fired} output port of every TCI.
+During the first transformation step, illustrated in
+Figure~\ref{fig:transf-arch}, the input and output port maps of PCIs
+and TCIs are also partly generated. In the manner of the generic
+constants in generic maps, some input ports are associated with
+constant values in the input port maps of PCIs and TCIs. All these
+associations are generated during this first step. Also, the
+\texttt{marked} output port of every PCI is associated with an
+internal signal in the output port map of the PCI. The internal signal
+will be connected later in the course of the transformation. The same
+holds for the \texttt{fired} output port of every TCI.
 
-After this first step, the component instances are
-interconnected through their port interfaces.  Figure~\ref{fig:transf-inter} illustrates the behavior
-of the top-level design after the interconnection of PCIs and TCIs.
+After this first step, the component instances are interconnected
+through their port interfaces.  Figure~\ref{fig:transf-inter}
+illustrates the behavior of the top-level design after the
+interconnection of PCIs and TCIs.
 
 \begin{figure}[H]
   \centering
@@ -87,66 +98,73 @@ of the top-level design after the interconnection of PCIs and TCIs.
   \label{fig:transf-inter}
 \end{figure}
 
-The PCIs and TCIs
-interact through their interfaces to exchange
-informations. For instance, a PCI $id_p$, implementing a given place $p$, informs its
-output TCIs (i.e. the TCIs implementing the output transitions of $p$)
-that its current marking enables them. The marking of a PCI is
-represented by the value of its internal signal
+The PCIs and TCIs interact through their interfaces to exchange
+informations. For instance, a PCI $id_p$, implementing a given place
+$p$, informs its output TCIs (i.e. the TCIs implementing the output
+transitions of $p$) that its current marking enables them. The marking
+of a PCI is represented by the value of its internal signal
 \texttt{s_marking}. A PCI is the only one to have access to the
 current value of its internal signals. Thus, a PCI must communicate to
-its output TCIs their sensitization status.  To perform this
-exchange of information, the transformation generates an internal
-signal to connect a specific output port of a PCI (the \texttt{oav} port) to a specific input 
-port of the output TCIs (the \texttt{iav} port). 
-Likewise, a TCI informs its input and output PCIs about its
-firing status. The transformation generates an internal signal to
-connect the \texttt{fired} output port of a TCI to the \texttt{itf} and
-\texttt{otf} input ports of the input and output PCIs. 
-These interconnections are performed by adding 
-new associations in the input port map and output port map of PCIs and TCIs.
-Through the execution of the
-internal behavior of each PCI and TCI, and, through the
+its output TCIs their sensitization status.  To perform this exchange
+of information, the transformation generates an internal signal to
+connect a specific output port of a PCI (the \texttt{oav} port) to a
+specific input port of the output TCIs (the \texttt{iav} port).
+Likewise, a TCI informs its input and output PCIs about its firing
+status. The transformation generates an internal signal to connect the
+\texttt{fired} output port of a TCI to the \texttt{itf} and
+\texttt{otf} input ports of the input and output PCIs.  These
+interconnections are performed by adding new associations in the input
+port map and output port map of PCIs and TCIs.  Through the execution
+of the internal behavior of each PCI and TCI, and, through the
 interconnection of component instances, the transformation aims at
 generating a design's behavior that, by its very structure, carries
-the rules of the SITPN semantics and conforms to the execution of the input SITPN
-model. To reduce the size of circuits after the synthesis on an FPGA
-card, PCIs and TCIs only communicate with Boolean signals through
-their interfaces.
+the rules of the SITPN semantics and conforms to the execution of the
+input SITPN model. To reduce the size of circuits after the synthesis
+on an FPGA card, PCIs and TCIs only communicate with Boolean signals
+through their interfaces.
 
 The last part of the transformation deals with the interpretation
 elements of the input SITPN, i.e. the conditions, the actions and the
 functions. Each condition of the input SITPN leads to the declaration
 of a Boolean input port in the port clause of the top-level
-design. Then, in the design's behavior, each input port is connected
-to the \texttt{input_conditions} input port of TCIs. The
+design. Then, in the design's behavior, each input port representing a
+condition is connected to the \texttt{ic} input port of TCIs. The
 interconnection of an input port of the top-level design to the
-\texttt{input_conditions} input port of a TCI reflects an existing
-association between a transition and a condition of the input SITPN
-model. For each action and function of the input SITPN, the
-transformation generates a Boolean output port, a.k.a. an
-\emph{action} or a \emph{function} port. At runtime, the value of
-these output ports represent the activation or execution status of the
-corresponding actions and functions.  To determine the value of the
-action and function ports, the transformation generates the
-\texttt{action} and the \texttt{function} processes. The
+\texttt{ic} input port of a TCI reflects an existing association
+between a transition and a condition of the input SITPN model. For
+each action and function of the input SITPN, the transformation
+generates a Boolean output port, a.k.a. an \emph{action} or a
+\emph{function} port. At runtime, the value of these output ports
+represent the activation or execution status of the corresponding
+actions and functions.  To determine the value of the action and
+function ports, the transformation generates two processes: the
+\texttt{action} process and the \texttt{function} process. The
 \texttt{action} process is a synchronous process responding to the
 falling edge of the clock signal. At the occurrence of the falling
 edge of the clock signal, the \texttt{action} process sets the value
 of the \emph{action} ports computed from the values of the
-\texttt{marked} output ports. The \texttt{marked} output port belongs
-to the output port map of PCIs.  Through the Boolean \texttt{marked}
-output port, the PCIs inform the outside about their marking status,
-i.e. if they possess at least one token or not. The \texttt{function}
-process is a synchronous process responding to the rising edge of the
-clock signal. At the occurrence of the rising edge of the clock
-signal, the \texttt{function} process sets the value of the
-\emph{function} ports computed from the values of the \texttt{fired}
-output ports. The \texttt{fired} output port belongs to the output
-port map of TCIs.  Through the Boolean \texttt{fired} output port, the
-TCIs inform the outside about their firing status, i.e. if they are
-fired or not. Figure~\ref{fig:transf-ports} presents the top-level $\mathcal{H}$-VHDL design at
-the end of the transformation.
+\texttt{marked} output ports. The \texttt{marked} port is an output
+port of the \texttt{place} design. Through the \texttt{marked} port,
+the PCIs inform the outside about their marking status, i.e. if they
+possess at least one token or not.  Remember that the transformation
+generated an association between the \texttt{marked} output port and
+an internal signal in the output port map of PCIs during the first
+transformation step. These internal signals are read by the
+\texttt{action} process to assign a value to the \textit{action}
+ports.  The \texttt{function} process is a synchronous process
+responding to the rising edge of the clock signal. At the occurrence
+of the rising edge of the clock signal, the \texttt{function} process
+sets the value of the \emph{function} ports computed from the values
+of the \texttt{fired} output ports. The \texttt{fired} port is an
+output port of the \texttt{transition} design. Through the
+\texttt{fired} port, the TCIs inform the outside about their firing
+status, i.e. if they are fired or not. Remember that, during the first
+transformation step, the transformation generated an association
+between the \texttt{fired} output port and an internal signal in the
+output port map of TCIs. These internal signals are read by the
+\texttt{function} process to assign a value to the \textit{function}
+ports. Figure~\ref{fig:transf-ports} presents the top-level
+$\mathcal{H}$-VHDL design at the end of the transformation.
 
 \begin{figure}[H]
   \centering
@@ -173,7 +191,6 @@ the end of the transformation.
     and that set the value of the action and function ports.}
   \label{fig:transf-ports}
 \end{figure}
-
 
 %%% Local Variables:
 %%% mode: latex
