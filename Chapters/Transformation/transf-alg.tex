@@ -714,11 +714,11 @@ associated with $0$ if transition $t$ is not a time transition or if
 its time interval has an infinite upper bound; otherwise, the
 \texttt{B} port is associated with the upper bound of the time
 interval of $t$. From Lines~\ref{line:genid-fired} to
-\ref{line:connect-fired}, the procedure connects the \texttt{fired}
-output port to a newly generated internal signal in the output port
-map $o_p$. This internal signal will then be connected to the input
-port map of PCIs during the interconnection phase of the
-transformation (see Section~\ref{sec:geninter}).
+\ref{line:connect-fired}, the \texttt{generate\_TCIs} procedure
+connects the \texttt{fired} output port to a newly generated internal
+signal in the output port map $o_p$. This internal signal will then be
+connected to the input port map of PCIs during the interconnection
+phase of the transformation (see Section~\ref{sec:geninter}).
 
 Line~\ref{line:gentcis-input-empty} checks if the set of input places
 of $t$ is empty. If the test succeeds, the \texttt{ian} constant is
@@ -941,8 +941,8 @@ conflict. Note that the variable $i$ is not reset between the two
 \textbf{foreach} loops to preserve the continuity of indices.  For
 each non-conflicting output transition $t$ of $p$, the corresponding
 TCI $id_t$ is retrieved from the behavior of design $d$. Then, the
-interconnections between PCI $id_p$ and TCI $id_t$ are similarly to
-the ones that have been performed for the conflicting transitions of
+interconnections between PCI $id_p$ and TCI $id_t$ are similar to the
+ones that have been performed for the conflicting transitions of
 $p$. The difference lies in the connection the \texttt{pauths} ports.
 Between the PCI $id_p$ and its \textit{non-conflicting} TCIs, the
 \texttt{pauths} are not connected together; this to reflect the
@@ -950,10 +950,15 @@ independence of non-conflicting output transitions regarding the
 priority authorizations. Instead, the subelement of the
 \texttt{pauths} output port with index $i$ is connected to a newly
 generated internal signal $id_s$ in the output port map $o_p$
-(Line~\ref{line:genid-for-pauths} to
-Line~\ref{line:pauths-assoc}). Also, one subelement of the
-\texttt{pauths} input port is associated with \texttt{true} in the
-input port map $i_t$ (Line~\ref{line:pauths-true}).
+(Line~\ref{line:genid-for-pauths} to Line~\ref{line:pauths-assoc});
+the internal signal $id_s$ is not connected to anything, and it will
+be removed by the industrial compiler at the time of the
+synthesis. Also, one subelement of the \texttt{pauths} input port is
+associated with \texttt{true} in the input port map $i_t$
+(Line~\ref{line:pauths-true}); this connection represents the fact
+that, since the transition $t$ is not a conflicting transition of
+place $p$, then, transition $t$ always has the authorization to be
+fired, given that it is firable.
 
 \subsection{Generation of ports, the \texttt{action} and the
   \texttt{function} process}
@@ -968,11 +973,11 @@ binding is built during the transformation. The output ports of the
 SITPN. Each output port is associated with an action or a function
 through the $\gamma$ binder. During the simulation of a \hvhdl{}
 design, the value of an output port represent the activation/execution
-status of the associated action/function. Algorithm presents the
-\texttt{generate\_ports} procedure. This procedure calls three
-procedures, namely: the \texttt{generate\_conditions} procedure,
-responsible for the generation and the connection of input ports
-implementing conditions; the \texttt{generate\_action\_ports}
+status of the associated action/function. Algorithm~\ref{alg:genports}
+presents the \texttt{generate\_ports} procedure. This procedure calls
+three procedures, namely: the \texttt{generate\_condition\_ports}
+procedure, responsible for the generation and the connection of input
+ports implementing conditions; the \texttt{generate\_action\_ports}
 procedure, responsible for the generation of output ports implementing
 actions, and for the generation of the \texttt{action} process; the
 \texttt{generate\_function\_ports} procedure, responsible for the
@@ -990,7 +995,7 @@ are detailled in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
   \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
   % \NoCaptionOfAlgo
 
-  \texttt{generate\_conditions}($sitpn$, $d$, $\gamma$)\;
+  \texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)\;
   \texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)\;
   \texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)\;
   
@@ -1001,7 +1006,7 @@ are detailled in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
 \end{algorithm}
 
 Algorithm~\ref{alg:genconds} describes the
-\texttt{generate\_conditions} procedure.
+\texttt{generate\_condition\_ports} procedure.
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -1026,15 +1031,15 @@ Algorithm~\ref{alg:genconds} describes the
     }
   }
   
-  \caption{\texttt{generate\_conditions}($sitpn$, $d$, $\gamma$)}
+  \caption{\texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)}
   \label{alg:genconds}
   
   \AlFnt % overriding the new font
 \end{algorithm}
 
-The \texttt{generate\_conditions} procedure iterates over the set of
+The \texttt{generate\_condition\_ports} procedure iterates over the set of
 conditions of the $sitpn$ parameter. For each condition of the set,
-the \texttt{generate\_conditions} procedure produces a corresponding
+the \texttt{generate\_condition\_ports} procedure produces a corresponding
 input port identifier $id_c$, and adds an input port declaration entry
 in the port declaration list of design $d$. The declared input port is
 of the Boolean type. Also, a binding between condition $c$ and
@@ -1052,7 +1057,7 @@ $d$. Then, depending on the relation that exists between condition $c$
 and transition $t$, an association between $id_c$ and one subelement
 of the \texttt{ic} input port is added to the input port map $i_t$. At
 the end of the loop, the old TCI $id_t$ is replaced by a new TCI, with
-an updated input port map, in the behavior of design $d$.
+an updated input port map, in the behavior of design $d$.\\
 
 Algorithm~\ref{alg:genacts} describes the
 \texttt{generate\_action\_ports} procedure.
@@ -1114,7 +1119,7 @@ variable, corresponds to the first part of the \texttt{rst} block
 one, hold in the $fss$ variable, corresponds to the second part of the
 \texttt{rst} block, i.e. a falling edge block. The first two lines of
 the procedure initialize the $rstss$ and $fss$ with the \texttt{null}
-sequential statements. Then, in the abscence of actions defined in the
+sequential statement. Then, in the abscence of actions defined in the
 input SITPN, the statement body of the \texttt{action} process is
 composed of \texttt{null} statements; the execution of \texttt{null}
 statements has no effect on the state of design during a simulation.
@@ -1204,18 +1209,18 @@ things. First, it generates an output port for each function of the
 input SITPN; second, it builds the \texttt{function} process that is
 responsible for the assignment of the value of \textit{function} ports
 depending on the value of the \texttt{fired} output ports of
-PCIs. Similarly to the \texttt{function} process, the \texttt{fired}
+PCIs. Similarly to the \texttt{action} process, the \texttt{function}
 process is a synchronous process with a statement body composed of a
 single \texttt{rst} block. The second part of the \texttt{rst} block
 is a \texttt{rising} block, i.e. a block that is only executed during
-a rising edge phase. Thus, the \texttt{generate\_action\_ports}
+a rising edge phase. Thus, the \texttt{generate\_function\_ports}
 procedure builds two blocks of sequential statements: the first one,
 hold in the $rstss$ variable, corresponds to the first part of the
 \texttt{rst} block (i.e. the one executed during the initialization
 phase); the second one, hold in the $rss$ variable, corresponds to the
 second part of the \texttt{rst} block, i.e. a rising edge block. The
 first two lines of the procedure initialize the $rstss$ and $rss$ with
-the \texttt{null} sequential statements. At
+the \texttt{null} sequential statement. At
 Line~\ref{line:foreach-funs}, the procedure iterates over the set of
 functions of the $sitpn$ parameter. For each function $f$ in the set,
 an output port identifier $id_f$ is generated, an output port

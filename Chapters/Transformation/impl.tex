@@ -43,12 +43,12 @@ In the body of the \texttt{sitpn\_to\_hvhdl} function, the
 value. Our implementation of the \hilecop{} transformation function
 relies on the state-and-error monad \cite{Wadler1992}. Each function
 that implements a part of the transformation function takes a
-\texttt{compile-time} state as a parameter, and returns either a value
-and a new compile-time state or an error message. The \texttt{bind}
+\emph{compile-time} state as a parameter, and returns either a value
+and a new compile-time state, or an error message. The \texttt{bind}
 construct of the state-and-error monad permits to pipeline multiple
 function calls, and, combined with the \texttt{do} notation, it
 permits to write functional programs in the style of imperative
-languages. Thus, the sequence defined in the body of the
+languages. The sequence defined in the body of the
 \texttt{sitpn\_to\_hvhdl} function gives an example of what can be
 achieved with the combination of the state-and-error monad and the
 \texttt{do} notation. This sequence constitutes a single monadic
@@ -60,10 +60,10 @@ function to the parameter \texttt{(InitS2HState sitpn Petri.ffid)}
 (i.e. the initial compile-time state), or it retrieves the error
 message.
 
-In the sequence of the monadic function, the four first function calls
-do not return values that are relevant; thus, we use the underscore
-notation to notify that we are not interested in the value returned by
-these function calls.  Indeed, the \texttt{generate\_sitpn\_infos},
+In the \texttt{do} sequence of Listing~\ref{lst:sitpn2hvhdl}, the four
+first function calls do not return values that are relevant; thus, we
+use the underscore notation to notify that we are not interested in
+the returned values.  Indeed, the \texttt{generate\_sitpn\_infos},
 \texttt{generate\_architecture}, \texttt{generate\_ports} and
 \texttt{generate\_comp\_insts} functions directly modify the
 compile-time state without returning a value. They are the functional
@@ -80,18 +80,18 @@ caption={[The compile-time state structure.] The compile-time state structure de
 numberstyle=\tiny\ttfamily]
 Record Sitpn2HVhdlState (sitpn : Sitpn) : Type :=
   MkS2HState {
-     lofPs : list (P sitpn);
+     lofPs : list (P sitpn); #\label{line:lofPs}#
      lofTs : list (T sitpn);
      lofCs : list (C sitpn);
      lofAs : list (A sitpn);
-     lofFs : list (F sitpn);
-     nextid : ident;
-     sitpninfos : SitpnInfos sitpn;
-     iports : list pdecl;
-     oports : list pdecl;
-     arch : Architecture sitpn;
-     beh : cs;
-     $\gamma$ : Sitpn2HVhdlMap sitpn;
+     lofFs : list (F sitpn); #\label{line:lofFs}#
+     nextid : ident; #\label{line:nextid}#
+     sitpninfos : SitpnInfos sitpn; #\label{line:sitpninfos}#
+     iports : list pdecl; #\label{line:iports}#
+     oports : list pdecl; #\label{line:oports}#
+     arch : Architecture sitpn; #\label{line:arch}#
+     beh : cs; #\label{line:beh}#
+     $\gamma$ : Sitpn2HVhdlMap sitpn; #\label{line:gamma}#
 
   }.
 \end{lstlisting}
@@ -99,29 +99,34 @@ Record Sitpn2HVhdlState (sitpn : Sitpn) : Type :=
 The compile-time state structure is implemented by the
 \texttt{Sitpn2HVhdlState} record type. This type depends on a given
 \texttt{sitpn} passed as a parameter. It is composed of eleven
-fields. The first five fields are the list versions of the finite sets
-of places, transitions, conditions, actions and functions of the
-\texttt{sitpn} parameter. These fields are filled at the very
-beginning of the transformation by the \texttt{generate\_sitpn\_infos}
-function, and are convenient to write functions in the context of
-dependent types. The \texttt{nextid} field permits to generate fresh
-and unique identifiers all along the transformation. The
-\texttt{sitpinfos} field is an instance of the \texttt{SitpnInfos}
+fields. The first five fields (Line~\ref{line:lofPs} to
+\ref{line:lofFs}) are the list versions of the finite sets of places,
+transitions, conditions, actions and functions of the \texttt{sitpn}
+parameter. These fields are filled at the very beginning of the
+transformation by the \texttt{generate\_sitpn\_infos} function, and
+are convenient to write functions in the context of dependent
+types. The \texttt{nextid} field (Line~\ref{line:nextid}) permits to
+generate fresh and unique identifiers all along the
+transformation. The \texttt{sitpinfos} field
+(Line~\ref{line:sitpninfos}) is an instance of the \texttt{SitpnInfos}
 type that depends on the \texttt{sitpn} parameter. The
 \texttt{sitpninfos} field is filled up by the
 \texttt{generate\_sitpn\_infos} function. It is a convenient way to
 represent the information associated with the places, transitions,
 conditions, actions and functions of the \texttt{sitpn} parameter. The
-\texttt{iports} (resp. \texttt{oports}) field gathers the list of
-input port declarations of the generated \hvhdl{} design. The
-\texttt{arch} is an intermediary representation of the behavior of the
-generated \hvhdl{} design. This representation is easier to modify and
-to handle than a \hvhdl{} concurrent statement. The \texttt{beh} field
-is the behavior of the generated \hvhdl{} design; it is an instance of
-the \texttt{cs} type, i.e. the type of concurrent statements defined
-in the abstract syntax of \hvhdl{}. The $\gamma$ field is the
-SITPN-to-\hvhdl{} binder also generated alongside the \hvhdl{} design,
-and returned at the end of the transformation.
+\texttt{iports} (resp. \texttt{oports}) field, at
+Line~\ref{line:iports} (resp. at Line~\ref{line:oports}), gathers the
+list of input (resp. output) port declarations of the generated
+\hvhdl{} design. The \texttt{arch} field (Line~\ref{line:arch}) is an
+intermediary representation of the behavior of the generated \hvhdl{}
+design. This representation is easier to modify and to handle than a
+\hvhdl{} concurrent statement. The \texttt{beh} field
+(Line~\ref{line:beh}) is the behavior of the generated \hvhdl{}
+design; it is an instance of the \texttt{cs} type, i.e. the type of
+concurrent statements defined in the abstract syntax of \hvhdl{}. The
+$\gamma$ field (Line~\ref{line:gamma}) is the SITPN-to-\hvhdl{} binder
+generated alongside the \hvhdl{} design, and returned at the end of
+the transformation.
 
 At the beginning of the transformation, an initial compile-time state
 is built with the \texttt{Init\-S2HState} function. The
@@ -149,7 +154,8 @@ Listing~\ref{lst:gen-infos} presents a part of the
 \texttt{generate\_sitpn\_infos}. The part that is let aside,
 represented by little dots, pertains to the creation of the
 dependently-typed lists constituting the first fields of the
-compile-time state structure (see Listing~\ref{lst:comp-time-state}).
+compile-time state structure (Line~\ref{line:lofPs} to
+\ref{line:lofFs} in Listing~\ref{lst:comp-time-state}).
 
 \begin{lstlisting}[language=coq,label={lst:gen-infos},
 caption={[The \texttt{generate\_sitpn\_infos} function.] A part of the \texttt{generate\_sitpn\_infos} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
@@ -217,17 +223,18 @@ instance of the \texttt{PlaceInfo} type. This mapping is built by the
 \texttt{generate\_sitpn\_infos} function. While building an instance
 of the \texttt{PlaceInfo} type for a given place $p$, the
 \texttt{generate_place_infos} function computes the list of output
-transitions of $p$ that are conflict. First, it computes the list of
-output transitions that are linked to the place $p$ through a
-\texttt{basic} arc; then, the function checks if all conflicts between
-the transitions of this list are solved by means of mutual
-exclusion. If it is the case, the \texttt{tconflict} field is left
-empty, and all transitions of the list join the \texttt{toutputs}
-list. Otherwise, the function tries to establish a strict total order
-over the transitions of the list, by decreasing level of priority. If
-no such order can be established, the function raises an error;
-otherwise, the \texttt{tconflict} field is filled with the ordered
-list.
+transitions of $p$ that are conflict in the manner of the
+\texttt{output}$_c$ function described in
+Section~\ref{sec:prim-funs}. First, it computes the list of output
+transitions that are linked to the place $p$ through a \texttt{basic}
+arc; then, the function checks if all conflicts between the
+transitions of this list are solved by means of mutual exclusion. If
+it is the case, the \texttt{tconflict} field is left empty, and all
+transitions of the list join the \texttt{toutputs} list. Otherwise,
+the function tries to establish a strict total order over the
+transitions of the list, by decreasing level of priority. If no such
+order can be established, the function raises an error; otherwise, the
+\texttt{tconflict} field is filled with the ordered list.
 
 The \texttt{TransInfo} record type is composed of two lists that
 represent the input places, \texttt{pinputs}, and the output places,
@@ -256,10 +263,10 @@ reflexive, over the set of transitions. The other parts of the
 well-definition checking are performed later during the
 transformation. For instance, the \texttt{generate\_place\_infos}
 function checks that, for each group of transitions in conflict, the
-conflicts are either solved by means of mutual exclusion or the
+conflicts are either solved by means of mutual exclusion or that the
 priority relation is a strict total order over this group. It also
 checks that there are no isolated places in the input \texttt{sitpn}
-parameter.
+parameter, etc.
 
 \subsection{The \texttt{generate\_architecture} function}
 \label{sec:impl-gen-arch}
@@ -327,10 +334,10 @@ either a simple expression or to a list of expressions, where the
 \texttt{expr} type is the type of expressions defined in the \hvhdl{}
 abstract syntax. In an \texttt{InputMap} instance, an input port
 identifier of a scalar type (i.e. Boolean or constrained natural) is
-mapped to a simple expressions, whereas an input port identifier of
-the array type is mapped to a list of expressions. Each expression of
-the list represents the actual part associated with one subelement of
-the input port. Similarly to the \texttt{InputMap} type, the
+mapped to a simple expression, whereas an input port identifier of the
+array type is mapped to a list of expressions. Each expression of the
+list represents the actual part associated with one subelement of the
+input port. Similarly to the \texttt{InputMap} type, the
 \texttt{OutputMap} type maps an output port identifier to either an
 option to a signal (the \texttt{None} value representing the
 connection to the \texttt{open} keyword) name, or to a list of signal
@@ -357,7 +364,8 @@ expressions corresponds to the list of internal signals associated
 with the \texttt{fired} port of the TCIs implementing the transitions
 of the \texttt{trs}$(f)$ set (i.e. the set of transitions associated
 with function $f$). The \texttt{fmap} field is filled by the
-\texttt{generate\_ports} function. The \texttt{amap} field is the twin
+\texttt{generate\_ports} function described in
+Listing~\ref{lst:impl-gen-ports}. The \texttt{amap} field is the twin
 of the \texttt{fmap} field but on the side of the actions of the
 \texttt{sitpn} parameter. Thus, in the \texttt{amap} field, the list
 of expressions associated with an action $a$ corresponds to the list
@@ -405,11 +413,14 @@ of Algorithm~\ref{alg:genacts}, the
 \texttt{generate_function_ports} procedure of
 Algorithm~\ref{alg:genfuns}, and the
 \texttt{generate_and_connect_cond_ports} that implements the
-\texttt{generate\_conditions} procedure of
+\texttt{generate\_condition_ports} procedure of
 Algorithm~\ref{alg:genconds}.
 
 \begin{lstlisting}[language=coq,label={lst:impl-gen-ports},
-caption={[The \texttt{generate\_ports} function.]The \texttt{generate\_ports} function implementing the \texttt{generate\_ports} procedure presented in Algorithm~\ref{alg:genports}. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+caption={[The \texttt{generate\_ports} function.]The
+  \texttt{generate\_ports} function implementing the
+  \texttt{generate\_ports} procedure presented in
+  Algorithm~\ref{alg:genports}. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 Definition generate_ports (sitpn : Sitpn) : Mon (Sitpn2HVhdlState sitpn) unit :=
   do _ <- generate_action_ports_and_ps;
@@ -434,7 +445,7 @@ modifies the input port map of \texttt{HComponent} instances in the
 \texttt{trmap} of the compile-time state's \texttt{arch} field. The
 modifications pertain to the connection of input ports to the
 \texttt{ic} input port of TCIs, as described in the
-\texttt{generate\_conditions} procedure (see
+\texttt{generate\_condition_ports} procedure (see
 Algorithm~\ref{alg:genconds}).
 
 \subsection{The \texttt{generate\_comp\_insts} and
@@ -515,14 +526,21 @@ design, is associated with the list $[id_a, id_b, id_c]$. Then, based on the pre
 associations is the concrete input port map of PCI $id_p$: $(\mathtt{rt}(0), id_a)$,
 $(\mathtt{rt}(1), id_b)$ and $(\mathtt{rt}(2), id_c)$. 
 
-Getting back to Listing~\ref{lst:gen-comp-insts}, the \texttt{generate_design_and_binder} function
-retrieves the current compile-time state \texttt{s} with the \texttt{Get} function. Then, based on the value of the different fields
-of the compile-time state, the function builds an \hvhdl{} design and returns it along with the $\gamma$ binder.
-The \hvhdl{} design receives the $id_e$ and $id_a$ identifiers passed as parameters as its entity and architecture identifiers.
-The generic constant declaration list of the \hvhdl{} design is empty, i.e. it receives the empty list value.
-The port declaration list of the\hvhdl{} is built by concatenating the content of the \texttt{iports} and \texttt{oports} fields defined
-in state \texttt{s}. The internal signal declaration list is filled by the \texttt{sigs} field, defined under the \texttt{arch} field
-of state \texttt{s}. Finally, the \texttt{beh} field fills the behavior of the \hvhdl{} design.
+Getting back to Listing~\ref{lst:gen-comp-insts}, the
+\texttt{generate_design_and_binder} function retrieves the current
+compile-time state \texttt{s} with the \texttt{Get} function. Then,
+based on the value of the different fields of the compile-time state,
+the function builds an \hvhdl{} design and returns it along with the
+$\gamma$ binder.  The \hvhdl{} design receives the $id_e$ and $id_a$
+identifiers passed as parameters as its entity and architecture
+identifiers.  The generic constant declaration list of the \hvhdl{}
+design is empty, i.e. it receives the empty list value.  The port
+declaration list of the \hvhdl{} design is built by concatenating the
+content of the \texttt{iports} and \texttt{oports} fields defined in
+state \texttt{s}. The internal signal declaration list is filled by
+the \texttt{sigs} field, defined under the \texttt{arch} field of
+state \texttt{s}. Finally, the \texttt{beh} field fills the behavior
+of the \hvhdl{} design.
 
 
 

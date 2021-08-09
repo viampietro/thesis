@@ -98,7 +98,7 @@
       no topmark, external pins width=0] (idtc) at ($(idta.south)-(0,1)$) {\Large$id_{t_c}$};
       
       \node [dipchip, num pins=18, hide numbers,
-      no topmark, external pins width=0, anchor=west] (idp) at ($(idta.east)+(2.5,0)$) {\Large$id_p$};
+      no topmark, external pins width=0, anchor=west] (idp) at ($(idta.east)+(2.8,0)$) {\Large$id_p$};
 
       % PORT LABELS
       \node[anchor=west] at ($(idp.bpin 2)$) {\texttt{itf(i)}};
@@ -112,9 +112,9 @@
       \node[anchor=east] at ($(idtc.bpin 5)$) {\texttt{fired}};
 
       % PORT PINS
-      \draw ($(idp.bpin 6)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_b,p)$};
-      \draw ($(idp.bpin 7)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_a,p)$};
-      \draw ($(idp.bpin 8)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\ssmall $post(t_c,p)$};
+      \draw ($(idp.bpin 6)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\fontsize{10}{12}\selectfont $post(t_b,p)$};
+      \draw ($(idp.bpin 7)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\fontsize{10}{12}\selectfont $post(t_a,p)$};
+      \draw ($(idp.bpin 8)$) -- ++(-.5,0) node[anchor=east,inner sep=0pt]{\fontsize{10}{12}\selectfont $post(t_c,p)$};
       
       % PORT CONNECTIONS
       \draw ($(idtb.bpin 5)$) -- ++(1.8,0) |- ($(idp.bpin 2)$);
