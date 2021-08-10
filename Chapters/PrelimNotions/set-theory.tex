@@ -1,0 +1,56 @@
+\subsection{Intuitionistic first order logic}
+\label{sec:fol-intuitionistic}
+
+The intuitionistic first order logic constitutes our framework for the
+expression and the interpretation of logical formulas.  The language
+to express logical formulas is the same between classical and
+intuitionistic first order logic. A logical formula is either:
+
+\begin{itemize}
+\item a predicate (i.e. an atomic formula). A predicate $P$ possibly
+  takes $n$ parameters as inputs and is interpreted to either true,
+  represented by the $\top$ symbol, or false, represented by the
+  $\bot$ symbol. We write $P(x_0,\dots,x_n)$ to denote an $n$-ary
+  predicate.
+
+\item the composition of subformulas with one of the following
+  connectors: the conjunction $\land$, the disjunction $\lor$, the
+  implication $\Rightarrow$, the double implication $\Leftrightarrow$
+  
+\item a subformula prefixed by the universal quantifier $\forall$ or
+  the existantial quantifier $\exists$. For instance, the formula
+  $\forall{}x.P(x)$ denotes the atomic formula $P(x)$ where $x$ is a
+  unversally quantified variable of the formula. As a shorthand
+  notation, we write $\forall{}x,y,z.\dots$ to denote
+  $\forall{}x,\forall{}y,\forall{}z.\dots$. The same stands for the
+  existantial quantifier $\exists$.
+\end{itemize}
+
+
+
+
+
+The difference between the classical first order logic and the
+intuitionistic one relies in the absence of the \emph{law of the
+  excluded middle} in the latter logic. The \emph{law of the excluded
+  middle} considers that for all n-ary predicate $P\in{}X_0$ where
+$x_0\in{}X_0,\dots,x_n\in{}X_n$, either $P(x_0,\dots,x_n)$ is valuated
+to true, or
+
+
+\subsection{Set theory}
+\label{sec:set-theory}
+
+In this thesis, we use set theory as the base formalism for all our
+mathematical definitions and proofs. In the set theory, a set
+represents a group of elements called the members of the set. For
+every set $X$, we write $x\in{}X$ to denote that the element $x$ is a
+member of set $X$. From here, there are multiple ways to define a set.
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
