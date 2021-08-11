@@ -49,104 +49,73 @@ least one value as an array's index range contains at least one index.
 \subsection{Elaborated design and design state}
 \label{sec:elab-design-and-state}
 
-Now, let us define the structure of an elaborated design which is a
-structure bound to a given \hvhdl{} design and to a design store, i.e
-a global environment mapping identifiers to \hvhdl{} designs. Only the
-designs referenced into the global design store can be instantiated as
-component instances in the behavior of a given design. The elaborated
+Now, let us define the elaborated design structure. The elaborated
 design structure is built during the elaboration phase (see
 Section~\ref{sec:elab-rules}). Then, the elaborated design will act as
 a runtime environment in the expression of the simulation rules. Let
-$ElDesign(d,\mathcal{D})$ be the set of the elaborated designs for a
-given \hvhdl{} design $d$ and a design store $\mathcal{D}$. An
-elaborated design is a composite environment built out of multiple
-sub-environments.  Each sub-environment is a table, represented as a
-function, mapping identifiers of a certain category of constructs
-(e.g, input port identifiers) to their declaration information (e.g,
-type indication for input ports). We represent an elaborated design as
-a record where the fields are the sub-environments. An elaborated
-design is defined as follows:
+$ElDesign$ be the set of the elaborated designs. An elaborated design
+is a composite environment built out of multiple sub-environments.
+Each sub-environment is a table, represented as a function, mapping
+identifiers of a certain category of constructs (e.g, input port
+identifiers) to their declaration information (e.g, type indication
+for input ports). We represent an elaborated design as a record where
+the fields are the sub-environments. An elaborated design is defined
+as follows:
 
 \begin{definition}[Elaborated Design]
   \label{def:elab-design}
-  For a given \hvhdl{} design $d\in{}design$ s.t. $d=$ \vhdle|design|
-  \textit{$id_{e}$ $id_{a}$ gens ports sigs behavior} and a given
-  design store
-  $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$ is a record
+  An elaborated design $\Delta\in{}ElDesign$ is a record\\
   ${<}Gens, Ins, Outs, Sigs, Ps, Comps{>}$ where:
   \begin{itemize}[label=$-$]
   \item $Gens\in{}generic\mhyphen{}id\rightarrow{}(type\times{}value)$
-    where $generic\mhyphen{}id=\{id~\vert~(id,\tau,e)\in{}gens\}$, is
-    the function yielding the type and the value of generic constants.
-  \item $Ins\in{}input\mhyphen{}id\rightarrow{}type$ where
-    $input\mhyphen{}id=\{id~\vert~(\mathtt{in},id,\tau)\in{}ports\}$,
-    is the function yielding the type of input ports.
-  \item $Outs\in{}output\mhyphen{}id\rightarrow{}type$ where
-    $output\mhyphen{}id=\{id~\vert~(\mathtt{out},id,\tau)\in{}ports\}$,
-    is the function yielding the type of output ports.
+    is the function yielding the type and the value of generic
+    constants.
+  \item $Ins\in{}input\mhyphen{}id\rightarrow{}type$ is the function
+    yielding the type of input ports.
+  \item $Outs\in{}output\mhyphen{}id\rightarrow{}type$ is the function
+    yielding the type of output ports.
   \item
     $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\rightarrow{}type$
-    where
-    $declared\mhyphen{}signal\mhyphen{}id=\{id~\vert~(id,\tau)\in{}sigs\}$,
     is the function yelding the type of declared signals.
   \item
-    $Ps\in{}process\mhyphen{}id\rightarrow{}(variable\mhyphen{}id(id_p)\rightarrow{}(type\times{}value))$
-    where\\
-    $process\mhyphen{}id=\{id_p~\vert~\mathtt{process}(id_p,sl,vars,ss)\in{}behavior\}$,
-    is the function associating processes to their local
-    environment. Local environments are functions mapping local
-    variable identifiers to their corresponding type and
-    value. Therefore, each set of local variable identifiers
-    $variable\mhyphen{}id(id_p)$ depends on the process identifier
-    (represented by $id_p$) passed as the first argument of the $Ps$
-    function.
-  \item
-    $Comps\in{}component\mhyphen{}id\rightarrow{}ElDesign(d_e,\mathcal{D})$,
-    where\\
-    $component\mhyphen{}id=\{id_c~\vert~\mathtt{comp}(id_c,id_e,gm,ipm,opm)\in{}behavior\}$,
-    is the function mapping component instance identifiers to their
-    own elaborated design version. The set $ElDesign(d_e,\mathcal{D})$
-    depends on the design $d_e$ from which the component identifier
-    $id_c$, passed as the first argument of the $Comps$ function, is
-    an instance. Design $d_e$ is retrieved from the design store
-    $\mathcal{D}$ s.t. $d_e=\mathcal{D}(id_e)$.
+    $Ps\in{}process\mhyphen{}id\rightarrow(variable\mhyphen{}id\rightarrow{}(type\times{}value))$
+    is the function associating process identifiers to their local
+    environment.
+  \item $Comps\in{}component\mhyphen{}id{}\rightarrow{}ElDesign$ is
+    the function mapping component instance identifiers to their own
+    elaborated design version
   \end{itemize}
 \end{definition}
 
 We assume that there are no overlapping between the identifiers of the
 sub-environments (i.e, an identifier belongs to at most one
-sub-environment). When there is no ambiguity, we write $\Delta(x)$ to
-denote the value returned for identifier $x$, where $x$ is looked up
-in the appropriate field of $\Delta$. We write $x\in\Delta$ to state
-that identifier $x$ is defined in one of $\Delta$'s fields. We note
-$\Delta(x)\leftarrow{}v$ the overriding of the value associated to
-identifier $x$ with value $v$ in the appropriate field of $\Delta$,
-$\Delta\cup{}(x,v)$ to note the addition of the mapping from
-identifier $x$ to value $v$ in the appropriate field of $\Delta$, that
-assuming $x\notin\Delta$. We write $x\in\mathcal{F}(\Delta)$, where
-$\mathcal{F}$ is a field of $\Delta$, when more precision is needed
-regarding the lookup of identifier $x$ in the record $\Delta$.
+sub-environment), and also between the identifiers of the
+sub-environments and the identifiers of local environments. When there
+is no ambiguity, we write $\Delta(x)$ to denote the value returned for
+identifier $x$, where $x$ is looked up in the appropriate field of
+$\Delta$. We write $x\in\Delta$ to state that identifier $x$ is
+defined in one of $\Delta$'s fields. We note $\Delta(x)\leftarrow{}v$
+the overriding of the value associated to identifier $x$ with value
+$v$ in the appropriate field of $\Delta$, $\Delta\cup{}(x,v)$ to note
+the addition of the mapping from identifier $x$ to value $v$ in the
+appropriate field of $\Delta$, that assuming $x\notin\Delta$. We write
+$x\in\mathcal{F}(\Delta)$, where $\mathcal{F}$ is a field of $\Delta$,
+when more precision is needed regarding the lookup of identifier $x$
+in the record $\Delta$.
 
-Let $\Sigma(\Delta)$ be the set of design states for a given
-elaborated design $\Delta$.  A design state of $\Delta$ is defined as
-follows:
+Let $\Sigma$ be the set of design states.  A design state of
+$\sigma\in{}\Sigma$ is defined as follows:
 
 \begin{definition}[Design state]
   \label{def:design-state}
-  A design state $\sigma\in\Sigma(\Delta)$, for a given design
-  $d\in{}design$, a given design store $\mathcal{D}$ and an elaborated
-  design $\Delta\in{}ElDesign(d,\mathcal{D})$, is a record
+  A design state $\sigma\in\Sigma$ is a record
   ${<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ where:
   \begin{itemize}[label=$-$]
   \item $\mathcal{S}\in{}signal\mhyphen{}id\rightarrow{}value$, is the
     function yielding the current values of the design's signals
     (ports and declared signals).
-  \item
-    $\mathcal{C}\in{}component\mhyphen{}id\rightarrow{}\Sigma(\Delta_c)$,
-    is the function yielding the current state of component instances,
-    where $\Delta_c=\Delta(id_c)$ and $id_c\in{}component\mhyphen{}id$
-    is the component identifier passed to the $\mathcal{C}$ function.
+  \item $\mathcal{C}\in{}component\mhyphen{}id\rightarrow{}\Sigma$, is
+    the function yielding the current state of component instances.
   \item
     $\mathcal{E}\subseteq{}signal\mhyphen{}id\sqcup{}component\mhyphen{}id$,
     is the set of signal and component instance identifiers that
@@ -170,12 +139,9 @@ the set of events of design state $\sigma'$, etc.
 
 \begin{notation}[No events design state]
   \label{notation:noev}
-  For a given \hvhdl{} design $d$, a design store $\mathcal{D}$, and
-  an elaborated design $\Delta\in{}ElDesign(d,\mathcal{D})$, the
-  function $NoEv\in\Sigma(\Delta)\rightarrow\Sigma(\Delta)$ returns a
-  design state similar to the one passed in parameter but with an
-  empty set of events. I.e, for all design state
-  $\sigma\in\Sigma(\Delta)$
+  The function $NoEv\in\Sigma\rightarrow\Sigma$ returns a design state
+  similar to the one passed in parameter but with an empty set of
+  events. I.e, for all design state $\sigma\in\Sigma$
   s.t. $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$,
   $NoEv(\sigma)={<}\mathcal{S},\mathcal{C},\emptyset{>}$.
 \end{notation}

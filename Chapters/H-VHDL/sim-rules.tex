@@ -184,7 +184,7 @@ clock event.
 The $full$ simulation relation, defined by the \textsc{FullSim} rule,
 holds eight parameters, namely: a top-level design d, a design store
 $\mathcal{D}\in{}id\nrightarrow{}design$, an elaborated design
-$\Delta\in{}ElDesign(d)$, a dimensioning function
+$\Delta\in{}ElDesign$, a dimensioning function
 $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, a primary input
 environment
 $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
@@ -360,15 +360,13 @@ two notations.
 \end{notation}
 
 \begin{definition}[Input port values update]
-  Given an \hvhdl{} design $d\in{}design$, a design store
-  $\mathcal{D}\in{}id\nrightarrow{}design$, an elaborated design
-  $\Delta\in{}ElDesign(d,\mathcal{D})$, a simulation environment
-  $E_p\in{}(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow(Ins(\Delta)\rightarrow{}value)$,
-  let us define the relation expressing the update of the values of
-  the input ports of $\Delta$ at a given design state
-  $\sigma\in\Sigma(\Delta)$, clock cycle count $\tau\in{}\mathbb{N}$,
-  and clock event $clk\in\{\uparrow,\downarrow\}$, and thus resulting
-  in a new state $\sigma_i\in\Sigma(\Delta)$. The relation is written
+  Given a simulation environment
+  $E_p\in{}(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow(input\mhyphen{}id\rightarrow{}value)$,
+  let us define the relation expressing the update of the value of
+  input ports at a given design state $\sigma\in\Sigma$, clock cycle
+  count $\tau\in{}\mathbb{N}$, and clock event
+  $clk\in\{\uparrow,\downarrow\}$, and thus resulting in a new state
+  $\sigma_i\in\Sigma$. The relation is written
   $\mathtt{Inject}_{clk}(\sigma,E_p,\tau,\sigma_i)$ and verifies that:
   $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ and
   $\sigma_i={<}\mathcal{S}\ocup{}E_p(\tau,clk),\mathcal{C},\mathcal{E}{>}$.

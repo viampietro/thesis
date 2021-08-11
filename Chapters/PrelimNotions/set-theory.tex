@@ -1,51 +1,181 @@
 \subsection{Intuitionistic first order logic}
 \label{sec:fol-intuitionistic}
 
-The intuitionistic first order logic constitutes our framework for the
-expression and the interpretation of logical formulas.  The language
-to express logical formulas is the same between classical and
-intuitionistic first order logic. A logical formula is either:
+The intuitionistic first-order logic \cite{Moschovakis2018}
+constitutes our framework for the expression and the interpretation of
+logical formulas.  The language to express logical formulas is the
+same between classical and intuitionistic first-order logic. A logical
+formula is either:
 
 \begin{itemize}
+\item $\bot$ (bottom), the always false formula, or $\top$ (top), the
+  always true formula
 \item a predicate (i.e. an atomic formula). A predicate $P$ possibly
   takes $n$ parameters as inputs and is interpreted to either true,
   represented by the $\top$ symbol, or false, represented by the
   $\bot$ symbol. We write $P(x_0,\dots,x_n)$ to denote an $n$-ary
-  predicate.
+  predicate $P$ applied to the inputs $x_0,\dots,x_n$.
 
-\item the composition of subformulas with one of the following
-  connectors: the conjunction $\land$, the disjunction $\lor$, the
+\item the composition of two subformulas with one of the following
+  binary operators: the conjunction $\land$, the disjunction $\lor$, the
   implication $\Rightarrow$, the double implication $\Leftrightarrow$
+
+  
+\item the composition of one subformula with the negation operator
+  $\neg$
   
 \item a subformula prefixed by the universal quantifier $\forall$ or
   the existantial quantifier $\exists$. For instance, the formula
-  $\forall{}x.P(x)$ denotes the atomic formula $P(x)$ where $x$ is a
-  unversally quantified variable of the formula. As a shorthand
-  notation, we write $\forall{}x,y,z.\dots$ to denote
-  $\forall{}x,\forall{}y,\forall{}z.\dots$. The same stands for the
-  existantial quantifier $\exists$.
+  $\forall{}x.P(x)$ denotes the atomic formula $P(x)$ where the
+  parameter $x$ is a universally quantified variable of the
+  formula. As a shorthand notation, we write $\forall{}x,y,z.\dots$ to
+  denote $\forall{}x,\forall{}y,\forall{}z.\dots$. The same stands for
+  the existantial quantifier $\exists$.
 \end{itemize}
 
-
-
-
-
-The difference between the classical first order logic and the
+The difference between the classical first-order logic and the
 intuitionistic one relies in the absence of the \emph{law of the
-  excluded middle} in the latter logic. The \emph{law of the excluded
-  middle} considers that for all n-ary predicate $P\in{}X_0$ where
-$x_0\in{}X_0,\dots,x_n\in{}X_n$, either $P(x_0,\dots,x_n)$ is valuated
-to true, or
+  excluded middle} in the latter logic. In classical logic, the
+\emph{law of the excluded middle} considers that a formula can always
+be either interpreted as true or false, i.e. a formula is always
+\emph{decidable} regardless the valuation of its inputs. In
+intuitionistic logic, such an assumption is discarded. Thus, a formula
+of the intuitionistic logic can be \emph{undecidable}, i.e. given a
+valuation of its input, one can not always state that the formula is
+true or false. This is implication is that one as to exhibit a
+\emph{explicitly-built} proof to show that a given formula is
+true. One can not rely on the law of excluded middle to perform a
+proof by contradiction. As so, the intuitionistic logic is said to be
+\emph{constructive} in the sense that one as to \emph{construct} a
+concrete proof object to show that a formula is true. The
+intuitionistic first-order logic is built in the \coq{} proof
+assistant. Thus, a logic formula expressed with the \coq{} proof
+assistant is an intuitionistic formula by default. For this reason, we
+choose the intuitionistic first-order logic as our mathematical
+framework for the expression of logic formulas.
 
+In what follows, we often give the definition of a predicate by
+relating its semantics to the semantics of an underlying formula. For
+instance, we define the predicate $IsEven(n)$, for all
+$n\in{}\mathbb{N}$, as follows:
+$IsEven(n)\equiv{}\exists{}k\in\mathbb{N}~s.t.~2k=n$.
 
 \subsection{Set theory}
 \label{sec:set-theory}
 
 In this thesis, we use set theory as the base formalism for all our
-mathematical definitions and proofs. In the set theory, a set
-represents a group of elements called the members of the set. For
-every set $X$, we write $x\in{}X$ to denote that the element $x$ is a
-member of set $X$. From here, there are multiple ways to define a set.
+mathematical definitions and proofs. In set theory, a set represents a
+group of elements called the members of the set. For every set $X$, we
+write $x\in{}X$ to denote that the element $x$ is a member of set
+$X$. We note $X\subseteq{}Y$ the fact that a set $X$ is a subset of
+set $Y$ such that for all $x$ if $x\in{}X$ then $x\in{}Y$.  From here,
+there are multiple ways to define a set.
+
+\paragraph{Extensional definition} A set is defined by
+\emph{extension} with the enumeration of all its members. For
+instance, $\{1,0,-1\}$, $\{a,b,c\}$ or $\{p_0,\dots,p_n\}$ are all
+sets defined by extension.
+
+\paragraph{Intensional definition}
+The intensional definition of a set specifies a given property
+verified by all the members of the set. For instance, here is the
+intensional definition of the set of even numbers:
+$\{n\in\mathbb{N}~\vert~\exists{}k\in\mathbb{N}~s.t.~n=2k\}$ or
+$\{n\in\mathbb{N}~\vert~IsEven(n)\}$.
+
+\paragraph{Set operators}
+
+Set theory also defines some operators to compose sets together. Given
+two sets $A$ and $B$, the following sets are formed:
+
+\begin{itemize}
+\item $A\cup{}B$ denotes the set formed by the union of the members of
+  $A$ and the members of $B$,
+  i.e. $A\cup{}B=\{x~\vert~x\in{}A\lor{}x\in{}B\}$.
+  
+\item $A\cap{}B$ denotes the set formed by the intersection of set $A$
+  and $B$, i.e. $A\cap{}B=\{x~\vert~x\in{}A\land{}x\in{}B\}$.
+  
+\item $A\setminus{}B$ denotes the set formed by the elements of set
+  $A$ that are not elements of set $B$ (the difference between set $A$
+  and $B$), i.e. $A\setminus{}B=\{x~\vert~x\in{}A\land{}x\notin{}B\}$.
+
+\item $A\times{}B$ denotes the cartesian product between the elements
+  of set $A$ and set $B$, i.e. the set of all ordered pairs defined by
+  $\{(x,y)~\vert~x\in{}A\land{}y\in{}B\}$. We generalize the
+  definition to build the set of $n$-tuples
+  $A_0\times{}A_1\times\dots\times{}A_n$ defined by
+  $\{(x_0,
+  (x_1,\dots(\dots,x_n)~\vert~x_0\in{}A_0,x_1\in{}A_1,\dots,x_n\in{}A_n\}$.
+  It is sometimes useful to give a name to the elements of a tuple
+  without refering to their index. In such a case, a tuple is called a
+  record where each element, called a field, has been given an
+  explicit name. This formalism is useful to represent rather complex
+  data structures. For instance, say that we want to represent the set
+  of humans by a triplet composed of the size, weight, and eye color.
+  We can define this set as the set of triplet
+  $\mathbb{R}\times\mathbb{R}\times\{green,blue,brown\}$. If we want
+  to give a concrete name to the elements of the triplet, we can
+  equivalently define such a triplet as a record, written
+  ${<}size,weight,eye{>}$, where $size\in\mathbb{R}$,
+  $weight\in\mathbb{R}$ and $eye\in\{green,blue,brown\}$.
+  
+\item $A\sqcup{}B$ denotes the set formed by the disjoint union of set
+  $A$ and set $B$. The disjoint union is obtained by adjoining an
+  index $i$ to the elements of $A$ and an index $j$ to the elements of
+  $B$ such that $i\neq{}j$. Then, the two sets of couples are joined
+  together to build the disjoint union of $A$ and $B$. For instance,
+  consider that $A=\{a,b,c\}$ and $B=\{a,b\}$. To obtain the disjoint
+  union $A\sqcup{}B$, we create the two sets
+  $A_i=\{(i,a),(i,b),(i,c)\}$ and $B_i=\{(j,a),(j,b)\}$, and then join
+  the sets together
+  s.t. $A\sqcup{}B=\{(i,a),(i,b),(i,c),(j,a),(j,b)\}$. When the two
+  sets $A$ and $B$ are disjoint, i.e. $A\cap{}B=\emptyset$, then
+  $A\sqcup{}B$ is isomorphic to $A\cup{}B$. To stress the fact that we
+  are building a set from the union of two disjoint set, we prefer to
+  use the disjoint union operator. For instance, we write
+  $\mathbb{N}\sqcup{}\{\infty\}$, instead of
+  $\mathbb{N}\cup{}\{infty\}$, to denote the set of values ranging
+  from the set of natural numbers with the addition of the infinite
+  value.
+
+\item $\mathcal{P}(A)$ denotes the powerset of $A$ defined by all the
+  possible subsets formed with the elements of set $A$, i.e.
+  $\mathcal{P}(A)=\{X~\vert~X\subseteq{}Y\}$.
+\end{itemize}
+
+\paragraph{Relations and functions}
+
+A binary relation $R$ between two sets $X$ and $Y$ is a subset of the
+set of pairs $X\times{}Y$, i.e. $R\subseteq{}X\times{}Y$, or an
+element of the powerset $\mathcal{P}(X\times{}Y)$,
+i.e. $R\in\mathcal{P}(X\times{}Y)$. We write $R(x,y)$ to denote
+$(x,y)\in{}R$. We generalize the definition to n-ary relations. A
+n-ary relation between sets $X_0,\dots,X_n$ is a subset of the set of
+n-tuples $X_0\times\dots\times{}X_n$,
+i.e. $R\subseteq{}X_0\times\dots\times{}X_n$, or an element of the
+powerset $\mathcal{P}(X_0\times\dots\times{}X_n)$,
+i.e. $R\in\mathcal{P}(X_0\times\dots\times{}X_n)$. We write
+$R(x_0,\dots,x_n)$ to denote $(x_0,\dots,x_n)\in{}R$. \\
+
+A partial function $f$ from set $X$ to set $Y$ is a binary relation
+from $X$ to $Y$ verifying that
+$\forall{}x\in{}X,y,y'\in{}Y,~(x,y)\in{}f\land{}(x,y')\in{}f\Rightarrow{}y=y'$,
+i.e. $x$ appears at most once as the first element of a pair in $f$.
+We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from $X$
+to $Y$. The set of the first elements of the pairs defined in $f$ is
+called the \emph{domain} of $f$. We write it
+$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
+
+A total function $a$, or application, from $X$ to $Y$ is a partial
+function verifying that all the elements of $X$ appear as the first
+element of a pair in $a$, i.e. for all $x\in{}X$, there exists
+$y\in{}Y$ such that $(x,y)\in{}a$. We note $a\in{}X\rightarrow{}Y$ to
+denote an application from $X$ to $Y$.
+
+
+
+
 
 
 
