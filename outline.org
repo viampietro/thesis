@@ -5,11 +5,11 @@
 ** DONE Designing critical digital systems [100%]
 ** DONE HILECOP [100%]
 ** DONE Verifying HILECOP [100%]
-* TODO Preliminary notions
-** set theory 
-** natural semantics
-** induction principles
-** coq language
+* TODO Preliminary notions [50%]
+** DONE set theory 
+** DONE natural semantics
+** TODO induction principles
+** TODO coq language
 * DONE Implementation of the HILECOP high-level models [100%]
 ** DONE introduction
 ** DONE informal presentation of synchronously executed Petri nets [100%]

@@ -164,8 +164,8 @@ $\forall{}x\in{}X,y,y'\in{}Y,~(x,y)\in{}f\land{}(x,y')\in{}f\Rightarrow{}y=y'$,
 i.e. $x$ appears at most once as the first element of a pair in $f$.
 We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from $X$
 to $Y$. The set of the first elements of the pairs defined in $f$ is
-called the \emph{domain} of $f$. We write it
-$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
+called the \emph{domain} of $f$, written $\mathtt{dom}(f)$. We write
+it $\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
 
 A total function $a$, or application, from $X$ to $Y$ is a partial
 function verifying that all the elements of $X$ appear as the first
@@ -173,11 +173,162 @@ element of a pair in $a$, i.e. for all $x\in{}X$, there exists
 $y\in{}Y$ such that $(x,y)\in{}a$. We note $a\in{}X\rightarrow{}Y$ to
 denote an application from $X$ to $Y$.
 
+\subsection{Rule-based definition of sets}
+\label{sec:rule-based-def}
 
+While describing the operational semantics of a subset of the \vhdl{}
+language in Chapter~\ref{chap:hvhdl}, we define some of the sets (e.g,
+simulation relations) with rule instances, also called inference rules
+or judgments. A rule instance, defining the members of a set $A$, can
+take the following form:
 
+\begin{center}
+\begin{prooftree}[template=\inserttext]
+  \infer0{ $C$ }
+\end{prooftree}
+~or~
+\begin{prooftree}[template=\inserttext]
+  \hypo{$P_1,\dots,P_n$}
+  \infer1{ $C$ }
+\end{prooftree}
+\end{center}
 
+The left form of rule instance is called an axiom; it states that
+$C\in{}A$.  The rule instance \begin{prooftree}[template=\inserttext]
+  \hypo{$P_1,\dots,P_n$} \infer1{ $C$ }
+\end{prooftree} states $C\in{}A$ if $P_1,\dots,P_n$ hold. Also, we say
+that $C$ is derivable, if $P_1,\dots,P_n$ are derivable.
+$P_1,\dots,P_n$ are the premises of the rule, and $C$ is the
+conclusion of the rule. The premises $P_1,\dots,P_n$ hold if there
+exists a \emph{finite} derivation tree for each one of them. A
+\emph{finite} derivation tree is obtained by applying the rule
+instances defining the set until all branches of the derivation reach
+axioms. For instance, the two following rules define the $IsEven$
+unary relation that states that a given natural number is even:
 
+\begin{table}[H]
+  \centering
+\begin{prooftree}[template=\inserttext]
+  \infer0{ $IsEven(0)$ }
+\end{prooftree}
+\hspace{50pt}
+\begin{prooftree}[template=\inserttext]
+  \hypo{$IsEven(n-2)$}
+  \infer1{ $IsEven(n)$ }
+\end{prooftree}
+\end{table}
 
+The first rule states as an axiom that $0$ is an even number; the
+second states that for all natural number $n$, $n$ is an even number
+if one can derive that fact that $n-2$ is an even number. Thus, we can
+derive from the previous rules that $4$ is an even number by building
+the following derivation tree:
+
+\begin{table}[H]
+  \centering
+  \begin{prooftree}[template=\inserttext]
+    \infer0{$IsEven(0)$}
+    \infer1{$IsEven(2)$}
+    \infer1{ $IsEven(4)$ }
+  \end{prooftree}
+\end{table}
+
+Here, all branches of the tree has reached an axiom, and thus the
+derivation tree is finite. The further illustrate the use of rule
+instances in the definition of a set, let us consider the following
+minimal language of arithmetic expressions expressed in the
+Backus-Naur form:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lll}
+    $e$ & $::=$ & $n~|~id~|~e_0+e_1$ \\
+  \end{tabular}
+\end{table}
+
+$n$ ranges over the set of natural numbers $\mathbb{N}$; $id$ ranges
+over the set $\mathtt{string}$ of non-empty strings (i.e. it is the
+set of identifiers). To evaluation the arithmetic expressions, we need
+a state $s\in\mathtt{string}\rightarrow{}\mathbb{N}$ that maps each
+variable identifier to a natural number value. We define the
+evaluation relation for these arithmetic expressions with the three
+following rules:
+
+\begin{table}[H]
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{Nat}} \\
+    {\begin{prooftree}[template=\inserttext]
+      \infer0{ $s\vdash{}n\rightarrow{}n$ }
+    \end{prooftree}} \\
+  \end{tabular}
+  \hspace{10pt}
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{Var}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \infer0[$id\in{}\mathtt{dom}(s)$]{ $s\vdash{}id\rightarrow{}s(id)$ }
+      \end{prooftree}} \\
+  \end{tabular}
+  \hspace{10pt}
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{Add}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \hypo{ $s\vdash{}e_0\rightarrow{}n$ }
+        \hypo{ $s\vdash{}e_1\rightarrow{}m$ }
+        \infer2{ $s\vdash{}e_0+e_1\rightarrow{}n+m$ }
+      \end{prooftree}}
+  \end{tabular}
+\end{table}
+
+Here, the evaluation relation is a subset of the set of triplets
+$(\mathtt{string}\rightarrow\mathbb{N})\times{}e\times\mathbb{N}$. In
+the rule instances defining the evaluation relation, the $\vdash$
+symbol (pronounced \emph{thesis}) stresses that the left part implies
+the right part, or it is involved in the evaluation of the right part.
+For instance, the second rule can be read: in the context of state
+$s$, $id$ evaluates to $s(id)$. Thus, when the \emph{context} is not
+involved in the evaluation of the syntactic constructs at the right
+side of the $\vdash$ symbol, we permit ourselves to remove the context
+and the $\vdash$ from the rule instances. For example, we can define
+to the \textsc{Nat} rule by
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{Nat}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \infer0{ $n\rightarrow{}n$ }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+\noindent{}as the state $s$ in not involved in the evaluation of
+expressions that are natural numbers. 
+
+Note that in the \textsc{Var} rule, there appears an extra statement,
+at the right of the judgment line, called a \emph{side
+  condition}. This is an extra condition that must hold with all the
+premises of the rule instance, but which is does not generate a
+derivation tree of its own.
+
+Finally, here is an example of a derivation tree for the evaluation of
+the expression $x+(y+1)$ in the context of state $\{(x,1),(y,2)\}$:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \infer[left label={\textsc{Var}}]0[$x\in\{x,y\}$]{ $\{(x,1),(y,2)\}\vdash{}x\rightarrow{}1$ }
+        
+        \infer[left label={\textsc{Var}}]0[$y\in\{x,y\}$]{ $\{(x,1),(y,2)\}\vdash{}y\rightarrow{}2$ }
+        \infer0[\textsc{Nat}]{ $1\rightarrow{}1$ }
+        \infer2[\textsc{Add}]{ $\{(x,1),(y,2)\}\vdash{}y+1\rightarrow{}3$ }
+        
+        \infer2[\textsc{Add}]{
+            $\{(x,1),(y,2)\}\vdash{}x+(y+1)\rightarrow{}4$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
 
 
 %%% Local Variables:
