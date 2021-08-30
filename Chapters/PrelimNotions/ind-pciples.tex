@@ -1,0 +1,90 @@
+In the proceedings of proofs described in this thesis, we often
+perform proofs by induction. Here are some reminders on the induction
+principles to help the reader understand the proofs of Chapter and
+Appendices.
+
+\subsection{Mathematical induction}
+\label{sec:math-ind}
+
+The principle of mathematical induction is tied to the set of natural
+numbers. It states that, in order to prove that a property $P$ holds
+for all natural numbers, it is sufficient to prove that:
+
+\begin{itemize}
+\item $P$ holds for $0$
+\item if $P$ holds for a given $n$ then it holds at $n+1$
+\end{itemize}
+
+When, assuming that $P(n)$ to try and then try to prove $P(n+1)$ for a
+given $n$, $P(n)$ is called the induction hypothesis. Thus,
+mathematical induction describes a way to deduce that a property holds
+for the set of natural numbers; first by stating that the property
+holds for zero; then by giving a strategy to prove that the property
+$P$ holds for any number $n$ by applying $P(m)$ implies $P(m+1)$
+starting from $0$.
+
+\subsection{Structural induction}
+\label{sec:struct-ind}
+
+Sometimes, reasoning by induction necesitates to follow the structure
+of a given set, i.e. the formation rules of a given set. For instance,
+if we want to prove that a given property $P$ holds for the set of
+arithmetic expressions given as an example in
+Section~\ref{sec:rule-based-def}, we must prove that:
+
+\begin{itemize}
+\item $P$ holds for all natural number $n$
+\item $P$ holds for all identifiers $id$
+\item if $P$ holds for all sub-expressions $e_0$ and $e_1$, then $P$
+  holds for $e_0+e_1$
+\end{itemize}
+
+A proof that leverages structural induction follows the structure of
+the elements we are reasoning upon. In this thesis, we are using
+structural induction especially to prove the equality between two sum
+expressions; for instance, given a two sets $A$ and $B$, an
+application $f\in{}A\rightarrow{}\mathbb{N}$, and an application
+$g\in{}B\rightarrow{}\mathbb{N}$, say we want to prove :
+
+\begin{center}
+  $\sum\limits_{a\in{}A}f(a)=\sum\limits_{b\in{}B}g(b)$ 
+\end{center}
+
+What we often do is to use structural induction on one of the two sum
+terms, i.e. the left or the right operand of the equality. Here, the
+structural induction follows the recursive definition of the sum term,
+i.e.:
+
+\begin{center}
+  $\sum\limits_{a\in{}A}f(a)\equiv
+  \begin{cases}
+    0~\mathtt{if}~A=\emptyset \\
+    f(a)+\sum\limits_{a'\in{}A\setminus\{a\}}f(a')~otherwise \\
+  \end{cases}$
+\end{center}
+
+Thus, to prove the above equality, we must prove that:
+
+\begin{itemize}
+\item $0=\sum\limits_{b\in{}B}g(b)$ when $A=\emptyset$
+\item if
+  $\sum\limits_{a'\in{}A\setminus\{a\}}f(a')=\sum\limits_{b\in{}B'}g(b)$
+  for all $B'\subseteq{}B$, then
+  $f(a)+\sum\limits_{a'\in{}A\setminus\{a\}}f(a')=\sum\limits_{b\in{}B}g(b)$
+  holds
+\end{itemize}
+
+The induction follows the structure of the function. In this specific
+case, structural induction is often refered to as \textit{functional}
+induction.
+
+\subsection{Rule induction}
+\label{sec:rule-ind}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

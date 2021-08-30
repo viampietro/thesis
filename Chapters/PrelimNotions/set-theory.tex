@@ -42,7 +42,7 @@ be either interpreted as true or false, i.e. a formula is always
 intuitionistic logic, such an assumption is discarded. Thus, a formula
 of the intuitionistic logic can be \emph{undecidable}, i.e. given a
 valuation of its input, one can not always state that the formula is
-true or false. This is implication is that one as to exhibit a
+true or false. The consequence is that one as to exhibit a
 \emph{explicitly-built} proof to show that a given formula is
 true. One can not rely on the law of excluded middle to perform a
 proof by contradiction. As so, the intuitionistic logic is said to be
@@ -106,7 +106,7 @@ two sets $A$ and $B$, the following sets are formed:
   definition to build the set of $n$-tuples
   $A_0\times{}A_1\times\dots\times{}A_n$ defined by
   $\{(x_0,
-  (x_1,\dots(\dots,x_n)~\vert~x_0\in{}A_0,x_1\in{}A_1,\dots,x_n\in{}A_n\}$.
+  (x_1,\dots(\dots,x_n)))~\vert~x_0\in{}A_0,x_1\in{}A_1,\dots,x_n\in{}A_n\}$.
   It is sometimes useful to give a name to the elements of a tuple
   without refering to their index. In such a case, a tuple is called a
   record where each element, called a field, has been given an
@@ -135,7 +135,7 @@ two sets $A$ and $B$, the following sets are formed:
   are building a set from the union of two disjoint set, we prefer to
   use the disjoint union operator. For instance, we write
   $\mathbb{N}\sqcup{}\{\infty\}$, instead of
-  $\mathbb{N}\cup{}\{infty\}$, to denote the set of values ranging
+  $\mathbb{N}\cup{}\{\infty\}$, to denote the set of values ranging
   from the set of natural numbers with the addition of the infinite
   value.
 
@@ -164,8 +164,8 @@ $\forall{}x\in{}X,y,y'\in{}Y,~(x,y)\in{}f\land{}(x,y')\in{}f\Rightarrow{}y=y'$,
 i.e. $x$ appears at most once as the first element of a pair in $f$.
 We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from $X$
 to $Y$. The set of the first elements of the pairs defined in $f$ is
-called the \emph{domain} of $f$, written $\mathtt{dom}(f)$. We write
-it $\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
+called the \emph{domain} of $f$. We write it
+$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
 
 A total function $a$, or application, from $X$ to $Y$ is a partial
 function verifying that all the elements of $X$ appear as the first
@@ -233,11 +233,11 @@ the following derivation tree:
   \end{prooftree}
 \end{table}
 
-Here, all branches of the tree has reached an axiom, and thus the
-derivation tree is finite. The further illustrate the use of rule
-instances in the definition of a set, let us consider the following
-minimal language of arithmetic expressions expressed in the
-Backus-Naur form:
+Here, all branches of the tree (there is only one branch here) has
+reached an axiom, and thus the derivation tree is finite. To further
+illustrate the use of rule instances in the definition of a set, let
+us consider the following minimal language of arithmetic expressions
+expressed in the Backus-Naur form:
 
 \begin{table}[H]
   \centering
@@ -248,8 +248,8 @@ Backus-Naur form:
 
 $n$ ranges over the set of natural numbers $\mathbb{N}$; $id$ ranges
 over the set $\mathtt{string}$ of non-empty strings (i.e. it is the
-set of identifiers). To evaluation the arithmetic expressions, we need
-a state $s\in\mathtt{string}\rightarrow{}\mathbb{N}$ that maps each
+set of identifiers). To evaluate the arithmetic expressions, we need a
+state $s\in\mathtt{string}\rightarrow{}\mathbb{N}$ that maps each
 variable identifier to a natural number value. We define the
 evaluation relation for these arithmetic expressions with the three
 following rules:
@@ -307,7 +307,7 @@ expressions that are natural numbers.
 Note that in the \textsc{Var} rule, there appears an extra statement,
 at the right of the judgment line, called a \emph{side
   condition}. This is an extra condition that must hold with all the
-premises of the rule instance, but which is does not generate a
+premises of the rule instance, but which does not generate a
 derivation tree of its own.
 
 Finally, here is an example of a derivation tree for the evaluation of
@@ -330,6 +330,11 @@ the expression $x+(y+1)$ in the context of state $\{(x,1),(y,2)\}$:
   \end{tabular}
 \end{table}
 
+Here again, all the branches of the derivation tree have reached
+axioms, and thus\\ $\{(x,1),(y,2)\}\vdash{}x+(y+1)\rightarrow{}4$ is a
+member of the evaluation relation of arithmetic expressions. It states
+that the expression $x+(y+1)$ evaluates to $4$ in the state
+$\{(x,1),(y,2)\}$.
 
 %%% Local Variables:
 %%% mode: latex

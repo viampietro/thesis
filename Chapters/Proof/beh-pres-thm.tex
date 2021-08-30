@@ -578,40 +578,66 @@ clock count $\tau$.
 \end{lemma}
 
 \begin{niproof}
-  Assuming the above hypotheses, let us show
-  \framebox{$\gamma\vdash\theta_s\stackrel{\uparrow}{\sim}\theta_\sigma$.} Let us reason by induction on $\tau$.
+  Given a $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, and assuming
+  $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
+  $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$,
+  let us show
+  \begin{frameb}
+    $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
+    $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ and
+    $E_c,\tau\vdash{}sitpn,s\rightarrow\theta_s$ and
+    $E_p,\Delta,\tau,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
+    then
+    $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
+  \end{frameb}
+  
+  Let us reason by induction on $\tau$.
   
   \begin{itemize}
-  \item \textbf{Base case}: $\tau=0$. Then,
+  \item \textbf{BASE CASE}: $\tau=0$. Then,
     $\sigma_s=\sigma_\sigma=[~]$ and by definition of the execution
     trace similarity relation, we can show
     \qedbox{$\gamma\vdash[~]\stackrel{\uparrow}{\approx}[~]$.}
     
-  \item \textbf{Induction case}: $\tau > 0$.
+  \item \textbf{INDUCTION CASE}:
+    Assuming
     \begin{ih}
       $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ and
-      $E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$ and
-      $E_p,\Delta,\tau-1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
+      $E_c,\tau\vdash{}sitpn,s\rightarrow\theta_s$ and
+      $E_p,\Delta,\tau\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
       then
       $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
     \end{ih}
+
+    we must prove the goal at $\tau+1$, i.e.:
+    \begin{frameb}
+      $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
+      $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ and
+      $E_c,\tau+1\vdash{}sitpn,s\rightarrow\theta_s$ and
+      $E_p,\Delta,\tau+1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma$
+      then
+      $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
+    \end{frameb}
+    
+    
     By definition of the SITPN execution and the \hvhdl{} simulation
     relations for $\tau>0$, we have:
     \begin{itemize}
-    \item $E_c,\tau\vdash{}s\xrightarrow{\uparrow}{}s'$ and
-      $E_c,\tau\vdash{}s'\xrightarrow{\downarrow}{}s''$ and
-      $E_c,\tau-1\vdash{}sitpn,s''\rightarrow\theta$.
-    \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_i)$ and
+    \item $E_c,\tau+1\vdash{}s\xrightarrow{\uparrow}{}s'$ and
+      $E_c,\tau+1\vdash{}s'\xrightarrow{\downarrow}{}s''$ and
+      $E_c,\tau\vdash{}sitpn,s''\rightarrow\theta$.
+    \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau+1, \sigma_i)$ and
       $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
       and
       $\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
-    \item $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau, \sigma'_i)$
+    \item $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau+1, \sigma'_i)$
       and
       $\Delta,\sigma'_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_\downarrow$
       and
       $\Delta,\sigma_\downarrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma''$
-    \item $E_p,\Delta,\tau-1,\sigma''\vdash{}d.cs\rightarrow\theta'$.
+    \item $E_p,\Delta,\tau,\sigma''\vdash{}d.cs\rightarrow\theta'$.
     \end{itemize}
     and $\theta_s=s' :: s'' :: \theta$ and
     $\theta_\sigma=\sigma' :: \sigma'' :: \theta'$.
