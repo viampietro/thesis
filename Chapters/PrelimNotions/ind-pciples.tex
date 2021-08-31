@@ -81,8 +81,107 @@ induction.
 \subsection{Rule induction}
 \label{sec:rule-ind}
 
+A specific kind of induction, called \textit{rule} induction, applies
+when wanting to prove properties over sets that are defined by
+inference rules (or rule instances). For instance, let us take the
+evaluation relation for arithmetic expressions used in
+Section~\ref{sec:rule-based-def} to illustrate the principle of rule
+induction. To prove that a property $P$ holds for the evaluation
+relation of arithmetic expressions, which is a subset of triplets
+$(\mathtt{string}\rightarrow\mathbb{N})\times{}e\times\mathbb{N}$, we
+must prove that:
 
+\begin{itemize}
+\item $P(s,n,n)$ for all $s,n$
+\item if $id\in\mathtt{dom}(s)$ then $P(s,id,s(id))$ for all $s,id$
+\item if $s\vdash{}e_0\rightarrow{}n$ and $P(s,e_0,n)$, and
+  $s\vdash{}e_1\rightarrow{}m$ and $P(s,e_1,m)$ then
+  $P(s,e_0+e_1,n+m)$ for all $s,e_0,e_1,n,m$
+\end{itemize}
 
+Rule induction states that in order to prove a property over a set
+defined by rule instances, the property must hold in any construction
+case of the considered set. The idea is that if the property is
+preserved from the premises of rules to the conclusions then the
+property holds for all the elements of the set. 
+
+Let us give an application of rule induction to prove a property over
+the evaluation relation of arithmetic expressions.  First, we define,
+through the three following rules, the relation $\in_r$ stating that a
+given identiifer $id$ is referenced in an arithmetic expression $e$,
+written $id\in_r{}e$:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{10}{12}\selectfont\textsc{InRId}} \\
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \infer0[]{
+          $id\in_r{}id$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{10}{12}\selectfont\textsc{InRAddL}} \\
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \hypo{$id\in_r{}e_0$}
+        \infer1[]{
+          $id\in_r{}e_0+e_1$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{10}{12}\selectfont\textsc{InRAddR}} \\
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \hypo{$id\in_r{}e_1$}
+        \infer1[]{
+          $id\in_r{}e_0+e_1$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+Then, the property of Proposition states that an arithmetic expression
+that contains references to identifiers that are not part of the
+current state's domain can not be evaluated.
+
+\begin{proposition}
+  Let $id\in\mathtt{string}$. For all state $s$, arithmetic expression
+  $e$, and natural number $n$,
+  \begin{center}
+    $id\notin{}\mathtt{dom}(s)\land{}id\in_r{}e\Rightarrow{}\lnot{}s\vdash{}e\rightarrow{}n$
+  \end{center}
+\end{proposition}
+
+\begin{proof}
+  Let us define the property $P$ as follows:
+  \begin{center}
+    $P(s,e,n)\equiv{}id\notin{}\mathtt{dom}(s)\land{}id\in_r{}e\Rightarrow{}\lnot{}s\vdash{}e\rightarrow{}n$
+  \end{center}
+
+  Then, let us use rule induction to prove $P(s,e,n)$.
+
+  First, we must prove $P(s,n,n)$. Assuming $id\in_r{}n$, there is a
+  contradiction as no rule instance defining the relation $\in_r$
+  includes the case where the considered expression is a natural
+  number.
+
+  Then, we must prove $P(s,id',s(id'))$, assuming that
+  $id'\in\mathtt{dom}(s)$.  We know that $id\in_r{}id'$, and thus
+  $id=id'$. Then, there is a contradiction between
+  $id\in\mathtt{dom}(s)$ and $id\notin{}\mathtt{dom}(s)$.
+
+  Finally, we must prove $P(s,e_0+e_1,n+m)$, assuming that
+  $s\vdash{}e_0\rightarrow{}n$ and $P(s,e_0,n)$, and
+  $s\vdash{}e_1\rightarrow{}m$ and $P(s,e_1,m)$.  We know that
+  $id\in_r{}e_0+e_1$; this hypothesis has either be constructed by
+  applying Rule~\textsc{InRAddL} or Rule~\textsc{InRAddR}.  If
+  Rule~\textsc{InRAddL} has been applied, then we know $id\in_r{}e_0$;
+  thus, from $P(s,e_0,n)$, we can deduce
+  $\lnot{}s\vdash{}e_0\rightarrow{}n$, which contradicts
+  $s\vdash{}e_0\rightarrow{}n$. We can perform the proof in a similar
+  way if Rule~\textsc{InRAddR} has been applied.
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex
