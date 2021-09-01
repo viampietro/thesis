@@ -10,12 +10,275 @@ the \coq{} proof assistant, the reader can refer to the reference
 manual\footnote{\url{https://coq.inria.fr/distrib/current/refman/}},
 or to \cite{Chlipala2013,Paulin-Mohring2012,Bertot2004}.
 
+\subsection{The Calculus of Inductive Constructions (CIC)}
+\label{sec:cic}
 
-In the context of software engineering, the \coq{} proof assistant
-provides a way to implement program specifications using a rich type
-system, to implement programs leveraging functional programming, and
-to mechanize proofs of soundness and completeness between
-specifications and programs.
+At the heart of the \coq{} proof assistant, there is a kernel that
+implements the Calculus of Inductive Constructions (CIC)
+\cite{CoquandPaulin1990}. The CIC is a typed lambda-calculus extended
+with the possibility to define inductive types. Thus, the CIC permits
+to define programs and types in a similar way; both are \textit{terms}
+of the language. A program is a term with a certain type, and a type
+is a term with a certain type. The type of a type is called a
+\textit{sort}. We can mention two basic sorts built in the \coq{}
+proof assistant: the \texttt{Prop} sort which is the type of logical
+formulas, and the \texttt{Set} sort which is the type of
+\textit{small} sets.
+
+The \coq{} proof assistant permits to express logic formulas and to
+interactively build proofs of these formulas by using a high-level
+tactic language. The sequence of tactics that builds a proof for a
+given formula is called a proof script. The execution of a proof
+script builds a proof term. As agreed with the CIC, a logic formula
+can be seen as a \textit{type} and a proof for this formula is an
+\textit{inhabitant} of the type denoted by the logic formula. Thus,
+when building a proof term by executing a proof script, the \coq{}
+kernel checks that the proof term is of the type of the logic formula
+by applying typing
+rules\footnote{\url{https://coq.inria.fr/distrib/current/refman/language/cic.html}}. For
+instance, let us take two logical propositions \texttt{A} and
+\texttt{B}. In \coq{}, we can declare these propositions as elements
+of the \texttt{Prop} type in the \coq{} top-level loop:
+
+\begin{lstlisting}[language=CoqBare]
+  Coq <  Variables A B : Prop.
+\end{lstlisting}
+
+The \texttt{Variables} keyword adds the propositions \texttt{A} and
+\texttt{B} to the global environment accessed by the \coq{}
+kernel. Now, say that we want to prove the \textit{modus ponens}
+expressed with the propositions \texttt{A} and \texttt{B}, namely that
+$\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
+In \coq{}, we can express it as follows:
+
+\begin{lstlisting}[language=CoqBare]
+  Coq <  Theorem modus_ponens : A -> (A -> B) -> A.
+\end{lstlisting}
+
+Here, we declare the modus ponens theorem as an element of type
+\coqeb{A -> (A -> B) -> A}. Here, the arrow represents the functional
+arrow; in fact, \coqeb{A -> B} is a notation for the product type
+$\Pi{}x:\mathtt{A}.\mathtt{B}$ where $x$ is not referenced in
+$\mathtt{B}$. According to the Curry-Howard correspondence
+\cite{Howard1980}, there is an equivalence between a proof term and a
+program. Thus, a proof term of the logical implication
+$\mathtt{A}\Rightarrow\mathtt{B}$ is equivalent to a program, or a
+function, of type \coqeb{A -> B}, i.e. a program that takes an element
+of type $\mathtt{A}$ and yields an element of type $\mathtt{B}$. Thus,
+the type \coqeb{A -> (A -> B) -> A} is a valid encoding of the formula
+$\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
+The \texttt{Theorem} keyword triggers the interactive proof mode
+through which the user will build a proof term for the corresponding
+formula. A simple proof term for the modus ponens theorem is a
+function that takes an element $x$ of type $\mathtt{A}$ and a function
+$f$ of type \coqeb{A -> B} as inputs, and yields an element of type
+$\mathtt{B}$ by applying the function $f$ to parameter $x$, i.e.
+$(f x)$. The function takes the form of the following term of the
+typed lambda-calculus:
+
+\begin{center}
+  $\lambda{}(x:\mathtt{A}).\lambda{}(f:\mathtt{A}\rightarrow\mathtt{B}).(f~x)$
+\end{center}
+
+While passing this \textit{lambda-term} as a proof term of the modus
+ponens theorem, the \coq{} kernel checks the well-typedness of the
+term by building the following derivation tree, which is a simplified
+version of the full derivation tree according to the typing rules of
+the CIC:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+
+        \infer0[\textsc{Var}]{
+          $\mathtt{A~B:Prop}[x:\mathtt{A},f:\mathtt{A}\rightarrow\mathtt{B}]\vdash{}f~:~\mathtt{A}\rightarrow\mathtt{B}$
+        }
+
+        \infer0[\textsc{Var}]{
+          $\mathtt{A~B:Prop}[x:\mathtt{A},f:\mathtt{A}\rightarrow\mathtt{B}]\vdash{}x~:~\mathtt{A}$
+        }
+        
+        \infer2[\textsc{App}]{
+          $\mathtt{A~B:Prop}[x:\mathtt{A},f:\mathtt{A}\rightarrow\mathtt{B}]\vdash(f~x)~:~$
+          \coqeb{B}
+        }
+    
+        \infer1[\textsc{Lam}]{
+          $\mathtt{A~B:Prop}[\mathtt{x:A}]\vdash\lambda{}(f:\mathtt{A}\rightarrow\mathtt{B}).(f~x)~:~$
+          \coqeb{(A -> B) -> B}
+        }
+        
+        \infer1[\textsc{Lam}]{
+            $\mathtt{A~B:Prop}[]\vdash\lambda{}(x:\mathtt{A}).\lambda{}(f:\mathtt{A}\rightarrow\mathtt{B}).(f~x)~:~$ \coqeb{A -> (A -> B) -> B}
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+In the above derivation tree, the global and the local environment are
+represented at the left of the thesis symbol. The local environment is
+represented by square brackets. The global environment is represented
+at the left of the local environment. At the root of the derivation
+tree, the global environment contains our two previously declared
+logical propositions \texttt{A} and \texttt{B}, whereas the the local
+environment is empty. The application of the \textsc{Lam} rule adds
+new entry to the local environment; the \textsc{App} triggers the
+type-checking of the left and the right part of an application; the
+\textsc{Var} rule checks that a term is well-typed if it is referenced
+as an element of the given type in the global or the local
+environment.
+
+As said before, the \texttt{Theorem} keyword triggers the interactive
+proof mode. The interactive proof mode will accompany the user to an
+incremental building of a proof term for the current goal, i.e. the
+current logic formula we want to prove. Then, to prove the modus
+ponens theorem, the following interface is first presented to the
+user:
+
+\begin{flushleft}
+  \coqeb{Coq <  Theorem modus_ponens : A -> (A -> B) -> B.}\\
+  \coqeb{1 subgoal}\\
+  \texttt{~~}\\
+  \texttt{============================}\\
+  \coqeb{A -> (A -> B) -> B}\\
+\end{flushleft}
+
+The term under the horizontal bar represents the current goal to
+proof, i.e. the current formula for which we are building a proof
+term. Above the horizontal bar are referenced the variables
+constituting the local environment. At the beginning of the proof, the
+local environment is empty -- and so is the local environemnt at the
+root of the derivation tree presented above. To build a proof term in
+interactive mode, the user will then invoke commands called
+\textit{tactics}. Each tactic invocation corresponds to the invocation
+of a typing rule of the CIC performed by the \coq{} kernel. To build a
+proof term for the modus ponens theorem, the first thing to do is to
+invoke the \textsc{Lam} rule; this is done by appealing to the
+\texttt{intros} tactic.
+
+\begin{flushleft}
+\coqeb{Coq <  intros x.}\\
+\coqeb{1 subgoal}\\
+\texttt{~~}\\
+\coqeb{x : A}\\
+\texttt{============================}\\
+\coqeb{(A -> B) -> B}\\
+\end{flushleft}
+
+Here, the user passes to the system the name of the variable that will
+be introduce in the local environment by the \textsc{Lam} rule, i.e
+the variable \texttt{x}. Then, we repeat the operation, applying the
+\textsc{Lam} rule a second time to introduce an element of type
+\coqeb{A -> B} in the environment.
+
+\begin{flushleft}
+\coqeb{Coq <  intros f.}\\
+\coqeb{1 subgoal}\\
+\texttt{~~}\\
+\coqeb{x : A}\\
+\coqeb{f : A -> B}\\
+\texttt{============================}\\
+\coqeb{B}\\
+\end{flushleft}
+
+Then, based on the local environment, we can build an object of type
+\texttt{B} by applying \texttt{f} to the input \texttt{x}. We can do
+it by appealing to the \texttt{apply} tactic. The \texttt{apply}
+tactic invokes the \textsc{App} rule.
+
+\begin{flushleft}
+\coqeb{Coq <  apply (f x).}\\
+\coqeb{No more subgoals.}\\
+\medskip
+\coqeb{Coq <  Qed.}\\
+\end{flushleft}
+
+After the invocation of the \texttt{apply} tactic, the proof term for
+the modus ponens theorem is completely built, thus, the \coq{}
+top-level loop displays the message that all goals are completed.
+Then, we can close the interactive proof mode and store the proof of
+the modus ponens theorem in the global environment by using the
+\texttt{Qed} keyword.
+
+\subsection{Inductive types}
+\label{sec:ind-types}
+
+One of the major strength of the CIC, and therefore of the \coq{}
+proof assistant, is the possibility to enrich the global type system
+with the definition of inductive types. For instance, here is the
+definition of the type of natural numbers, named \coqeb{nat}:
+
+\begin{lstlisting}[language=CoqBare]
+  Inductive nat : Set :=
+  | O : nat
+  | S : nat -> nat.
+\end{lstlisting}
+
+The \coqeb{nat} type is of the \coqeb{Set} sort (remember that the
+type of a type is called a sort). The \coqeb{nat} type is defined
+through two constructors, represented by the pipe-separated entries.
+The \coqeb{O} constructor states that zero is a natural number. The
+\coqeb{S} constructor takes a natural number as input and yields the
+succesor to this natural number. This corresponds to the structural
+definition of natural numbers in Peano's arithmetic. Thus, in this
+setting, the number 2 is represented by \coqeb{(S (S O))}, the number
+3 by \coqeb{(S (S (S O))}, etc. The result of the evaluation of an
+inductive type, declared through the \texttt{Inductive} keyword, is
+the addition of this type and each of its constructors to the global
+environment accesible by the \coq{} kernel. Also, a corresponding
+induction principle is generated at the evaluation of an inductive
+type definition. For instance, the \coqeb{nat_ind} induction principle
+is generated at the evaluation of the \coqeb{nat} type. The
+\coqeb{nat_ind} induction principle is equivalent to the so-called
+mathematical induction presented in Section~\ref{sec:math-ind}. It is
+a proof term of the logical formula denoting the mathematical
+induction, i.e.:
+
+\begin{lstlisting}[language=CoqBare]
+  forall P : nat -> Prop, P 0 -> (forall n : nat, P n -> P (S n)) -> forall n : nat, P n
+\end{lstlisting}
+
+Leveraging the definition of inductive types, the syntactic constructs
+of programming languages are also easily implemented. Here is the
+implementation of the syntax of arithmetic expressions presented in
+the previous section:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive e : Set :=
+| enat : nat -> e
+| eid : string -> e
+| eadd e -> e -> e.
+\end{lstlisting}
+
+Each constructor corresponds to a construction case in the definition
+of arithmetic expressions in the Backus-Naur form. The \coq{} system
+also generates the induction principle following the structure of
+arithmetic expressions (thus, a structural induction principle). The
+induction principle is a proof term of the following logical formula:
+
+\begin{lstlisting}[language=CoqBare]
+  forall P : e -> Prop,
+       (forall n : nat, P (enat n)) ->
+       (forall id : string, P (eid id)) -> 
+       (forall e0 : e, P e0 -> forall e1 : e, P e1 -> P (eadd e0 e1)) -> 
+       forall e : e, P e
+\end{lstlisting}
+
+The evaluation relation for arithmetic expressions is defined in a
+similar way:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive evale (s : string -> option nat) : e -> nat -> Prop :=
+| evalnat : forall n : nat, evale s (enat n) n
+| evalid : forall (id : string) (n : nat), 
+             s id = Some n ->
+             evale s (eid id) n
+| evaladd : forall (e0 e1 : e) (n m : nat), 
+              evale s e0 n -> 
+              evale s e1 m ->
+              evale s (eadd e0 e1) (n + m).
+\end{lstlisting}
 
 %%% Local Variables:
 %%% mode: latex
