@@ -280,6 +280,186 @@ Inductive evale (s : string -> option nat) : e -> nat -> Prop :=
               evale s (eadd e0 e1) (n + m).
 \end{lstlisting}
 
+In the above listing, the state that yields the value of identifiers
+present in an arithmetic expression is a named parameter of the
+\coqeb{evale} relation, i.e. \coqeb{s}. Parameters which are not
+varying from one construction case to another can be passed as named
+parameters while defining an inductive type. The state \coqeb{s} takes
+a string identifier as input and yields an \coqeb{option} to a natural
+number.  As so, the \coqeb{option} type permits to represent partial
+functions.  The identifiers that belong to the domain of state
+\coqeb{s} will be: associated with \coqeb{Some} natural number,
+whereas the unreferenced identifiers will be associated with the
+\coqeb{None} value of the \coqeb{option} type. The \coqe{Some} and the
+\coqeb{None} constructors are the two constructors of the
+\coqeb{option} type which is defined in \coq{} as follows:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive option (A : Type) : Type :=
+| Some : A -> option A
+| None : option A.
+\end{lstlisting}
+
+The \coqeb{option} type is parameterized by a type \coqeb{A} that will
+set the type of elements passed to the \coqeb{Some} constructor.
+
+\todo[inline]{Maybe present record types?}
+
+\subsection{Functional programming}
+\label{sec:fun-prog}
+
+As told in the presentation of the CIC, the \coq{} proof assistant
+permits to write functional programs, including the definition of
+recursive functions. The definition of a recursive function is
+performed with \coqeb{Fixpoint} keyword. Here is an example of
+recursive function defined in \coq{}. The \coqeb{pow} function takes
+two natural numbers \coqeb{a} and \coqeb{n} as inputs and yields
+\coqeb{a} to the power \coqeb{n}.
+
+\begin{lstlisting}[language=CoqBare]
+Fixpoint pow (a n : nat) {struct n} : nat :=
+  match n with 
+  | O => 1
+  | S m => a * pow a m
+  end.
+\end{lstlisting}
+
+In the body of the \coqeb{pow} function, the \coqeb{match} construct
+performs pattern-matching over the structure of the input \coqeb{n}.
+The input \coqeb{n} is an element of the \coqeb{nat} type, and thus it
+could either have been built with the \coqeb{O} constructor or as the
+succesor of another element of the \coqeb{nat} type, i.e. with the
+\coqeb{S} constructor. The \coqeb{match} construct enumerates all the
+possible construction cases for the given input. Each construction
+case leads to a pipe-separated entry; for each entry, the structure of
+the input appears at the left of the arrow, and the result returned
+appears at the right the arrow. In the above example, \coqeb{1} is
+returned if \coqeb{n} equals \coqeb{O}, and the result of the
+multiplication of \coqeb{a} with the recursive call \coqeb{pow a m} is
+returned if \coqeb{n} is the succesor of a certain \coqeb{m}. In that
+case, we have \coqeb{m = n $-$ 1}, and then the recursive call
+\coqeb{pow a m} can be read as \coqeb{pow a (n $-$ 1)}.
+
+When declaring a recursive function, the user must specify which
+parameter is structurally decrementing through the recursive
+call. This is performed through \coqeb|{struct $id$}| annotation,
+where $id$ denotes one parameter of the declared function. This
+information permits to the \coq{} kernel to generate the fixpoint
+equation for the function, thus proving that the function is always
+terminating.
+
+\subsection{Dependent types}
+\label{sec:dep-types}
+
+In the listings that the reader will find in the following chapters,
+and also in the code repository associated with this thesis, some data
+structures are \textit{dependently-typed} structures. Thus, we
+introduce here the notion of dependent type and how it is expressible
+with the \coq{} proof assistant.
+
+A type is said to be dependent when its expression depends on one or
+more elements of other types. Give an example of dependent type, let
+us take the definition of polymorphic lists that carry their own
+length. In \coq{}, these lists are defined as follows:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive listn (A : Type) : nat -> Set :=
+| niln : list A 0
+| consn : forall n : nat, A -> listn A n -> listn A (S n).
+\end{lstlisting}
+
+The \coqeb{listn} takes the type \coqeb{A} of its elements as its
+first parameter, then its second parameter is an element of the
+\coqeb{nat} type which represent the actual length of the list. Note
+that the first parameter, i.e. the \coqeb{A} parameter, of the
+\coqeb{listn} type alone is not sufficient to qualify \coqeb{listn} as
+a dependent type. The \coqe{A} parameter is the expression of the
+polymorphism of the elements of the list involved in generic
+programming. Polymorphism relates to the fact that the \coqeb{A} type
+is general enough to accept multiple types as the type of the list's
+elements. The \coqeb{niln} constructor of the \coqeb{listn}, i.e. the
+constructor of the empty list, is the type of lists of length 0.  The
+\coqeb{consn} constructor permits to add a new element at the head of
+an existing list to build a new list. Thus, the type of the resulting
+list is the type of lists of length $n+1$, where $n$ is the length of
+the tail list.
+
+To further illustrate the use of dependent types, let us say that we
+want to write a function that takes two natural numbers $n$ and $m$ as
+inputs, and yields $n-m$ only if $n\ge{}m$. Thus, the function takes
+two parameters $n$ and $m$, and a third parameter which is the proof
+that $n\ge{}m$. This third parameter \textit{depends} on the two
+previous parameters, and thus the function is said to be a
+dependently-typed function. In \coq{}, it would be written as follows:
+
+\begin{lstlisting}[language=CoqBare]
+Definition my_sub (n m : nat) (pf : m <= n) : nat := n $-$ m.
+\end{lstlisting}
+
+Even though, in its definition body, the \coqeb{my_sub} function
+simply appeals to the \coq{} built-in substraction function, passing a
+proof that $m$ is less than or equal to $n$ adds a constraint to the
+computation of the substraction. One can see how dependent types can
+help check that the parameters of programs meet some properties at
+definition time.  Constraining the type of parameters during the
+definition of programs reduces the proof efforts afterwards, but adds
+programming complexities at the moment of the definition. Thus, there
+is a trade-off between using dependent types to constraint the
+structures and programs at the moment of their definition, or letting
+the structures and programs as constraint loose as possible at the
+cost of having to prove much more properties afterwards.
+
+To conclude the subject of dependent types, we often use
+\textit{sigma} types to types of elements that meets a given
+property. A sigma type expresses the dependence between a parameter
+and a proof of a given property that possibly depends on another
+parameter. As so, sigma types are useful to express intentional sets
+(cf. Section~\ref{sec:set-theory}). In the \coq{} standard library,
+the definition of the sigma type is as follows:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive sig (A:Type) (P:A -> Prop) : Type := exist : forall x:A, P x -> sig P.
+\end{lstlisting}
+
+The \coqeb{sig} type only constructor takes an element \coqeb{x} of
+type \coqeb{A} along with a proof that \coqeb{x} meets a certain
+property \coqeb{P}. For instance, if we want to define in \coqe{} the
+type of natural numbers that are strictly greater than zero, we can do
+it as follows:
+
+\begin{lstlisting}[language=CoqBare]
+Definition natstar := sig nat (fun n : nat => n > 0).
+\end{lstlisting}
+
+The property passed as the second argument of the \coqeb{sig} type is
+expressed by a lambda abstraction (denoted by the \coqeb{fun} keyword)
+that takes a parameter \coqeb{n} of type \coqeb{nat} and returns a
+proof that \coqeb{n} is strictly greater than zero.  The \coq{}
+standard library defines a notation to write sigma types as
+intensional sets. Thus, we can write the \coqeb{natstar} type as
+follows:
+
+\begin{lstlisting}[language=CoqBare]
+Definition natstar2 := { x : nat | x > 0}.
+\end{lstlisting}
+
+We can leverage sigma types to rewrite the \coqeb{my_sub} function
+presented above. In the following version, the type of the $m$
+parameter carries the proof that $m$ is less than or equal to $n$:
+
+\begin{lstlisting}[language=CoqBare]
+Definition my_sub2 (n : nat) (m : { x : nat | x <= n }) : nat := n $-$ (proj1_sig m).
+\end{lstlisting}
+
+Here, we can no longer directly substract $n$ with $m$ as the type of
+$m$ is no longer \coqeb{nat} but \coqeb|{ x : nat | x <= n }|. We have
+to extract the first part of the $m$ parameter with the help of the
+\coqeb{proj1_sig} function. The first part of an element of the
+\coqeb|{ x : nat | x <= n }| type corresponds to the natural number
+\coqeb{x} verifying the following property \coqeb{x <= n}, and the
+second part corresponds to the proof that \coqeb{x} verifies the
+property.
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../../main"
