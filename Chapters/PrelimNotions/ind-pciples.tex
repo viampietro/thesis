@@ -1,7 +1,7 @@
-In the proceedings of proofs described in this thesis, we often
-perform proofs by induction. Here are some reminders on the induction
-principles to help the reader understand the proofs of Chapter and
-Appendices.
+In the proceedings of proofs laid out in this thesis, we often perform
+proofs by induction. Here are some reminders on some induction
+principles to help the reader understand the proofs of
+Chapter~\ref{chap:proof} and Appendix~\ref{app:sem-preserv-proof}.
 
 \subsection{Mathematical induction}
 \label{sec:math-ind}
@@ -15,13 +15,13 @@ for all natural numbers, it is sufficient to prove that:
 \item if $P$ holds for a given $n$ then it holds at $n+1$
 \end{itemize}
 
-When, assuming that $P(n)$ to try and then try to prove $P(n+1)$ for a
-given $n$, $P(n)$ is called the induction hypothesis. Thus,
-mathematical induction describes a way to deduce that a property holds
-for the set of natural numbers; first by stating that the property
-holds for zero; then by giving a strategy to prove that the property
-$P$ holds for any number $n$ by applying $P(m)$ implies $P(m+1)$
-starting from $0$.
+Mathematical induction describes a way to deduce that a property holds
+for the set of natural numbers, first by stating that the property
+holds for zero, i.e. the minimal element of the set, then by stating
+that if the property holds for a given number then it holds for its
+successor. Thus, knowing that $P(0)$ holds, we can deduce that $P(1)$
+holds, $P(2)$ holds, $P(3)$ holds, etc.
+
 
 \subsection{Structural induction}
 \label{sec:struct-ind}
@@ -40,38 +40,31 @@ Section~\ref{sec:rule-based-def}, we must prove that:
 \end{itemize}
 
 A proof that leverages structural induction follows the structure of
-the elements we are reasoning upon. In this thesis, we are using
-structural induction especially to prove the equality between two sum
-expressions; for instance, given a two sets $A$ and $B$, an
-application $f\in{}A\rightarrow{}\mathbb{N}$, and an application
-$g\in{}B\rightarrow{}\mathbb{N}$, say we want to prove :
+the elements we are reasoning upon. Many times in this thesis, we are
+using structural induction to prove that a sum expression verifies a
+certain property. Thus, the structural induction follows the recursive
+definition of the sum term, which is, for any set $A$, function
+$f\in{}A\rightarrow\mathbb{N}$ and $X\subseteq{}A$ and :
 
 \begin{center}
-  $\sum\limits_{a\in{}A}f(a)=\sum\limits_{b\in{}B}g(b)$ 
-\end{center}
-
-What we often do is to use structural induction on one of the two sum
-terms, i.e. the left or the right operand of the equality. Here, the
-structural induction follows the recursive definition of the sum term,
-i.e.:
-
-\begin{center}
-  $\sum\limits_{a\in{}A}f(a)\equiv
+  $\sum\limits_{x\in{}X}f(x)=
   \begin{cases}
-    0~\mathtt{if}~A=\emptyset \\
-    f(a)+\sum\limits_{a'\in{}A\setminus\{a\}}f(a')~otherwise \\
+    0~\mathtt{if}~X=\emptyset \\
+    f(x)+\sum\limits_{x'\in{}X'}f(x')~\mathtt{if}~X=\{x\}\cup{}X' \\
   \end{cases}$
 \end{center}
 
-Thus, to prove the above equality, we must prove that:
+In the second computation branch, it is left implicit that set $X'$ is
+strict subset of $X$ such that $x\notin{}X'$ or
+$X'=X\setminus\{x\}$. Given a set $A$ and a function
+$f\in{}A\rightarrow{}\mathbb{N}$, to prove that for all
+$X\subseteq{}A$, the property $P(X,\sum\limits_{x\in{}X}f(x))$ holds,
+we must show that:
 
 \begin{itemize}
-\item $0=\sum\limits_{b\in{}B}g(b)$ when $A=\emptyset$
-\item if
-  $\sum\limits_{a'\in{}A\setminus\{a\}}f(a')=\sum\limits_{b\in{}B'}g(b)$
-  for all $B'\subseteq{}B$, then
-  $f(a)+\sum\limits_{a'\in{}A\setminus\{a\}}f(a')=\sum\limits_{b\in{}B}g(b)$
-  holds
+\item $\forall{}X\subseteq{}A,~X=\emptyset\Rightarrow{}P(\emptyset,0)$
+\item $\forall{}X\subseteq{}A,x\in{}X,X'\subset{}X,~X=\{x\}\cup{}X'\Rightarrow{}P(X',\sum\limits_{x'\in{}X'}f(x'))$\\
+  $\Rightarrow{}P(\{x\}\cup{}X',f(x)+\sum\limits_{x'\in{}X'}f(x'))$
 \end{itemize}
 
 The induction follows the structure of the function. In this specific

@@ -1,7 +1,7 @@
 In this section, we present the \coq{} proof assistant
 \cite{Coq2021}. The \coq{} proof assistant is the framework we use to
 encode the different semantics and programs involved in the \hilecop{}
-model-to-text transformation, and also to formally verify the proof of
+model-to-text transformation, and also to formally verify our proof of
 semantic preservation. Here, we give an overview of the different
 concepts underlying the \coq{} proof assistant. The aim is to give to
 the reader the tools to understand the different listings presenting
@@ -452,13 +452,13 @@ Definition my_sub2 (n : nat) (m : { x : nat | x <= n }) : nat := n $-$ (proj1_si
 \end{lstlisting}
 
 Here, we can no longer directly substract $n$ with $m$ as the type of
-$m$ is no longer \coqeb{nat} but \coqeb|{ x : nat | x <= n }|. We have
-to extract the first part of the $m$ parameter with the help of the
-\coqeb{proj1_sig} function. The first part of an element of the
-\coqeb|{ x : nat | x <= n }| type corresponds to the natural number
-\coqeb{x} verifying the following property \coqeb{x <= n}, and the
-second part corresponds to the proof that \coqeb{x} verifies the
-property.
+$m$ is no longer \coqeb{nat} but \coqeb| $\{$ x : nat | x <= n $\}$
+|. We have to extract the first part of the $m$ parameter with the
+help of the \coqeb{proj1_sig} function. The first part of an element
+of the \coqeb| $\{$ x : nat | x <= n $\}$ | type corresponds to the
+natural number \coqeb{x} verifying the following property
+\coqeb{x <= n}, and the second part corresponds to the proof that \coqeb{x}
+verifies the property.
 
 %%% Local Variables:
 %%% mode: latex

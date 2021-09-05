@@ -8,18 +8,17 @@ same between classical and intuitionistic first-order logic. A logical
 formula is either:
 
 \begin{itemize}
-\item $\bot$ (bottom), the always false formula, or $\top$ (top), the
-  always true formula
+\item $\bot$ (bottom), the always \textit{false} formula, or $\top$
+  (top), the always \textit{true} formula
 \item a predicate (i.e. an atomic formula). A predicate $P$ possibly
-  takes $n$ parameters as inputs and is interpreted to either true,
-  represented by the $\top$ symbol, or false, represented by the
-  $\bot$ symbol. We write $P(x_0,\dots,x_n)$ to denote an $n$-ary
-  predicate $P$ applied to the inputs $x_0,\dots,x_n$.
+  takes $n$ parameters as inputs. We write $P(x_0,\dots,x_n)$ to
+  denote an $n$-ary predicate $P$ applied to the inputs
+  $x_0,\dots,x_n$. 
 
 \item the composition of two subformulas with one of the following
-  binary operators: the conjunction $\land$, the disjunction $\lor$, the
-  implication $\Rightarrow$, the double implication $\Leftrightarrow$
-
+  binary operators: the conjunction $\land$, the disjunction $\lor$,
+  the implication $\Rightarrow$, the double implication
+  $\Leftrightarrow$
   
 \item the composition of one subformula with the negation operator
   $\neg$
@@ -30,7 +29,13 @@ formula is either:
   parameter $x$ is a universally quantified variable of the
   formula. As a shorthand notation, we write $\forall{}x,y,z.\dots$ to
   denote $\forall{}x,\forall{}y,\forall{}z.\dots$. The same stands for
-  the existantial quantifier $\exists$.
+  the existantial quantifier $\exists$. Variables that are introduced
+  in a logical formula by one of the previous quantifiers are called
+  the \textit{bound} variables of the formula. Variables that appear
+  in a logical formula without being introduced by a quantifier are
+  called \textit{free} variables. For instance, in the logical formula
+  $\forall{}x.~P(x)\land{}Q(y)$, $x$ is a bound variable and $y$ is a
+  free variable of the formula.
 \end{itemize}
 
 The difference between the classical first-order logic and the
@@ -112,8 +117,8 @@ two sets $A$ and $B$, the following sets are formed:
   record where each element, called a field, has been given an
   explicit name. This formalism is useful to represent rather complex
   data structures. For instance, say that we want to represent the set
-  of humans by a triplet composed of the size, weight, and eye color.
-  We can define this set as the set of triplet
+  of humans by a triplet composed of the size, weight, and eye color
+  of a given human.  We can define this set as the set of triplet
   $\mathbb{R}\times\mathbb{R}\times\{green,blue,brown\}$. If we want
   to give a concrete name to the elements of the triplet, we can
   equivalently define such a triplet as a record, written
@@ -132,12 +137,12 @@ two sets $A$ and $B$, the following sets are formed:
   s.t. $A\sqcup{}B=\{(i,a),(i,b),(i,c),(j,a),(j,b)\}$. When the two
   sets $A$ and $B$ are disjoint, i.e. $A\cap{}B=\emptyset$, then
   $A\sqcup{}B$ is isomorphic to $A\cup{}B$. To stress the fact that we
-  are building a set from the union of two disjoint set, we prefer to
+  are building a set from the union of two disjoint sets, we prefer to
   use the disjoint union operator. For instance, we write
   $\mathbb{N}\sqcup{}\{\infty\}$, instead of
   $\mathbb{N}\cup{}\{\infty\}$, to denote the set of values ranging
   from the set of natural numbers with the addition of the infinite
-  value.
+  value $\infty$.
 
 \item $\mathcal{P}(A)$ denotes the powerset of $A$ defined by all the
   possible subsets formed with the elements of set $A$, i.e.
@@ -165,13 +170,16 @@ i.e. $x$ appears at most once as the first element of a pair in $f$.
 We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from $X$
 to $Y$. The set of the first elements of the pairs defined in $f$ is
 called the \emph{domain} of $f$. We write it
-$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.
+$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.  When there
+is no ambiguity, and given an $x\in{}X$ and $f\in{}X\nrightarrow{}Y$,
+we write $x\in{}f$ as a shorthand to $x\in\mathtt{dom}(f)$.\\
 
 A total function $a$, or application, from $X$ to $Y$ is a partial
 function verifying that all the elements of $X$ appear as the first
 element of a pair in $a$, i.e. for all $x\in{}X$, there exists
-$y\in{}Y$ such that $(x,y)\in{}a$. We note $a\in{}X\rightarrow{}Y$ to
-denote an application from $X$ to $Y$.
+$y\in{}Y$ such that $(x,y)\in{}a$. In other words, the domain of an
+application from $X$ to $Y$ is equal to the set $X$. We note
+$a\in{}X\rightarrow{}Y$ to denote an application from $X$ to $Y$.
 
 \subsection{Rule-based definition of sets}
 \label{sec:rule-based-def}
@@ -180,7 +188,7 @@ While describing the operational semantics of a subset of the \vhdl{}
 language in Chapter~\ref{chap:hvhdl}, we define some of the sets (e.g,
 simulation relations) with rule instances, also called inference rules
 or judgments. A rule instance, defining the members of a set $A$, can
-take the following form:
+take the following forms:
 
 \begin{center}
 \begin{prooftree}[template=\inserttext]
@@ -196,44 +204,55 @@ take the following form:
 The left form of rule instance is called an axiom; it states that
 $C\in{}A$.  The rule instance \begin{prooftree}[template=\inserttext]
   \hypo{$P_1,\dots,P_n$} \infer1{ $C$ }
-\end{prooftree} states $C\in{}A$ if $P_1,\dots,P_n$ hold. Also, we say
-that $C$ is derivable, if $P_1,\dots,P_n$ are derivable.
+\end{prooftree} states that $C\in{}A$ if $P_1,\dots,P_n$ hold. Also,
+we say that $C$ is derivable, if $P_1,\dots,P_n$ are derivable.
 $P_1,\dots,P_n$ are the premises of the rule, and $C$ is the
 conclusion of the rule. The premises $P_1,\dots,P_n$ hold if there
 exists a \emph{finite} derivation tree for each one of them. A
 \emph{finite} derivation tree is obtained by applying the rule
 instances defining the set until all branches of the derivation reach
-axioms. For instance, the two following rules define the $IsEven$
-unary relation that states that a given natural number is even:
+axioms. For instance, the two following rules, named rules
+\textsc{Ev0} and \textsc{Ev2}, define the $IsEven$ unary relation that
+states that a given natural number is even:
 
 \begin{table}[H]
   \centering
-\begin{prooftree}[template=\inserttext]
-  \infer0{ $IsEven(0)$ }
-\end{prooftree}
-\hspace{50pt}
-\begin{prooftree}[template=\inserttext]
-  \hypo{$IsEven(n-2)$}
-  \infer1{ $IsEven(n)$ }
-\end{prooftree}
+  
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{Ev0}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \infer0{ $IsEven(0)$ }
+      \end{prooftree}} \\
+  \end{tabular}
+  \hspace{50pt}
+  \begin{tabular}{@{}l}
+    {\fontsize{10}{13}\selectfont\textsc{Ev2}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \hypo{$IsEven(n-2)$}
+        \infer1{ $IsEven(n)$ }
+      \end{prooftree}} \\
+  \end{tabular}
 \end{table}
 
-The first rule states as an axiom that $0$ is an even number; the
-second states that for all natural number $n$, $n$ is an even number
-if one can derive that fact that $n-2$ is an even number. Thus, we can
-derive from the previous rules that $4$ is an even number by building
-the following derivation tree:
+The rule \textsc{Ev0} states as an axiom that $0$ is an even number;
+the rule \textsc{Ev2} states that for all natural number $n$, $n$ is
+an even number if one can derive that fact that $n-2$ is an even
+number. Thus, we can derive from the previous rules that $4$ is an
+even number by building the following derivation tree:
 
 \begin{table}[H]
   \centering
   \begin{prooftree}[template=\inserttext]
-    \infer0{$IsEven(0)$}
-    \infer1{$IsEven(2)$}
-    \infer1{ $IsEven(4)$ }
+    \infer0[\textsc{Ev0}]{$IsEven(0)$}
+    \infer1[\textsc{Ev2}]{$IsEven(2)$}
+    \infer1[\textsc{Ev2}]{ $IsEven(4)$ }
   \end{prooftree}
 \end{table}
 
-Here, all branches of the tree (there is only one branch here) has
+Starting from $IsEven(4)$, we can apply the \textsc{Ev2} rule to
+derive $IsEven(2)$. Then, another application of the \textsc{Ev2} rule
+leads to $IsEven(0)$, and we can close the derivation branch by
+applying the \textsc{Ev0} rule. Here, the only branch of the tree has
 reached an axiom, and thus the derivation tree is finite. To further
 illustrate the use of rule instances in the definition of a set, let
 us consider the following minimal language of arithmetic expressions
@@ -246,12 +265,15 @@ expressed in the Backus-Naur form:
   \end{tabular}
 \end{table}
 
-$n$ ranges over the set of natural numbers $\mathbb{N}$; $id$ ranges
-over the set $\mathtt{string}$ of non-empty strings (i.e. it is the
-set of identifiers). To evaluate the arithmetic expressions, we need a
-state $s\in\mathtt{string}\rightarrow{}\mathbb{N}$ that maps each
-variable identifier to a natural number value. We define the
-evaluation relation for these arithmetic expressions with the three
+Here, $n$ ranges over the set of natural numbers $\mathbb{N}$; $id$
+ranges over the set $\mathtt{string}$ of non-empty strings (i.e. it is
+the set of identifiers). To evaluate the arithmetic expressions, we
+need a state $s\in\mathtt{string}\nrightarrow{}\mathbb{N}$ that maps
+each variable identifier to a natural number value. We assume that
+only a certain set of declared identifiers can appear in an arithmetic
+expression. Thus, the state is a partial function from the set of
+non-empty strings to the set of natural numbers. We define the
+evaluation relation for the arithmetic expressions with the three
 following rules:
 
 \begin{table}[H]
@@ -280,16 +302,16 @@ following rules:
 \end{table}
 
 Here, the evaluation relation is a subset of the set of triplets
-$(\mathtt{string}\rightarrow\mathbb{N})\times{}e\times\mathbb{N}$. In
+$(\mathtt{string}\nrightarrow\mathbb{N})\times{}e\times\mathbb{N}$. In
 the rule instances defining the evaluation relation, the $\vdash$
 symbol (pronounced \emph{thesis}) stresses that the left part implies
 the right part, or it is involved in the evaluation of the right part.
 For instance, the second rule can be read: in the context of state
-$s$, $id$ evaluates to $s(id)$. Thus, when the \emph{context} is not
-involved in the evaluation of the syntactic constructs at the right
-side of the $\vdash$ symbol, we permit ourselves to remove the context
-and the $\vdash$ from the rule instances. For example, we can define
-to the \textsc{Nat} rule by
+$s$, $id$ evaluates to $s(id)$ if $id\in{}\mathtt{dom}(s)$. When the
+\emph{context} is not involved in the evaluation of the syntactic
+constructs at the right side of the $\vdash$ symbol, we permit
+ourselves to remove the context and the $\vdash$ from the rule
+instances. For example, we can define to the \textsc{Nat} rule by
 
 \begin{table}[H]
   \centering
