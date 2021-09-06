@@ -5,7 +5,7 @@
 ** DONE Designing critical digital systems [100%]
 ** DONE HILECOP [100%]
 ** DONE Verifying HILECOP [100%]
-* TODO Preliminary notions [100%]
+* DONE Preliminary notions [100%]
 ** DONE set theory 
 ** DONE natural semantics
 ** DONE induction principles

@@ -1,36 +1,35 @@
 In this section, we present the \coq{} proof assistant
-\cite{Coq2021}. The \coq{} proof assistant is the framework we use to
-encode the different semantics and programs involved in the \hilecop{}
-model-to-text transformation, and also to formally verify our proof of
-semantic preservation. Here, we give an overview of the different
-concepts underlying the \coq{} proof assistant. The aim is to give to
-the reader the tools to understand the different listings presenting
-\coq{} code in the following chapters. For a thorough presentation of
-the \coq{} proof assistant, the reader can refer to the reference
+\cite{Coq2021}. The \coq{} proof assistant constitutes our framework
+to encode the different semantics, programs and proofs involved in the
+verification of the \hilecop{} model-to-text transformation. Here, we
+give an overview of the different concepts underlying the \coq{} proof
+assistant. The aim is to give to the reader the tools to understand
+the different listings presenting \coq{} code in the following
+chapters. For a thorough presentation of the \coq{} proof assistant,
+the reader can refer to the \coq{} reference
 manual\footnote{\url{https://coq.inria.fr/distrib/current/refman/}},
 or to \cite{Chlipala2013,Paulin-Mohring2012,Bertot2004}.
 
 \subsection{The Calculus of Inductive Constructions (CIC)}
 \label{sec:cic}
 
-At the heart of the \coq{} proof assistant, there is a kernel that
-implements the Calculus of Inductive Constructions (CIC)
-\cite{CoquandPaulin1990}. The CIC is a typed lambda-calculus extended
-with the possibility to define inductive types. Thus, the CIC permits
-to define programs and types in a similar way; both are \textit{terms}
-of the language. A program is a term with a certain type, and a type
-is a term with a certain type. The type of a type is called a
-\textit{sort}. We can mention two basic sorts built in the \coq{}
-proof assistant: the \texttt{Prop} sort which is the type of logical
-formulas, and the \texttt{Set} sort which is the type of
-\textit{small} sets.
+The kernel of the \coq{} proof assistant implements the Calculus of
+Inductive Constructions (CIC) \cite{CoquandPaulin1990}. The CIC is a
+typed lambda-calculus extended with the possibility to define
+inductive types. Thus, the CIC permits to define programs and types in
+a similar way; both are \textit{terms} of the language. A program is a
+term with a certain type, and a type is also a term with a certain
+type. The type of a type is called a \textit{sort}. We can mention two
+basic sorts built in the \coq{} proof assistant: the \texttt{Prop}
+sort which is the type of logical formulas, and the \texttt{Set} sort
+which is the type of \textit{small} sets.
 
 The \coq{} proof assistant permits to express logic formulas and to
 interactively build proofs of these formulas by using a high-level
 tactic language. The sequence of tactics that builds a proof for a
-given formula is called a proof script. The execution of a proof
-script builds a proof term. As agreed with the CIC, a logic formula
-can be seen as a \textit{type} and a proof for this formula is an
+given formula is called a \emph{proof script}. The execution of a
+proof script builds a proof term. In the CIC, a logic formula can be
+seen as a \textit{type} and a proof of this formula is an
 \textit{inhabitant} of the type denoted by the logic formula. Thus,
 when building a proof term by executing a proof script, the \coq{}
 kernel checks that the proof term is of the type of the logic formula
@@ -38,7 +37,8 @@ by applying typing
 rules\footnote{\url{https://coq.inria.fr/distrib/current/refman/language/cic.html}}. For
 instance, let us take two logical propositions \texttt{A} and
 \texttt{B}. In \coq{}, we can declare these propositions as elements
-of the \texttt{Prop} type in the \coq{} top-level loop:
+of the \texttt{Prop} type in the \coq{} top-level loop\footnote{\coq{}
+  scripts can be either interpreted or compiled.}:
 
 \begin{lstlisting}[language=CoqBare]
   Coq <  Variables A B : Prop.
@@ -47,7 +47,8 @@ of the \texttt{Prop} type in the \coq{} top-level loop:
 The \texttt{Variables} keyword adds the propositions \texttt{A} and
 \texttt{B} to the global environment accessed by the \coq{}
 kernel. Now, say that we want to prove the \textit{modus ponens}
-expressed with the propositions \texttt{A} and \texttt{B}, namely that
+theorem expressed with the propositions \texttt{A} and \texttt{B},
+namely that
 $\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
 In \coq{}, we can express it as follows:
 
@@ -56,8 +57,8 @@ In \coq{}, we can express it as follows:
 \end{lstlisting}
 
 Here, we declare the modus ponens theorem as an element of type
-\coqeb{A -> (A -> B) -> A}. Here, the arrow represents the functional
-arrow; in fact, \coqeb{A -> B} is a notation for the product type
+\coqeb{A -> (A -> B) -> A}. The arrows represent functional arrows; in
+fact, \coqeb{A -> B} is a notation for the product type
 $\Pi{}x:\mathtt{A}.\mathtt{B}$ where $x$ is not referenced in
 $\mathtt{B}$. According to the Curry-Howard correspondence
 \cite{Howard1980}, there is an equivalence between a proof term and a
@@ -67,13 +68,14 @@ function, of type \coqeb{A -> B}, i.e. a program that takes an element
 of type $\mathtt{A}$ and yields an element of type $\mathtt{B}$. Thus,
 the type \coqeb{A -> (A -> B) -> A} is a valid encoding of the formula
 $\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
+
 The \texttt{Theorem} keyword triggers the interactive proof mode
 through which the user will build a proof term for the corresponding
 formula. A simple proof term for the modus ponens theorem is a
 function that takes an element $x$ of type $\mathtt{A}$ and a function
 $f$ of type \coqeb{A -> B} as inputs, and yields an element of type
 $\mathtt{B}$ by applying the function $f$ to parameter $x$, i.e.
-$(f x)$. The function takes the form of the following term of the
+$(f~x)$. The function takes the form of the following term of the
 typed lambda-calculus:
 
 \begin{center}
@@ -117,17 +119,17 @@ the CIC:
 \end{table}
 
 In the above derivation tree, the global and the local environment are
-represented at the left of the thesis symbol. The local environment is
-represented by square brackets. The global environment is represented
-at the left of the local environment. At the root of the derivation
-tree, the global environment contains our two previously declared
-logical propositions \texttt{A} and \texttt{B}, whereas the the local
-environment is empty. The application of the \textsc{Lam} rule adds
-new entry to the local environment; the \textsc{App} triggers the
-type-checking of the left and the right part of an application; the
-\textsc{Var} rule checks that a term is well-typed if it is referenced
-as an element of the given type in the global or the local
-environment.
+represented at the left of the thesis symbol $\vdash$. The local
+environment is represented by square brackets. The global environment
+is represented at the left of the local environment. At the root of
+the derivation tree, the global environment contains our two
+previously declared logical propositions \texttt{A} and \texttt{B},
+whereas the the local environment is empty. The application of the
+\textsc{Lam} rule adds new entry to the local environment; the
+\textsc{App} triggers the type-checking of the left and the right part
+of an application; the \textsc{Var} rule checks that a term is
+well-typed if it is referenced as an element of the given type in the
+global or the local environment.
 
 As said before, the \texttt{Theorem} keyword triggers the interactive
 proof mode. The interactive proof mode will accompany the user to an
@@ -145,7 +147,7 @@ user:
 \end{flushleft}
 
 The term under the horizontal bar represents the current goal to
-proof, i.e. the current formula for which we are building a proof
+prove, i.e. the current formula for which we are building a proof
 term. Above the horizontal bar are referenced the variables
 constituting the local environment. At the beginning of the proof, the
 local environment is empty -- and so is the local environemnt at the
@@ -239,6 +241,68 @@ induction, i.e.:
   forall P : nat -> Prop, P 0 -> (forall n : nat, P n -> P (S n)) -> forall n : nat, P n
 \end{lstlisting}
 
+Then, the induction principle \coqeb{nat_ind} can be used to perform
+mathematical induction in a proof involving natural numbers. For
+instance, say that we want to prove the following theorem stating that
+a natural number elevated at the power 2 is always greater than or
+equal to itself. We can write as follows:
+
+\begin{flushleft}
+  \coqeb{Coq <  Theorem ge_pow2 : forall n : nat, n <= n * n.}\\
+  \coqeb{1 subgoal}\\
+  \texttt{~~}\\
+  \texttt{============================}\\
+  \coqeb{forall n : nat, n <= n * n}\\
+\end{flushleft}
+
+
+Then, we can use the \coqeb{nat_ind} induction principle to prove such
+a theorem. Most conveniently, the built-in \coqeb{induction} tactic
+chooses the appropriate induction principle based on the type of its
+argument. Thus, the following command invokes the \coqeb{nat_ind}
+induction principle over the universally quantified variable
+\coqeb{n}:
+
+\begin{flushleft}
+\coqeb{Coq < induction n.}\\
+\coqeb{2 subgoals}\\
+\texttt{~~}\\
+\texttt{============================}\\
+\coqeb{0 <= 0 * 0}\\
+\coqeb{subgoal 2 is:}\\
+\coqeb{S n <= S n * S n}\\
+\end{flushleft}
+
+The result of the invocation of the \coqeb{induction} tactic is a
+branching in the proof tree. Thus, the system indicates that two
+subgoals must be prove to complete the proof of the \coqeb{gt_pow2}
+theorem. These two subgoals corresponds to the proof of $P(0)$ and the
+proof that assuming $P(n)$ we can show $P(n+1)$, as agreed with
+mathematical induction. Here, the property $P$ is defined by
+$P(n)\equiv{}n\le{}n\times{}n$. We can use the built-in \coqeb{lia}
+tactic, defined in the \coqeb{Lia} module of the \coq{} standard
+library, to solve the two remaining subgoals.  The \coqeb{lia} tactic
+implements a whole decision procedure to prove theorems involving
+systems of equalities and inequalities over the set of natural
+numbers.  We can combine the \coqeb{induction} tactic with the
+\coqeb{lia} tactic using the semi-colon operator. Then, the
+\coqeb{lia} tactic is applied to all the subgoals generated by the
+\coqeb{induction} tactic.
+
+\begin{flushleft}
+\coqeb{Coq < induction n; lia.}\\
+\coqeb{No more subgoals.}\\
+\coqeb{Coq < Qed.}\\
+\end{flushleft}
+
+The \coq{} proof assistant permits to define complex proof tactics, as
+for example the \coqeb{lia} tactic, in order to automatize some proof
+tasks. The \coqeb{Ltac} and \coqeb{Ltac2} languages are the supports
+for the definition of these kind of tactics. These languages permit to
+compose sequences of tactics, to perform pattern matching over the
+local environemnt and the current goal in interactive proof mode, to
+define loops or recursive tactics, etc. \\
+
 Leveraging the definition of inductive types, the syntactic constructs
 of programming languages are also easily implemented. Here is the
 implementation of the syntax of arithmetic expressions presented in
@@ -282,17 +346,17 @@ Inductive evale (s : string -> option nat) : e -> nat -> Prop :=
 
 In the above listing, the state that yields the value of identifiers
 present in an arithmetic expression is a named parameter of the
-\coqeb{evale} relation, i.e. \coqeb{s}. Parameters which are not
-varying from one construction case to another can be passed as named
-parameters while defining an inductive type. The state \coqeb{s} takes
-a string identifier as input and yields an \coqeb{option} to a natural
-number.  As so, the \coqeb{option} type permits to represent partial
-functions.  The identifiers that belong to the domain of state
-\coqeb{s} will be: associated with \coqeb{Some} natural number,
-whereas the unreferenced identifiers will be associated with the
-\coqeb{None} value of the \coqeb{option} type. The \coqe{Some} and the
-\coqeb{None} constructors are the two constructors of the
-\coqeb{option} type which is defined in \coq{} as follows:
+\coqeb{evale} relation, i.e. the \coqeb{s} parameter. Parameters which
+are not varying from one construction case to another can be passed as
+named parameters while defining an inductive type. The state \coqeb{s}
+takes a string identifier as input and yields an \coqeb{option} to a
+natural number.  As so, the \coqeb{option} type permits to represent
+partial functions.  The identifiers that belong to the domain of state
+\coqeb{s} will be associated with \coqeb{Some} natural number, whereas
+the unreferenced identifiers will be associated with the \coqeb{None}
+value of the \coqeb{option} type. The \coqe{Some} and the \coqeb{None}
+constructors are the two constructors of the \coqeb{option} type which
+is defined in \coq{} as follows:
 
 \begin{lstlisting}[language=CoqBare]
 Inductive option (A : Type) : Type :=
@@ -301,9 +365,8 @@ Inductive option (A : Type) : Type :=
 \end{lstlisting}
 
 The \coqeb{option} type is parameterized by a type \coqeb{A} that will
-set the type of elements passed to the \coqeb{Some} constructor.
-
-\todo[inline]{Maybe present record types?}
+set the type of elements passed to the \coqeb{Some} constructor. As
+so, the \coqeb{option} type is an example of generic type.
 
 \subsection{Functional programming}
 \label{sec:fun-prog}
@@ -358,8 +421,8 @@ introduce here the notion of dependent type and how it is expressible
 with the \coq{} proof assistant.
 
 A type is said to be dependent when its expression depends on one or
-more elements of other types. Give an example of dependent type, let
-us take the definition of polymorphic lists that carry their own
+more elements of other types. To give an example of dependent type,
+let us take the definition of polymorphic lists that carry their own
 length. In \coq{}, these lists are defined as follows:
 
 \begin{lstlisting}[language=CoqBare]
@@ -378,11 +441,11 @@ polymorphism of the elements of the list involved in generic
 programming. Polymorphism relates to the fact that the \coqeb{A} type
 is general enough to accept multiple types as the type of the list's
 elements. The \coqeb{niln} constructor of the \coqeb{listn}, i.e. the
-constructor of the empty list, is the type of lists of length 0.  The
+constructor of the empty list, has the type of lists of length 0.  The
 \coqeb{consn} constructor permits to add a new element at the head of
-an existing list to build a new list. Thus, the type of the resulting
-list is the type of lists of length $n+1$, where $n$ is the length of
-the tail list.
+an existing \emph{tail} list to build a new list. Thus, the type of
+the resulting list is the type of lists of length $n+1$, where $n$ is
+the length of the tail list.
 
 To further illustrate the use of dependent types, let us say that we
 want to write a function that takes two natural numbers $n$ and $m$ as
@@ -410,7 +473,7 @@ the structures and programs as constraint loose as possible at the
 cost of having to prove much more properties afterwards.
 
 To conclude the subject of dependent types, we often use
-\textit{sigma} types to types of elements that meets a given
+\textit{sigma} types to define a type of elements that meet a given
 property. A sigma type expresses the dependence between a parameter
 and a proof of a given property that possibly depends on another
 parameter. As so, sigma types are useful to express intentional sets
@@ -423,9 +486,9 @@ Inductive sig (A:Type) (P:A -> Prop) : Type := exist : forall x:A, P x -> sig P.
 
 The \coqeb{sig} type only constructor takes an element \coqeb{x} of
 type \coqeb{A} along with a proof that \coqeb{x} meets a certain
-property \coqeb{P}. For instance, if we want to define in \coqe{} the
-type of natural numbers that are strictly greater than zero, we can do
-it as follows:
+property \coqeb{P}. For instance, if we want to define the type of
+natural numbers that are strictly greater than zero, we can do it as
+follows:
 
 \begin{lstlisting}[language=CoqBare]
 Definition natstar := sig nat (fun n : nat => n > 0).
@@ -452,13 +515,13 @@ Definition my_sub2 (n : nat) (m : { x : nat | x <= n }) : nat := n $-$ (proj1_si
 \end{lstlisting}
 
 Here, we can no longer directly substract $n$ with $m$ as the type of
-$m$ is no longer \coqeb{nat} but \coqeb| $\{$ x : nat | x <= n $\}$
-|. We have to extract the first part of the $m$ parameter with the
-help of the \coqeb{proj1_sig} function. The first part of an element
-of the \coqeb| $\{$ x : nat | x <= n $\}$ | type corresponds to the
-natural number \coqeb{x} verifying the following property
-\coqeb{x <= n}, and the second part corresponds to the proof that \coqeb{x}
-verifies the property.
+$m$ is no longer \coqeb{nat} but \coqeb{ $\{$ x : nat | x <= n $\}$ }.
+We have to extract the first part of the $m$ parameter with the help
+of the \coqeb{proj1_sig} function. The first part of an element of the
+\coqeb{ $\{$ x : nat | x <= n $\}$ } type corresponds to the natural
+number \coqeb{x} verifying the following property \coqeb{x <= n}, and
+the second part corresponds to the proof that \coqeb{x} verifies the
+property.
 
 %%% Local Variables:
 %%% mode: latex

@@ -63,33 +63,78 @@ we must show that:
 
 \begin{itemize}
 \item $\forall{}X\subseteq{}A,~X=\emptyset\Rightarrow{}P(\emptyset,0)$
-\item $\forall{}X\subseteq{}A,x\in{}X,X'\subset{}X,~X=\{x\}\cup{}X'\Rightarrow{}P(X',\sum\limits_{x'\in{}X'}f(x'))$\\
+\item $\forall{}X\subseteq{}A,x\in{}X,X'\subset{}X,$\\
+  $X=\{x\}\cup{}X'$
+  $\Rightarrow{}P(X',\sum\limits_{x'\in{}X'}f(x'))$
   $\Rightarrow{}P(\{x\}\cup{}X',f(x)+\sum\limits_{x'\in{}X'}f(x'))$
 \end{itemize}
 
 The induction follows the structure of the function. In this specific
 case, structural induction is often refered to as \textit{functional}
-induction.
+induction. Let us prove Proposition~\ref{prop:sum-expr-pf} to
+illustrate the use of structural induction over a sum term:
+
+\begin{proposition}
+  \label{prop:sum-expr-pf}
+  For all $X\subset\mathbb{N}$ a finite set of natural numbers,
+  $\sum\limits_{x\in{}X}2x$ is even, i.e.
+  \begin{center}
+    $\exists{}k\in\mathbb{N}$ s.t. $\sum\limits_{x\in{}X}2x=2k$
+  \end{center}
+\end{proposition}
+
+\begin{niproof}
+  Let us define the property $P$ as follows:
+  \begin{center}
+    $P(X,\sum\limits_{x\in{}X}2x)\equiv\exists{}k\in\mathbb{N}$
+    s.t. $\sum\limits_{x\in{}X}2x=2k$
+  \end{center}
+
+  Then, let us use structural induction to prove
+  $P(X,\sum\limits_{x\in{}X}2x)$.\\
+
+  First, let us show $P(\emptyset,0)$, i.e.  $\exists{}k\in\mathbb{N}$
+  s.t. $0=2k$. Let us take $k=0$ to build a tautology.\\
+
+  Then, given a $X'\subset{}X$ and a $x\in{}X$ s.t. $X=\{x\}\cup{}X'$,
+  and assuming that $P(X',\sum\limits_{x'\in{}X'}2x')$ holds (i.e. the
+  induction \textit{hypothesis}), let us show
+  $P(\{x\}\cup{}X',2x+\sum\limits_{x'\in{}X'}2x')$. Appealing to the
+  induction hypothesis, let us take a $j$ such that
+  $\sum\limits_{x'\in{}X'}2x'=2j$. Rewriting
+  $\sum\limits_{x'\in{}X'}2x'$ as $2j$:
+  \begin{itemize}[label=$\Rightarrow$]
+  \item $\exists{}k\in\mathbb{N}$ s.t. $2x+2j=2k$
+  \item $\exists{}k\in\mathbb{N}$ s.t. $2(x+j)=2k$
+  \item Then, let us take $k=x+j$ to obtain a tautology.
+  \end{itemize}
+\end{niproof}
 
 \subsection{Rule induction}
 \label{sec:rule-ind}
 
-A specific kind of induction, called \textit{rule} induction, applies
-when wanting to prove properties over sets that are defined by
-inference rules (or rule instances). For instance, let us take the
-evaluation relation for arithmetic expressions used in
-Section~\ref{sec:rule-based-def} to illustrate the principle of rule
-induction. To prove that a property $P$ holds for the evaluation
-relation of arithmetic expressions, which is a subset of triplets
+A specific kind of induction, called \textit{rule} induction, is
+applied to prove properties over sets that are defined by rule
+instances. Let us take the evaluation relation for arithmetic
+expressions used in Section~\ref{sec:rule-based-def} to illustrate the
+principle of rule induction. To prove that a property $P$ holds for
+the evaluation relation of arithmetic expressions, which is a subset
+of triplets
 $(\mathtt{string}\rightarrow\mathbb{N})\times{}e\times\mathbb{N}$, we
 must prove that:
 
 \begin{itemize}
-\item $P(s,n,n)$ for all $s,n$
-\item if $id\in\mathtt{dom}(s)$ then $P(s,id,s(id))$ for all $s,id$
-\item if $s\vdash{}e_0\rightarrow{}n$ and $P(s,e_0,n)$, and
-  $s\vdash{}e_1\rightarrow{}m$ and $P(s,e_1,m)$ then
-  $P(s,e_0+e_1,n+m)$ for all $s,e_0,e_1,n,m$
+\item For all
+  $s\in\mathtt{string}\nrightarrow\mathbb{N},n\in\mathbb{N}$,
+  $P(s,n,n)$
+\item For all
+  $s\in\mathtt{string}\nrightarrow{}\mathbb{N},id\in\mathtt{string}$,
+  if $id\in\mathtt{dom}(s)$ then $P(s,id,s(id))$
+\item For all
+  $s\in\mathtt{string}\nrightarrow\mathbb{N},e_0,e_1\in{}e,n,m\in\mathbb{N}$,\\
+  if $s\vdash{}e_0\rightarrow{}n$ and $P(s,e_0,n)$, and
+  $s\vdash{}e_1\rightarrow{}m$ and $P(s,e_1,m)$\\
+  then $P(s,e_0+e_1,n+m)$
 \end{itemize}
 
 Rule induction states that in order to prove a property over a set
@@ -134,11 +179,12 @@ written $id\in_r{}e$:
   \end{tabular}
 \end{table}
 
-Then, the property of Proposition states that an arithmetic expression
-that contains references to identifiers that are not part of the
-current state's domain can not be evaluated.
+Then, the property of Proposition~\ref{prop:arith-expr-pf} states that
+an arithmetic expression that contains references to identifiers that
+are not part of the current state's domain can not be evaluated.
 
 \begin{proposition}
+  \label{prop:arith-expr-pf}
   Let $id\in\mathtt{string}$. For all state $s$, arithmetic expression
   $e$, and natural number $n$,
   \begin{center}
@@ -146,23 +192,23 @@ current state's domain can not be evaluated.
   \end{center}
 \end{proposition}
 
-\begin{proof}
+\begin{niproof}
   Let us define the property $P$ as follows:
   \begin{center}
     $P(s,e,n)\equiv{}id\notin{}\mathtt{dom}(s)\land{}id\in_r{}e\Rightarrow{}\lnot{}s\vdash{}e\rightarrow{}n$
   \end{center}
 
-  Then, let us use rule induction to prove $P(s,e,n)$.
+  Then, let us use rule induction to prove $P(s,e,n)$.\\
 
   First, we must prove $P(s,n,n)$. Assuming $id\in_r{}n$, there is a
   contradiction as no rule instance defining the relation $\in_r$
   includes the case where the considered expression is a natural
-  number.
+  number.\\
 
   Then, we must prove $P(s,id',s(id'))$, assuming that
   $id'\in\mathtt{dom}(s)$.  We know that $id\in_r{}id'$, and thus
   $id=id'$. Then, there is a contradiction between
-  $id\in\mathtt{dom}(s)$ and $id\notin{}\mathtt{dom}(s)$.
+  $id\in\mathtt{dom}(s)$ and $id\notin{}\mathtt{dom}(s)$.\\
 
   Finally, we must prove $P(s,e_0+e_1,n+m)$, assuming that
   $s\vdash{}e_0\rightarrow{}n$ and $P(s,e_0,n)$, and
@@ -174,7 +220,7 @@ current state's domain can not be evaluated.
   $\lnot{}s\vdash{}e_0\rightarrow{}n$, which contradicts
   $s\vdash{}e_0\rightarrow{}n$. We can perform the proof in a similar
   way if Rule~\textsc{InRAddR} has been applied.
-\end{proof}
+\end{niproof}
 
 %%% Local Variables:
 %%% mode: latex
