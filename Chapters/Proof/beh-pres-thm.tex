@@ -20,14 +20,14 @@ To add some readability to our proofs, we use the following notations:
 \end{itemize}
 
 During a proof, we constantly refer to the names of the constants and
-signals declared in the \hvhdl{} place and transition designs. Some
-constants and signals have very long names, and therefore we use
-aliases to refer to them in the following
+signals declared in the \hvhdl{} \texttt{place} and
+\texttt{transition} designs. Some constants and signals have very long
+names, and therefore we use aliases to refer to them in the following
 proofs. Table~\ref{tab:consts-and-sigs-ref} gives the full
-correspondence between constants and signals, and their aliases. Also,
-during a proof and when there is no ambiguity, $id_p$ (resp. $id_t$)
-denotes the PCI (resp. TCI) identifier associated to a given place $p$
-(resp. transition $t$) through $\gamma(p)=id_p$
+correspondence between constant and signal names and their
+aliases. Also, during a proof and when there is no ambiguity, $id_p$
+(resp. $id_t$) denotes the PCI (resp. TCI) identifier associated to a
+given place $p$ (resp. transition $t$) through $\gamma(p)=id_p$
 (resp. $\gamma(t)=id_t$), where $\gamma$ is the binder returned by the
 transformation function. Similarly, $id_c$ (resp. $id_a$ and $id_f$)
 denotes the input port (resp. output port) identifier associated to a
@@ -61,14 +61,14 @@ given \hvhdl{} design are similar.
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, a
   design store
   $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
-  elaborated version $\Delta\in{}ElDesign(d,\mathcal{D})$ of design
-  $d$, and a binder $\gamma\in{}WM(sitpn,d)$, the environment
+  elaborated version $\Delta\in{}ElDesign$ of design $d$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, the environment
   $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   that yields the value of the primary input ports of $\Delta$ at a
   given simulation cycle and a given clock event, and the environment
   $E_c$, that yields the value of conditions of $sitpn$ at a given
-  execution cycle, are similar, noted
-  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, iff for all
+  execution cycle, are similar, written
+  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, if for all
   $\tau\in{}\mathbb{N}$, $clk\in\{\uparrow,\downarrow\}$,
   $c\in\mathcal{C}$, $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$,
   $E_p(\tau,clk)(id_c)=E_c(\tau)(c)$.
@@ -78,7 +78,7 @@ Definition~\ref{def:sim-env} also states that every input port of the
 top-level design related to a SITPN condition by the $\gamma$ binder
 has a stable boolean value during a whole clock cycle. That is to say,
 in the context of Definition~\ref{def:sim-env}, there exists no $id_c$
-such that $E_p(\tau,\uparrow)(id_c)\neq{}E_p(\tau,\downarrow)(id_c)$.
+such that $E_p(\tau,\uparrow)(id_c)\neq{}E_p(\tau,\downarrow)(id_c)$. \\
 
 To prove that the behavior of an SITPN and a \hvhdl{} design are
 similar, we want to compare the states composing their
@@ -91,10 +91,10 @@ permits to compare such traces.
 \begin{definition}[Execution trace similarity]
   \label{def:exec-trace-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, the execution trace
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, the execution trace
   $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are similar, written
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ are similar, written
   $\gamma\vdash{}\theta_s\stackrel{clk}{\sim}\theta_\sigma$, where
   $clk\in\{\uparrow,\downarrow\}$, according to the following rules:
 
@@ -137,7 +137,7 @@ length to respect the execution trace similarity relation.
 
 To handle the case of an execution/simulation trace beginning by an
 initial state, that is, a state neither reached after a rising nor
-after falling edge, we give a slightly different definition of the
+after a falling edge, we give a slightly different definition of the
 execution trace similarity relation in
 Definition~\ref{def:full-exec-trace-sim}.
 
@@ -147,8 +147,8 @@ Definition~\ref{def:full-exec-trace-sim}.
   $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$, and a binder
   $\gamma\in{}WM(sitpn,d)$, the execution trace
   $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ are fully similar,
-  written $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ are fully similar, written
+  $\gamma\vdash{}\theta_s\sim\theta_\sigma$, according to the
   following rules:
 
   \begin{tabular}{@{}l}
@@ -195,7 +195,7 @@ design (Theorem~\ref{thm:elab-ex}), an initial state
 (Theorem~\ref{thm:init-ex}), and a simulation trace over $\tau$
 simulation cycles (Theorem~\ref{thm:sim-ex}). Finally, we can
 establish that the behaviors are similar by comparing the respective
-SITPN execution and \hvhdl{} simulation traces
+SITPN execution and \hvhdl{} design simulation traces
 (Theorem~\ref{thm:full-bisim}). In this thesis, we are focusing on the
 proof that the execution/simulation traces are similar when they are
 produced by the SITPN execution relation and the \hvhdl{} simulation
@@ -208,7 +208,7 @@ axioms.
   \label{thm:beh-pres}
   For all well-defined $sitpn\in{}SITPN$, an \hvhdl{} design
   $d\in{}design$, a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle
-  count $\tau\in\mathbb{N}$, a execution environment
+  count $\tau\in\mathbb{N}$, an execution environment
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
   and an execution trace $\theta_s\in\mathtt{list}(S(sitpn))$ s.t.
   \begin{itemize}
@@ -219,22 +219,19 @@ axioms.
     $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
   \end{itemize}
   
-  \noindent{}then there exists an elaborated design
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$ s.t. for all
-  simulation environment
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  verifying
+  \noindent{}then there exist an elaborated design
+  $\Delta\in{}ElDesign$ and a simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ s.t.\\
+  for all simulation environment
+  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$
+  verifying $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ (simulation and
+  execution environments are similar), we have:
   \begin{itemize}
-  \item Simulation/Execution environments are similar:
-    $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
-  \end{itemize}
-  then there exists a simulation trace
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
-  \begin{itemize}
-  \item Under the \hilecop{} design store $\mathcal{D}_\mathcal{H}$
-    and with an empty generic constant dimensioning function
-    ($\emptyset$), design d yields the simulation trace
-    $\theta_\sigma$ after $\tau$
+  \item In the context of the \hilecop{} design store
+    $\mathcal{D}_\mathcal{H}$ and with an empty generic constant
+    dimensioning function ($\emptyset$), design d elaborates into
+    $\Delta$ and yields the simulation trace $\theta_\sigma$ after
+    $\tau$
     simulation cycles:\\
     $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
   \item Traces $\theta_s$ and $\theta_\sigma$ are fully similar:
@@ -247,16 +244,15 @@ axioms.
   $\gamma\in{}WM(sitpn,d)$, a $\tau\in\mathbb{N}$, an
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
   and a $\theta_s\in\mathtt{list}(S(sitpn))$, let us show that\\
-  \framebox{$\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma$
-    s.t.
-    $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\land\theta_s\sim\theta_\sigma$}
+  \framebox{$\exists\Delta,\theta_\sigma,\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c\Rightarrow$
+    $(\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma)\land\theta_s\sim\theta_\sigma$}\\
 
   Appealing to Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and
   \ref{thm:sim-ex}, let us take an elaborated design
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$, two design states
-  $\sigma_e,\sigma_0\in\Sigma(\Delta)$, and a simulation trace
-  $\theta_\sigma\in{}$ such that:
-  \begin{itemize}
+  $\Delta\in{}ElDesign$, two design states
+  $\sigma_e,\sigma_0\in\Sigma$, and a simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that:
+  \begin{itemize}[label=--]
   \item $\Delta$ is the elaborated version of design $d$, and
     $\sigma_e$ is the default design state of $\Delta$:\\
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
@@ -266,9 +262,18 @@ axioms.
     $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
     $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
   \end{itemize}
+
+  Let us use this $\Delta$ and this $\theta_\sigma$ to prove the
+  current goal. Given an $E_p$ such that
+  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, it remains to be proved
+  that:
+
+  \framebox{$(\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma)\land\theta_s\sim\theta_\sigma$}\\
   
-  \noindent{}By definition of the \hvhdl{} full simulation relation,
-  we have:
+  \noindent{}First, we must prove that
+  \fbox{$(\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma)$}
+  holds.  By definition of the \hvhdl{} full simulation relation, we
+  have:
   \begin{equation}
     \begin{split}
       \mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma\equiv
@@ -281,24 +286,21 @@ axioms.
   
   Rewriting the goal with \eqref{eq:full-sim}:
   \begin{frameb}
-    $\exists\Delta,~\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c,~\exists\theta_\sigma,\sigma_e,\sigma_0$
+    $\exists\sigma_e,\sigma_0$
     s.t.
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})
     \land\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0
-    \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma\land\theta_s\sim\theta_\sigma$
+    \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
   \end{frameb}
 
-  Let us use $\Delta$, $\sigma_e$, $\sigma_0\in\Sigma(\Delta)$ and
-  $\theta_\sigma$ to prove the goal:
-  \begin{frameb}
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})
-    \land\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0
-    \land\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma\land\theta_s\sim\theta_\sigma$
-  \end{frameb}
-  
-  We assumed the three first points of the goal, and the last point,
-  i.e $\theta_s\sim\theta_\sigma$, is proved by appealing to
-  Theorem~\ref{thm:full-bisim}.
+  To prove the goal, let us use $\sigma_e$, $\sigma_0\in\Sigma$
+  previously introduced by the invocation of
+  Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex}.
+  Then, the three first points of the goal are previously assumed
+  hypotheses.
+
+  Finally, appealing to Theorem~\ref{thm:full-bisim}, we can prove
+  final point of theorem, i.e. \fbox{$\theta_s\sim\theta_\sigma$}.
 
 \end{niproof}
 
@@ -310,7 +312,8 @@ well-typed and well-formed w.r.t. to the \vhdl{} language standards,
 and builds an elaborated version of the \hvhdl{} design that will act
 as a simulation environment. Thus, Theorem~\ref{thm:elab-ex} states
 that the \hilecop{} transformation function produces \emph{acceptable}
-code, i.e. code that could be the input to a simulator program.
+code, for instance, code that could be the input to a simulator
+program.
 
 \begin{thm}[Elaboration]
   \label{thm:elab-ex}
@@ -320,13 +323,10 @@ code, i.e. code that could be the input to a simulator program.
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
   \end{itemize}
   \noindent{}then there exists an elaborated design
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$ and a design state
-  $\sigma_e\in\Sigma(\Delta)$ s.t.
-  \begin{itemize}
-  \item $\Delta$ is the elaborated version of design $d$, and
-    $\sigma_e$ is the default design state of $\Delta$:
-    $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
-  \end{itemize}
+  $\Delta\in{}ElDesign$ and a design state $\sigma_e\in\Sigma$ s.t.
+  $\Delta$ is the elaborated version of design $d$, and $\sigma_e$ is
+  the default design state of $\Delta$:
+  $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$.
 \end{thm}
 
 Theorem~\ref{thm:init-ex} states that one can always build an initial
@@ -336,19 +336,16 @@ transformation function.
 \begin{thm}[Initialization]
   \label{thm:init-ex}
   For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
   $\sigma_e\in\Sigma(\Delta)$ s.t.
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
   \end{itemize}
   \noindent{}then there exists a design state
-  $\sigma_0\in\Sigma(\Delta)$ s.t.
-  \begin{itemize}
-  \item $\sigma_0$ is the initial simulation state:
-    $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
-  \end{itemize}
+  $\sigma_0\in\Sigma(\Delta)$ s.t. $\sigma_0$ is the initial
+  simulation state:
+  $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$.
 \end{thm}
 
 Theorem~\ref{thm:sim-ex} states that one can always build a simulation
@@ -359,9 +356,9 @@ transformation of a well-defined SITPN.
 
 \begin{thm}[Simulation]
   \label{thm:sim-ex}
-  For all well-defined $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  $\sigma_e,\sigma_0\in\Sigma(\Delta)$ s.t.
+  For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
+  $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
+  $\sigma_e,\sigma_0\in\Sigma$ s.t.
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
@@ -369,16 +366,14 @@ transformation of a well-defined SITPN.
     $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
   \end{itemize}
   
-  \noindent{}then for all simulation environment
+  \noindent{}then there exists a simulation trace
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that for all simulation
+  environment
   $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  and simulation cycle count $\tau\in\mathbb{N}$, there exists a
-  simulation trace $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$
-  s.t.
-  \begin{itemize}
-  \item Design $d$ yields the simulation trace $\theta_\sigma$ after
-    $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
-    $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
-  \end{itemize}
+  and simulation cycle count $\tau\in\mathbb{N}$, design $d$ yields
+  the simulation trace $\theta_\sigma$ after
+  $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
+  $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
 \end{thm}
 
 \subsection{The bisimulation theorem}
@@ -422,10 +417,9 @@ given in Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $\tau\in\mathbb{N}$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
-  $\theta_s\in\mathtt{list}(S(sitpn))$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\theta_s\in\mathtt{list}(S(sitpn))$, $\Delta\in{}ElDesign$,
   $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  $\theta_\sigma\in\mathtt{list}(\Sigma(\Delta))$ s.t.
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ s.t.
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
   \item $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ 
@@ -600,8 +594,8 @@ clock count $\tau$.
     trace similarity relation, we can show
     \qedbox{$\gamma\vdash[~]\stackrel{\uparrow}{\approx}[~]$.}
     
-  \item \textbf{INDUCTION CASE}:
-    Assuming
+  \item \textbf{INDUCTION CASE}: Assuming the following induction
+    hypothesis
     \begin{ih}
       $\forall{}s,\sigma,\theta_s,\theta_\sigma$ s.t.
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ and
@@ -621,9 +615,17 @@ clock count $\tau$.
       $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
     \end{frameb}
     
-    
-    By definition of the SITPN execution and the \hvhdl{} simulation
-    relations for $\tau>0$, we have:
+    Given $s,\sigma,\theta_s,\theta_\sigma$ such that
+    $(\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma)$ and
+    $(E_c,\tau+1\vdash{}sitpn,s\rightarrow\theta_s)$ and
+    $(E_p,\Delta,\tau+1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma)$,
+    let us show
+    \fbox{$\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$}.
+
+    By definition of $(E_c,\tau+1\vdash{}sitpn,s\rightarrow\theta_s)$
+    and
+    $(E_p,\Delta,\tau+1,\sigma\vdash{}d.cs\rightarrow\theta_\sigma)$,
+    we have:
     \begin{itemize}
     \item $E_c,\tau+1\vdash{}s\xrightarrow{\uparrow}{}s'$ and
       $E_c,\tau+1\vdash{}s'\xrightarrow{\downarrow}{}s''$ and
@@ -637,10 +639,11 @@ clock count $\tau$.
       $\Delta,\sigma'_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_\downarrow$
       and
       $\Delta,\sigma_\downarrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma''$
-    \item $E_p,\Delta,\tau,\sigma''\vdash{}d.cs\rightarrow\theta'$.
+    \item $E_p,\Delta,\tau,\sigma''\vdash{}d.cs\rightarrow\theta'$
+      
+    \item $\theta_s=s' :: s'' :: \theta$ and
+      $\theta_\sigma=\sigma' :: \sigma'' :: \theta'$
     \end{itemize}
-    and $\theta_s=s' :: s'' :: \theta$ and
-    $\theta_\sigma=\sigma' :: \sigma'' :: \theta'$.
     
     Then, the new goal is:
     \fbox{$\gamma\vdash{}(s' :: s'' ::
@@ -766,11 +769,11 @@ Section~\ref{sec:detailled-proof}.
   \label{lem:re}
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\Delta\in{}ElDesign$,
   $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma(\Delta)$,
-  assume that:
+  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, assume
+  that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
@@ -796,33 +799,33 @@ Section~\ref{sec:detailled-proof}.
     \begin{enumerate}
     \item
       $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s'.t.~\gamma(p)=id_p,$
-      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{it:marking-eq-re}
+      $~s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.\label{it:marking-eq-re}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
       $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
       $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.\label{it:time-count-eq-re}
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.\label{it:time-count-eq-re}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.\label{it:reset-eq-re}
+      $s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_reinit\_time\_counter})$.\label{it:reset-eq-re}
     \item
       $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.\label{it:action-eq-re}
     \item
       $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{it:fun-eq-re}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.\label{it:sens-eq-re}
+      $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$.\label{it:sens-eq-re}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{false}$.\label{it:not-sens-eq-re}
+      $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{false}$.\label{it:not-sens-eq-re}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\sigma'(id_t)("s\_condition\_combination")=
+      $\sigma'(id_t)(\texttt{s\_condition\_combination})=
       \prod\limits_{c\in{}conds(t)}
       \begin{cases}
         E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -857,10 +860,10 @@ Section~\ref{sec:detailled-proof}.
   \label{lem:fe}
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\Delta\in{}ElDesign$,
   $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma(\Delta)$,
+  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma$,
   assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
@@ -886,13 +889,13 @@ Section~\ref{sec:detailled-proof}.
     \begin{enumerate}
     \item
       $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $~s'.M(p)=\sigma'(id_p)("s\_marking")$.\label{item:fe-equal-marking}
+      $~s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.\label{item:fe-equal-marking}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.
+      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
       \label{item:fe-equal-tc}
     \item
       $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s'.cond(c)=\sigma'(id_c)$.\label{item:fe-equal-cond-values}
@@ -902,22 +905,23 @@ Section~\ref{sec:detailled-proof}.
       $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{item:fe-equal-fun-exec}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.\label{item:fe-equal-firable}
+      $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.\label{item:fe-equal-firable}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{false}$.\label{item:fe-equal-not-firable}
+      $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{false}$.\label{item:fe-equal-not-firable}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{true}$.\label{item:fe-equal-fired}
+      $t\in{}Fired(s')\Leftrightarrow\sigma'(id_t)(\texttt{fired})=\mathtt{true}$.\label{item:fe-equal-fired}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $t\notin{}Fired(s')\Leftrightarrow\sigma'(id_t)("fired")=\mathtt{false}$.\label{item:fe-equal-not-fired}
+      $t\notin{}Fired(s')\Leftrightarrow\sigma'(id_t)(\texttt{fired})=\mathtt{false}$.\label{item:fe-equal-not-fired}
     \item
-      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $\sum\limits_{t\in{}Fired(s')}pre(p,t)=$ $\sigma'(id_p)("s\_output\_token\_$ $sum")$.\label{item:fe-equal-ots}
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+      $\sum\limits_{t\in{}Fired(s')}pre(p,t)=$
+      $\sigma'(id_p)(\texttt{s\_output\_token\_sum})$.\label{item:fe-equal-ots}
     \item
-      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.\label{item:fe-equal-its}
+      $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$\\
+      $\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)(\texttt{s\_input\_token\_sum})$.\label{item:fe-equal-its}
     \end{enumerate}
   \end{frameb}
 

@@ -29,38 +29,38 @@ the implementation of the VHDL language; $\mathtt{NATMAX}$ must at
 least be equal to $2^{31}-1$. Note that the $array$ value contains at
 least one value as an array's index range contains at least one index.
 
-\begin{notation}[Partial functions]
-  In the following sections, when the context is free from any
-  ambiguity, we adopt the following notations:
-  \begin{itemize}[label=-]
-  % \item The $\nrightarrow$ arrow denotes a partial function.
-  % \item The $\rightarrow$ denotes an application (i.e, a total
-  %   function).
-  \item For all $f\in{}A\nrightarrow{}B$, $x\in{}f$ states that x is in
-    the domain of function $f$.
-  \item For all $f\in{}A\nrightarrow{}B$ and $g\in{}A\nrightarrow{}C$,
-    $f\subseteq{}g$ states that the domain of $f$ is a subset of the
-    domain of $g$.
-  \item For all $X\subset{}A$ and $f\in{}A\nrightarrow{}B$,
-    $X\subseteq{}f$ states that $X$ is a subset of the domain of $f$.
-  \end{itemize}
-\end{notation}
+% \begin{notation}[Partial functions]
+%   In the following sections, when the context is free from any
+%   ambiguity, we adopt the following notations:
+%   \begin{itemize}[label=-]
+%   % \item The $\nrightarrow$ arrow denotes a partial function.
+%   % \item The $\rightarrow$ denotes an application (i.e, a total
+%   %   function).
+%   \item For all $f\in{}A\nrightarrow{}B$, $x\in{}f$ states that x is in
+%     the domain of function $f$.
+%   \item For all $f\in{}A\nrightarrow{}B$ and $g\in{}A\nrightarrow{}C$,
+%     $f\subseteq{}g$ states that the domain of $f$ is a subset of the
+%     domain of $g$.
+%   \item For all $X\subset{}A$ and $f\in{}A\nrightarrow{}B$,
+%     $X\subseteq{}f$ states that $X$ is a subset of the domain of $f$.
+%   \end{itemize}
+% \end{notation}
 
 \subsection{Elaborated design and design state}
 \label{sec:elab-design-and-state}
 
-Now, let us define the elaborated design structure. The elaborated
-design structure is built during the elaboration phase (see
-Section~\ref{sec:elab-rules}). Then, the elaborated design will act as
-a runtime environment in the expression of the simulation rules. Let
-$ElDesign$ be the set of the elaborated designs. An elaborated design
-is a composite environment built out of multiple sub-environments.
-Each sub-environment is a table, represented as a function, mapping
-identifiers of a certain category of constructs (e.g, input port
-identifiers) to their declaration information (e.g, type indication
-for input ports). We represent an elaborated design as a record where
-the fields are the sub-environments. An elaborated design is defined
-as follows:
+Now, let us define the structure of \textit{elaborated design}. An
+elaborated design is built during the elaboration of an \hvhdl{}
+design (see Section~\ref{sec:elab-rules}). Then, the elaborated design
+will act as a runtime environment in the expression of the simulation
+rules. Let $ElDesign$ be the set of the elaborated designs. An
+elaborated design is a composite environment built out of multiple
+sub-environments.  Each sub-environment is a table, represented as a
+function, mapping identifiers of a certain category of constructs
+(e.g, input port identifiers) to their declaration information (e.g,
+type indication for input ports). We represent an elaborated design as
+a record where the fields are the sub-environments. An elaborated
+design is defined as follows:
 
 \begin{definition}[Elaborated Design]
   \label{def:elab-design}

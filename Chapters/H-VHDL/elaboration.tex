@@ -152,8 +152,8 @@ elaboration of a generic constant declaration consists in:
 \end{premises}
 
 \begin{sideconds}
-  The expression $id_g\in\Delta$ checks that the generic constant
-  identifier $id_g$ is not already defined in the \emph{Gens}
+  The expression $id_g\notin\Delta$ checks that the generic constant
+  identifier $id_g$ is not already defined in the domain of one
   sub-environment of the elaborated design $\Delta$.
 \end{sideconds}
 
@@ -193,9 +193,9 @@ elaboration of a generic constant declaration consists in:
   \end{tabular}
 \end{table}%
 
-The \textsc{GenElabDefault} states that the value of declared generic
-constant is defined by its default value when no value is specified by
-the dimensioning function $\mathcal{M}$.
+The \textsc{GenElabDefault} rule states that the value of a generic
+constant is defined by its type's default implicit value when no value
+is specified by the dimensioning function $\mathcal{M}$.
 
 \begin{figure}[H]
   {\fontsize{8}{11}\selectfont\textsc{GenElabDefault}}
@@ -291,6 +291,16 @@ default value to the default design state $\sigma$.
     its implicit \emph{default} value.
 \end{itemize}
 \end{premises}
+
+\begin{sideconds}
+  The expression $\mathrm{id}\notin\sigma$ checks that the identifier
+  $id$ is not already defined in the domain of the signal store or the
+  component store of the design state $\sigma$. It is a shorthand
+  notation to
+  $\mathrm{id}\notin\mathtt{dom}(\mathcal{S})\cup\mathtt{dom}(\mathcal{C})$
+  where $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
+  
+\end{sideconds}
 
 % Elaborate IN port.
 

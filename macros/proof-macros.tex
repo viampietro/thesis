@@ -2,15 +2,15 @@
 %% BEHAVIOR PRESERVATION PROOF MACROS %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\def\InCsCompT{$\mathtt{comp}(id_t,$ $"transition",$ $gm_t,$ $ipm_t,$ $opm_t)\in{}d.cs$}
+\def\InCsCompT{$\mathtt{comp}(id_t,$ $\texttt{transition},$ $g_t,$ $i_t,$ $o_t)\in{}d.cs$}
 
 \def\exT{\noindent{}By construction and by definition of $id_t$, there
-  exist $gm_t,ipm_t,opm_t$ s.t. \InCsCompT.}
+  exist $g_t,i_t,o_t$ s.t. \InCsCompT.}
 
-\def\InCsCompP{$\mathtt{comp}(id_p,$ $"place",$ $gm_p,$ $ipm_p,$ $opm_p)\in{}d.cs$}
+\def\InCsCompP{$\mathtt{comp}(id_p,$ $\texttt{place},$ $g_p,$ $i_p,$ $o_p)\in{}d.cs$}
 
 \def\exP{\noindent{}By construction and by definition of $id_p$, there
-  exist $gm_p,ipm_p,opm_p$ s.t. \InCsCompP.}
+  exist $g_p,i_p,o_p$ s.t. \InCsCompP.}
 
 \def\upSim{$\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$}
 \def\dwSim{$\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$}

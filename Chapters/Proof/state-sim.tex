@@ -13,37 +13,37 @@ We must relate the elements that constitute the execution state of an
 SITPN to the elements that constitute the execution state of a
 \hvhdl{} design. An SITPN state is an abstract structure relating the
 places, transitions, actions, functions and conditions of a given
-SITPN to the values of certain domains (see Section~\todo{Add
-  ref.}). A \hvhdl{} design state is composed a signal store mapping
-signals to values, and of a component store mapping component
-instances to their own internal states (which are themselves design
-states). Thanks to the binder function $\gamma$ generated alongside
-the transformation from an SITPN to a \hvhdl{} design, we are able to
-relate the elements of the SITPN structure to the component instance
-states and signal values of the \hvhdl{} design state. Thus, the state
-similarity relation, depending on a $\gamma$ binder and expressing a
-semantic match between an SITPN state and a \hvhdl{} design, is
-defined as follows:
+SITPN to the values of certain domains (see
+Section~\ref{sec:sitpn-state}). A \hvhdl{} design state is composed a
+signal store mapping signals to values, and of a component store
+mapping component instances to their own internal states (which are
+themselves design states). Thanks to the binder function $\gamma$
+generated alongside the transformation from an SITPN to a \hvhdl{}
+design, we are able to relate the elements of the SITPN state
+structure to the component instance states and signal values of the
+\hvhdl{} design state. Thus, the state similarity relation, depending
+on a $\gamma$ binder and expressing a semantic match between an SITPN
+state and a \hvhdl{} design, is defined as follows:
 
 \begin{definition}[General state similarity]
   \label{def:state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
-  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
-  similar, written $\gamma\vdash{}s\sim\sigma$ iff
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma$ are similar, written
+  $\gamma\vdash{}s\sim\sigma$ iff
   \begin{enumerate}
   \item\label{item:sim-mark} $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $~s.M(p)=\sigma(id_p)("s\_marking")$.
+    $~s.M(p)=\sigma(id_p)($\texttt{s\_marking}$)$.
   \item\label{item:sim-tc}
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$.
   \item\label{item:sim-reset}
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
+    $s.reset_t(t)=\sigma(id_t)($\texttt{s\_reinit\_time\_counter}$)$.
   \item\label{item:sim-cond}
     $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
   \item\label{item:sim-act}
@@ -55,13 +55,13 @@ defined as follows:
 
 In Item~\ref{item:sim-mark}, based on the $\gamma$ binder, we relate
 the marking value of a place $p$ at state $s$ to the value of the
-$\mathtt{s\_marking}$ signal inside the internal state of the place
+\texttt{s\_marking} signal inside the internal state of the place
 component instance (PCI) $id_p$. The expression $\sigma(id_p)$ returns
 the internal state of PCI $id_p$ by looking up the component store of
 state $\sigma$. Items~\ref{item:sim-tc} and \ref{item:sim-reset}
 similarly relate the value of time counters (resp. reset orders) of
-transitions to the value of the signals $\mathtt{s\_time\_counter}$
-(resp. $\mathtt{s\_reinit\_time\_counter}$) in the internal state of
+transitions to the value of the signals $\texttt{s\_time\_counter}$
+(resp. $\texttt{s\_reinit\_time\_counter}$) in the internal state of
 the corresponding transition component instances (TCIs). In item
 \ref{item:sim-cond} (resp. \ref{item:sim-act} and \ref{item:sim-fun}),
 the boolean value of conditions (resp. actions and functions) are
@@ -70,7 +70,7 @@ design, also based on the $\gamma$ binder.
 
 As one can observe in Item~\ref{item:sim-tc}, the relation between the
 value of a time counter and the value of the
-$\mathtt{s\_time\_counter}$ signal is a particular. It is due to the
+$\texttt{s\_time\_counter}$ signal is a particular. It is due to the
 definition domain of time intervals. In the definition of the SITPN
 structure, a time interval $i$ is defined as follows: $i=[a,b]$ where
 $a\in\mathbb{N}^{*}$ and $b\in\mathbb{N}^{*}\sqcup\{\infty\}$. In the
@@ -81,34 +81,35 @@ time interval with an infinite upper bound will possibly increment its
 value indefinitely. While acceptable in the theoretical world, this is
 not acceptable is the world of hardware circuits where all dimensions
 and values are finite. On the \hvhdl{} side, the signal
-$\mathtt{s\_time\_counter}$, which value represents the value of a
+$\texttt{s\_time\_counter}$, which value represents the value of a
 time counter, will stop its incrementation to the lower bound of the
 time interval in the case where the upper bound is infinite. As long
 as the value of the time counter is less than or equal to the lower
 bound of the time interval, we look for a perfect equality between the
 value of the time counter and the value of the
-$\mathtt{s\_time\_counter}$ signal. When the time counter reaches the
+$\texttt{s\_time\_counter}$ signal. When the time counter reaches the
 lower bound, the values possibly diverge (i.e, the time counter value
 continues to be incremented while the value of the
-$\mathtt{s\_time\_counter}$ signal stalls). In that case, we are only
+$\texttt{s\_time\_counter}$ signal stalls). In that case, we are only
 interested in knowing that the value of the
-$\mathtt{s\_time\_counter}$ signal is equal to the value of the lower
+$\texttt{s\_time\_counter}$ signal is equal to the value of the lower
 bound of the time interval. The two last points of
 Item~\ref{item:sim-tc} are necessary to cover the case where a time
 counter has overreached the upper bound of its time interval. In that
 case, the time counter becomes \textit{locked}. The
-$\mathtt{s\_time\_counter}$ signal can not overreached the upper bound
+$\texttt{s\_time\_counter}$ signal can not overreached the upper bound
 of the time interval without causing an overflow. Thus, the value of
-the $\mathtt{s\_time\_counter}$ signal diverges from the value of its
+the $\texttt{s\_time\_counter}$ signal diverges from the value of its
 corresponding time counter when the time counter overreaches the upper
 bound of its time interval.  While the time counter is less than or
 equal to the upper bound of its time interval, we look for a perfect
 equality between the value of the time counter and the value of the
-$s\_time\_counter$ signal.  When the time counter overreaches the
-upper bound, the value of the time counter stalls to upper bound plus
-one, and the value of $s\_time\_counter$ stalls to upper bound. In
-that case, we are only interested in knowing that the value of the
-$\mathtt{s\_time\_counter}$ signal is equal to the value of the upper
+$\texttt{s\_time\_counter}$ signal.  When the time counter overreaches
+the upper bound, the value of the time counter stalls to upper bound
+plus one, and the value of $\texttt{s\_time\_counter}$ stalls to upper
+bound. In that case, we are only interested in knowing that the value
+of the $\texttt{s\_time\_counter}$ signal is equal to the value of the
+upper
 bound of the time interval.\\
 
 The second question that we asked above was: when does the state
@@ -120,13 +121,13 @@ modifications resulting after a bug detection (see
 Section~\ref{sec:detailled-proof}), the state similarity relation of
 Definition~\ref{sec:state-sim-relation} does not hold at the end of a
 clock cycle. The equality between the value of reset orders and the
-value of the $\mathtt{s\_reinit\_time\_counter}$ signals
+value of the $\texttt{s\_reinit\_time\_counter}$ signals
 (Item~\ref{item:sim-reset}) is not verified. However, this semantic
 divergence is without effect. New reset orders are computed at the
 beginning of a clock cycle such that the relation of
 Item~\ref{item:sim-reset} holds in the middle of the clock cycle (i.e,
 just before the falling edge of the clock). This is the only moment
-during the clock cycle where the $\mathtt{s\_reinit\_time\_counter}$
+during the clock cycle where the $\texttt{s\_reinit\_time\_counter}$
 signal is actually involved in the computation of other signals
 value. Thus, it is sufficient that Item~\ref{item:sim-reset} holds
 only in the middle of the clock cycle. However, we must now define two
@@ -140,23 +141,22 @@ as follows:
 \begin{definition}[Post rising edge state similarity]
   \label{def:post-re-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
-  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
-  similar after a rising edge happening, written
-  $\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma$ are similar after a rising edge,
+  written $\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ iff
   \begin{enumerate}
   \item
-    $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)("s\_marking")$.
+    $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $s.reset_t(t)=\sigma(id_t)("s\_reinit\_time\_counter")$.
+    $s.reset_t(t)=\sigma(id_t)(\texttt{s\_reinit\_time\_counter})$.
   \item
     $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s.ex(a)=\sigma(id_a)$.
   \item
@@ -180,7 +180,7 @@ between condition values and input port values. Therefore, there is a
 semantic divergence between the value of conditions and the value of
 input ports in the middle of the clock cycle, i.e. just before the
 next falling edge of the clock signal. However, similarly to the case
-of reset orders and $\mathtt{s\_reinit\_time\_counter}$ signals,
+of reset orders and $\texttt{s\_reinit\_time\_counter}$ signals,
 conditions and their corresponding input ports are only involved in
 computations at the falling edge of the clock cycle.  Thus, it is
 sufficient that Item~\ref{item:sim-cond} holds only right after the
@@ -194,37 +194,37 @@ value of expressions or predicates involved in the SITPN
 semantics. For instance, consider a given SITPN state $s$ and a given
 \hvhdl{} design state $\sigma$, and consider a transition $t$ and its
 corresponding TCI $id_t$. It is useful to show that, after a rising
-edge, the value of signal $s\_enabled$ at state $\sigma(id_t)$, where
-$\sigma(id_t)$ denotes the internal state of component instance $id_t$
-at state $\sigma$, is equal to the predicate $t\in{}Sens(s.M)$ stating
-that the transition $t$ is sensitized (or \textit{enabled}) by the
-marking at state $s$ (i.e, $s.M$). Thus, for the convenience of the
-proof, we enrich our definitions of the state similarity relations
-with formulas relating \hvhdl{} signals to SITPN semantics predicates
-and expressions. Consequently, the \textit{full} post rising edge
-state similarity relation is defined as follows:
+edge, the value of signal $\texttt{s\_enabled}$ at state
+$\sigma(id_t)$, where $\sigma(id_t)$ denotes the internal state of
+component instance $id_t$ at state $\sigma$, is equal to the predicate
+$t\in{}Sens(s.M)$ stating that the transition $t$ is sensitized (or
+\textit{enabled}) by the marking at state $s$ (i.e, $s.M$). Thus, for
+the convenience of the proof, we enrich our definitions of the state
+similarity relations with formulas relating \hvhdl{} signals to SITPN
+semantics predicates and expressions. Consequently, the \textit{full}
+post rising edge state similarity relation is defined as follows:
 
 \begin{definition}[Full post rising edge state similarity]
   \label{def:full-post-re-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle count
-  $\tau\in\mathbb{N}$, and an SITPN execution environment
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, a clock cycle count $\tau\in\mathbb{N}$,
+  and an SITPN execution environment
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, an
-  SITPN state $s\in{}S(sitpn)$ and a design state
-  $\sigma\in\Sigma(\Delta)$ are fully similar after a rising edge
-  happening at clock cycle count $\tau$, written
-  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$ iff
+  SITPN state $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma$
+  are fully similar after a rising edge happening at clock cycle count
+  $\tau$, written
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$, if
   $\gamma\vdash{}s\stackrel{\uparrow}{\sim}\sigma$
   (Definition~\ref{def:post-re-state-sim}) and
   \begin{enumerate}
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{true}$.
+    $t\in{}Sens(s.M)\Leftrightarrow\sigma(id_t)(\texttt{s\_enabled})=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\notin{}Sens(s.M)\Leftrightarrow\sigma(id_t)("s\_enabled")=\mathtt{false}$.
+    $t\notin{}Sens(s.M)\Leftrightarrow\sigma(id_t)(\texttt{s\_enabled})=\mathtt{false}$.
   \item
     $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\sigma(id_t)("s\_condition\_combination")=
+    $\sigma(id_t)(\texttt{s\_condition\_combination})=
     \prod\limits_{c\in{}conds(t)}
     \begin{cases}
       E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -237,9 +237,10 @@ state similarity relation is defined as follows:
 
 Definition~\ref{def:full-post-re-state-sim} extends
 Definition~\ref{def:post-re-state-sim} with the correspondence of the
-sensitization of transitions and the value of signal $s\_enabled$, and
-the computation of the boolean product of condition values and the
-value of signal $s\_condition\_combination$.
+sensitization of transitions and the value of signal
+$\texttt{s\_enabled}$, and the computation of the boolean product of
+condition values and the value of signal
+$\texttt{s\_condition\_combination}$.
 
 Now, let us define the state similarity relation describing how things
 must be compared between an SITPN state and a \hvhdl{} design state
@@ -248,20 +249,19 @@ after the falling edge of a clock signal:
 \begin{definition}[Post falling edge state similarity]
   \label{def:post-fe-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
-  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
-  similar after a falling edge, written
-  $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$ iff
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma$ are similar after a falling edge,
+  written $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$, if
   \begin{enumerate}
   \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $~s.M(p)=\sigma(id_p)("s\_marking")$.
+    $~s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)("s\_time\_counter")\big)$.
+    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
+    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
+    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
   \item
     $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
   \item
@@ -273,33 +273,32 @@ after the falling edge of a clock signal:
 
 As explained above, Definition~\ref{def:post-fe-state-sim} is similar
 to Definition~\ref{def:state-sim} except for the equality between
-reset orders and the value of the $s\_reinit\_time\_counter$
+reset orders and the value of the $\texttt{s\_reinit\_time\_counter}$
 signals. The extended version of the post falling edge state
 similarity relation is defined as follows:
 
 \begin{definition}[Full post falling edge state similarity]
   \label{def:full-post-fe-state-sim}
   For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
-  elaborated design $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
-  and a binder $\gamma\in{}WM(sitpn,d)$, an SITPN state
-  $s\in{}S(sitpn)$ and a design state $\sigma\in\Sigma(\Delta)$ are
-  fully similar after a falling edge, written
-  $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$ iff
-  $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$
+  elaborated design $\Delta\in{}ElDesign$, and a binder
+  $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
+  design state $\sigma\in\Sigma$ are fully similar after a falling
+  edge, written $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$,
+  if $\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma$
   (Definition~\ref{def:post-fe-state-sim}) and
   \begin{enumerate}
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{true}$.
+    $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)(\texttt{s\_firable})=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("s\_firable")=\mathtt{false}$.
+    $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)(\texttt{s\_firable})=\mathtt{false}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
+    $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{true}$.
   \item $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-    $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$.
+    $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{false}$.
   \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("s\_output\_token\_sum")$.
+    $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)(\texttt{s\_output\_token\_sum})$.
   \item $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("s\_input\_token\_sum")$.
+    $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)(\texttt{s\_input\_token\_sum})$.
   \end{enumerate}
 \end{definition}
 
@@ -308,11 +307,11 @@ Definition~\ref{def:post-fe-state-sim} by drawing out a correspondence
 between:
 \begin{itemize}
 \item the firability of transitions and the value of the signal
-  $s\_firable$
+  $\texttt{s\_firable}$
 \item the firing status of transitions (i.e, transitions are fired or
-  not) and the value of the output port $fired$
+  not) and the value of the output port $\texttt{fired}$
 \item the sum of tokens consumed by the firing process and the value
-  of the signal \texttt{s_output_token_sum}
+  of the signal $\texttt{s\_output\_token\_sum}$
 \item the sum of tokens produced by the firing process and the value
   of the signal \texttt{s\_input\_token\_sum}
 \end{itemize}

@@ -97,6 +97,7 @@ definitions and notations, especially the definition of a
 notations to simplify the formalization of the SITPN semantics.
 
 \begin{notation}[Relations between markings]
+  \label{not:markings}
   For all relation $\mathcal{R}$ existing between two marking
   functions $M$ and $M'$, the expression $\mathcal{R}(M,M')$ is a
   notation for $\forall{}p\in{}P,~\mathcal{R}(M(p),M'(p))$. For
@@ -106,6 +107,7 @@ notations to simplify the formalization of the SITPN semantics.
 \end{notation}
 
 \begin{notation}[Sum expressions and arc types]
+  \label{not:sum-exprs}
   Many times in this document, we need to express the number of tokens
   coming in or out of places, after the firing of a certain subset of
   transitions. To do so, we use two kinds of sum expression:
@@ -148,6 +150,7 @@ Section~\ref{subsec:pn-formalism} for an informal definition) of a
 transition by a given marking as follows:
 
 \begin{definition}[Sensitization]
+  \label{def:sens}
   A transition $t\in{}T$ is said to be sensitized, or enabled, by a
   marking $M$, which is noted $t\in{}Sens(M)$, if
   $\forall{}p\in{}P,\omega\in\mathbb{N}^{*},~\big(pre(p,t)=(\omega,\mathtt{basic})\vee{}pre(p,t)=(\omega,\mathtt{test})\big)\Rightarrow{}M(p)\ge{}\omega$,
