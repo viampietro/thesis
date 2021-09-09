@@ -5,8 +5,8 @@
 \begin{definition}[Initial state hypotheses]
   \label{def:init-states-hyps}
   Given an $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_{e},\sigma_0\in{}\Sigma(\Delta)$,
+  $\gamma\in{}WM(sitpn,$ $d)$,
+  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$,
   assume that:
   \begin{itemize}
   \item SITPN $sitpn$ translates into design $d$:
@@ -22,7 +22,7 @@
 
 \def\inithyps{For all $sitpn\in{}SITPN$, $d\in{}design$,
   $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_{e},\sigma_0\in{}\Sigma(\Delta)$
+  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$
   that verify the hypotheses of Definition~\ref{def:init-states-hyps},}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,16 +40,16 @@
   \begin{frameb}
     \begin{enumerate}
     \item\label{item:init-sim-mark} $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-      $~s_0.M(p)=\sigma_0(id_p)("s\_marking")$.
+      $~s_0.M(p)=\sigma_0(id_p)(\texttt{s\_marking})$.
     \item\label{item:init-sim-tc}
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\big(upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")\big)$.
+      $\big(upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$\\
+      $\land\big(upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
+      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$.
     \item\label{item:init-sim-reset}
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-      $s_0.reset_t(t)=\sigma_0(id_t)("s\_reinit\_time\_counter")$.
+      $s_0.reset_t(t)=\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})$.
     \item\label{item:init-sim-cond}
       $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s_0.cond(c)=\sigma_0(id_c)$.
     \item\label{item:init-sim-act}
@@ -75,32 +75,32 @@
 \begin{lemma}[Initial states equal marking]
   \label{lem:init-states-eq-marking}
   \inithyps{} then
-  $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p$,
-  $~s_0.M(p)=\sigma_0(id_p)("s\_marking")$.
+  $\forall{}p\in{}P,id_p\in{}Comps(\Delta)$ s.t. $\gamma(p)=id_p$,
+  $~s_0.M(p)=\sigma_0(id_p)(\texttt{s\_marking})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$
   s.t. $\gamma(p)=id_p$, let us show that\\
-  \framebox{$s_0.M(p)=\sigma_0(id_p)("s\_marking")$.}
+  \framebox{$s_0.M(p)=\sigma_0(id_p)(\texttt{s\_marking})$.}
 
   \exP{}
   
   By property of the \hvhdl{} initialization relation, \InCsCompP{},
   and through the examination of the \texttt{marking} process defined
   in the place design architecture, we can deduce
-  $\sigma_0(id_p)("s\_marking")=\sigma_0(id_p)("initial\_marking")$.
+  $\sigma_0(id_p)(\texttt{s\_marking})=\sigma_0(id_p)(\texttt{initial\_marking})$.
 
-  Rewriting $\sigma_0(id_p)("sm")$ as
-  $\sigma_0(id_p)("initial\_marking")$,
-  \framebox{$\sigma_0(id_p)("initial\_marking")=s_0.M(p)$.}
+  Rewriting $\sigma_0(id_p)(\texttt{sm})$ as
+  $\sigma_0(id_p)(\texttt{initial\_marking})$,
+  \framebox{$\sigma_0(id_p)(\texttt{initial\_marking})=s_0.M(p)$.}
   
   By construction,
-  ${<}\mathtt{initial\_marking\Rightarrow}M_0(p){>}\in{}ipm_p$.
+  ${<}\mathtt{initial\_marking\Rightarrow}M_0(p){>}\in{}i_p$.
 
   By property of the \hvhdl{} initialization relation, and \InCsCompP,
-  then $\sigma_0(id_p)("initial\_marking")=M_0(p)$.  Rewriting
-  $\sigma_0(id_p)("initial\_marking")$ as $M_0(p)$ in the current
+  then $\sigma_0(id_p)(\texttt{initial\_marking})=M_0(p)$.  Rewriting
+  $\sigma_0(id_p)(\texttt{initial\_marking})$ as $M_0(p)$ in the current
   goal: \framebox{$M_0(p)=s_0.M(p)$.}
   
   By definition of $s_0$, we can rewrite $s_0.M(p)$ as $M_0(p)$ in the
@@ -112,12 +112,12 @@
   \label{lem:init-states-sits-zero}
   \inithyps{} then
   $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p$,
-  $\sigma_0(id_p)("s\_input\_token\_sum")=0$.
+  $\sigma_0(id_p)(\texttt{s\_input\_token\_sum})=0$.
 \end{lemma}
 
 \begin{niproof}
   Given a $p$ and an $id_p$ s.t. $\gamma(p)=id_p$, let us show that
-  \fbox{$\sigma_0(id_p)("s\_input\_token\_sum")=0$.}
+  \fbox{$\sigma_0(id_p)(\texttt{s\_input\_token\_sum})=0$.}
 
   \exP{}
   
@@ -126,16 +126,16 @@
   defined in the place design architecture, we can deduce:
   \begin{equation}
     \label{eq:sits-at-init-state}
-    \sigma_0(id_p)("sits")=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+    \sigma_0(id_p)(\texttt{sits})=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}
     \begin{cases}
-      \sigma_0(id_p)("iaw")[i]~\mathtt{if}~\sigma_0(id_p)("itf")[i]\\
+      \sigma_0(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[i]\\
       0~otherwise \\
     \end{cases}
   \end{equation}
   
   Rewriting the goal with Equation~\eqref{eq:sits-at-init-state}:\\
-  \fbox{$\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}\begin{cases}
-      \sigma_0(id_p)("iaw")[i]~\mathtt{if}~\sigma_0(id_p)("itf")[i]\\
+  \fbox{$\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}\begin{cases}
+      \sigma_0(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[i]\\
       0~otherwise \\
     \end{cases}=0$.}
 
@@ -144,34 +144,34 @@
   \begin{enumerate}
   \item $input(p)=\emptyset$:
     
-    By construction,
-    ${<}$\texttt{input\_arcs\_number}$\Rightarrow{}1{>}\in{}gm_p$,
-    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$,
+    By construction, we have
+    ${<}$\texttt{input\_arcs\_number}$\Rightarrow{}1{>}\in{}g_p$,\\
+    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}i_p$,\\
     and
-    ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$.
+    ${<}\texttt{input\_arcs\_weights(0)}\Rightarrow{}0{>}\in{}i_p$.
 
   By property of the elaboration relation, \InCsCompP{}, and
-  ${<}$\texttt{input\_arcs\_number}$\Rightarrow{}1{>}\in{}gm_p$, we
-  can deduce $\Delta(id_p)("ian")=1$.
+  ${<}$\texttt{input\_arcs\_number}$\Rightarrow{}1{>}\in{}g_p$, we
+  can deduce $\Delta(id_p)(\texttt{ian})=1$.
 
   By property of the initialization relation, \InCsCompP,
-  ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$
+  ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}i_p$
   and
-  ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}ipm_p$, we
-  can deduce $\sigma_0(id_p)("itf")[0]=\mathtt{true}$ and
-  $\sigma_0(id_p)("iaw")[0]=0$.
+  ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}0}{>}\in{}i_p$, we
+  can deduce $\sigma_0(id_p)(\texttt{itf})[0]=\mathtt{true}$ and
+  $\sigma_0(id_p)(\texttt{iaw})[0]=0$.
 
-  Rewriting the goal with $\Delta(id_p)("ian")=1$,
-  $\sigma_0(id_p)("itf")[0]=\mathtt{true}$,
-  $\sigma_0(id_p)("iaw")[0]=0$ and simplifying the goal,
+  Rewriting the goal with $\Delta(id_p)(\texttt{ian})=1$,
+  $\sigma_0(id_p)(\texttt{itf})[0]=\mathtt{true}$,
+  $\sigma_0(id_p)(\texttt{iaw})[0]=0$ and simplifying the goal,
   \qedbox{tautology.}
   
 \item $input(p)\neq\emptyset$:
 
   By construction,
-  ${<}\texttt{input\_arcs\_number}\Rightarrow{}\vert{}input(p)\vert{>}\in{}gm_p$,
+  ${<}\texttt{input\_arcs\_number}\Rightarrow{}\vert{}input(p)\vert{>}\in{}g_p$,
   and by property of the elaboration relation, and \InCsCompP{}, we
-  can deduce $\Delta(id_p)("ian")=\vert{}input(p)\vert$.
+  can deduce $\Delta(id_p)(\texttt{ian})=\vert{}input(p)\vert$.
   
   Let us reason by induction on the sum term of the goal.
 
@@ -180,50 +180,54 @@
 
   \item \textbf{INDUCTION CASE}:
     \begin{ih}
-      $\sum\limits_{i=1}^{\Delta(id_p)("ian")-1}\begin{cases}
-        \sigma_0(id_p)("iaw")[i]~\mathtt{if}~\sigma_0(id_p)("itf")[i]\\
+      $\sum\limits_{i=1}^{\Delta(id_p)(\texttt{ian})-1}\begin{cases}
+        \sigma_0(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[i]\\
         0~otherwise \\
       \end{cases}=0$
     \end{ih}
 
-    \fbox{
-      
-      $\begin{cases}
-        \sigma_0(id_p)("iaw")[0]~\mathtt{if}~\sigma_0(id_p)("itf")[0]\\
+    \begin{frameb}
+      \begin{tabular}{c}
+        $\begin{cases}
+          \sigma_0(id_p)(\texttt{iaw})[0]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[0]\\
+          0~otherwise \\
+        \end{cases}$ \\
+        $+$ \\
+        $\sum\limits_{i=1}^{\Delta(id_p)(\texttt{ian})-1}\begin{cases}
+        \sigma_0(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[i]\\
         0~otherwise \\
-      \end{cases}+\sum\limits_{i=1}^{\Delta(id_p)("ian")-1}\begin{cases}
-        \sigma_0(id_p)("iaw")[i]~\mathtt{if}~\sigma_0(id_p)("itf")[i]\\
-        0~otherwise \\
-      \end{cases}=0$}
+      \end{cases}=0$
+      \end{tabular}
+    \end{frameb}
 
     Using the induction hypothesis to rewrite the goal:\\
     \fbox{$\begin{cases}
-        \sigma_0(id_p)("iaw")[0]~\mathtt{if}~\sigma_0(id_p)("itf")[0]\\
+        \sigma_0(id_p)(\texttt{iaw})[0]~\mathtt{if}~\sigma_0(id_p)(\texttt{itf})[0]\\
         0~otherwise \\
       \end{cases}=0$}
     
     Since $input(p)\neq\emptyset$, by construction, there exist an
-    $id_t\in{}Comps(\Delta),gm_t,ipm_t,opm_t$ s.t. \InCsCompT{},
+    $id_t\in{}Comps(\Delta),g_t,i_t,o_t$ s.t. \InCsCompT{},
     $id_{ft}\in{}Sigs(\Delta)$ s.t.
-    ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$ and
-    ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$.
+    ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}o_t$ and\\
+    ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}i_p$.
 
     By property of the initialization relation, \InCsCompP{},
-    \InCsCompT{}, ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$
+    \InCsCompT{}, ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}o_t$
     and
-    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{id_{ft}}{>}\in{}ipm_p$,
-    we can deduce $\sigma_0(id_p)("itf")[0]=\sigma_0(id_t)("fired")$.
+    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{id_{ft}}{>}\in{}i_p$,
+    we can deduce $\sigma_0(id_p)(\texttt{itf})[0]=\sigma_0(id_t)(\texttt{fired})$.
 
-    Rewriting the goal with $\sigma_0(id_p)("itf")[0]=\sigma_0(id_t)("fired")$:\\
+    Rewriting the goal with $\sigma_0(id_p)(\texttt{itf})[0]=\sigma_0(id_t)(\texttt{fired})$:\\
     \fbox{$\begin{cases}
-        \sigma_0(id_p)("iaw")[0]~\mathtt{if}~\sigma_0(id_t)("fired")\\
+        \sigma_0(id_p)(\texttt{iaw})[0]~\mathtt{if}~\sigma_0(id_t)(\texttt{fired})\\
         0~otherwise \\
       \end{cases}=0$}
 
     Appealing to Lemma~\ref{lem:init-states-fired-false}, we can
-    deduce $\sigma_0(id_t)("fired")=\mathtt{false}$.
+    deduce $\sigma_0(id_t)(\texttt{fired})=\mathtt{false}$.
 
-    Rewriting the goal with $\sigma_0(id_t)("fired")=\mathtt{false}$,
+    Rewriting the goal with $\sigma_0(id_t)(\texttt{fired})=\mathtt{false}$,
     and simplifying the goal, \qedbox{tautology.}
   \end{itemize}
 \end{enumerate}
@@ -234,7 +238,7 @@
   \label{lem:init-states-sots-zero}
   \inithyps{} then
   $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p$,
-  $\sigma_0(id_p)("s\_output\_token\_sum")=0$.
+  $\sigma_0(id_p)(\texttt{s\_output\_token\_sum})=0$.
 \end{lemma}
 
 \begin{niproof}
@@ -248,21 +252,21 @@
 \begin{lemma}[Initial states equal time counters]
   \label{lem:init-states-eq-tc}
   \inithyps{} then
-  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")\land{}$\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=lower(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=upper(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$.
+  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\land{}$\\
+  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\land{}$\\
+  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show that:
   \begin{enumerate}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=lower(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)("s\_time\_counter")=upper(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
+  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$}
+  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
   \end{enumerate}
 
   \exP
@@ -271,20 +275,20 @@
   
   \begin{enumerate}
   \item Assuming that $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))$, then let us show\\
-    \framebox{${}s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$.}
+    \framebox{${}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$.}
     
     Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,
-    \framebox{$\sigma_0(id_t)("s\_time\_counter")=0$.}
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=0$.}
 
     \noindent By property of the \hvhdl{} initialization relation,
     \InCsCompT, and through the examination of the
     \texttt{time\_counter} process defined in the transition design
     architecture, we can deduce
-    \qedbox{$\sigma_0(id_t)("s\_time\_counter")=0$.}
+    \qedbox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=0$.}
     
   \item Assuming that $upper(I_s(t))=\infty$ and
     $s_0.I(t)>{}lower(I_s(t))$, let us show\\
-    \framebox{$\sigma_0(id_t)("s\_time\_counter")=lower(I_s(t))$}.
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$}.
 
     By definition, $lower(I_s(t))\in\mathbb{N}^{*}$ and
     $s_0.I(t)=0$. Then, \qedbox{$lower(I_s(t)){}<0$ is a
@@ -292,7 +296,7 @@
     
   \item Assuming that $upper(I_s(t))\neq\infty$ and
     $s_0.I(t)>{}upper(I_s(t))$, let us show\\
-    \framebox{$\sigma_0(id_t)("s\_time\_counter")=upper(I_s(t))$}.
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$}.
 
     By definition, $upper(I_s(t))\in\mathbb{N}^{*}$ and
     $s_0.I(t)=0$. Then, \qedbox{$upper(I_s(t)){}<0$ is a
@@ -300,15 +304,15 @@
     
   \item Assuming that $upper(I_s(t))\neq\infty$ and
     $s_0.I(t)\le{}upper(I_s(t))$, let us
-    show\\ \framebox{$s_0.I(t)=\sigma_0(id_t)("s\_time\_counter")$}.
+    show\\ \framebox{$s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}.
  
     Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,
-    \framebox{$\sigma_0(id_t)("s\_time\_counter")=0$.}
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=0$.}
 
     By property of the \hvhdl{} initialization relation, \InCsCompT,
     and through the examination of the \texttt{time\_counter} process
     defined in the transition design architecture, we can deduce
-    \qedbox{$\sigma_0(id_t)("s\_time\_counter")=0$.}
+    \qedbox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=0$.}
   \end{enumerate}
 \end{niproof}
 
@@ -317,31 +321,31 @@
 
 \begin{lemma}[Initial states equal reset orders]
   \label{lem:init-states-eq-rorders}
-  \inithyps{} then
-  $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,
-  $s_0.reset_t(t)=\sigma_0(id_t)("s\_reinit\_time\_counter")$.
+  \inithyps{} then $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)$
+  s.t. $\gamma(t)=id_t$,
+  $s_0.reset_t(t)=\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t.
   $\gamma(t)=id_t$, let us show
   that\\
-  \framebox{$s_0.reset_t(t)=\sigma_0(id_t)("s\_reinit\_time\_counter")$.}
+  \framebox{$s_0.reset_t(t)=\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})$.}
   
   Rewriting $s_0.reset_t(t)$ as $\mathtt{false}$, by definition of
   $s_0$,
-  \fbox{$\sigma_0(id_t)("s\_reinit\_time\_counter")=\mathtt{false}$.}
+  \fbox{$\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})=\mathtt{false}$.}
   
   \exT{}
   
   \noindent By property of the \hvhdl{} initialization relation,
-  \InCsCompT, and through the examination of the \texttt{reinit\_time\_counter\_evaluation} process defined in the transition design architecture\\
+  \InCsCompT, and through the examination of the \texttt{reinit\_time\_counter\_evaluation} process defined in the \texttt{transition} design architecture\\
   we can deduce
-  $\sigma_0(id_t)("s\_reinit\_time\_counter")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]$.
+  $\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma_0(id_t)(\texttt{rt})[i]$.
 
   Rewriting
-  $\sigma_0(id_t)("s\_reinit\_time\_counter")$ as $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]$,\\
-  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
+  $\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})$ as $\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma_0(id_t)(\texttt{rt})[i]$,\\
+  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma_0(id_t)(\texttt{rt})[i]=\mathtt{false}$.}
   
   For all $t\in{}T$ (resp. $p\in{}P$), let $input(t)$
   (resp. $input(p)$) be the set of input places of $t$ (resp. input
@@ -354,21 +358,21 @@
   \item \textbf{CASE} $input(t)=\emptyset$.
 
     By construction,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow}1{>}\in{}gm_t$, and by
+    ${<}\mathtt{input\_arcs\_number\Rightarrow}1{>}\in{}g_t$, and by
     property of the elaboration relation, and \InCsCompT{}, we can
-    deduce $\Delta(id_t)("ian")=1$.
+    deduce $\Delta(id_t)(\texttt{ian})=1$.
 
-    By construction, $<\mathtt{reinit\_time(0)\Rightarrow{}false}>\in{}ipm_t$, and
+    By construction, $<\mathtt{reinit\_time(0)\Rightarrow{}false}>\in{}i_t$, and
     by property of the initialization relation and \InCsCompT, we can
-    deduce $\sigma_0(id_t)("rt")[0]=\mathtt{false}$.
+    deduce $\sigma_0(id_t)(\texttt{rt})[0]=\mathtt{false}$.
 
-    Rewriting $\Delta(id_t)("ian")$ as $1$ and
-    $\sigma_0(id_t)("rt")[0]$ as $\mathtt{false}$, \qedbox{tautology.}
+    Rewriting $\Delta(id_t)(\texttt{ian})$ as $1$ and
+    $\sigma_0(id_t)(\texttt{rt})[0]$ as $\mathtt{false}$, \qedbox{tautology.}
     
   \item \textbf{CASE} $input(t)\neq\emptyset$.
 
     To prove the current goal, we can equivalently prove that\\
-    \fbox{$\exists{}i\in[0,\Delta(id_t)("ian")-1]~s.t.~\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
+    \fbox{$\exists{}i\in[0,\Delta(id_t)(\texttt{ian})-1]~s.t.~\sigma_0(id_t)(\texttt{rt})[i]=\mathtt{false}$.}
 
     Since $input(t)\neq\emptyset,~\exists{}p~s.t.~p\in{}input(t)$. Let
     us take such a $p\in{}input(t)$.
@@ -382,58 +386,60 @@
     $i\in[0,\vert{}input(t)\vert{}-1]$,
     $j\in[0,\vert{}output(p)\vert{}-1]$, $id_{ji}\in{}Sigs(\Delta)$
     s.t.
-    ${<}\mathtt{reinit\_transitions\_time(j)\Rightarrow}id_{ji}{>}\in{}opm_p$
+    ${<}\mathtt{reinit\_transitions\_time(j)\Rightarrow}id_{ji}{>}\in{}o_p$
     and
-    ${<}\mathtt{reinit\_time(i)\Rightarrow}id_{ji}{>}\in{}ipm_t$. Let us take such a $i$, $j$ and $id_{ji}$.
+    ${<}\mathtt{reinit\_time(i)\Rightarrow}id_{ji}{>}\in{}i_t$. Let us take such a $i$, $j$ and $id_{ji}$.
 
     By construction and $input(t)\neq\emptyset$,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow}\vert{}input(t)\vert{}{>}\in{}gm_t$.
+    ${<}\mathtt{input\_arcs\_number\Rightarrow}\vert{}input(t)\vert{}{>}\in{}g_t$.
 
     By property of the \hvhdl{} elaboration relation and
-    ${<}\mathtt{input\_arcs\_number\Rightarrow}\vert{}input(t)\vert{}{>}\in{}gm_t$,
-    we can deduce $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
+    ${<}\mathtt{input\_arcs\_number\Rightarrow}\vert{}input(t)\vert{}{>}\in{}g_t$,
+    we can deduce $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$.
 
-    Since $\Delta(id_t)("ian")=\vert{}input(t)\vert$ and we have an
+    Since $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$ and we have an
     $i\in[0,\vert{}input(t)\vert-1]$, then, we have an
-    $i\in[0, \Delta(id_t)("ian")-1]$. Let us take that i to
+    $i\in[0, \Delta(id_t)(\texttt{ian})-1]$. Let us take that i to
     prove the goal.
 
-    Then, we must show \framebox{$\sigma_0(id_t)("rt")[i]=\mathtt{false}$.}
+    Then, we must show \framebox{$\sigma_0(id_t)(\texttt{rt})[i]=\mathtt{false}$.}
 
     By property of the \hvhdl{} initialization relation and
-    ${<}\mathtt{reinit\_time(i)\Rightarrow}id_{ji}{>}\in{}ipm_t$, we
-    can deduce $\sigma_0(id_t)("rt")[i]=\sigma_0("id_{ji}")$.
+    ${<}\mathtt{reinit\_time(i)\Rightarrow}id_{ji}{>}\in{}i_t$, we can
+    deduce $\sigma_0(id_t)(\texttt{rt})[i]=\sigma_0(id_{ji})$.
 
-    Rewriting $\sigma_0(id_t)("rt")[i]$ as $\sigma_0("id_{ji}")$,
-    \framebox{$\sigma_0("id_{ji}")=\mathtt{false}$.}
+    Rewriting $\sigma_0(id_t)(\texttt{rt})[i]$ as $\sigma_0(id_{ji})$,
+    \framebox{$\sigma_0(id_{ji})=\mathtt{false}$.}
 
-    By property of the \hvhdl{} initialization relation and
-    $<\mathtt{reinit\_transitions\_time(j)\Rightarrow}id_{ji}>\in{}opm_p$,
-    we can deduce $\sigma_0("id_{ji}")=\sigma_0(id_p)("rtt")[j]$.
+    By property of the \hvhdl{} initialization relation and\\
+    ${<}\mathtt{reinit\_transitions\_time(j)\Rightarrow}id_{ji}{>}\in{}o_p$,
+    we can deduce
+    $\sigma_0(id_{ji})=\sigma_0(id_p)(\texttt{rtt})[j]$.
 
-    Rewriting $\sigma_0("id_{ji}")$ as $\sigma_0(id_p)("rtt")[j]$,
-    \framebox{$\sigma_p^0("rtt")[j]=\mathtt{false}$.}
+    Rewriting $\sigma_0(id_{ji})$ as
+    $\sigma_0(id_p)(\texttt{rtt})[j]$,
+    \framebox{$\sigma_0(id_p)(\texttt{rtt})[j]=\mathtt{false}$.}
 
     Since $t\in{}output(p)$, then we know that
     $output(p)\neq\emptyset$.
 
     Then, by construction,
-    ${<}\mathtt{output\_arcs\_number\Rightarrow}\vert{}output(p)\vert{>}\in{}gm_p$.
+    ${<}\mathtt{output\_arcs\_number\Rightarrow}\vert{}output(p)\vert{>}\in{}g_p$.
 
     By property of the elaboration relation and
-    ${<}\mathtt{output\_arcs\_number}\Rightarrow\vert{}output(p)\vert{>}\in{}gm_p$,
-    we can deduce that $\Delta(id_p)("oan")=\vert{}output(p)\vert$.
+    ${<}\mathtt{output\_arcs\_number}\Rightarrow\vert{}output(p)\vert{>}\in{}g_p$,
+    we can deduce that $\Delta(id_p)(\texttt{oan})=\vert{}output(p)\vert$.
 
-    Since $\Delta(id_p)("oan")=\vert{}output(p)\vert$ and
+    Since $\Delta(id_p)(\texttt{oan})=\vert{}output(p)\vert$ and
     $j\in[0,\vert{}output(p)\vert-1]$, then
-    $j\in[0,\Delta(id_p)("oan")-1]$.
+    $j\in[0,\Delta(id_p)(\texttt{oan})-1]$.
     
     By property of the \hvhdl{} initialization relation, \InCsCompP,
     through the examination of the
     \texttt{reinit\_transitions\_time\_evaluation} process defined in
-    the place design architecture, and since
-    $j\in[0,\Delta(id_p)("oan")-1]$,
-    \qedbox{$\sigma_0(id_p)("rtt")[j]=\mathtt{false}$.}
+    the \texttt{place} design architecture, and since
+    $j\in[0,\Delta(id_p)(\texttt{oan})-1]$,
+    \qedbox{$\sigma_0(id_p)(\texttt{rtt})[j]=\mathtt{false}$.}
 
   \end{itemize}
   
@@ -538,41 +544,42 @@
 
 \begin{lemma}[No fired at initial state]
   \label{lem:init-states-fired-false}
-  $\forall{}d\in{}design,\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H}),\sigma_e,\sigma_0\in\Sigma(\Delta),id_t\in{}Comps(\Delta),gm_t,ipm_t,opm_t$
-  s.t. :
+  $\forall{}d\in{}design,\Delta\in{}ElDesign,\sigma_e,\sigma_0\in\Sigma,id_t\in{}Comps(\Delta),$
+  $g_t,$ $i_t,$ $o_t$ s.t. :
   \begin{itemize}
   \item $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d.cs\xrightarrow{elab}\sigma_0$
   \item $\Delta,\sigma_e\vdash{}d.cs\xrightarrow{init}\sigma_0$
-  \item $\mathtt{comp}(id_t$, $"transition"$, $gm_t$, $ipm_t$,
-    $opm_t)\in{}d.cs$
+  \item $\mathtt{comp}(id_t$, $\texttt{transition}$, $g_t$, $i_t$,
+    $o_t)\in{}d.cs$
   \end{itemize}
-  then $\sigma_0(id_t)("fired")=\mathtt{false}$.
+  then $\sigma_0(id_t)(\texttt{fired})=\mathtt{false}$.
 \end{lemma}
 
 \begin{niproof}
   Assuming all the above hypotheses, let us show
-  \fbox{$\sigma_0(id_t)("fired")=\mathtt{false}$.}
+  \fbox{$\sigma_0(id_t)(\texttt{fired})=\mathtt{false}$.}
 
   By property of the initialization relation, \InCsCompT, and through
   the examination of the \texttt{fired\_evaluation} process defined in
   the transition design architecture, we can deduce:
   \begin{equation}
     \label{eq:fired-at-init-state}
-    \sigma_0(id_t)("fired")=\sigma_0(id_t)("s\_firable")~.~\sigma_0(id_t)("s\_priority\_combination")
+    \sigma_0(id_t)(\texttt{fired})=\sigma_0(id_t)(\texttt{s\_firable})~.~\sigma_0(id_t)(\texttt{s\_priority\_combination})
   \end{equation}
 
   Rewriting the goal with Equation~\eqref{eq:fired-at-init-state}:
-  \fbox{$\sigma_0(id_t)("sfa")~.~\sigma_0(id_t)("spc")=\mathtt{false}$.}
+  \fbox{$\sigma_0(id_t)(\texttt{sfa})~.~\sigma_0(id_t)(\texttt{spc})=\mathtt{false}$.}
   
   By property of the initialization relation, \InCsCompT, and through
   the examination of the \texttt{firable} process defined in the
-  transition design architecture, we can deduce $\sigma_0(id_t)("sfa")=\mathtt{false}$.
+  \texttt{transition} design architecture, we can deduce
+  $\sigma_0(id_t)(\texttt{sfa})=\mathtt{false}$.
 
-  Rewriting the goal with $\sigma_0(id_t)("sfa")=\mathtt{false}$ and
+  Rewriting the goal with $\sigma_0(id_t)(\texttt{sfa})=\mathtt{false}$ and
   simplifying the goal, \qedbox{tautology.}
 \end{niproof}
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../../main"
+%%% TeX-master: \texttt{../../main}
 %%% End:

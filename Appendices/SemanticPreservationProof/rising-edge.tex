@@ -7,10 +7,10 @@
   Given an $sitpn\in{}SITPN$, $d\in{}design$,
   $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
-  $\Delta\in{}ElDesign(d,\mathcal{D}_\mathcal{H})$,
+  $\Delta\in{}ElDesign$,
   $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma(\Delta)$,
+  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$,
   assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
@@ -43,13 +43,13 @@
 \begin{lemma}[Rising edge equal marking]
   \label{lem:re-equal-marking}
   \rehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$,
-  $s'.M(p)=\sigma'(id_p)("s\_marking")$.
+  $s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.
 \end{lemma}
 
 \begin{niproof}
 
   Given a $p\in{}P$, let us show
-  \fbox{$s'.M(p)=\sigma'(id_p)("s\_marking")$.}
+  \fbox{$s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.}
 
   \exP{}
   
@@ -64,24 +64,29 @@
   design architecture, we can deduce:
   \begin{equation}\label{eq:re-eq-marking-eqsm}
     \begin{split}
-      \sigma'(id_p)("sm")=\sigma(id_p)("sm")-\sigma(id_p)("s\_output\_token\_sum")\\
-      +\sigma(id_p)("s\_input\_token\_sum")
+      \sigma'(id_p)(\texttt{sm})=\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{s\_output\_token\_sum})\\
+      +\sigma(id_p)(\texttt{s\_input\_token\_sum})
     \end{split}
   \end{equation}
 
   Rewriting the goal with \ref{eq:re-eq-marking-eqmp} and
   \ref{eq:re-eq-marking-eqsm},
   
-  \fbox{$s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("sm")-\sigma(id_p)("sots")
-    +\sigma(id_p)("sits")$.}
+  \fbox{$s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})
+    +\sigma(id_p)(\texttt{sits})$.}\\
   
   By definition of the \nameref{def:full-post-fe-state-sim} relation,
-  we can deduce $s.M(p)=\sigma(id_p)("sm")$,
-  $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)("sots")$ and
-  $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("sits")$, and thus, 
+  we can deduce $s.M(p)=\sigma(id_p)(\texttt{sm})$,
+  $\sum\limits_{t\in{}Fired(s)}pre(p,t)=\sigma(id_p)(\texttt{sots})$ and
+  $\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)(\texttt{sits})$, and thus, 
 
-  \qedbox{$s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)("sm")-\sigma(id_p)("sots")
-    +\sigma(id_p)("sits")$.}
+  \qedbox{
+    \begin{tabular}{c}
+      $s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)$ \\
+      $=$ \\
+      $\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})+\sigma(id_p)(\texttt{sits})$ \\
+    \end{tabular}
+  }
 \end{niproof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,7 +100,7 @@
   \label{lem:re-equal-cond-comb}
   \rehyps{} then\\
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-  $\sigma'(id_t)("s\_condition\_combination")=
+  $\sigma'(id_t)(\texttt{s\_condition\_combination})=
   \prod\limits_{c\in{}conds(t)}
   \begin{cases}
     E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -107,7 +112,7 @@
 
 \begin{proof}
   Given a $t$ and an $id_t$ s.t. $\gamma(t)=id_t$, let us show\\
-  \fbox{$\sigma'(id_t)("s\_condition\_combination")=
+  \fbox{$\sigma'(id_t)(\texttt{s\_condition\_combination})=
     \prod\limits_{c\in{}conds(t)}
     \begin{cases}
       E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -121,11 +126,11 @@
   \texttt{condition_evaluation} process defined in the transition
   design architecture, we can deduce:
   \begin{equation}
-    \sigma'(id_t)("scc")=\prod\limits_{i=0}^{\Delta(id_t)("conditions\_number")-1}\sigma'(id_t)("input\_conditions")[i]\label{eq:re-eq-cc-eqscc}
+    \sigma'(id_t)(\texttt{scc})=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{conditions\_number})-1}\sigma'(id_t)(\texttt{input\_conditions})[i]\label{eq:re-eq-cc-eqscc}
   \end{equation}
 
   \noindent{}Rewriting the goal with \ref{eq:re-eq-cc-eqscc},\\
-  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("cn")-1}\sigma'(id_t)("ic")[i]=
+  \fbox{$\prod\limits_{i=0}^{\Delta(id_t)(\texttt{cn})-1}\sigma'(id_t)(\texttt{ic})[i]=
     \prod\limits_{c\in{}conds(t)}
     \begin{cases}
       E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -136,29 +141,29 @@
 
   \begin{itemize}
   \item \textbf{CASE} $conds(t)=\emptyset$:
-    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("cn")-1}\sigma'(id_t)("ic")[i]=\mathtt{true}$.}\\
+    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)(\texttt{cn})-1}\sigma'(id_t)(\texttt{ic})[i]=\mathtt{true}$.}\\
     
     By construction,
-    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}gm_t$ and
-    ${<}\mathtt{input\_conditions(0)\Rightarrow{}true}{>}\in{}ipm_t$.
+    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}g_t$ and
+    ${<}\mathtt{input\_conditions(0)\Rightarrow{}true}{>}\in{}i_t$.
 
     By property of the stabilize relation,
-    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}gm_t$ and
-    ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}true}{>}\in{}ipm_t$,
-    we can deduce $\Delta(id_t)("cn")=1$ and
-    $\sigma'(id_t)("ic")[0]=\mathtt{true}$.
+    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}g_t$ and
+    ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}true}{>}\in{}i_t$,
+    we can deduce $\Delta(id_t)(\texttt{cn})=1$ and
+    $\sigma'(id_t)(\texttt{ic})[0]=\mathtt{true}$.
 
-    Rewriting the goal with $\Delta(id_t)("cn")=1$ and
-    $\sigma'(id_t)("ic")[0]=\mathtt{true}$, \qedbox{tautology.}
+    Rewriting the goal with $\Delta(id_t)(\texttt{cn})=1$ and
+    $\sigma'(id_t)(\texttt{ic})[0]=\mathtt{true}$, \qedbox{tautology.}
     
   \item \textbf{CASE} $conds(t)\neq\emptyset$:\\
     By construction,
-    ${<}\mathtt{conditions\_number\Rightarrow{}\vert{}conds(t)\vert}{>}\in{}gm_t$,
+    ${<}\mathtt{conditions\_number\Rightarrow{}\vert{}conds(t)\vert}{>}\in{}g_t$,
     and by property of the stabilize relation, we can deduce
-    $\Delta(id_t)("cn")=\vert{}conds(t)\vert$.
+    $\Delta(id_t)(\texttt{cn})=\vert{}conds(t)\vert$.
     
-    Rewriting the goal with $\Delta(id_t)("cn")=\vert{}conds(t)\vert$:\\
-    \fbox{$\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+    Rewriting the goal with $\Delta(id_t)(\texttt{cn})=\vert{}conds(t)\vert$:\\
+    \fbox{$\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
       \prod\limits_{c\in{}conds(t)}
       \begin{cases}
         E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -169,13 +174,13 @@
 
     \begin{itemize}
     \item \textbf{BASE CASE}:
-      $\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=0$
+      $\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=0$
       and $\vert{}conds(t)\vert-1<0$. Thus, we can deduce that
       $\vert{}conds(t)\vert=0$ which \qedbox{contradicts
         $conds(t)\neq\emptyset$.}
     \item \textbf{INDUCTION CASE}:
       \begin{ih}
-        $\forall{}conds'\subseteq{}\mathcal{C},~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+        $\forall{}conds'\subseteq{}\mathcal{C},~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
         \prod\limits_{c\in{}conds'}
         \begin{cases}
           E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -183,7 +188,7 @@
         \end{cases}$
       \end{ih}
 
-      \fbox{$\sigma'(id_t)("ic")[0]~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+      \fbox{$\sigma'(id_t)(\texttt{ic})[0]~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
         \prod\limits_{c\in{}conds(t)}
         \begin{cases}
           E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -195,9 +200,9 @@
       \begin{itemize}
       \item $\gamma(c)=id_c$
       \item $\mathbb{C}(t,c)=1$ implies
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}ipm_t$
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}i_t$
       \item $\mathbb{C}(t,c)=-1$ implies
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}ipm_t$
+        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}i_t$
       \end{itemize}
 
       For $i=0$, let us take such a $c\in{}conds(t)$ and an $id_c$
@@ -210,13 +215,13 @@
       \item \textbf{CASE} $\mathbb{C}(t,c)=1$:
 
         Then, we have
-        ${<}\mathtt{input\_conditions(0)\Rightarrow{}id_c}{>}\in{}ipm_t$
+        ${<}\mathtt{input\_conditions(0)\Rightarrow{}id_c}{>}\in{}i_t$
         and by property of the stabilize relation, we can deduce
-        $\sigma(id_t)("ic")[0]=\sigma'(id_c)$.
+        $\sigma(id_t)(\texttt{ic})[0]=\sigma'(id_c)$.
 
-        Rewriting the goal with $\sigma(id_t)("ic")[0]=\sigma'(id_c)$:
+        Rewriting the goal with $\sigma(id_t)(\texttt{ic})[0]=\sigma'(id_c)$:
 
-        \fbox{$\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+        \fbox{$\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
           \begin{cases}
             E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -234,7 +239,7 @@
         $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$ and
         $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$:
 
-        \fbox{$E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+        \fbox{$E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
           \begin{cases}
             E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -243,26 +248,31 @@
 
         By definition of the $\prod$ operator, we can rewrite the right term of the goal as follows:
 
-        \fbox{$E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
-          E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
-          \begin{cases}
-            E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
-            \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
-          \end{cases}$}
+        \begin{frameb}
+          \begin{tabular}{c}
+            $E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]$ \\
+            $=$ \\
+            $E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
+            \begin{cases}
+              E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
+              \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
+            \end{cases}$ \\
+          \end{tabular}
+        \end{frameb}
 
         Appealing to the induction hypothesis, \qedbox{tautology.}
 
       \item \textbf{CASE} $\mathbb{C}(t,c)=-1$:
 
         Then, we have
-        ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}not~id_c}{>}\in{}ipm_t$
+        ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}not~id_c}{>}\in{}i_t$
         and by property of the stabilize relation, we can deduce
-        $\sigma(id_t)("ic")[0]=\mathtt{not}~\sigma'(id_c)$.
+        $\sigma(id_t)(\texttt{ic})[0]=\mathtt{not}~\sigma'(id_c)$.
 
         Rewriting the goal with
-        $\sigma(id_t)("ic")[0]=\mathtt{not}~\sigma'(id_c)$:
+        $\sigma(id_t)(\texttt{ic})[0]=\mathtt{not}~\sigma'(id_c)$:
 
-        \fbox{$\mathtt{not}~\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+        \fbox{$\mathtt{not}~\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
           \begin{cases}
             E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -280,7 +290,7 @@
         $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$ and
         $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$:
 
-        \fbox{$\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
+        \fbox{$\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
           \begin{cases}
             E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
@@ -289,13 +299,17 @@
 
         By definition of the $\prod$ operator, we can rewrite the right term of the goal as follows:
 
-        \fbox{$\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)("ic")[i]=
-          \mathtt{not}~E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
-          \begin{cases}
-            E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
-            \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
-          \end{cases}$}
-
+        \begin{frameb}
+          \begin{tabular}{c}
+            $\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]$ \\
+            $=$ \\
+            $\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
+            \begin{cases}
+              E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
+              \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
+            \end{cases}$ \\
+          \end{tabular}
+        \end{frameb}
         Appealing to the induction hypothesis, \qedbox{tautology.}
         
       \end{itemize}
@@ -313,25 +327,25 @@
   \rehyps{} then\\
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
   $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
-  $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+  $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
   $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-  $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+  $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
   $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-  $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+  $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
   $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
-  $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.
+  $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
   \noindent\fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
       $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$}}\\
 
   \exT{}
 
@@ -339,38 +353,38 @@
 
   \begin{enumerate}
   \item\label{it:re-eq-tc-fst}
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}\\
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
     
     Assuming that $upper(I_s(t))=\infty$ and
     $s'.I(t)\le{}lower(I_s(t))$, let us show\\
-    \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
+    \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
     By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{} rising
     edge and stabilize relations, \InCsCompT, and through the
     examination of the \texttt{time_counter} process defined in the
     transition design architecture, we can deduce
-    $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$.
+    $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
     By property of
     $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
-    deduce $s.I(t)=\sigma(id_t)("stc")$.
+    deduce $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
-    Rewriting the goal with $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$
-    and $s.I(t)=\sigma(id_t)("stc")$, \qedbox{tautology.}
+    Rewriting the goal with $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$
+    and $s.I(t)=\sigma(id_t)(\texttt{stc})$, \qedbox{tautology.}
     
   \item
     \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow
-      \sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+      \sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t)$.}
 
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
   \item
     \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow
-      \sigma'(id_t)("s\_time\_counter")=upper(I_s(t)$.}
+      \sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t)$.}
 
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
     
   \item
-    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}
+    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}
     
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
   \end{enumerate}
@@ -384,13 +398,13 @@
   \label{lem:re-equal-reset-orders}
   \rehyps{} then\\
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$
+  $s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_reinit\_time\_counter})$
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show\\
-  \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_reinit\_time\_counter")$.}
+  \fbox{$s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_reinit\_time\_counter})$.}
 
   \exT
 
@@ -399,11 +413,11 @@
   \texttt{reinit_time_counter_evaluation} process defined in the
   transition design architecture, we can deduce:
   \begin{equation}
-    \sigma'(id_t)("srtc")=\sum\limits_{i=0}^{\Delta(id_t)("input\_arcs\_number")-1}\sigma'(id_t)("reinit\_time")[i]\label{eq:eq-srtc-prod}
+    \sigma'(id_t)(\texttt{srtc})=\sum\limits_{i=0}^{\Delta(id_t)(\texttt{input\_arcs\_number})-1}\sigma'(id_t)(\texttt{reinit\_time})[i]\label{eq:eq-srtc-prod}
   \end{equation}
 
   Rewriting the goal with \eqref{eq:eq-srtc-prod},
-  \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("rt")[i]$.}
+  \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{rt})[i]$.}
   
   Let us perform case analysis on $input(t)$; there are two cases:
 
@@ -411,52 +425,52 @@
   \item \textbf{CASE} $input(t)=\emptyset$:
 
     By construction,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_t$, and
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}g_t$, and
     by property of the elaboration relation, we can deduce
-    $\Delta(id_t)("ian")=1$.
+    $\Delta(id_t)(\texttt{ian})=1$.
 
     By construction, there exists an $id_{ft}\in{}Sigs(\Delta)$ s.t.
-    ${<}\mathtt{reinit\_time(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_t$ and
-    ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$, and by
+    ${<}\mathtt{reinit\_time(0)\Rightarrow{}id_{ft}}{>}\in{}i_t$ and
+    ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}o_t$, and by
     property of the stabilize relation and \InCsCompT, we can deduce
-    $\sigma'(id_t)("rt")[0]=\sigma'(id_{ft})=\sigma'(id_t)("fired")$.
+    $\sigma'(id_t)(\texttt{rt})[0]=\sigma'(id_{ft})=\sigma'(id_t)(\texttt{fired})$.
 
-    Rewriting the goal with $\Delta(id_t)("ian")=1$ and
-    $\sigma'(id_t)("rt")[0]=\sigma'(id_{ft})=\sigma'(id_t)("fired")$:
-    \fbox{$s'.reset_t(t)=\sigma'(id_t)("fired")$.}
+    Rewriting the goal with $\Delta(id_t)(\texttt{ian})=1$ and
+    $\sigma'(id_t)(\texttt{rt})[0]=\sigma'(id_{ft})=\sigma'(id_t)(\texttt{fired})$:
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)(\texttt{fired})$.}
     
     By property of the stabilize relation, \InCsCompT{}, and through
     the examination of the \texttt{fired_evaluation} process, we can deduce:
     \begin{equation}
-      \sigma'(id_t)("fired")=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")\label{eq:fired-at-re}
+      \sigma'(id_t)(\texttt{fired})=\sigma'(id_t)(\texttt{s\_firable})~.~\sigma'(id_t)(\texttt{s\_priority\_combination})\label{eq:fired-at-re}
     \end{equation}
 
     Rewriting the goal with \eqref{eq:fired-at-re}:\\
-    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("s\_priority\_combination")$.}
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_firable})~.~\sigma'(id_t)(\texttt{s\_priority\_combination})$.}
 
     By property of the stabilize relation, \InCsCompT, and through the
     examination of the \texttt{priority_authorization_evaluation}
     process defined in the transition design architecture, we can
     deduce:
     \begin{equation}
-      \sigma'(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("priority\_authorizations")[i]\label{eq:eq-spc-sum}
+      \sigma'(id_t)(\texttt{spc})=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{priority\_authorizations})[i]\label{eq:eq-spc-sum}
     \end{equation}
 
-    As $\Delta(id_t)("ian")=1$, we can deduce
-    $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\sigma'(id_t)("pauths")[0]$.
+    As $\Delta(id_t)(\texttt{ian})=1$, we can deduce
+    $\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{pauths})[i]=\sigma'(id_t)(\texttt{pauths})[0]$.
 
     Rewriting the goal with \eqref{eq:eq-spc-sum} and
-    $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("pauths")[i]=\sigma'(id_t)("pauths")[0]$:
-    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")~.~\sigma'(id_t)("pauths")[0]$.}
+    $\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{pauths})[i]=\sigma'(id_t)(\texttt{pauths})[0]$:\\
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_firable})~.~\sigma'(id_t)(\texttt{pauths})[0]$.}
     
     By construction,
-    ${<}\mathtt{priority\_authorizations(0)\Rightarrow{}true}{>}\in{}ipm_t$,
+    ${<}\mathtt{priority\_authorizations(0)\Rightarrow{}true}{>}\in{}i_t$,
     and by property of the stabilize relation and \InCsCompT, we can
-    deduce $\sigma'(id_t)("pauths")[0]=\mathtt{true}$.
+    deduce\\ $\sigma'(id_t)(\texttt{pauths})[0]=\mathtt{true}$.
     
-    Rewriting the goal with $\sigma'(id_t)("pauths")[0]=\mathtt{true}$
+    Rewriting the goal with $\sigma'(id_t)(\texttt{pauths})[0]=\mathtt{true}$
     , and simplifying the equation:\\
-    \fbox{$s'.reset_t(t)=\sigma'(id_t)("s\_firable")$.}
+    \fbox{$s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_firable})$.}
     
     Let us perform case analysis on $t\in{}Fired(s)$ or
     $t\notin{}Fired(s)$:
@@ -470,25 +484,26 @@
       $s'.reset_t(t)=\mathtt{true}$.
 
       Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$:
-      \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}
+      \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}
 
       By property of the stabilize, the \hvhdl{} rising edge and the
       $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
       the examination of the \texttt{firable} process defined in the
-      transition design architecture, we can deduce
-      $\sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")$.
+      transition design architecture, we can deduce\\
+      $\sigma(id_t)(\texttt{s\_firable})=\sigma'(id_t)(\texttt{s\_firable})$.
 
       Rewriting the goal with
-      $\sigma(id_t)("s\_firable")=\sigma'(id_t)("s\_firable")$,
-      \fbox{$\sigma(id_t)("s\_firable")=\mathtt{true}$.}
+      $\sigma(id_t)(\texttt{s\_firable})=\sigma'(id_t)(\texttt{s\_firable})$,
+      we have \\
+      \fbox{$\sigma(id_t)(\texttt{s\_firable})=\mathtt{true}$.}
 
       By property of
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
       deduce
-      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{true}$.
+      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)(\texttt{sfa})=\mathtt{true}$.
 
       Rewriting the goal with
-      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{true}$,
+      $t\in{}Firable(s)\Leftrightarrow\sigma(id_t)(\texttt{sfa})=\mathtt{true}$,
       \fbox{$t\in{}Firable(s)$.}
 
       By property of $t\in{}Fired(s)$, \qedbox{$t\in{}Firable(s)$.}
@@ -503,22 +518,22 @@
       $s'.reset_t(t)=\mathtt{false}$.
 
       Rewriting the goal with $s'.reset_t(t)=\mathtt{false}$:
-      \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{false}$.}
+      \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{false}$.}
 
       By property of the stabilize, the \hvhdl{} rising edge and the
       $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
       the examination of the \texttt{firable} process defined in the
       transition design architecture, we can deduce
-      $\sigma(id_t)("sfa")=\sigma'(id_t)("sfa")$.
+      $\sigma(id_t)(\texttt{sfa})=\sigma'(id_t)(\texttt{sfa})$.
 
       Rewriting the goal with
-      $\sigma(id_t)("sfa")=\sigma'(id_t)("sfa")$,
-      \fbox{$\sigma(id_t)("sfa")=\mathtt{false}$.}
+      $\sigma(id_t)(\texttt{sfa})=\sigma'(id_t)(\texttt{sfa})$,
+      \fbox{$\sigma(id_t)(\texttt{sfa})=\mathtt{false}$.}
 
       By property of
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
       deduce
-      $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)("sfa")=\mathtt{false}$.
+      $t\notin{}Firable(s)\Leftrightarrow\sigma(id_t)(\texttt{sfa})=\mathtt{false}$.
       
       By property of $t\notin{}Fired(s)$ and $input(t)=\emptyset$,
       \qedbox{$t\notin{}Firable(s)$}.
@@ -527,13 +542,13 @@
   \item \textbf{CASE} $input(t)\neq{}\emptyset$:
 
     By construction,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$,
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}g_t$,
     and by property of the elaboration relation, we can deduce
-    $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
+    $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$.
 
     Rewriting the goal with
-    $\Delta(id_t)("ian")=\vert{}input(t)\vert$,
-    \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]$.}
+    $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$,
+    \fbox{$s'.reset_t(t)=\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)(\texttt{rt})[i]$.}
     
     Let us perform case analysis on $t\in{}Fired(s)$ or
     $t\notin{}Fired(s)$:
@@ -547,11 +562,11 @@
       $s'.reset_t(t)=\mathtt{true}$.
 
       Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$,
-      \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+      \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
       To prove the goal, let us show
       \fbox{$\exists{}i\in[0,\vert{}input(t)\vert-1]$
-        s.t. $\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+        s.t. $\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
       By construction, and $input(t)\neq{}\emptyset$, there exist
       ${}p\in{}input(t)$ and $id_p\in{}Comps(\Delta)$
@@ -563,22 +578,22 @@
       $i\in{}[0,\vert{}input(t)\vert-1],$ a
       $j\in[0,\vert{}output(p)\vert-1]$ and $id_{ji}\in{}Sigs(\Delta)$
       s.t.
-      ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+      ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
       and\\
-      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$. Let
+      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$. Let
       us take such an $i$, $j$ and $id_{ji}$, and let us use $i$ to
-      prove the goal: \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+      prove the goal: \fbox{$\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
       \noindent{}By property of the stabilize relation,
-      ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+      ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
       and
-      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
+      ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$,
       we can deduce
-      $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
+      $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$.
 
       Rewriting the goal with
-      $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$,
-      \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{true}$.}
+      $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$,
+      \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{true}$.}
 
       By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
       rising edge and the stabilize relations, \InCsCompP, and through
@@ -588,48 +603,47 @@
       \begin{equation}
         \label{eq:eq-rtt-j}
         \begin{split}
-          \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-          & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-          & .(\sigma(id_p)("sots")>0)\big)\\
-          & +\sigma(id_p)("otf")[j] \\
+          \sigma'(id_p)(\texttt{rtt})[j]=& \big((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+          & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+          & .(\sigma(id_p)(\texttt{sots})>0)\big)\\
+          & +\sigma(id_p)(\texttt{otf})[j] \\
         \end{split}
       \end{equation}
 
       Rewriting the goal with \eqref{eq:eq-rtt-j},
       \begin{equation*}
         \fbox{$\begin{split}
-            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-            & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-            & .(\sigma(id_p)("sots")>0))\\
-            & +(\sigma(id_p)("otf")[j]) \\
+            \mathtt{true}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+            & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+            & .(\sigma(id_p)(\texttt{sots})>0))\\
+            & +(\sigma(id_p)(\texttt{otf})[j]) \\
           \end{split}$}
       \end{equation*}
 
-      By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
-      ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-      and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$. By
-      property of state $\sigma$ as being a stable state, we can
-      deduce
-      $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$.
+      By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ such that\\
+      ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}i_p$
+      and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}o_t$. By
+      property of state $\sigma$, which is a stable state, we have
+      $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft})=\sigma(id_p)(\texttt{otf})[j]$.
 
       Rewriting the goal with
-      $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$,
+      $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft})=\sigma(id_p)(\texttt{otf})[j]$,
       \begin{equation*}
         \fbox{$\begin{split}
-            \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-            & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-            & .(\sigma(id_p)("sots")>0))\\
-            & +\sigma(id_t)("fired") \\
+            \mathtt{true}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+            & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+            & .(\sigma(id_p)(\texttt{sots})>0))\\
+            & +\sigma(id_t)(\texttt{fired}) \\
           \end{split}$}
       \end{equation*}
 
       By property of
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
       deduce
-      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$.
+      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{true}$.
 
       Rewriting the goal with
-      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{true}$
+      $t\in{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{true}$
       and simplify the goal, then \qedbox{tautology}.
 
     \item \textbf{CASE} $t\notin{}Fired(s)$: Then, there are two cases
@@ -663,11 +677,11 @@
         $s'.reset_t(t)=\mathtt{true}$.
 
         Rewriting the goal with $s'.reset_t(t)=\mathtt{true}$,
-        \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+        \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
         \noindent{}To prove the goal, let us show
         \fbox{$\exists{}i\in[0,\vert{}input(t)\vert-1]$
-          s.t. $\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+          s.t. $\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
         By construction, there exists $id_p\in{}Comps(\Delta)$
         s.t. $\gamma(p)=id_p$.
@@ -678,22 +692,22 @@
         $i\in{}[0,\vert{}input(t)\vert-1],$ a
         $j\in[0,\vert{}output(p)\vert-1]$ and
         $id_{ji}\in{}Sigs(\Delta)$ s.t.
-        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
         and\\
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$. Let
+        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$. Let
         us take such an $i$, $j$ and $id_{ji}$, and let us use $i$ to
-        prove the goal: \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{true}$.}
+        prove the goal: \fbox{$\sigma'(id_t)(\texttt{rt})[i]=\mathtt{true}$.}
 
         By property of the stabilize relation,
-        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
         and
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
-        we can deduce
-        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
+        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$,
+        we have
+        $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$.
 
         Rewriting the goal with
-        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$,
-        \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{true}$.}
+        $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$, we have\\
+        \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{true}$.}
 
         By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
         rising edge and the stabilize relation, and through the
@@ -703,45 +717,45 @@
         \begin{equation}
           \label{eq:eq-rtt-j-2}
           \begin{split}
-            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-            & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-            & .(\sigma(id_p)("sots")>0)\big)\\
-            & +\sigma(id_p)("otf")[j] \\
+            \sigma'(id_p)(\texttt{rtt})[j]=& \big((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+            & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+            & .(\sigma(id_p)(\texttt{sots})>0)\big)\\
+            & +\sigma(id_p)(\texttt{otf})[j] \\
           \end{split}
         \end{equation}
 
         Rewriting the goal with \eqref{eq:eq-rtt-j-2},
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{true}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-              & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-              & .(\sigma(id_p)("sots")>0))\\
-              & +\sigma(id_p)("otf")[j] \\
+              \mathtt{true}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+              & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+              & .(\sigma(id_p)(\texttt{sots})>0))\\
+              & +\sigma(id_p)(\texttt{otf})[j] \\
             \end{split}$}
         \end{equation*}
 
         By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}i_p$
         and\\
-        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
         
         By property of the stabilize relation and \InCsCompP, we can
-        deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
-        $\sigma'(id_p)("oaw")[j]=\omega$.
+        deduce $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$ and
+        $\sigma'(id_p)(\texttt{oaw})[j]=\omega$.
 
         By property of
         $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
-        deduce $\sigma(id_p)("sm")=s.M(p)$ and
-        $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
+        deduce $\sigma(id_p)(\texttt{sm})=s.M(p)$ and
+        $\sigma(id_p)(\texttt{sots})=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
 
         \noindent{}Rewriting the goal with
-        $\sigma'(id_p)("oat")[j]=\mathtt{basic}$,
-        $\sigma'(id_p)("oaw")[j]=\omega$, $\sigma(id_p)("sm")=s.M(p)$
+        $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$,
+        $\sigma'(id_p)(\texttt{oaw})[j]=\omega$, $\sigma(id_p)(\texttt{sm})=s.M(p)$
         and
-        $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$,
+        $\sigma(id_p)(\texttt{sots})=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$,
         and simplifying the goal:
         \begin{equation*}
-          \fbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)("fired")=\mathtt{true}$}
+          \fbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})=\mathtt{true}$}
         \end{equation*}
 
         We assumed that
@@ -749,7 +763,7 @@
         $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0$. Thus, by
         assumption:
         \begin{equation*}
-          \qedbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)("fired")=\mathtt{true}$}
+          \qedbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})=\mathtt{true}$}
         \end{equation*}
         
       \item \textbf{CASE} such a place does not exist:\\
@@ -769,35 +783,35 @@
         $s'.reset_t(t)=\mathtt{false}$.
         
         Rewriting the goal with $s'.reset_t(t)=\mathtt{false}$:
-        \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
+        \fbox{$\sum\limits_{i=0}^{\vert{}input(t)\vert-1}\sigma'(id_t)(\texttt{rt})[i]=\mathtt{false}$.}
 
         To prove the goal, let us show
-        \fbox{$\forall{}i\in[0,\vert{}input(t)\vert-1],~\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
+        \fbox{$\forall{}i\in[0,\vert{}input(t)\vert-1],~\sigma'(id_t)(\texttt{rt})[i]=\mathtt{false}$.}\\
 
         Given an $i\in[0,\vert{}input(t)\vert-1]$, let us show
-        \fbox{$\sigma'(id_t)("rt")[i]=\mathtt{false}$.}
+        \fbox{$\sigma'(id_t)(\texttt{rt})[i]=\mathtt{false}$.}\\
 
         By construction, there exist a $p\in{}input(t)$, an
-        $id_p\in{}Comps(\Delta)$, $gm_p$, $ipm_p$, $opm_p$, a
+        $id_p\in{}Comps(\Delta)$, $g_p$, $i_p$, $o_p$, \\ a
         $j\in[0,\vert{}output(p)\vert-1]$, an
         $id_{ji}\in{}Sigs(\Delta)$ s.t. $\gamma(p)=id_p$ and
         \InCsCompP{} and
-        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
         and
-        ${<}$\texttt{reinit\_time(i)}$\Rightarrow{}\mathtt{id_{ji}}{>}\in{}ipm_t$. Let
-        us take such a $p$, $id_p$, $gm_p$, $ipm_p$, $opm_p$, $j$ and
-        $id_{ji}$.
+        ${<}$\texttt{reinit\_time(i)}$\Rightarrow{}\mathtt{id_{ji}}{>}\in{}i_t$. Let
+        us take such a $p$, $id_p$, $g_p$, $i_p$, $o_p$, $j$ and
+        $id_{ji}$.\\
 
         By property of the stabilize relation,
-        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+        ${<}\mathtt{reinit\_transition\_time(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
         and
-        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$,
-        we can deduce
-        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$.
+        ${<}\mathtt{reinit\_time(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$,
+        we have
+        $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$.
 
         Rewriting the goal with
-        $\sigma'(id_t)("rt")[i]=\sigma'(id_{ji})=\sigma'(id_p)("rtt")[j]$:
-        \fbox{$\sigma'(id_p)("rtt")[j]=\mathtt{false}$.}
+        $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$:\\
+        \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{false}$.}
 
         By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
         rising edge and the stabilize relations, \InCsCompP, and
@@ -807,54 +821,53 @@
         \begin{equation}
           \label{eq:10}
           \begin{split}
-            \sigma'(id_p)("rtt")[j]=& \big((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-            & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-            & .(\sigma(id_p)("sots")>0)\big)\\
-            & +\sigma(id_p)("otf")[j] \\
+            \sigma'(id_p)(\texttt{rtt})[j]=& \big((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+            & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+            & .(\sigma(id_p)(\texttt{sots})>0)\big)\\
+            & +\sigma(id_p)(\texttt{otf})[j] \\
           \end{split}
         \end{equation}
 
         Rewriting the goal with \eqref{eq:10},
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-              & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-              & .(\sigma(id_p)("sots")>0))\\
-              & +\sigma(id_p)("otf")[j]) \\
+              \mathtt{false}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+              & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+              & .(\sigma(id_p)(\texttt{sots})>0))\\
+              & +\sigma(id_p)(\texttt{otf})[j]) \\
             \end{split}$}
         \end{equation*}
         
-        By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ s.t.
-        ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-        and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$. By
-        property of state $\sigma$ as being a stable state, we can
-        deduce
-        $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$.
+        By construction, there exists $id_{ft}\in{}Sigs(\Delta)$ such that\\
+        ${<}\mathtt{output\_transitions\_fired(j)\Rightarrow{}id_{ft}}{>}\in{}i_p$
+        and ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}o_t$. By
+        property of state $\sigma$ as being a stable state, we have
+        $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft})=\sigma(id_p)(\texttt{otf})[j]$.
 
         Rewriting the goal with
-        $\sigma(id_t)("fired")=\sigma(id_{ft})=\sigma(id_p)("otf")[j]$:
+        $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft})=\sigma(id_p)(\texttt{otf})[j]$:
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-              & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-              & .(\sigma(id_p)("sots")>0))\\
-              & +\sigma(id_t)("fired") \\
+              \mathtt{false}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+              & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+              & .(\sigma(id_p)(\texttt{sots})>0))\\
+              & +\sigma(id_t)(\texttt{fired}) \\
             \end{split}$}
         \end{equation*}
 
         By property of
         $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
         deduce
-        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$
+        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{false}$
 
         Rewriting the goal with
-        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)("fired")=\mathtt{false}$
+        $t\notin{}Fired(s)\Leftrightarrow\sigma(id_t)(\texttt{fired})=\mathtt{false}$
         and simplifying the goal:
         \begin{equation*}
           \fbox{$\begin{split}
-              \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
-              & .(\sigma(id_p)("sm")-\sigma(id_p)("sots")<\sigma(id_p)("oaw")[j])\\
-              & .(\sigma(id_p)("sots")>0))\\
+              \mathtt{false}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+              & .(\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})<\sigma(id_p)(\texttt{oaw})[j])\\
+              & .(\sigma(id_p)(\texttt{sots})>0))\\
             \end{split}$}
         \end{equation*}
 
@@ -867,10 +880,10 @@
           By property of
           $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we
           can deduce
-          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)("sots")$.
+          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)(\texttt{sots})$.
 
           Rewriting the goal with
-          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)("sots")$
+          $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=\sigma(id_p)(\texttt{sots})$
           and $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)=0$, and
           simplifying the goal: \qedbox{tautology.}
           
@@ -886,22 +899,23 @@
           \begin{enumerate}
           \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{basic})$ or $pre(p,t)=(\omega,\mathtt{basic})$:\\
             \noindent{}By construction,
-            ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+            ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
             
             \noindent{}By property of stable state $\sigma$ and
-            \InCsCompP, we can deduce $\sigma(id_p)("oaw")[j]=\omega$.
+            \InCsCompP, we can deduce $\sigma(id_p)(\texttt{oaw})[j]=\omega$.
 
             By property of
             $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we
-            can deduce $\sigma(id_p)("sm")=s.M(p)$ and
-            $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
+            can deduce $\sigma(id_p)(\texttt{sm})=s.M(p)$ and
+            $\sigma(id_p)(\texttt{sots})=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$.
 
-            Rewriting the goal with $\sigma(id_p)("oaw")[j]=\omega$,
-            $\sigma(id_p)("sm")=s.M(p)$ and
-            $\sigma(id_p)("sots")=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$:
+            Rewriting the goal with
+            $\sigma(id_p)(\texttt{oaw})[j]=\omega$,
+            $\sigma(id_p)(\texttt{sm})=s.M(p)$ and\\
+            $\sigma(id_p)(\texttt{sots})=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$:
             \begin{equation*}
               \fbox{$\begin{split}
-                  \mathtt{false}=& ((\sigma(id_p)("oat")[j]=\mathtt{basic}+\sigma(id_p)("oat")[j]=\mathtt{test}) \\
+                  \mathtt{false}=& ((\sigma(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
                   & .(s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)\\
                   & .(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0))\\
                 \end{split}$}
@@ -920,14 +934,14 @@
           \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:
             
             By construction,
-            ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$.
+            ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}i_p$.
             
             By property of stable state $\sigma$ and \InCsCompP, we
-            can deduce $\sigma(id_p)("oat")[j]=\mathtt{inhib}$.
+            can deduce $\sigma(id_p)(\texttt{oat})[j]=\mathtt{inhib}$.
 
             Rewriting the goal with
-            $\sigma(id_p)("oat")[j]=\mathtt{inhib}$, and simplifying
-            the goal, \qedbox{tautology.}
+            $\sigma(id_p)(\texttt{oat})[j]=\mathtt{inhib}$, and simplifying
+            the goal, we have a \qedbox{tautology.}
           \end{enumerate}
         \end{enumerate}
       \end{itemize}
@@ -997,7 +1011,7 @@
   
   By construction, the \texttt{function} process is defined in the
   behavior of design $d$, i.e.\\
-  $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$.
+  $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$.
   
   Let $trs(f)$ be the set of transitions associated to function $f$,
   i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=\mathtt{true}\}$.
@@ -1013,7 +1027,7 @@
     executed during a rising edge phase.
 
     By property of the \hvhdl{} rising edge, the stabilize relations
-    and $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$, we can
+    and $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$, we can
     deduce $\sigma'(id_f)=\mathtt{false}$.
     
     \noindent{}By property of
@@ -1036,7 +1050,7 @@
 
     By property of the $\mathtt{Inject}_\uparrow$, the
     \hvhdl{} rising edge, the stabilize relations, and\\
-    $\mathtt{ps}("function", \emptyset, sl, ss)\in{}d.cs$, we can
+    $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$, we can
     deduce:
     \begin{equation}
       \sigma'(id_f)=\sigma(id_{ft_0})+\dots+\sigma(id_{ft_n})\label{eq:eq-idf-prod}
@@ -1064,17 +1078,17 @@
       us take such an $id_{ft_i}$.
       
       By construction, there exist a $t\in{}trs(f)$, an
-      $id_t\in{}Comps(\Delta)$, $gm_t$, $ipm_t$, $opm_t$ such that:
+      $id_t\in{}Comps(\Delta)$, $g_t$, $i_t$, $o_t$ such that:
       \begin{itemize}
       \item $\gamma(t)=id_t$
       \item \InCsCompT{}
-      \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$
+      \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}o_{t}$
       \end{itemize}
       
       \noindent{}By property of $\sigma$ as being a stable design
       state, and \InCsCompT, we can deduce
-      $\sigma(id_{t})("fired")=\sigma(id_{ft_i})$, and thus that
-      $\sigma(id_{t})("fired")=\mathtt{true}$.
+      $\sigma(id_{t})(\texttt{fired})=\sigma(id_{ft_i})$, and thus that
+      $\sigma(id_{t})(\texttt{fired})=\mathtt{true}$.
 
       By property of
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
@@ -1103,25 +1117,25 @@
       \item \textbf{CASE} $\mathbb{F}(t,f)=\mathtt{true}$:\\
         
         By construction, there exist an $id_{t}\in{}Comps(\Delta)$,
-        $gm_{t}$, $ipm_{t}$, $opm_{t}$ and
+        $g_{t}$, $i_{t}$, $o_{t}$ and
         $id_{ft_i}\in{}Sigs(\Delta)$ such that:
         \begin{itemize}
         \item $\gamma(t)=id_{t}$
         \item \InCsCompT
-        \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}opm_{t}$
+        \item ${<}\mathtt{fired\Rightarrow{id_{ft_i}}}{>}\in{}o_{t}$
         \end{itemize}
 
         By property of stable design state $\sigma$ and \InCsCompT, we
-        can deduce $\sigma(id_t)("fired")=\sigma(id_{ft_i})$.
+        can deduce $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft_i})$.
 
         By property of
         $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we can
         deduce
-        $t\in{}Fired(s)\Leftrightarrow{}\sigma(id_t)("fired")=\mathtt{true}$.
+        $t\in{}Fired(s)\Leftrightarrow{}\sigma(id_t)(\texttt{fired})=\mathtt{true}$.
 
         \noindent{}Since $t\in{}Fired(s)$, we can deduce
-        $\sigma(id_t)("fired")=\mathtt{true}$, and from
-        $\sigma(id_t)("fired")=\sigma(id_{ft_i})$, we can deduce
+        $\sigma(id_t)(\texttt{fired})=\mathtt{true}$, and from
+        $\sigma(id_t)(\texttt{fired})=\sigma(id_{ft_i})$, we can deduce
         $\sigma(id_{ft_i})=\mathtt{true}$.
 
         Then, \qedbox{$\sigma(id_{ft_i})=\mathtt{true}$ contradicts
@@ -1138,35 +1152,35 @@
   \label{lem:re-equal-sens}
   \rehyps{} then\\
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.
+  $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show\\
-  \fbox{$t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{true}$.}\\
+  \fbox{$t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$.}\\
   
   \exT{}. Then, the proof is in two parts:
 
   \begin{enumerate}
   \item Assuming that $t\in{}Sens(s'.M)$, let us show
-    \fbox{$\sigma'(id_t)("s\_enabled")=\mathtt{true}$.}
+    \fbox{$\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$.}
 
     \noindent{}By property of the stabilize relation, \InCsCompT{},
     and through the examination of the \texttt{enable_evaluation}
     process defined in the transition design architecture:
     \begin{equation}
-      \sigma'(id_t)("se")=\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("input\_arcs\_valid")[i]\label{eq:eq-senabled-prod}
+      \sigma'(id_t)(\texttt{se})=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{input\_arcs\_valid})[i]\label{eq:eq-senabled-prod}
     \end{equation}
 
     Rewriting the goal with \eqref{eq:eq-senabled-prod},
-    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("iav")[i]=\mathtt{true}$.}
+    \fbox{$\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.}
     
     \noindent{}To prove the goal, let us show that
-    \fbox{$\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("iav")[i]=\mathtt{true}$.}
+    \fbox{$\forall{}i\in[0,\Delta(id_t)(\texttt{ian})-1],~\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.}
 
-    \noindent{}Given an $i\in[0,\Delta(id_t)("ian")-1]$, let us show
-    \fbox{$\sigma'(id_t)("iav")[i]=\mathtt{true}$.}
+    \noindent{}Given an $i\in[0,\Delta(id_t)(\texttt{ian})-1]$, let us show
+    \fbox{$\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.}
     
     \noindent{}Let us perform case analysis on $input(t)$.
 
@@ -1174,44 +1188,44 @@
     \item \textbf{CASE} $input(t)=\emptyset$:
 
       By construction,
-      ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}gm_t$ and\\
-      ${<}\mathtt{input\_arcs\_valid(0)\Rightarrow{}true}{>}\in{}ipm_t$.
+      ${<}\mathtt{input\_arcs\_number\Rightarrow{}1}{>}\in{}g_t$ and\\
+      ${<}\mathtt{input\_arcs\_valid(0)\Rightarrow{}true}{>}\in{}i_t$.
 
       By property of the elaboration and stabilize relations and
-      \InCsCompT{}, we can deduce $\Delta(id_t)("ian")=1$ and
-      $\sigma'(id_t)("iav")[0]=\mathtt{true}$.
+      \InCsCompT{}, we can deduce $\Delta(id_t)(\texttt{ian})=1$ and
+      $\sigma'(id_t)(\texttt{iav})[0]=\mathtt{true}$.
 
-      Thanks to $\Delta(id_t)("ian")=1$, we can deduce that $i=0$.
+      Thanks to $\Delta(id_t)(\texttt{ian})=1$, we can deduce that $i=0$.
 
-      Rewriting the goal with $\sigma'(id_t)("iav")[0]=\mathtt{true}$,
+      Rewriting the goal with $\sigma'(id_t)(\texttt{iav})[0]=\mathtt{true}$,
       \qedbox{tautology.}
       
     \item \textbf{CASE} $input(t)\neq\emptyset$:\\
       \noindent{}By construction,
-      ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$.
+      ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}g_t$.
 
       By property of the elaboration relation and \InCsCompT, we can
-      deduce $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
+      deduce $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$.
       
-      Thanks to $\Delta(id_t)("ian")=\vert{}input(t)\vert$, we know
+      Thanks to $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$, we know
       that $i\in[0,\vert{}input(t)\vert-1]$.
 
       By construction, there exist a $p\in{}input(t)$,
-      $id_p\in{}Comps(\Delta)$, $gm_p$, $ipm_p$, $opm_p$,
+      $id_p\in{}Comps(\Delta)$, $g_p$, $i_p$, $o_p$,
       $j\in{}[0,\vert{}output(p)\vert-1]$ and
       $id_{ji}\in{}Sigs(\Delta)$ s.t. $\gamma(p)=id_p$ and\\
       \InCsCompP{} and
-      ${<}\mathtt{output\_arcs\_valid(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+      ${<}\mathtt{output\_arcs\_valid(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
       and
-      ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$.
+      ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$.
 
       By property of the stabilize relation, \InCsCompT{} and
       \InCsCompP, we can deduce
-      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$.
+      $\sigma'(id_t)(\texttt{iav})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{oav})[j]$.
 
       Rewriting the goal with
-      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$:\\
-      \fbox{$\sigma'(id_p)("oav")[j]=\mathtt{true}$.}
+      $\sigma'(id_t)(\texttt{iav})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{oav})[j]$:\\
+      \fbox{$\sigma'(id_p)(\texttt{oav})[j]=\mathtt{true}$.}
 
       By property of the stabilize relation, \InCsCompP, and through
       the examination of the \texttt{marking_validation_evaluation}
@@ -1219,9 +1233,9 @@
       \begin{equation}
         \label{eq:eq-oav-sens}
         \begin{split}
-          \sigma'(id_p)("oav")[j]=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
-          & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+          \sigma'(id_p)(\texttt{oav})[j]=& \big((\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma'(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+          & \quad.~\sigma'(id_p)(\texttt{sm})\ge\sigma'(id_p)(\texttt{oaw})[j]\big)\\
+          & +\big(\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}~.~\sigma'(id_p)(\texttt{sm})<\sigma'(id_p)(\texttt{oaw})[j]\big)\\
         \end{split}
       \end{equation}
 
@@ -1229,9 +1243,9 @@
       \begin{equation*}
         \fbox{$
           \begin{split}
-            \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
-            & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-            & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+            \mathtt{true}=& \big((\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma'(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+            & \quad.~\sigma'(id_p)(\texttt{sm})\ge\sigma'(id_p)(\texttt{oaw})[j]\big)\\
+            & +\big(\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}~.~\sigma'(id_p)(\texttt{sm})<\sigma'(id_p)(\texttt{oaw})[j]\big)\\
           \end{split}
           $}
       \end{equation*}
@@ -1241,25 +1255,25 @@
       \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{basic})$:\\
 
         \noindent{}By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}i_p$
         and\\
-        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
 
         By property of the stabilize relation and \InCsCompP,
 
-        we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
-        $\sigma'(id_p)("oaw")[j]=\omega$.
+        we can deduce $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$ and
+        $\sigma'(id_p)(\texttt{oaw})[j]=\omega$.
 
         Rewriting the goal with
-        $\sigma'(id_p)("oat")[j]=\mathtt{basic}$
-        and $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying the goal:\\
-        \fbox{$\sigma'(id_p)("sm")\ge\omega=\mathtt{true}$.}
+        $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$
+        and $\sigma'(id_p)(\texttt{oaw})[j]=\omega$, and simplifying the goal:\\
+        \fbox{$\sigma'(id_p)(\texttt{sm})\ge\omega=\mathtt{true}$.}
 
         \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking}, we
-        can deduce $s'.M(p)=\sigma'(id_p)("sm")$.
+        can deduce $s'.M(p)=\sigma'(id_p)(\texttt{sm})$.
 
         \noindent{}Rewriting the goal with
-        $s'.M(p)=\sigma'(id_p)("sm")$:
+        $s'.M(p)=\sigma'(id_p)(\texttt{sm})$:
         \fbox{$s'.M(p)\ge\omega=\mathtt{true}$.}
 
         \noindent{}By definition of $t\in{}Sens(s'.M)$,
@@ -1270,25 +1284,25 @@
       \item \textbf{CASE} $pre(p,t)=(\omega,\mathtt{inhib})$:
 
         \noindent{}By construction,
-        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
+        ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}i_p$
         and\\
-        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+        ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
 
         \noindent{}By property of the stabilize relation and
         \InCsCompP, we can deduce
-        $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
-        $\sigma'(id_p)("oaw")[j]=\omega$.
+        $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}$ and
+        $\sigma'(id_p)(\texttt{oaw})[j]=\omega$.
 
         \noindent{}Rewriting the goal with
-        $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
-        $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying the goal:
-        \fbox{$\sigma'(id_p)("sm")<\omega=\mathtt{true}$.}
+        $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}$ and
+        $\sigma'(id_p)(\texttt{oaw})[j]=\omega$, and simplifying the goal:
+        \fbox{$\sigma'(id_p)(\texttt{sm})<\omega=\mathtt{true}$.}
 
         \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking}, we
-        can deduce $s'.M(p)=\sigma'(id_p)("sm")$.
+        can deduce $s'.M(p)=\sigma'(id_p)(\texttt{sm})$.
 
         \noindent{}Rewriting the goal with
-        $s'.M(p)=\sigma'(id_p)("sm")$:
+        $s'.M(p)=\sigma'(id_p)(\texttt{sm})$:
         \fbox{$s'.M(p)<\omega=\mathtt{true}$.}
 
         \noindent{}By definition of $t\in{}Sens(s'.M)$,
@@ -1297,7 +1311,7 @@
       \end{itemize}
     \end{itemize}
     
-  \item Assuming that $\sigma'(id_t)("s\_enabled")=\mathtt{true}$, let
+  \item Assuming that $\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$, let
     us show \fbox{$t\in{}Sens(s'.M)$.}
 
     \noindent{}By definition of $t\in{}Sens(s'.M)$, let us show
@@ -1327,47 +1341,48 @@
       \noindent{}By property of the stabilize relation and \InCsCompT,
       equation \eqref{eq:eq-senabled-prod} holds.
       
-      Rewriting $\sigma'(id_t)("se")=\mathtt{true}$ with
+      Rewriting $\sigma'(id_t)(\texttt{se})=\mathtt{true}$ with
       \eqref{eq:eq-senabled-prod}, we can deduce:\\
-      $\prod\limits_{i=0}^{\Delta(id_t)("ian")-1}\sigma'(id_t)("iav")[i]=\mathtt{true}$.
+      $\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.
 
       \noindent{}Then, we can deduce that
-      $\forall{}i\in[0,\Delta(id_t)("ian")-1],~\sigma'(id_t)("iav")[i]=\mathtt{true}$.
+      $\forall{}i\in[0,\Delta(id_t)(\texttt{ian})-1],~\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.
 
       By construction, there exist an $id_p\in{}Comps(\Delta)$,
-      $gm_p$, $ipm_p$, $opm_p$, $i\in[0,\vert{}input(t)\vert-1]$,
+      $g_p$, $i_p$, $o_p$, $i\in[0,\vert{}input(t)\vert-1]$,
       $j\in{}[0,\vert{}output(p)\vert-1]$ and
       $id_{ji}\in{}Sigs(\Delta)$ s.t.  $\gamma(p)=id_p$ and\\
       \InCsCompP{} and
-      ${<}\mathtt{output\_arcs\_valid(j)\Rightarrow{}id_{ji}}{>}\in{}opm_p$
+      ${<}\mathtt{output\_arcs\_valid(j)\Rightarrow{}id_{ji}}{>}\in{}o_p$
       and
-      ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}ipm_t$. Let
-      us take such an $id_p\in{}Comps(\Delta)$, $gm_p$, $ipm_p$,
-      $opm_p$, $i\in[0,\vert{}input(t)\vert-1]$,
+      ${<}\mathtt{input\_arcs\_valid(i)\Rightarrow{}id_{ji}}{>}\in{}i_t$. Let
+      us take such an $id_p\in{}Comps(\Delta)$, $g_p$, $i_p$,
+      $o_p$, $i\in[0,\vert{}input(t)\vert-1]$,
       $j\in{}[0,\vert{}output(p)\vert-1]$ and
       $id_{ji}\in{}Sigs(\Delta)$.
 
       \noindent{}By construction,
-      ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}gm_t$.
+      ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(t)\vert{>}\in{}g_t$.
 
       \noindent{}By property of the elaboration relation and
       \InCsCompT, we can deduce
-      $\Delta(id_t)("ian")=\vert{}input(t)\vert$.
+      $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$.
 
-      \noindent{}Thanks to $\Delta(id_t)("ian")=\vert{}input(t)\vert$,
+      \noindent{}Thanks to $\Delta(id_t)(\texttt{ian})=\vert{}input(t)\vert$,
       we can deduce that
-      $\forall{}i\in[0,\vert{}input(t)\vert-1],~\sigma'(id_t)("iav")[i]=\mathtt{true}$.
+      $\forall{}i\in[0,\vert{}input(t)\vert-1],$\\
+      $\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.
 
       \noindent{}Having such an $i\in[0,\vert{}input(t)\vert-1]$, we
-      can deduce that $\sigma'(id_t)("iav")[i]=\mathtt{true}$.
+      can deduce that $\sigma'(id_t)(\texttt{iav})[i]=\mathtt{true}$.
 
       \noindent{}By property of the stabilize relation, \InCsCompT{}
       and \InCsCompP, we can deduce
-      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$.
+      $\sigma'(id_t)(\texttt{iav})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{oav})[j]$.
 
       \noindent{}Thanks to
-      $\sigma'(id_t)("iav")[i]=\sigma'(id_{ji})=\sigma'(id_p)("oav")[j]$,
-      we can deduce that $\sigma'(id_p)("oav")[j]=\mathtt{true}$.
+      $\sigma'(id_t)(\texttt{iav})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{oav})[j]$,
+      we have $\sigma'(id_p)(\texttt{oav})[j]=\mathtt{true}$.
 
       By property of the stabilize relation and \InCsCompP, equation
       \eqref{eq:eq-oav-sens} holds. Thanks to \eqref{eq:eq-oav-sens},
@@ -1375,25 +1390,25 @@
       \begin{equation}
         \label{eq:sens-true}
         \begin{split}
-          \mathtt{true}=& \big((\sigma'(id_p)("oat")[j]=\mathtt{basic}+\sigma'(id_p)("oat")[j]=\mathtt{test}) \\
-          & \quad.~\sigma'(id_p)("sm")\ge\sigma'(id_p)("oaw")[j]\big)\\
-          & +\big(\sigma'(id_p)("oat")[j]=\mathtt{inhib}~.~\sigma'(id_p)("sm")<\sigma'(id_p)("oaw")[j]\big)\\
+          \mathtt{true}=& \big((\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}+\sigma'(id_p)(\texttt{oat})[j]=\mathtt{test}) \\
+          & \quad.~\sigma'(id_p)(\texttt{sm})\ge\sigma'(id_p)(\texttt{oaw})[j]\big)\\
+          & +\big(\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}~.~\sigma'(id_p)(\texttt{sm})<\sigma'(id_p)(\texttt{oaw})[j]\big)\\
         \end{split}
       \end{equation}
 
       \noindent{}By construction,
-      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}ipm_p$
+      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}basic}{>}\in{}i_p$
       and\\
-      ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+      ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
 
       \noindent{}By property of the stabilize relation and \InCsCompP,
-      we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{basic}$ and
-      $\sigma'(id_p)("oaw")[j]=\omega$.
+      we can deduce $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$ and
+      $\sigma'(id_p)(\texttt{oaw})[j]=\omega$.
 
-      \noindent{}Thanks to $\sigma'(id_p)("oat")[j]=\mathtt{basic}$,
-      $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying
+      \noindent{}Thanks to $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{basic}$,
+      $\sigma'(id_p)(\texttt{oaw})[j]=\omega$, and simplifying
       Equation~\eqref{eq:sens-true}, we can deduce
-      $\sigma'(id_p)("sm")\ge\omega=\mathtt{true}$.
+      $\sigma'(id_p)(\texttt{sm})\ge\omega=\mathtt{true}$.
 
       \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking},
       \qedbox{$s'.M(p)\ge\omega$.}
@@ -1405,18 +1420,18 @@
       will start the proof where the two cases are diverging, i.e:
 
       \noindent{}By construction,
-      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}ipm_p$
+      ${<}\mathtt{output\_arcs\_types(j)\Rightarrow{}inhib}{>}\in{}i_p$
       and\\
-      ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}ipm_p$.
+      ${<}\mathtt{output\_arcs\_weights(j)\Rightarrow{}}\omega{>}\in{}i_p$.
 
       \noindent{}By property of the stabilize relation and \InCsCompP,
-      we can deduce $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$ and
-      $\sigma'(id_p)("oaw")[j]=\omega$.
+      we can deduce $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}$ and
+      $\sigma'(id_p)(\texttt{oaw})[j]=\omega$.
 
-      \noindent{}Thanks to $\sigma'(id_p)("oat")[j]=\mathtt{inhib}$
-      and $\sigma'(id_p)("oaw")[j]=\omega$, and simplifying
+      \noindent{}Thanks to $\sigma'(id_p)(\texttt{oat})[j]=\mathtt{inhib}$
+      and $\sigma'(id_p)(\texttt{oaw})[j]=\omega$, and simplifying
       Equation~\eqref{eq:sens-true}, we can deduce
-      $\sigma'(id_p)("sm")<\omega=\mathtt{true}$.
+      $\sigma'(id_p)(\texttt{sm})<\omega=\mathtt{true}$.
 
       \noindent{}Appealing to Lemma~\ref{lem:re-equal-marking},
       \qedbox{$s'.M(p)<\omega$.}
@@ -1429,7 +1444,7 @@
   \label{lem:re-equal-not-sens}
   \rehyps{} then\\
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)("s\_enabled")=\mathtt{false}$.
+  $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{false}$.
 \end{lemma}
 
 \begin{proof}
@@ -1440,5 +1455,5 @@
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../../main"
+%%% TeX-master: \texttt{../../main}
 %%% End:

@@ -9,13 +9,13 @@
   \label{lem:fe-equal-marking}
   \fehyps{} then
   $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
-  $~s'.M(p)=\sigma'(id_p)("s\_marking")$.
+  $~s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $p\in{}P$ and an $id\in{}Comps(\Delta)$
   s.t. $\gamma(p)=id_p$, let us show\\
-  \fbox{$s'.M(p)=\sigma'(id_p)("s\_marking")$.}
+  \fbox{$s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.}
 
   By definition of
   $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$, we can deduce
@@ -25,15 +25,15 @@
   \hvhdl{} falling edge relation, the stabilize relation and
   \InCsCompP, and through the examination of the \texttt{marking}
   process defined in the place design architecture, we can deduce
-  $\sigma'(id_p)("s\_marking")=\sigma(id_p)("s\_marking")$.
+  $\sigma'(id_p)(\texttt{s\_marking})=\sigma(id_p)(\texttt{s\_marking})$.
 
   Rewriting the goal with $s.M(p)=s'.M(p)$ and
-  $\sigma'(id_p)("sm")=\sigma(id_p)("sm")$:
-  \fbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
+  $\sigma'(id_p)(\texttt{sm})=\sigma(id_p)(\texttt{sm})$:\\
+  \fbox{$s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.}
 
   \noindent{}By definition of
   $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\approx}\sigma$:
-  \qedbox{$s.M(p)=\sigma(id_p)("s\_marking")$.}
+  \qedbox{$s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.}
   
 \end{niproof}
 
@@ -44,12 +44,12 @@
 \begin{lemma}[Falling Edge Equal Output Token Sum]
   \label{lem:fe-equal-ots}
   \fehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$,
-  $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.
+  $\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)(\texttt{s\_output\_token\_sum})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
-  \fbox{$\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)("s\_output\_token\_sum")$.}
+  \fbox{$\sum\limits_{t\in{}Fired(s')}pre(p,t)=\sigma'(id_p)(\texttt{s\_output\_token\_sum})$.}
 
   \exP{}
   
@@ -58,10 +58,10 @@
   place design architecture:
   \begin{equation}
     \label{eq:sots-at-fe}
-    \sigma'(id_p)("sots")=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+    \sigma'(id_p)(\texttt{sots})=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{oan})-1}
     \begin{cases}
-      \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-      \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
+      \sigma'(id_p)(\texttt{oaw})[i]~\mathtt{if}~(\sigma'(id_p)(\texttt{otf})[i]~ \\
+      \hspace{19.5ex}.~\sigma'(id_p)(\texttt{oat})[i]=\mathtt{basic}) \\
       0~otherwise \\
     \end{cases}
   \end{equation}
@@ -69,10 +69,10 @@
   Rewriting the goal with \eqref{eq:sots-at-fe}:\\
   \begin{equation*}
     \fbox{$
-      \sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+      \sum\limits_{t\in{}Fired(s')}pre(p,t)=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{oan})-1}
       \begin{cases}
-        \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-        \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
+        \sigma'(id_p)(\texttt{oaw})[i]~\mathtt{if}~(\sigma'(id_p)(\texttt{otf})[i]~ \\
+        \hspace{19.5ex}.~\sigma'(id_p)(\texttt{oat})[i]=\mathtt{basic}) \\
         0~otherwise \\
       \end{cases}$}
   \end{equation*}
@@ -86,10 +86,10 @@
          0~otherwise
        \end{cases}$ \\
        $=$ \\
-       $\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}
+       $\sum\limits_{i=0}^{\Delta(id_p)(\texttt{oan})-1}
        \begin{cases}
-         \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-         \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
+         \sigma'(id_p)(\texttt{oaw})[i]~\mathtt{if}~(\sigma'(id_p)(\texttt{otf})[i]~ \\
+         \hspace{19.5ex}.~\sigma'(id_p)(\texttt{oat})[i]=\mathtt{basic}) \\
          0~otherwise \\
        \end{cases}$ \\
      \end{tabular}}
@@ -101,13 +101,13 @@
  $f(t)=\begin{cases}
    \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
    0~otherwise
- \end{cases}$ and $g(i)=\begin{cases}
-   \sigma'(id_p)("oaw")[i]~\mathtt{if}~(\sigma'(id_p)("otf")[i]~ \\
-   \hspace{19.5ex}.~\sigma'(id_p)("oat")[i]=\mathtt{basic}) \\
+ \end{cases}$\\ and $g(i)=\begin{cases}
+   \sigma'(id_p)(\texttt{oaw})[i]~\mathtt{if}~(\sigma'(id_p)(\texttt{otf})[i]~ \\
+   \hspace{19.5ex}.~\sigma'(id_p)(\texttt{oat})[i]=\mathtt{basic}) \\
    0~otherwise \\
  \end{cases}$
 
- \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("oan")-1}g(i)$}\\
+ \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{oan})-1}g(i)$}\\
 
  \noindent{}Let us perform case analysis on $output(p)$; there are two cases:
 
@@ -115,19 +115,19 @@
  \item \textbf{CASE} $output(p)=\emptyset$:
    
    By construction,
-   ${<}$\texttt{output\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}gm_p$,
-   ${<}$\texttt{output\_arcs\_types(0)}$\Rightarrow{}\mathtt{basic}{>}\in{}ipm_p$,
-   ${<}$\texttt{output\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$,
+   ${<}$\texttt{output\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}g_p$,
+   ${<}$\texttt{output\_arcs\_types(0)}$\Rightarrow{}\mathtt{basic}{>}\in{}i_p$,
+   ${<}$\texttt{output\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}i_p$,
    and
-   ${<}$\texttt{output\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}ipm_p$.
+   ${<}$\texttt{output\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}i_p$.
 
    By property of the elaboration relation and \InCsCompP, we can
-   deduce $\Delta(id_p)("oan")=1$.
+   deduce $\Delta(id_p)(\texttt{oan})=1$.
 
    By property of the stabilize relation and \InCsCompP, we can deduce
-   $\sigma'(id_p)("oat")[0]=\mathtt{basic}$,
-   $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and
-   $\sigma'(id_p)("oaw")[0]=0$.
+   $\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}$,
+   $\sigma'(id_p)(\texttt{otf})[0]=\mathtt{true}$ and
+   $\sigma'(id_p)(\texttt{oaw})[0]=0$.
 
    By property of $output(p)=\emptyset$, we can deduce\\
    $\sum\limits_{t\in{}Fired(s')}
@@ -136,10 +136,10 @@
      0~otherwise
    \end{cases}=0$
 
-   \noindent{}Rewriting the goal with $\Delta(id_p)("oan")=1$,
-   $\sigma'(id_p)("oat")[0]=\mathtt{basic}$,
-   $\sigma'(id_p)("otf")[0]=\mathtt{true}$,
-   $\sigma'(id_p)("oaw")[0]=0$ and $\sum\limits_{t\in{}Fired(s')}
+   \noindent{}Rewriting the goal with $\Delta(id_p)(\texttt{oan})=1$,
+   $\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}$,
+   $\sigma'(id_p)(\texttt{otf})[0]=\mathtt{true}$,
+   $\sigma'(id_p)(\texttt{oaw})[0]=0$ and $\sum\limits_{t\in{}Fired(s')}
    \begin{cases}
      \omega~\mathtt{if}~pre(p,t)=(\omega,\mathtt{basic}) \\
      0~otherwise
@@ -148,12 +148,12 @@
  \item \textbf{CASE} $output(p)\neq\emptyset$:\\
 
    \noindent{}By construction,
-   ${<}\mathtt{output\_arcs\_number\Rightarrow{}}\vert{}output(p)\vert{>}\in{}gm_p$,
+   ${<}\mathtt{output\_arcs\_number\Rightarrow{}}\vert{}output(p)\vert{>}\in{}g_p$,
    and by property of the elaboration relation, we can deduce
-   $\Delta(id_p)("oan")=\vert{}output(p)\vert$.
+   $\Delta(id_p)(\texttt{oan})=\vert{}output(p)\vert$.
    
    Rewriting the goal with
-   $\Delta(id_p)("oan")=\vert{}output(p)\vert$:
+   $\Delta(id_p)(\texttt{oan})=\vert{}output(p)\vert$:
    \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}output(p)\vert-1}g(i)$.}
 
    \noindent{}Let us reason by induction on the right sum term of the goal.
@@ -182,66 +182,66 @@
      By definition of $g$:
      \begin{equation}
        \label{eq:31}g(0)=\begin{cases}
-         \sigma'(id_p)("oaw")[0]~\mathtt{if}~(\sigma'(id_p)("otf")[0] \\
-         \hspace{19.5ex}.~\sigma'(id_p)("oat")[0]=\mathtt{basic}) \\
+         \sigma'(id_p)(\texttt{oaw})[0]~\mathtt{if}~(\sigma'(id_p)(\texttt{otf})[0] \\
+         \hspace{19.5ex}.~\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}) \\
          0~otherwise \\
        \end{cases}
      \end{equation}
 
      \noindent{}Let us perform case analysis on the value of
-     $\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic}$; there are two cases:
+     $\sigma'(id_p)(\texttt{otf})[0]~.~\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}$; there are two cases:
      \begin{enumerate}
-     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic})=\mathtt{false}$:\\
+     \item $(\sigma'(id_p)(\texttt{otf})[0]~.~\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic})=\mathtt{false}$:\\
        In that case, $g(0)=0$, and then we can apply the induction
        hypothesis with $F=Fired(s')$ to solve the goal:
        \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$.}
 
-     \item $(\sigma'(id_p)("otf")[0]~.~\sigma'(id_p)("oat")[0]=\mathtt{basic})=\mathtt{true}$:\\
-       In that case, $g(0)=\sigma'(id_p)("oaw")[0]$,
-       $\sigma'(id_p)("otf")[0]=\mathtt{true}$ and
-       $\sigma'(id_p)("oat")[0]=\mathtt{basic}$.
+     \item $(\sigma'(id_p)(\texttt{otf})[0]~.~\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic})=\mathtt{true}$:\\
+       In that case, $g(0)=\sigma'(id_p)(\texttt{oaw})[0]$,
+       $\sigma'(id_p)(\texttt{otf})[0]=\mathtt{true}$ and
+       $\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}$.
 
        \noindent{}By construction, there exist a $t\in{}output(t)$,
        $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, and there exist
-       $gm_t$, $ipm_t$, $opm_t$ s.t. $\mathtt{comp}(id_t,$
-       $"transition",$ $gm_t,$ $ipm_t,$ $opm_t)\in{}d.cs$, and there
+       $g_t$, $i_t$, $o_t$ s.t. $\mathtt{comp}(id_t,$
+       $\texttt{transition},$ $g_t,$ $i_t,$ $o_t)\in{}d.cs$, and there
        exist an $\omega\in\mathbb{N}^{*}$, an
        $a\in\{\mathtt{basic},\mathtt{test},\mathtt{inhib}\}$ and an
        $id_{ft}\in{}Sigs(\Delta)$ such that:
        \begin{itemize}
        \item $pre(p,t)=(\omega,a)$
-       \item ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}}a{>}\in{}ipm_p$
-       \item ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$
-       \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$
+       \item ${<}\mathtt{output\_arcs\_types(0)\Rightarrow{}}a{>}\in{}i_p$
+       \item ${<}\mathtt{output\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}i_p$
+       \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}o_t$
        \item
-         ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+         ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}i_p$
        \end{itemize}
        
        \noindent{}By property of the stabilize relation,
-       $\sigma'(id_p)("oat")[0]=\mathtt{basic}$ and
-       ${<}$\texttt{output\_arcs\_types(0)}$\mathtt{\Rightarrow{}a}{>}\in{}ipm_p$,
+       $\sigma'(id_p)(\texttt{oat})[0]=\mathtt{basic}$ and
+       ${<}$\texttt{output\_arcs\_types(0)}$\mathtt{\Rightarrow{}a}{>}\in{}i_p$,
        we can deduce $pre(p,t)=(\omega,\mathtt{basic})$.
 
        \noindent{}By property of the stabilize relation,
-       ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}opm_t$,\\
-       ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-       and $\sigma'(id_p)("otf")[0]=\mathtt{true}$, we can deduce
-       $\sigma'(id_t)("fired")=\mathtt{true}$.
+       ${<}\mathtt{fired\Rightarrow{}id_{ft}}{>}\in{}o_t$,\\
+       ${<}\mathtt{output\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}i_p$
+       and $\sigma'(id_p)(\texttt{otf})[0]=\mathtt{true}$, we can deduce
+       $\sigma'(id_t)(\texttt{fired})=\mathtt{true}$.
 
        Appealing to Lemma~\ref{lem:fe-equal-fired}, and thanks to
-       $\sigma'(id_t)("fired")=\mathtt{true}$, we can deduce
+       $\sigma'(id_t)(\texttt{fired})=\mathtt{true}$, we can deduce
        $t\in{}Fired(s')$.
 
        With $t\in{}Fired(s')$, we can rewrite the left sum
        term of the goal as follows:\\
        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
 
-       \noindent{}We know that $g(0)=\sigma'(id_p)("oaw")[0]$, and by
+       \noindent{}We know that $g(0)=\sigma'(id_p)(\texttt{oaw})[0]$, and by
        property of the stabilize relation and
-       ${<}$\texttt{output\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}ipm_p$,
-       we can deduce $\sigma'(id_p)("oaw")[0]=\omega$.
+       ${<}$\texttt{output\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}i_p$,
+       we can deduce $\sigma'(id_p)(\texttt{oaw})[0]=\omega$.
 
-       Rewriting the goal with $\sigma'(id_p)("oaw")[0]=\omega$:\\
+       Rewriting the goal with $\sigma'(id_p)(\texttt{oaw})[0]=\omega$:\\
        \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}output(p)\vert-1}g(i)$}
 
        By definition of $f$, and as $pre(p,t)=(\omega,\mathtt{basic})$, then $f(t)=\omega$; thus, rewriting the goal:\\
@@ -266,12 +266,12 @@
 \begin{lemma}[Falling Edge Equal Input Token Sum]
   \label{lem:fe-equal-its}
   \fehyps{} then $\forall{}p,id_p~s.t.~\gamma(p)=id_p$,
-  $~\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'_p("s\_input\_token\_sum")$.
+  $~\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'_p(\texttt{s\_input\_token\_sum})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $p\in{}P$ and an $id_p\in{}Comps(\Delta)$, let us show\\
-  \fbox{$\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)("s\_input\_token\_sum")$.}\\
+  \fbox{$\sum\limits_{t\in{}Fired(s')}post(t,p)=\sigma'(id_p)(\texttt{s\_input\_token\_sum})$.}\\
 
   \exP{}
   
@@ -280,9 +280,9 @@
   place design architecture:
   \begin{equation}
     \label{eq:sits-at-fe}
-    \sigma'(id_p)("sits")=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+    \sigma'(id_p)(\texttt{sits})=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}
     \begin{cases}
-      \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+      \sigma'(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{itf})[i]\\
       0~otherwise \\
     \end{cases}
   \end{equation}
@@ -290,9 +290,9 @@
   Rewriting the goal with \eqref{eq:sits-at-fe}:\\
   \begin{equation*}
     \fbox{$
-      \sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+      \sum\limits_{t\in{}Fired(s')}post(t,p)=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}
       \begin{cases}
-        \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("otf")[i]\\
+        \sigma'(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{otf})[i]\\
         0~otherwise \\
       \end{cases}$}
   \end{equation*}
@@ -305,9 +305,9 @@
         0~otherwise
       \end{cases}$ \\
       $=$ \\
-      $\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}
+      $\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}
       \begin{cases}
-        \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+        \sigma'(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{itf})[i]\\
         0~otherwise \\
       \end{cases}$ \\
     \end{tabular}
@@ -319,17 +319,17 @@
   \item \textbf{CASE} $input(p)=\emptyset$:\\
     
     By construction,
-    ${<}$\texttt{input\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}gm_p$,
-    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}ipm_p$,
-    and
-    ${<}$\texttt{input\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}ipm_p$.
+    ${<}$\texttt{input\_arcs\_number}$\mathtt{\Rightarrow{}1}{>}\in{}g_p$,\\
+    ${<}$\texttt{input\_transitions\_fired(0)}$\Rightarrow{}\mathtt{true}{>}\in{}i_p$,
+    and\\
+    ${<}$\texttt{input\_arcs\_weights(0)}$\mathtt{\Rightarrow{}0}{>}\in{}i_p$.
 
     By property of the elaboration relation and \InCsCompP, we can
-    deduce $\Delta(id_p)("ian")=1$.
+    deduce $\Delta(id_p)(\texttt{ian})=1$.
     
     By property of the stabilize relation and \InCsCompP, we can deduce
-    $\sigma'(id_p)("itf")[0]=\mathtt{true}$ and
-    $\sigma'(id_p)("iaw")[0]=0$.
+    $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{true}$ and
+    $\sigma'(id_p)(\texttt{iaw})[0]=0$.
 
     By property of $input(p)=\emptyset$, we can deduce
     $\sum\limits_{t\in{}Fired(s')}
@@ -338,9 +338,9 @@
       0~otherwise
     \end{cases}=0$.
 
-    \noindent{}Rewriting the goal with $\Delta(id_p)("ian")=1$,
-    $\sigma'(id_p)("itf")[0]=\mathtt{true}$,
-    $\sigma'(id_p)("iaw")[0]=0$, and $\sum\limits_{t\in{}Fired(s')}
+    \noindent{}Rewriting the goal with $\Delta(id_p)(\texttt{ian})=1$,
+    $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{true}$,
+    $\sigma'(id_p)(\texttt{iaw})[0]=0$, and $\sum\limits_{t\in{}Fired(s')}
     \begin{cases}
       \omega~\mathtt{if}~post(t,p)=\omega \\
       0~otherwise
@@ -349,9 +349,9 @@
   \item \textbf{CASE} $input(p)\neq\emptyset$:
 
     \noindent{}By construction,
-    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(p)\vert{>}\in{}gm_p$,
+    ${<}\mathtt{input\_arcs\_number\Rightarrow{}}\vert{}input(p)\vert{>}\in{}g_p$,
     and by property of the elaboration relation, we can deduce
-    \label{eq:24}$\Delta(id_p)("ian")=\vert{}input(p)\vert$.
+    \label{eq:24}$\Delta(id_p)(\texttt{ian})=\vert{}input(p)\vert$.
 
     \noindent{}To ease the reading, let us define functions
     $f\in{}Fired(s')\rightarrow\mathbb{N}$ and
@@ -360,13 +360,13 @@
       \omega~\mathtt{if}~post(t,p)=\omega \\
       0~otherwise
     \end{cases}$ and $g(i)=\begin{cases}
-      \sigma'(id_p)("iaw")[i]~\mathtt{if}~\sigma'(id_p)("itf")[i]\\
+      \sigma'(id_p)(\texttt{iaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{itf})[i]\\
       0~otherwise \\
     \end{cases}$
 
-    \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)("ian")-1}g(i)$}\\
+    \noindent{}Then, the goal is: \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\Delta(id_p)(\texttt{ian})-1}g(i)$}\\
     
-    Rewriting the goal with $\Delta(id_p)("ian")=\vert{}input(p)\vert$:
+    Rewriting the goal with $\Delta(id_p)(\texttt{ian})=\vert{}input(p)\vert$:
     \fbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=0}^{\vert{}input(p)\vert-1}g(i)$.}
 
     \noindent{}Let us reason by induction on the right sum term of
@@ -392,57 +392,57 @@
 
       By definition of $g$, we can deduce 
       $g(0)=\begin{cases}
-        \sigma'(id_p)("iaw")[0]~\mathtt{if}~\sigma'(id_p)("itf")[0]\\
+        \sigma'(id_p)(\texttt{iaw})[0]~\mathtt{if}~\sigma'(id_p)(\texttt{itf})[0]\\
         0~otherwise \\
       \end{cases}$
 
       \noindent{}Let us perform case analysis on the value of
-      $\sigma'(id_p)("itf")[0]$; there are two cases:
+      $\sigma'(id_p)(\texttt{itf})[0]$; there are two cases:
       \begin{enumerate}
-      \item $\sigma'(id_p)("itf")[0]=\mathtt{false}$:\\
+      \item $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{false}$:\\
         In that case, $g(0)=0$, and then we can apply the induction
         hypothesis with $F=Fired(s')$ to solve the goal:
         \qedbox{$\sum\limits_{t\in{}Fired(s')}f(t)=\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$.}
 
-      \item $\sigma'(id_p)("itf")[0]=\mathtt{true}$:\\
-        In that case, $g(0)=\sigma'(id_p)("iaw")[0]$ and
-        $\sigma'(id_p)("itf")[0]=\mathtt{true}$ .
+      \item $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{true}$:\\
+        In that case, $g(0)=\sigma'(id_p)(\texttt{iaw})[0]$ and
+        $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{true}$ .
 
         \noindent{}By construction, there exist a $t\in{}input(t)$,
-        an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, $gm_t$,
-        $ipm_t$, $opm_t$ s.t. $\mathtt{comp}(id_t,$ $"transition",$
-        $gm_t,$ $ipm_t,$ $opm)\in{}d.cs$, an
+        an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, $g_t$,
+        $i_t$, $o_t$ s.t. $\mathtt{comp}(id_t,$ $\texttt{transition},$
+        $g_t,$ $i_t,$ $opm)\in{}d.cs$, an
         $\omega\in\mathbb{N}^{*}$ and an $id_{ft}\in{}Sigs(\Delta)$
         such that:
         \begin{itemize}
         \item $post(t,p)=\omega$
         \item
-          ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}ipm_p$
-        \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}opm_t$
+          ${<}\mathtt{input\_arcs\_weights(0)\Rightarrow{}}\omega{>}\in{}i_p$
+        \item ${<}\mathtt{fired\Rightarrow}id_{ft}{>}\in{}o_t$
         \item
-          ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
+          ${<}\mathtt{input\_transitions\_fired(0)\Rightarrow{}id_{ft}}{>}\in{}i_p$
         \end{itemize}
         
         By property of the stabilize relation,
-        ${<}$\texttt{fired}$\Rightarrow{}\mathtt{id_{ft}}{>}\in{}opm_t$,
-        ${<}$\texttt{input\_transitions\_fired(0)}$\mathtt{\Rightarrow{}id_{ft}}{>}\in{}ipm_p$
-        and $\sigma'(id_p)("itf")[0]=\mathtt{true}$, we can deduce
-        $\sigma'(id_t)("fired")=\mathtt{true}$.
+        ${<}$\texttt{fired}$\Rightarrow{}\mathtt{id_{ft}}{>}\in{}o_t$,
+        ${<}$\texttt{input\_transitions\_fired(0)}$\mathtt{\Rightarrow{}id_{ft}}{>}\in{}i_p$
+        and $\sigma'(id_p)(\texttt{itf})[0]=\mathtt{true}$, we can deduce
+        $\sigma'(id_t)(\texttt{fired})=\mathtt{true}$.
 
         Appealing to Lemma~\ref{lem:fe-equal-fired} and
-        $\sigma'(id_t)("fired")=\mathtt{true}$, we can deduce
+        $\sigma'(id_t)(\texttt{fired})=\mathtt{true}$, we can deduce
         $t\in{}Fired(s')$.
 
         As $t\in{}Fired(s')$, we can rewrite the left sum
         term of the goal as follows:\\
         \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=g(0)+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
 
-        We know that $g(0)=\sigma'(id_p)("iaw")[0]$, and by property
+        We know that $g(0)=\sigma'(id_p)(\texttt{iaw})[0]$, and by property
         of the stabilize relation and
-        ${<}$\texttt{input\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}ipm_p$,
-        we can deduce $\sigma'(id_p)("iaw")[0]=\omega$.
+        ${<}$\texttt{input\_arcs\_weights(0)}$\Rightarrow\omega{>}\in{}i_p$,
+        we can deduce $\sigma'(id_p)(\texttt{iaw})[0]=\omega$.
 
-        Rewriting the goal with $\sigma'(id_p)("iaw")[0]=\omega$:\\
+        Rewriting the goal with $\sigma'(id_p)(\texttt{iaw})[0]=\omega$:\\
         \fbox{$f(t)+\sum\limits_{t'\in{}Fired(s')\setminus\{t\}}f(t')=\omega+\sum\limits_{i=1}^{\vert{}input(p)\vert-1}g(i)$}
 
         By definition of $f$, and as $post(t,p)=\omega$, then $f(t)=\omega$; thus, rewriting the goal:\\
@@ -469,22 +469,22 @@
 \begin{lemma}[Falling edge equal time counters]
   \label{lem:fe-equal-tc}
   \fehyps{} then $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
-  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$.
+  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
+  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
+  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
   \fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$\\
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
       $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))\big)$\\
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
       $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
-      $s'.I(t)=\sigma'(id_t)("s\_time\_counter")\big)$}}\\
+      $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$}}\\
 
   \exT{}
 
@@ -495,37 +495,37 @@
   architecture, we can deduce:
   \begin{equation}
     \begin{split}
-      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}
-      \land\sigma(id_t)("srtc")=\mathtt{false}\\
-      \land\sigma(id_t)("stc")<\Delta(id_t)("mtc")\Rightarrow
-      \sigma'(id_t)("stc")=\sigma(id_t)("stc")+1
+      \sigma(id_t)(\texttt{se})=\mathtt{true}\land\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMPORAL}
+      \land\sigma(id_t)(\texttt{srtc})=\mathtt{false}\\
+      \land\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})\Rightarrow
+      \sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1
     \end{split}
     \label{eq:etnrlt}
   \end{equation}
 
   \begin{equation}
     \begin{split}
-      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}
-      \land\sigma(id_t)("srtc")=\mathtt{false}\\
-      \land\sigma(id_t)("stc")\ge\Delta(id_t)("mtc")\Rightarrow
-      \sigma'(id_t)("stc")=\sigma(id_t)("stc")
+      \sigma(id_t)(\texttt{se})=\mathtt{true}\land\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMPORAL}
+      \land\sigma(id_t)(\texttt{srtc})=\mathtt{false}\\
+      \land\sigma(id_t)(\texttt{stc})\ge\Delta(id_t)(\texttt{mtc})\Rightarrow
+      \sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})
     \end{split}
     \label{eq:etnrge}
   \end{equation}
 
   \begin{equation}
     \begin{split}
-      \sigma(id_t)("se")=\mathtt{true}\land\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMPORAL}\\
-      \land\sigma(id_t)("srtc")=\mathtt{true}\Rightarrow
-      \sigma'(id_t)("stc")=1
+      \sigma(id_t)(\texttt{se})=\mathtt{true}\land\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMPORAL}\\
+      \land\sigma(id_t)(\texttt{srtc})=\mathtt{true}\Rightarrow
+      \sigma'(id_t)(\texttt{stc})=1
     \end{split}
     \label{eq:etr}
   \end{equation}
 
   \begin{equation}
     \begin{split}
-      \sigma(id_t)("se")=\mathtt{false}\lor\Delta(id_t)("tt")=\mathtt{NOT\_TEMPORAL}\Rightarrow
-      \sigma'(id_t)("stc")=0
+      \sigma(id_t)(\texttt{se})=\mathtt{false}\lor\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMPORAL}\Rightarrow
+      \sigma'(id_t)(\texttt{stc})=0
     \end{split}
     \label{eq:ne-or-nt}
   \end{equation}
@@ -534,11 +534,11 @@
 
   \begin{enumerate}
   \item\label{it:fe-eq-tc-fst}
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)("s\_time\_counter")$}\\
+    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
     
     Assuming $upper(I_s(t))=\infty$ and
     $s'.I(t)\le{}lower(I_s(t))$, let us show\\
-    \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
+    \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
     Let us perform case analysis on $t\in{}Sens(s.M)$; there are two
     cases:
@@ -546,65 +546,65 @@
     \begin{enumerate}
     \item \textbf{CASE} $t\notin{}Sens(s.M)$:\\
       By definition of \upSim, we can deduce
-      $\sigma(id_t)("se")=\mathtt{false}$.
+      $\sigma(id_t)(\texttt{se})=\mathtt{false}$.
 
       Appealing to \eqref{eq:ne-or-nt} and
-      $\sigma(id_t)("se")=\mathtt{false}$, we can deduce
-      $\sigma'(id_t)("stc")=0$.
+      $\sigma(id_t)(\texttt{se})=\mathtt{false}$, we can deduce
+      $\sigma'(id_t)(\texttt{stc})=0$.
 
       By definition of \dwSitpn{} (Rule~\ref{it:reset-counters}), we
       can deduce $s'.I(t)=0$.
 
-      Rewriting the goal with $\sigma'(id_t)("stc")=0$ and
+      Rewriting the goal with $\sigma'(id_t)(\texttt{stc})=0$ and
       $s'.I(t)=0$: \qedbox{tautology.}
       
     \item \textbf{CASE} $t\in{}Sens(s.M)$:
       
       By definition of \upSim, we can deduce
-      $\sigma(id_t)("se")=\mathtt{true}$.
+      $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
       By construction, and as $upper(I_s(t))=\infty$,
-      ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}gm_t$. By
+      ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}g_t$. By
       property of the elaboration relation, we have
-      $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$.
+      $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$.
 
       Let us perform case analysis on $s.reset_t(t)$; there are two
       cases:
       \begin{enumerate}
       \item \textbf{CASE} $s.reset_t(t)=\mathtt{true}$:
 
-        By definition of \upSim, $\sigma(id_t)("srtc")=\mathtt{true}$.
+        By definition of \upSim, $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$.
 
         Appealing to \eqref{eq:etr},
-        $\sigma(id_t)("se")=\mathtt{true}$,
-        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$ and
-        $\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
-        $\sigma'(id_t)("stc")=1$.
+        $\sigma(id_t)(\texttt{se})=\mathtt{true}$,
+        $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$ and\\
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$, we can deduce
+        $\sigma'(id_t)(\texttt{stc})=1$.
 
         By definition of \dwSitpn (Rule~\ref{it:reset-counters}), we
         can deduce $s'.I(t)=1$.
 
-        Rewriting the goal with $\sigma'(id_t)("stc")=1$ and
+        Rewriting the goal with $\sigma'(id_t)(\texttt{stc})=1$ and
         $s'.I(t)=1$: \qedbox{tautology.}
 
       \item \textbf{CASE} $s.reset_t(t)=\mathtt{false}$:
         
         By definition of \upSim, we have
-        $\sigma(id_t)("srtc")=\mathtt{false}$.
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
         As $upper(I_s(t))=\infty$, there exists an
         $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,\infty]$. Let us take
         such an $a\in\mathbb{N}^{*}$. By construction,
-        ${<}\mathtt{maximal\_time\_counter\Rightarrow}~a{>}\in{}gm_t$,
+        ${<}\mathtt{maximal\_time\_counter\Rightarrow}~a{>}\in{}g_t$,
         and by property of the elaboration relation, we have
-        $\Delta(id_t)("mtc")=a$.
+        $\Delta(id_t)(\texttt{mtc})=a$.
 
         By definition of \dwSitpn (Rule~\ref{it:inc-counters}), and
         knowing that $t\in{}Sens(s.M)$, $s.reset_t(t)=\mathtt{false}$
         and $upper(I_s(t))=\infty$, we can deduce $s'.I(t)=s.I(t)+1$.
 
         Rewriting the goal with $s'.I(t)=s.I(t)+1$:
-        \fbox{$s.I(t)+1=\sigma'(id_t)("stc")$.}
+        \fbox{$s.I(t)+1=\sigma'(id_t)(\texttt{stc})$.}
         
         We assumed that $s'.I(t)\le{}lower(I_s(t))$, and as
         $s'.I(t)=s.I(t)+1$, then $s.I(t)+1\le{}lower(I_s(t))$, then
@@ -613,45 +613,45 @@
 
         \noindent{}By definition of
         $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-        and knowing that $s.I(t)<lower(I_s(t))$ and
+        and knowing that $s.I(t)<lower(I_s(t))$ and\\
         $upper(I_s(t))=\infty$, we can deduce
-        $s.I(t)=\sigma(id_t)("stc")$.
+        $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
-        Appealing to $\Delta(id_t)("mtc")=a$,
-        $s.I(t)=\sigma(id_t)("stc")$ and $s.I(t)<a$, we can deduce
-        $\sigma(id_t)("stc")<\Delta(id_t)("mtc")$.
+        Appealing to $\Delta(id_t)(\texttt{mtc})=a$,
+        $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)<a$, we can deduce
+        $\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})$.
         
         Appealing to \eqref{eq:etnrlt},
-        $\sigma(id_t)("stc")<\Delta(id_t)("mtc")$,
-        $\sigma(id_t)("srtc")=\mathtt{false}$ and\\
-        $\sigma(id_t)("se")=\mathtt{true}$, we can deduce:
-        $\sigma'(id_t)("stc")=\sigma(id_t)("stc")+1$.
+        $\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})$,
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$ and\\
+        $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce:
+        $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1$.
 
         Rewriting the goal with
-        $\sigma'(id_t)("stc")=\sigma(id_t)("stc")+1$ and
-        $s.I(t)=\sigma(id_t)("stc")$: \qedbox{tautology.}
+        $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1$ and
+        $s.I(t)=\sigma(id_t)(\texttt{stc})$: \qedbox{tautology.}
       \end{enumerate}
     \end{enumerate}
     
   \item
     \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=lower(I_s(t)$.}
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t)$.}
 
     Assuming that $upper(I_s(t))=\infty$ and
     $s'.I(t)>{}lower(I_s(t))$, let us show\\
-    \fbox{$\sigma'(id_t)("s\_time\_counter")=lower(I_s(t))$.}
+    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$.}
 
     As $upper(I_s(t))=\infty$, there exists an $a\in\mathbb{N}^{*}$
     s.t. $I_s(t)=[a,\infty]$. Let us take such an
     $a\in\mathbb{N}^{*}$.
 
     By construction,
-    ${<}$\texttt{maximal\_time\_counter}$\Rightarrow{}a{>}\in{}gm_t$,
+    ${<}$\texttt{maximal\_time\_counter}$\Rightarrow{}a{>}\in{}g_t$,
     and
-    ${<}$\texttt{transition\_type}$\Rightarrow{}$\texttt{TEMP\_A\_INF}${>}\in{}gm_t$
+    ${<}$\texttt{transition\_type}$\Rightarrow{}$\texttt{TEMP\_A\_INF}${>}\in{}g_t$
     by property of the elaboration relation, we can deduce
-    $\Delta(id_t)("mtc")=a$ and
-    $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$.
+    $\Delta(id_t)(\texttt{mtc})=a$ and
+    $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$.
     
     Let us perform case analysis on $t\in{}Sens(s.M)$:
     \begin{enumerate}
@@ -669,7 +669,7 @@
       By definition of
       $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\sim}\sigma$ and
       $t\in{}Sens(s.M)$, we can deduce
-      $\sigma(id_t)("se")=\mathtt{true}$.
+      $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
       Let us perform case analysis on $s.reset_t(t)$; there are two
       cases:
@@ -689,7 +689,7 @@
         By property of
         $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
         and $s.reset_t(t)=\mathtt{false}$, we can deduce
-        $\sigma(id_t)("srtc")=\mathtt{false}$.
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
         By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
         (Rule~\ref{it:inc-counters}), and knowing that
@@ -703,53 +703,53 @@
 
         Let us perform case analysis on $s.I(t)\ge{}lower(I_s(t))$:
         \begin{enumerate}
-        \item \textbf{CASE} $s.I(t)>lower(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=lower(I_s(t))$.}\\
+        \item \textbf{CASE} $s.I(t)>lower(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=lower(I_s(t))$.}\\
           By definition of
           $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-          we can deduce $\sigma(id_t)("stc")=lower(I_s(t))$.
+          we can deduce $\sigma(id_t)(\texttt{stc})=lower(I_s(t))$.
 
           Appealing to \eqref{eq:etnrge}, we can deduce
-          $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$.
+          $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
           Rewriting the goal with
-          $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$ and
-          $\sigma(id_t)("stc")=lower(I_s(t))$: \qedbox{tautology.}
+          $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$ and
+          $\sigma(id_t)(\texttt{stc})=lower(I_s(t))$: \qedbox{tautology.}
           
-        \item \textbf{CASE} $s.I(t)=lower(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=lower(I_s(t))$.}\\
+        \item \textbf{CASE} $s.I(t)=lower(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=lower(I_s(t))$.}\\
           By definition of
           $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-          we can deduce $s.I(t)=\sigma(id_t)("stc")$.
+          we can deduce $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
           Appealing to \eqref{eq:etnrge}, we can deduce
-          $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$.
+          $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
           Rewriting the goal with
-          $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$,
-          $s.I(t)=\sigma(id_t)("stc")$ and $s.I(t)=lower(I_s(t))$:
+          $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$,
+          $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=lower(I_s(t))$:
           \qedbox{tautology.}
         \end{enumerate}
       \end{enumerate}
     \end{enumerate}
   \item
     \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))$.}
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$.}
 
     Assuming that $upper(I_s(t))\neq\infty$ and
     $s'.I(t)>{}upper(I_s(t))$, let us show \\
-    \fbox{$\sigma'(id_t)("s\_time\_counter")=upper(I_s(t))$.}
+    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$.}
 
     As $upper(I_s(t))\neq\infty$, there exists an
     $a\in\mathbb{N}^{*}$, and a $b\in\mathbb{N}^{*}$
     s.t. $I_s(t)=[a,b]$. Let us take such an $a$ and $b$.
 
     By construction,
-    ${<}\mathtt{maximal\_time\_counter\Rightarrow}b{>}\in{}gm_t$ and
-    there exists $tt\in\{\mathtt{TEMP\_A\_A,TEMP\_A\_B\}}$ s.t.
-    ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}gm_t$.
+    ${<}\mathtt{maximal\_time\_counter\Rightarrow}b{>}\in{}g_t$ and
+    there exists \\$tt\in\{\mathtt{TEMP\_A\_A,TEMP\_A\_B\}}$ s.t.
+    ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$.
 
     By property of the elaboration relation and \InCsCompT, we can
-    deduce $\Delta(id_t)("mtc")=b=upper(I_s(t))$ and
-    $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$.
+    deduce $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$ and
+    $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$.
 
     Let us perform case analysis on $t\in{}Sens(s.M)$:
       \begin{enumerate}
@@ -765,7 +765,7 @@
         By definition of
         $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
         and $t\in{}Sens(s.M)$, we can deduce
-        $\sigma(id_t)("se")=\mathtt{true}$.
+        $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
         Let us perform case analysis on $s.reset_t(t)$; there are two
         cases:
@@ -784,48 +784,48 @@
           By property of
           $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
           and $s.reset_t(t)=\mathtt{false}$, we can deduce
-          $\sigma(id_t)("srtc")=\mathtt{false}$.
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
           
           Let us perform case analysis on $s.I(t)>{}upper(I_s(t))$ or
           $s.I(t)\le{}upper(I_s(t))$:
           \begin{enumerate}
-          \item \textbf{CASE} $s.I(t)>upper(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=upper(I_s(t))$.}\\
+          \item \textbf{CASE} $s.I(t)>upper(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=upper(I_s(t))$.}\\
             By definition of \dwSitpn (Rule~\ref{it:locked-counters}),
             we can deduce $s'.I(t)=s.I(t)$.
             
             By definition of
             $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-            we can deduce $\sigma(id_t)("stc")=upper(I_s(t))$.
+            we can deduce $\sigma(id_t)(\texttt{stc})=upper(I_s(t))$.
 
             Appealing to \eqref{eq:etnrge}, we have
-            $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$.
+            $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
             Rewriting the goal with
-            $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$ and
-            $\sigma(id_t)("stc")=upper(I_s(t))$: \qedbox{tautology.}
+            $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$ and
+            $\sigma(id_t)(\texttt{stc})=upper(I_s(t))$: \qedbox{tautology.}
             
-          \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$: \fbox{$\sigma'(id_t)("stc")=upper(I_s(t))$.}\\
+          \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=upper(I_s(t))$.}\\
 
             By definition of \upSim, we can deduce
-            $s.I(t)=\sigma(id_t)("stc")$.
+            $s.I(t)=\sigma(id_t)(\texttt{stc})$.
             
             Let us perform case analysis on
             $s.I(t)\le{}upper(I_s(t))$; there are two cases:
             \begin{itemize}
             \item \textbf{CASE} $s.I(t)=upper(I_s(t))$:\\
 
-              Appealing to $\Delta(id_t)("mtc")=b=upper(I_s(t))$,
-              $s.I(t)=\sigma(id_t)("stc")$ and $s.I(t)=upper(I_s(t))$,
+              Appealing to $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$,
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=upper(I_s(t))$,
               we can deduce
-              $\Delta(id_t)("mtc")\le\sigma(id_t)("stc")$.
+              $\Delta(id_t)(\texttt{mtc})\le\sigma(id_t)(\texttt{stc})$.
 
-              Appealing to $\Delta(id_t)("mtc")\le\sigma(id_t)("stc")$
-              and \eqref{eq:etnrge}, we can deduce
-              $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$.
+              Appealing to $\Delta(id_t)(\texttt{mtc})\le\sigma(id_t)(\texttt{stc})$
+              and \eqref{eq:etnrge}, we can deduce\\
+              $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
               Rewriting the goal with
-              $\sigma'(id_t)("stc")=\sigma(id_t)("stc")$,
-              $s.I(t)=\sigma(id_t)("stc")$ and $s.I(t)=upper(I_s(t))$:
+              $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$,
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=upper(I_s(t))$:
               \qedbox{tautology.}
               
             \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
@@ -843,69 +843,69 @@
       
     \item
       \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
-        $s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
+        $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
       Assuming that $upper(I_s(t))\neq\infty$ and
       $s'.I(t)\le{}upper(I_s(t))$, let us show\\
-      \fbox{$s'.I(t)=\sigma'(id_t)("s\_time\_counter")$.}
+      \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
       As $upper(I_s(t))\neq\infty$, there exists an
       $a\in\mathbb{N}^{*}$, and a $b\in\mathbb{N}^{*}$
       s.t. $I_s(t)=[a,b]$. Let us take such an $a$ and $b$.
 
       By construction,
-      ${<}\mathtt{maximal\_time\_counter\Rightarrow}b{>}\in{}gm_t$ and
+      ${<}\mathtt{maximal\_time\_counter\Rightarrow}b{>}\in{}g_t$ and
       there exists $tt\in\{$\texttt{TEMP\_A\_A,TEMP\_A\_B}$\}$ s.t.
-      ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}gm_t$; by
+      ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$; by
       property of the elaboration relation, we can deduce
-      $\Delta(id_t)("mtc")=b=upper(I_s(t))$ and
-      $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$.
+      $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$ and
+      $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$.
       
       Let us perform case analysis on $t\in{}Sens(s.M)$:
       \begin{enumerate}
       \item \textbf{CASE} $t\notin{}Sens(s.M)$:\\
         
         By definition of \upSim, we have
-        $\sigma(id_t)("se")=\mathtt{false}$.
+        $\sigma(id_t)(\texttt{se})=\mathtt{false}$.
 
         \noindent{}Appealing \eqref{eq:ne-or-nt} and
-        $\sigma(id_t)("se")=\mathtt{false}$, we have
-        $\sigma'(id_t)("stc")=0$.
+        $\sigma(id_t)(\texttt{se})=\mathtt{false}$, we have
+        $\sigma'(id_t)(\texttt{stc})=0$.
 
         By definition of \dwSitpn (Rule~\ref{it:reset-not-sens}), we
         have $s'.I(t)=0$.
 
-        Rewriting the goal with $\sigma'(id_t)("stc")=0$ and
+        Rewriting the goal with $\sigma'(id_t)(\texttt{stc})=0$ and
         $s'.I(t)=0$: \qedbox{tautology.}
         
       \item \textbf{CASE} $t\in{}Sens(s.M)$:\\
         
         By definition of \upSim, we have
-        $\sigma(id_t)("se")=\mathtt{true}$.
+        $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
         Let us perform case analysis on $s.reset_t(t)$:
         \begin{enumerate}
         \item \textbf{CASE} $s.reset_t(t)=\mathtt{true}$:\\
           
           By definition of \upSim, we have
-          $\sigma(id_t)("srtc")=\mathtt{true}$.
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$.
 
           Appealing to \eqref{eq:etr},
-          $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$,
-          $\sigma(id_t)("se")=\mathtt{true}$ and
-          $\sigma(id_t)("srtc")=\mathtt{true}$, we have
-          $\sigma'(id_t)("stc")=1$.
+          $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$,
+          $\sigma(id_t)(\texttt{se})=\mathtt{true}$ and
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$, we have
+          $\sigma'(id_t)(\texttt{stc})=1$.
 
           By definition of \dwSitpn (Rule~\ref{it:reset-counters}), we
           have $s'.I(t)=1$.
 
-          Rewriting the goal with $\sigma'(id_t)("stc")=1$ and
+          Rewriting the goal with $\sigma'(id_t)(\texttt{stc})=1$ and
           $s'.I(t)=1$, \qedbox{tautology.}
           
         \item \textbf{CASE} $s.reset_t(t)=\mathtt{false}$:\\
           
           By definition of \upSim, we have
-          $\sigma(id_t)("srtc")=\mathtt{false}$.
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
           Let us perform case analysis on $s.I(t)>upper(I_s(t))$ or
           $s.I(t)\le{}upper(I_s(t))$:
@@ -919,27 +919,27 @@
           \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:\\
             
             By definition of \upSim, we have
-            $s.I(t)=\sigma(id_t)("stc")$.
+            $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
             \begin{itemize}
             \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
               From $s.I(t)<upper(I_s(t))$,
-              $s.I(t)=\sigma(id_t)("stc")$ and
-              $\Delta(id_t)("mtc")=b=upper(I_s(t))$, we can deduce
-              $\sigma(id_t)("stc")<\Delta(id_t)("mtc")$.
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and\\
+              $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$, we can deduce
+              $\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})$.
 
               From \eqref{eq:etnrlt},
-              $\sigma(id_t)("se")=\mathtt{true}$,
-              $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$,
-              $\sigma(id_t)("srtc")=\mathtt{false}$ and
-              $\sigma(id_t)("stc")<\Delta(id_t)("mtc")$, we can deduce
-              $\sigma'(id_t)("stc")=\sigma(id_t)("stc")+1$.
+              $\sigma(id_t)(\texttt{se})=\mathtt{true}$,
+              $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$,
+              $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$ and
+              $\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})$, we can deduce\\
+              $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1$.
 
               By definition of \dwSitpn (Rule~\ref{it:inc-counters}),
               we can deduce $s'.I(t)=s.I(t)+1$.
 
               Rewriting the goal with
-              $\sigma'(id_t)("stc")=\sigma(id_t)("stc")+1$ and
+              $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1$ and
               $s'.I(t)=s.I(t)+1$, \qedbox{tautology.}
               
             \item \textbf{CASE} $s.I(t)=upper(I_s(t))$:\\
@@ -982,7 +982,7 @@
   have $\sigma'(id_c)=E_p(\tau,\downarrow)(id_c)$.
 
   \noindent{}Rewriting the goal with $s'.cond(c)=E_c(\tau,c)$ and
-  $\sigma'(id_c)=E_p(\tau,\downarrow)(id_c)$:
+  $\sigma'(id_c)=E_p(\tau,\downarrow)(id_c)$:\\
   \fbox{$E_c(\tau,c)=E_p(\tau,\downarrow)(id_c)$}
   
   \noindent{}By definition of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$:
@@ -1011,7 +1011,7 @@
   By construction, the generated \texttt{action} process is a part of
   design $d$'s behavior, i.e there exist an
   $sl\subseteq{}Sigs(\Delta)$ and an $ss_a\in{}ss$ s.t.
-  $\mathtt{ps}("action", \emptyset, sl, ss)\in{}d.cs$.
+  $\mathtt{ps}(\texttt{action}, \emptyset, sl, ss)\in{}d.cs$.
   
   By construction $id_a$ is only assigned in the body of the
   \texttt{action} process during the initialization or a falling edge
@@ -1029,8 +1029,8 @@
     body executed during a falling edge phase.
 
     \noindent{}By property of the \hvhdl{} falling edge relation, the
-    stabilize relation and
-    $\mathtt{ps}("action", \emptyset, sl, ss_a)\in{}d.cs$, we can
+    stabilize relation and\\
+    $\mathtt{ps}(\texttt{action}, \emptyset, sl, ss_a)\in{}d.cs$, we can
     deduce $\sigma'(id_a)=false$.
     
     \noindent{}By property of
@@ -1052,7 +1052,7 @@
 
     \noindent{}By property of the $\mathtt{Inject}_\downarrow$, the
     \hvhdl{} falling edge relation, the stabilize relation, and\\
-    $\mathtt{ps}("action",$ $\emptyset,$ $sl,$ $ss)\in{}d.cs$:
+    $\mathtt{ps}(\texttt{action},$ $\emptyset,$ $sl,$ $ss)\in{}d.cs$:
     \begin{equation}
       \sigma'(id_a)=\sigma(id_{mp_0})+\dots+\sigma(id_{mp_n})\label{eq:fe-eq-ida-sum}
     \end{equation}
@@ -1078,36 +1078,36 @@
       us take an $id_{mp_i}$ s.t. $\sigma(id_{mp_i})=\mathtt{true}$.
 
       \noindent{}By construction, there exist a $p\in{}pls(a)$, an
-      $id_{p}\in{}Comps(\Delta)$, $gm_{p}$, $ipm_{p}$ and
-      $opm_{p}$ such that:
+      $id_{p}\in{}Comps(\Delta)$, $g_{p}$, $i_{p}$ and
+      $o_{p}$ such that:
       \begin{itemize}
       \item $\gamma(p)=id_{p}$
       \item \InCsCompP
-      \item ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}opm_{p}$
+      \item ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}o_{p}$
       \end{itemize}
-      Let us take such a $p$, $id_{p}$, $gm_{p}$, $ipm_{p}$ and
-      $opm_{p}$.
+      Let us take such a $p$, $id_{p}$, $g_{p}$, $i_{p}$ and
+      $o_{p}$.
 
       By property of stable $\sigma$ and \InCsCompP, we can deduce
-      $\sigma(id_{mp_i})=\sigma(id_{p})("marked")$.
+      $\sigma(id_{mp_i})=\sigma(id_{p})(\texttt{marked})$.
 
       By property of stable $\sigma$, \InCsCompP, and through the
       examination of the \texttt{determine_marked} process defined in
       the place design architecture, we can deduce:
       \begin{equation}
-        \sigma(id_{p})("marked")=\sigma(id_{p})("sm")>0\label{eq:fe-gt-sm-zero}
+        \sigma(id_{p})(\texttt{marked})=\sigma(id_{p})(\texttt{sm})>0\label{eq:fe-gt-sm-zero}
       \end{equation}
 
-      \noindent{}From $\sigma(id_{mp_i})=\sigma(id_{p})("marked")$,
+      \noindent{}From $\sigma(id_{mp_i})=\sigma(id_{p})(\texttt{marked})$,
       \eqref{eq:fe-gt-sm-zero} and $\sigma(id_{mp_i})=\mathtt{true}$,
-      we can deduce that $\sigma(id_{p})("mar\-ked")=\mathtt{true}$
-      and $(\sigma(id_{p})("sm")>0)=\mathtt{true}$.
+      we can deduce that\\ $\sigma(id_{p})(\texttt{mar\-ked})=\mathtt{true}$
+      and $(\sigma(id_{p})(\texttt{sm})>0)=\mathtt{true}$.
       
       \noindent{}By property of \upSim, we have
-      $s.M(p)=\sigma(id_{p})("sm")$.
+      $s.M(p)=\sigma(id_{p})(\texttt{sm})$.
       
-      \noindent{}From $s.M(p)=\sigma(id_{p})("sm")$ and
-      $(\sigma(id_{p})("sm")>0)=\mathtt{true}$, we can deduce
+      \noindent{}From $s.M(p)=\sigma(id_{p})(\texttt{sm})$ and
+      $(\sigma(id_{p})(\texttt{sm})>0)=\mathtt{true}$, we can deduce
       $p\in{}marked(s.M)$, i.e $s.M(p)>0$.
 
       Let us use $p$ to prove the goal:
@@ -1134,36 +1134,36 @@
       \item \textbf{CASE} \qedbox{$\mathbb{A}(p,a)=\mathtt{false}$.}
       \item \textbf{CASE} $\mathbb{A}(p,a)=\mathtt{true}$:\\
         By construction, there exist an $id_{p}\in{}Comps(\Delta)$,
-        $gm_{tp}$, $ipm_{p}$, $opm_{p}$ and
+        $g_{tp}$, $i_{p}$, $o_{p}$ and
         $id_{mp_i}\in{}Sigs(\Delta)$ such that:
         \begin{itemize}
         \item $\gamma(p)=id_{p}$
         \item \InCsCompP
-        \item ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}opm_{p}$
+        \item ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}o_{p}$
         \end{itemize}
 
-        Let us take such a $id_{p}$, $gm_{p}$, $ipm_{p}$, $opm_{p}$
+        Let us take such a $id_{p}$, $g_{p}$, $i_{p}$, $o_{p}$
         and $id_{mp_i}$.
 
         By property of stable $\sigma$, \InCsCompP, and
-        ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}opm_{p}$, we
-        can deduce $\sigma(id_{mp_i})=\sigma(id_{p})("marked")$.
+        ${<}\mathtt{marked\Rightarrow{}id_{mp_i}}{>}\in{}o_{p}$, we
+        can deduce $\sigma(id_{mp_i})=\sigma(id_{p})(\texttt{marked})$.
 
         By property of stable $\sigma$, \InCsCompP, and through the
         examination of the \texttt{determine_marked} process defined
         in the place design architecture, we can deduce:
         \begin{equation}
-          \sigma(id_{p})("marked")=(\sigma(id_{p})("sm")>0)\label{eq:fe-eq-marked-gt-sm-zero}
+          \sigma(id_{p})(\texttt{marked})=(\sigma(id_{p})(\texttt{sm})>0)\label{eq:fe-eq-marked-gt-sm-zero}
         \end{equation}
 
         From
         $\sigma(id_{mp_0})+\dots+\sigma(id_{mp_n})=\mathtt{false}$, we
         can deduce $\sigma(id_{mp_i})=\mathtt{false}$.
 
-        From $\sigma(id_{p})("marked")=\mathtt{false}$, we can deduce
-        $(\sigma(id_{p})("sm")>0)=\mathtt{false}$.
+        From $\sigma(id_{p})(\texttt{marked})=\mathtt{false}$, we can deduce
+        $(\sigma(id_{p})(\texttt{sm})>0)=\mathtt{false}$.
 
-        By definition of \upSim, we have $s.M(p)=\sigma(id_p)("sm")$,
+        By definition of \upSim, we have $s.M(p)=\sigma(id_p)(\texttt{sm})$,
         and thus, we can deduce that $s.M(p)=0$ (equivalent to
         $(s.M(p)>0)=\mathtt{false}$).
 
@@ -1217,23 +1217,23 @@
   \label{lem:fe-equal-firable}
   \fehyps{} then
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.
+  $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T$ and $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show that\\
-  \fbox{$t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.}\\
+  \fbox{$t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}\\
 
   The proof is in two parts:
   \begin{enumerate}
   \item Assuming that $t\in{}Firable(s')$, let us show
-    \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}
+    \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}
     
     Appealing to Lemma~\ref{lem:fe-equal-firable-1}:
-    \qedbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}
+    \qedbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}
     
-  \item Assuming that $\sigma'(id_t)("s\_firable")=\mathtt{true}$, let
+  \item Assuming that $\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$, let
     us show \fbox{$t\in{}Firable(s')$.}
     
     Appealing to Lemma~\ref{lem:fe-equal-firable-2}:
@@ -1246,13 +1246,13 @@
   \label{lem:fe-equal-firable-1}
   \fehyps{} then
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\in{}Firable(s')\Rightarrow\sigma'(id_t)("s\_firable")=\mathtt{true}$.
+  $t\in{}Firable(s')\Rightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T$ and $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, and assuming that $t\in{}Firable(s')$, let us
-  show \fbox{$\sigma'(id_t)("s\_firable")=\mathtt{true}$.}\\
+  show \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}\\
   
   \exT{}
 
@@ -1262,7 +1262,7 @@
   in the transition design architecture, we can deduce:
   \begin{equation}
     \label{eq:fe-eq-sfa}
-    \sigma'(id_t)("sfa")=\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))
+    \sigma'(id_t)(\texttt{sfa})=\sigma(id_t)(\texttt{se})~.~\sigma(id_t)(\texttt{scc})~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))
   \end{equation}
 
   Term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ is defined as
@@ -1270,38 +1270,38 @@
   \begin{equation}
     \label{eq:checktc}
     \begin{split}
-      \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)("srtc")~.~\\
+      \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
       & \quad\begin{split}
-        \big[\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~\\
-        &.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)\\
+        \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
+        &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
       \end{split} \\
-      & \quad+(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))\\
+      & \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))\\
       &
-      \quad+(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))\big]\bigg) \\
-      & +\big(\sigma(id_t)("srtc")~.~\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)("A")=1\big)\\
-      & +\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\\
+      \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
+      & +\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)\\
+      & +\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}\\
     \end{split}
   \end{equation}
 
   Rewriting the goal with \eqref{eq:fe-eq-sfa}:
-  \fbox{$\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$.}
+  \fbox{$\sigma(id_t)(\texttt{se})~.~\sigma(id_t)(\texttt{scc})~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$.}
 
   Then, there are three points to prove:
   \begin{enumerate}
-  \item \fbox{$\sigma(id_t)("se")=\mathtt{true}$}:\\
+  \item \fbox{$\sigma(id_t)(\texttt{se})=\mathtt{true}$}:\\
 
     From $t\in{}Firable(s')$, we can deduce
     $t\in{}Sens(s'.M)$. By definition of \dwSitpn, we have $s.M=s'.M$,
     and thus, we can deduce $t\in{}Sens(s.M)$.
 
     By definition of \upSim, we know that $t\in{}Sens(s.M)$
-    implies \qedbox{$\sigma(id_t)("se")=\mathtt{true}$.}
+    implies \qedbox{$\sigma(id_t)(\texttt{se})=\mathtt{true}$.}
     
-  \item \fbox{$\sigma(id_t)("scc")=\mathtt{true}$}:\\
+  \item \fbox{$\sigma(id_t)(\texttt{scc})=\mathtt{true}$}:\\
 
     By definition of \upSim:
     \begin{equation}
-      \sigma(id_t)("scc")=\prod\limits_{c\in{}conds(t)}
+      \sigma(id_t)(\texttt{scc})=\prod\limits_{c\in{}conds(t)}
       \begin{cases}
         E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
         \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
@@ -1373,11 +1373,11 @@
     \item \textbf{CASE} $t\notin{}T_i$: \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}\\
 
       By construction,
-      ${<}\mathtt{transition\_type\Rightarrow{}NOT\_TEMP}{>}\in{}gm_t$,
+      ${<}\mathtt{transition\_type\Rightarrow{}NOT\_TEMP}{>}\in{}g_t$,
       and by property of the elaboration relation, we have
-      $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$.
+      $\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}$.
 
-      From $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$, and by definition
+      From $\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}$, and by definition
       of $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$, we can deduce
       \qedbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$.}
 
@@ -1386,35 +1386,35 @@
       From $s'.I(t)\in{}I_s(t)$, we can deduce that $t\in{}T_i$. Thus,
       by construction, there exists
       $tt\in\{\mathtt{TEMP\_A\_B},\mathtt{TEMP\_A\_A},\mathtt{TEMP\_A\_INF}\}$
-      s.t. ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}gm_t$. By
+      s.t. ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$. By
       property of the elaboration relation, we have
-      $\Delta(id_t)("tt")=tt$, and thus, we know
-      $\Delta(id_t)("tt")\neq{}\mathtt{NOT\_TEMP}$. Therefore, we can
+      $\Delta(id_t)(\texttt{tt})=tt$, and thus, we know
+      $\Delta(id_t)(\texttt{tt})\neq{}\mathtt{NOT\_TEMP}$. Therefore, we can
       simplfy the term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$
       as follows:
       \begin{equation}        
         \label{eq:eq-checktc-minus-not-temp}
         \begin{split}
-          \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)("srtc")~.~\\
+          \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
           & \quad\begin{split}
-            \big[\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~\\
-            &.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)\\
+            \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
+            &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
           \end{split} \\
           & \quad{\begin{array}{l}
-                    +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.\\
-                    \quad~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1)) \\
+                    +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.\\
+                    \quad~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1)) \\
                   \end{array}}\\
           &
           \quad{\begin{array}{l}
-                  +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~. \\
-                  \quad~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))\big]\bigg) \\
+                  +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~. \\
+                  \quad~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
                 \end{array}}\\
-          & +\big(\sigma(id_t)("srtc")~.~\sigma(id_t)("A")=1\big)\\
+          & +\big(\sigma(id_t)(\texttt{srtc})~.~\sigma(id_t)(\texttt{A})=1\big)\\
         \end{split}
       \end{equation}
       
       By definition of \upSim, we have
-      $s.reset_t(t)=\sigma(id_t)("srtc")$.
+      $s.reset_t(t)=\sigma(id_t)(\texttt{srtc})$.
 
       Let us perform case analysis on the value
       $s.reset_t(t)$:
@@ -1422,19 +1422,19 @@
       \begin{enumerate}
       \item \textbf{CASE} $s.reset_t(t)=\mathtt{true}$: \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}\\
 
-        From $s.reset_t(t)=\sigma(id_t)("srtc")$, we can deduce that
-        $\sigma(id_t)("srtc")=\mathtt{true}$.
+        From $s.reset_t(t)=\sigma(id_t)(\texttt{srtc})$, we can deduce that
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$.
 
-        From $\sigma(id_t)("srtc")=\mathtt{true}$, we can
+        From $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$, we can
         simplify the term
         $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as follows:
         \begin{equation}
           \label{eq:eq-checktc-a-eq-1}
-            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\big(\sigma(id_t)("A")=1\big)
+            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\big(\sigma(id_t)(\texttt{A})=1\big)
         \end{equation}
 
         Rewriting the goal with \eqref{eq:eq-checktc-a-eq-1}, and
-        simplifying the goal: \fbox{$\sigma(id_t)("A")=1$.}
+        simplifying the goal: \fbox{$\sigma(id_t)(\texttt{A})=1$.}
 
         By definition of \dwSitpn{} (Rule~\ref{it:reset-counters}), from
         $t\in{}Sens(s.M)$ and $s.reset_t(t)=\mathtt{true}$, we can
@@ -1450,16 +1450,16 @@
         since $a\in\mathbb{N}^{*}$, we can deduce $a=1$.
 
         By construction,
-        ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$, and
+        ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$, and
         by property of stable $\sigma$, we have
-        \qedbox{$\sigma(id_t)("A")=a=1$.}
+        \qedbox{$\sigma(id_t)(\texttt{A})=a=1$.}
 
       \item \textbf{CASE} $s.reset_t(t)=\mathtt{false}$: \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}\\
 
-        From $s.reset_t(t)=\sigma(id_t)("srtc")$, we can deduce
-        $\sigma(id_t)("srtc")=\mathtt{false}$.
+        From $s.reset_t(t)=\sigma(id_t)(\texttt{srtc})$, we can deduce
+        $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
-        From $\sigma(id_t)("srtc")=\mathtt{false}$, we can simplify
+        From $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, we can simplify
         the term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as
         follows:
         \begin{equation}
@@ -1468,11 +1468,11 @@
             \multicolumn{1}{c}{\mathtt{checktc}(\Delta(id_t),\sigma(id_t))}\\
             \multicolumn{1}{c}{=}\\
             \begin{array}{ll}
-              \big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~\\
-                                                          &.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)\\
+              \big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
+                                                          &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
             \end{array}\\
-            +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))\\
-            +(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)) \\
+            +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))\\
+            +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)) \\
           \end{array}
         \end{equation}
 
@@ -1485,18 +1485,18 @@
           \item \textbf{CASE} $a=b$:\\
             Then, we have $I_s(t)=[a,a]$, and by construction
             ${<}$\texttt{transition\_type}$\Rightarrow{}$
-            \texttt{TEMP\_A\_A}${>}\in{}gm_t$. By property of the
+            \texttt{TEMP\_A\_A}${>}\in{}g_t$. By property of the
             elaboration relation, we have
-            $\Delta(id_t)$$("tt")=$\texttt{TEMP\_A\_A}; thus we can
+            $\Delta(id_t)$$(\texttt{tt})=$\texttt{TEMP\_A\_A}; thus we can
             simplify the $\mathtt{checktc}$ term as follows:
             \begin{equation}
               \label{eq:eq-checktc-temp-a-a}
-              \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1)
+              \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1)
             \end{equation}
 
             Rewriting the goal with \eqref{eq:eq-checktc-temp-a-a},
             and simplifying the goal:\\
-            \fbox{$\sigma(id_t)("stc")={}\sigma(id_t)("A")-1$.}\\
+            \fbox{$\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1$.}\\
             
             From $s'.I(t)\in[a,a]$, we can deduce that
             $s'.I(t)=a$. Let us perform case analysis on
@@ -1505,18 +1505,18 @@
             \begin{itemize}
             \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
               By definition of \upSim, we have
-              $s.I(t)=\sigma(id_t)("stc")$. By definition of
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$. By definition of
               \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
               $s'.I(t)=s.I(t)+1$. From $s'.I(t)=a$ and
               $s'.I(t)=s.I(t)+1$, we can deduce $a-1=s.I(t)$.
 
               By construction,
-              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$,
               and by property of stable $\sigma$, we have
-              $\sigma(id_t)("A")=a$.
+              $\sigma(id_t)(\texttt{A})=a$.
 
-              Rewriting the goal with $\sigma(id_t)("A")=a$,
-              $s.I(t)=\sigma(id_t)("stc")$, and $a-1=s.I(t)$:
+              Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$,
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$, and $a-1=s.I(t)$:
               \qedbox{tautology.}
               
             \item \textbf{CASE} $s.I(t)\ge{}upper(I_s(t))$:\\
@@ -1537,29 +1537,29 @@
           \item \textbf{CASE} $a\neq{}b$: \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}\\
             Then, we have $I_s(t)=[a,b]$, and by construction
             ${<}$\texttt{transition\_type}$\Rightarrow{}$
-            \texttt{TEMP\_A\_B}${>}\in{}gm_t$. By property of the
+            \texttt{TEMP\_A\_B}${>}\in{}g_t$. By property of the
             elaboration relation, we have
-            $\Delta(id_t)$$("tt")=$\texttt{TEMP\_A\_B}; thus we can
+            $\Delta(id_t)$$(\texttt{tt})=$\texttt{TEMP\_A\_B}; thus we can
             simplify the term $\mathtt{checktc}$ as follows:
             \begin{equation}
               \label{eq:eq-checktc-temp-a-b}
               \begin{array}{c}
                 \multicolumn{1}{c}{\mathtt{checktc}(\Delta(id_t),\sigma(id_t))}\\
                 \multicolumn{1}{c}{=}\\
-                (\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\\
+                (\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\\
               \end{array}\\
             \end{equation}
 
             Rewriting the goal with \eqref{eq:eq-checktc-temp-a-b},
             and simplifying the goal:\\
-            \fbox{$(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)\land(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)$.}\\
+            \fbox{$(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)\land(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)$.}\\
             
             Let us perform case analysis on $s.I(t)<upper(I_s(t))$ or
             $s.I(t)\ge{}upper(I_s(t))$:
             \begin{itemize}
             \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
               By definition of \upSim, we have
-              $s.I(t)=\sigma(id_t)("stc")$. By definition of \dwSitpn
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$. By definition of \dwSitpn
               (Rule~\ref{it:inc-counters}), we have
               $s'.I(t)=s.I(t)+1$. By definition of $s'.I(t)\in[a,b]$:
               
@@ -1572,16 +1572,16 @@
               $\Rightarrow{}a-1\le{}s.I(t)\land{}s.I(t)\le{}b-1$
 
               By construction,
-              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$
+              ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$
               and
-              ${<}\mathtt{time\_B\_value\Rightarrow}{}b{>}\in{}ipm_t$,
+              ${<}\mathtt{time\_B\_value\Rightarrow}{}b{>}\in{}i_t$,
               and by property of stable $\sigma$, we have
-              $\sigma(id_t)("A")=a$ and
-              $\sigma(id_t)("B")=b$.
+              $\sigma(id_t)(\texttt{A})=a$ and
+              $\sigma(id_t)(\texttt{B})=b$.
 
               Rewriting the goal with
-              $\sigma(id_t)("A")=a$, $\sigma(id_t)("B")=b$ and
-              $s.I(t)=\sigma(id_t)("stc")$:
+              $\sigma(id_t)(\texttt{A})=a$, $\sigma(id_t)(\texttt{B})=b$ and
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$:
               \qedbox{$a-1\le{}s.I(t)\land{}s.I(t)\le{}b-1$.}
               
             \item \textbf{CASE} $s.I(t)\ge{}upper(I_s(t))$:\\
@@ -1610,18 +1610,18 @@
           $a\in{}\mathbb{N}^{*}$: \fbox{$\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}$}
  
           By construction ${<}\mathtt{transition\_type\Rightarrow{}}$
-          $\mathtt{TEMP\_A\_INF}{>}\in{}gm_t$. By property of the
+          $\mathtt{TEMP\_A\_INF}{>}\in{}g_t$. By property of the
           elaboration relation, we have
-          $\Delta(id_t)$$("tt")=\mathtt{TEMP\_A\_INF}$; thus we can
+          $\Delta(id_t)$$(\texttt{tt})=\mathtt{TEMP\_A\_INF}$; thus we can
           simplify the term $\mathtt{checktc}$ as follows:
           \begin{equation}
             \label{eq:eq-checktc-temp-a-inf}
-            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))
+            \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))
           \end{equation}
 
           Rewriting the goal with \eqref{eq:eq-checktc-temp-a-inf},
           and simplifying the goal:\\
-          \fbox{$\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1$.}\\
+          \fbox{$\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1$.}\\
 
           From $s'.I(t)\in[a,\infty]$, we can deduce
           $a\le{}s'.I(t)$. Then, let us perform case analysis on
@@ -1630,7 +1630,7 @@
           \item \textbf{CASE} $s.I(t)\le{}lower(I_s(t))$:
 
             By definition of \upSim, we have
-            $s.I(t)=\sigma(id_t)("stc")$.
+            $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
             By definition of \dwSitpn{} (Rule~\ref{it:inc-counters}),
             we have $s'.I(t)=s.I(t)+1$:
@@ -1642,25 +1642,25 @@
             $\Rightarrow{}s.I(t)\ge{}a-1$
 
             By construction,
-            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$,
             and by property of stable $\sigma$, we have
-            $\sigma(id_t)("A")=a$.
+            $\sigma(id_t)(\texttt{A})=a$.
 
-            Rewriting the goal with $\sigma(id_t)("A")=a$ and
-            $s.I(t)=\sigma(id_t)("stc")$:\\ \qedbox{$s.I(t)\ge{}a-1$.}
+            Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$ and
+            $s.I(t)=\sigma(id_t)(\texttt{stc})$:\\ \qedbox{$s.I(t)\ge{}a-1$.}
             
           \item \textbf{CASE} $s.I(t)>lower(I_s(t))$:
 
             By definition of \upSim, we have
-            $\sigma(id_t)("stc")=lower(I_s(t))=a$.
+            $\sigma(id_t)(\texttt{stc})=lower(I_s(t))=a$.
 
             By construction,
-            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$,
+            ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$,
             and by property of stable $\sigma$, we have
-            $\sigma(id_t)("A")=a$.
+            $\sigma(id_t)(\texttt{A})=a$.
 
-            Rewriting the goal with $\sigma(id_t)("stc")=a$ and
-            $\sigma(id_t)("A")=a$: \qedbox{$a\ge{}a-1$.}
+            Rewriting the goal with $\sigma(id_t)(\texttt{stc})=a$ and
+            $\sigma(id_t)(\texttt{A})=a$: \qedbox{$a\ge{}a-1$.}
           \end{itemize}
           
         \end{itemize}
@@ -1673,14 +1673,14 @@
   \label{lem:fe-equal-firable-2}
   \fehyps{} then
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $\sigma'(id_t)("s\_firable")=\mathtt{true}\Rightarrow{}t\in{}Firable(s')$.
+  $\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}\Rightarrow{}t\in{}Firable(s')$.
 \end{lemma}
 
 \begin{niproof}
 
   Given a $t\in{}T$ and $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, and assuming that
-  $\sigma'(id_t)("s\_firable")=\mathtt{true}$, let us
+  $\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$, let us
   show \fbox{$t\in{}Firable(s')$.}\\
   
   \exT{}
@@ -1691,13 +1691,13 @@
   in the transition design architecture, we can deduce:
   \begin{equation}
     \label{eq:fe-eq-sfa-true}
-    \sigma'(id_t)("sfa")=\sigma(id_t)("se")~.~\sigma(id_t)("scc")~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
+    \sigma'(id_t)(\texttt{sfa})=\sigma(id_t)(\texttt{se})~.~\sigma(id_t)(\texttt{scc})~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
   \end{equation}
 
   From \eqref{eq:fe-eq-sfa-true}, we can deduce:
   \begin{eqnarray}
-    \label{eq:fe-eq-se-true}\sigma(id_t)("se")=\mathtt{true}\\
-    \label{eq:fe-eq-scc-true}\sigma(id_t)("scc")=\mathtt{true}\\
+    \label{eq:fe-eq-se-true}\sigma(id_t)(\texttt{se})=\mathtt{true}\\
+    \label{eq:fe-eq-scc-true}\sigma(id_t)(\texttt{scc})=\mathtt{true}\\
     \label{eq:fe-eq-checktc-true}\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
   \end{eqnarray}
 
@@ -1721,9 +1721,9 @@
     with $s.M=s'.M$: \fbox{$t\in{}Sens(s.M)$.}
 
     By definition of \upSim, we have
-    $\sigma(id_t)("se")=\mathtt{true}\Leftrightarrow{}t\in{}Sens(s.M)$.
+    $\sigma(id_t)(\texttt{se})=\mathtt{true}\Leftrightarrow{}t\in{}Sens(s.M)$.
 
-    From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce: \qedbox{$t\in{}Sens(s.M)$.}
+    From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce: \qedbox{$t\in{}Sens(s.M)$.}
     
   \item
     \fbox{\parbox{\lwidth}{$\forall{}c\in{}\mathcal{C},~\mathbb{C}(t,c)=1\Rightarrow{}s'.cond(c)=\mathtt{true}$
@@ -1745,7 +1745,7 @@
 
       By definition of \upSim, we have:
       \begin{equation}
-        \sigma(id_t)("scc")=\prod\limits_{c'\in{}conds(t)}
+        \sigma(id_t)(\texttt{scc})=\prod\limits_{c'\in{}conds(t)}
         \begin{cases}
           E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
           \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
@@ -1780,7 +1780,7 @@
 
       By definition of \upSim, we have:
       \begin{equation}
-        \sigma(id_t)("scc")=\prod\limits_{c'\in{}conds(t)}
+        \sigma(id_t)(\texttt{scc})=\prod\limits_{c'\in{}conds(t)}
         \begin{cases}
           E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
           \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
@@ -1818,49 +1818,50 @@
     are 3 cases:
     \begin{enumerate}
     \item
-      $\big(\mathtt{not}~\sigma(id_t)("srtc")~.~[\dots]\big)=\mathtt{true}$\footnote{See
+      $\big(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~[\dots]\big)=\mathtt{true}$\footnote{See
         equation~\eqref{eq:checktc} for the full definition.}
     \item
-      $\big(\sigma(id_t)("srtc")~.~\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)("A")=1\big)=\mathtt{true}$
+      $\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)=\mathtt{true}$
     \item
-      $\big(\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
+      $\big(\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
     \end{enumerate}
     
     \begin{enumerate}
     \item \textbf{CASE}
-      $\big(\mathtt{not}~\sigma(id_t)("srtc")~.~[\dots]\big)=\mathtt{true}$:
+      $\big(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~[\dots]\big)=\mathtt{true}$:
 
       Then, we can deduce
-      $\mathtt{not}~\sigma(id_t)("srtc")=\mathtt{true}$ and
-      $[\dots]=\mathtt{true}$. From
-      $\mathtt{not}~\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
-      $\sigma(id_t)("srtc")=\mathtt{false}$, and from
-      $[\dots]=\mathtt{true}$, we have three other cases:
+      $\mathtt{not}~\sigma(id_t)(\texttt{srtc})=\mathtt{true}$ and
+      $[\dots]=\mathtt{true}$.
+
+      From $\mathtt{not}~\sigma(id_t)(\texttt{srtc})=\mathtt{true}$,
+      we can deduce $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, and
+      from $[\dots]=\mathtt{true}$, we have three other cases:
 
       \begin{enumerate}
       \item \textbf{CASE}
-        $\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)=\mathtt{true}$
+        $\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)=\mathtt{true}$
       \item \textbf{CASE}
-        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))=\mathtt{true}$
+        $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$
       \item \textbf{CASE}
-        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1))=\mathtt{true}$
+        $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$
       \end{enumerate}
 
       Let us prove the goal is these three contexts:
       \begin{enumerate}
       \item \textbf{CASE}
-        $\big(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1)~.~(\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1)\big)=\mathtt{true}$:
+        $\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)=\mathtt{true}$:
 
         Then, converting boolean equalities into intuitionistic
         predicates, we have:
         \begin{itemize}
-        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}$
-        \item $\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1$
-        \item $\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$
+        \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}$
+        \item $\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1$
+        \item $\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$
         \end{itemize}
 
         By property of the elaboration relation, and
-        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_B}$, there exist
+        $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}$, there exist
         $a,b\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,b]$. Let us take such
         an $a$ and $b$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
 
@@ -1869,65 +1870,65 @@
         
         By construction, ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$
         and ${<}\mathtt{time\_B\_value\Rightarrow}{}b{>}$, and by
-        property of stable $\sigma$, we have $\sigma(id_t)("A")=a$ and
-        $\sigma(id_t)("B")=b$.
+        property of stable $\sigma$, we have $\sigma(id_t)(\texttt{A})=a$ and
+        $\sigma(id_t)(\texttt{B})=b$.
 
-        Rewriting the goal with $\sigma(id_t)("A")=a$ and
-        $\sigma(id_t)("B")=b$, and by definition of $\in$:
-        \fbox{$\sigma(id_t)("A")\le{}s'.I(t)\le{}\sigma(id_t)("B")$.}
+        Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$ and
+        $\sigma(id_t)(\texttt{B})=b$, and by definition of $\in$:
+        \fbox{$\sigma(id_t)(\texttt{A})\le{}s'.I(t)\le{}\sigma(id_t)(\texttt{B})$.}
 
         Now, let us perform case analysis on
         $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
         \begin{itemize}
         \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:
           
-          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
-          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
           $t\in{}Sens(s.M)$, and from
-          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, we can deduce
           $s.reset_t(t)=\mathtt{false}$. Then, by definition of
           \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
           $s'.I(t)=s.I(t)+1$.
 
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1\le{}\sigma(id_t)("B")$}
+          \fbox{$\sigma(id_t)(\texttt{A})\le{}s.I(t)+1\le{}\sigma(id_t)(\texttt{B})$}
           (by $s'.I(t)=s.I(t)+1$)
 
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("A")\le{}\sigma(id_t)("stc")+1\le{}\sigma(id_t)("B")$}
-          (by $s.I(t)=\sigma(id_t)("stc")$)
+          \fbox{$\sigma(id_t)(\texttt{A})\le{}\sigma(id_t)(\texttt{stc})+1\le{}\sigma(id_t)(\texttt{B})$}
+          (by $s.I(t)=\sigma(id_t)(\texttt{stc})$)
           
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("A")-1\le{}\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$}
+          \fbox{$\sigma(id_t)(\texttt{A})-1\le{}\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$}
           
-          We assumed $\sigma(id_t)("stc")\ge{}\sigma(id_t)("A")-1$ and
-          $\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$, and thus we can deduce:
-          \qedbox{$\sigma(id_t)("A")-1\le{}\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$}
+          We assumed $\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1$ and
+          $\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$, and thus we can deduce:
+          \qedbox{$\sigma(id_t)(\texttt{A})-1\le{}\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$}
           
         \item \textbf{CASE} $s.I(t)>upper(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)("stc")=upper(I_s(t))=b$.
+          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=b$.
 
-          Then, from $\sigma(id_t)("stc")\le{}\sigma(id_t)("B")-1$,
-          $\sigma(id_t)("stc")=upper(I_s(t))=b$ and
-          $\sigma(id_t)("B")=b$, we can deduce the following
+          Then, from $\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$,
+          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=b$ and
+          $\sigma(id_t)(\texttt{B})=b$, we can deduce the following
           contradiction:\\
-          \qedbox{$\sigma(id_t)("B")\le{}\sigma(id_t)("B")-1$.}
+          \qedbox{$\sigma(id_t)(\texttt{B})\le{}\sigma(id_t)(\texttt{B})-1$.}
         \end{itemize}
       \item
-        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)("stc")={}\sigma(id_t)("A")-1))=\mathtt{true}$:
+        $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$:
 
         Then, converting boolean equalities into intuitionistic
         predicates, we have:
         \begin{itemize}
-        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}$
-        \item $\sigma(id_t)("stc")=\sigma(id_t)("A")-1$
+        \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}$
+        \item $\sigma(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{A})-1$
         \end{itemize}
 
         By property of the elaboration relation, and
-        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_A}$, there exist
+        $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}$, there exist
         $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,a]$. Let us take such an
         $a$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
 
@@ -1936,61 +1937,61 @@
         
         By construction,
         ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$, and by property
-        of stable $\sigma$, we have $\sigma(id_t)("A")=a$.
+        of stable $\sigma$, we have\\ $\sigma(id_t)(\texttt{A})=a$.
 
-        Rewriting the goal with $\sigma(id_t)("A")=a$, unfolding the
+        Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$, unfolding the
         definition of $\in$, and simplifying the goal:
-        \fbox{$s'.I(t)=\sigma(id_t)("A")$.}
+        \fbox{$s'.I(t)=\sigma(id_t)(\texttt{A})$.}
 
         Now, let us perform case analysis on
         $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
         \begin{itemize}
         \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:
           
-          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
-          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
           $t\in{}Sens(s.M)$, and from
-          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, we can deduce
           $s.reset_t(t)=\mathtt{false}$. Then, by definition of
           \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
           $s'.I(t)=s.I(t)+1$.
 
           $\Rightarrow{}$
-          \fbox{$s.I(t)+1=\sigma(id_t)("A")$} (by $s'.I(t)=s.I(t)+1$)
+          \fbox{$s.I(t)+1=\sigma(id_t)(\texttt{A})$} (by $s'.I(t)=s.I(t)+1$)
 
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("stc")+1=\sigma(id_t)("A")$}
-          (by $s.I(t)=\sigma(id_t)("stc")$)
+          \fbox{$\sigma(id_t)(\texttt{stc})+1=\sigma(id_t)(\texttt{A})$}
+          (by $s.I(t)=\sigma(id_t)(\texttt{stc})$)
 
           $\Rightarrow{}$
-          \qedbox{$\sigma(id_t)("stc")=\sigma(id_t)("A")-1$} (assumption)
+          \qedbox{$\sigma(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{A})-1$} (assumption)
           
         \item \textbf{CASE} $s.I(t)>upper(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)("stc")=upper(I_s(t))=a$.
+          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=a$.
 
-          Then, from $\sigma(id_t)("stc")={}\sigma(id_t)("A")-1$,
-          $\sigma(id_t)("stc")=upper(I_s(t))=a$,
-          $\sigma(id_t)("A")=a$, and $a\in\mathbb{N}^{*}$, we can
+          Then, from $\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1$,
+          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=a$,
+          $\sigma(id_t)(\texttt{A})=a$, and $a\in\mathbb{N}^{*}$, we can
           derive the following
           contradiction:\\
-          \qedbox{$\sigma(id_t)("A")=\sigma(id_t)("A")-1$.}
+          \qedbox{$\sigma(id_t)(\texttt{A})=\sigma(id_t)(\texttt{A})-1$.}
         \end{itemize}
         
       \item
-        $(\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)("stc")\ge\sigma(id_t)("A")-1))=\mathtt{true}$:
+        $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$:
 
         Then, converting boolean equalities into intuitionistic
         predicates, we have:
         \begin{itemize}
-        \item $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$
-        \item $\sigma(id_t)("stc")\ge\sigma(id_t)("A")-1$
+        \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$
+        \item $\sigma(id_t)(\texttt{stc})\ge\sigma(id_t)(\texttt{A})-1$
         \end{itemize}
 
         By property of the elaboration relation, and
-        $\Delta(id_t)("tt")=\mathtt{TEMP\_A\_INF}$, there exist
+        $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$, there exist
         $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,\infty]$. Let us take
         such an $a$. Then, let us show \fbox{$s'.I(t)\in{}I_s(t)$.}
 
@@ -1999,54 +2000,54 @@
         
         By construction,
         ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}$, and by property
-        of stable $\sigma$, we have $\sigma(id_t)("A")=a$.
+        of stable $\sigma$, we have\\ $\sigma(id_t)(\texttt{A})=a$.
 
-        Rewriting the goal with $\sigma(id_t)("A")=a$, unfolding the
+        Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$, unfolding the
         definition of $\in$, and simplifying the goal:
-        \fbox{$\sigma(id_t)("A")\le{}s'.I(t)$.}
+        \fbox{$\sigma(id_t)(\texttt{A})\le{}s'.I(t)$.}
 
         Now, let us perform case analysis on
         $s.I(t)\le{}lower(I_s(t))$ or $s.I(t)>lower(I_s(t))$:
         \begin{itemize}
         \item \textbf{CASE} $s.I(t)\le{}lower(I_s(t))$:
           
-          By definition of \upSim, we have $s.I(t)=\sigma(id_t)("stc")$.
+          By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
-          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
           $t\in{}Sens(s.M)$, and from
-          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, we can deduce
           $s.reset_t(t)=\mathtt{false}$. Then, by definition of
           \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
           $s'.I(t)=s.I(t)+1$.
 
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1$} (by $s'.I(t)=s.I(t)+1$)
+          \fbox{$\sigma(id_t)(\texttt{A})\le{}s.I(t)+1$} (by $s'.I(t)=s.I(t)+1$)
 
           $\Rightarrow{}$
-          \fbox{$\sigma(id_t)("A")\le\sigma(id_t)("stc")+1$} (by
-          $s.I(t)=\sigma(id_t)("stc")$)
+          \fbox{$\sigma(id_t)(\texttt{A})\le\sigma(id_t)(\texttt{stc})+1$} (by
+          $s.I(t)=\sigma(id_t)(\texttt{stc})$)
 
           $\Rightarrow{}$
-          \qedbox{$\sigma(id_t)("A")-1\le\sigma(id_t)("stc")$}
+          \qedbox{$\sigma(id_t)(\texttt{A})-1\le\sigma(id_t)(\texttt{stc})$}
           (assumption)
           
         \item \textbf{CASE} $s.I(t)>lower(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)("stc")=lower(I_s(t))=a$.
+          $\sigma(id_t)(\texttt{stc})=lower(I_s(t))=a$.
 
-          From $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+          From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
           $t\in{}Sens(s.M)$, and from
-          $\sigma(id_t)("srtc")=\mathtt{false}$, we can deduce
+          $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$, we can deduce
           $s.reset_t(t)=\mathtt{false}$. Then, by definition of
           \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
           $s'.I(t)=s.I(t)+1$.
 
-          $\Rightarrow{}$ \fbox{$\sigma(id_t)("A")\le{}s.I(t)+1$} (by
+          $\Rightarrow{}$ \fbox{$\sigma(id_t)(\texttt{A})\le{}s.I(t)+1$} (by
           $s'.I(t)=s.I(t)+1$)
 
           $\Rightarrow{}$ \fbox{$a\le{}s.I(t)+1$} (by
-          $\sigma(id_t)("A")=a$)
+          $\sigma(id_t)(\texttt{A})=a$)
           
           $\Rightarrow{}$ \fbox{$a<s.I(t)$}
 
@@ -2055,30 +2056,30 @@
       \end{enumerate}
 
     \item
-      $\big(\sigma(id_t)("srtc")~.~\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)("A")=1\big)=\mathtt{true}$
+      $\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)=\mathtt{true}$
 
       Then, converting boolean equalities into intuitionistic predicates, we have:
       \begin{itemize}
-      \item $\sigma(id_t)("srtc")=\mathtt{true}$
-      \item $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$
-      \item $\sigma(id_t)("A")=1$
+      \item $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$
+      \item $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$
+      \item $\sigma(id_t)(\texttt{A})=1$
       \end{itemize}
 
       By property of the elaboration relation, and
-      $\Delta(id_t)("tt")\neq\mathtt{NOT\_TEMP}$, there exist an
+      $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$, there exist an
       $a\in\mathbb{N}^{*}$ and a $ni\in\mathbb{N}^{*}\sqcup\{\infty\}$
       s.t. $I_s(t)=[a,ni]$. Let us take such an $a$ and $ni$.
 
       By construction,
-      ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}ipm_t$, and by
+      ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$, and by
       property of stable $\sigma$, we have
-      $\sigma(id_t)("A")=a$. Thus, we can deduce $a=1$ and
+      $\sigma(id_t)(\texttt{A})=a$. Thus, we can deduce $a=1$ and
       $I_s(t)=[1,ni]$.
 
       By definition of \upSim, from
-      $\sigma(id_t)("se")=\mathtt{true}$, we can deduce
+      $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
       $t\in{}Sens(s.M)$, and from
-      $\sigma(id_t)("srtc")=\mathtt{true}$, we can deduce
+      $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$, we can deduce
       $s.reset_t(t)=\mathtt{true}$.
 
       By definition of \dwSitpn{} (Rule~\ref{it:reset-counters}),
@@ -2090,12 +2091,12 @@
       Rewriting the goal with $s'.I(t)=1$ and $I_s(t)=[1,ni]$:
       \qedbox{$1\in[1,ni]$.}
     \item
-      $\big(\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
+      $\big(\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}\big)=\mathtt{true}$
 
       Let us show \fbox{$t\notin{}T_i$.}
       
       By property of the elaboration relation and
-      $\Delta(id_t)("tt")=\mathtt{NOT\_TEMP}$, we have
+      $\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}$, we have
       \qedbox{$t\notin{}T_i$.}
     \end{enumerate}
   \end{enumerate}
@@ -2105,7 +2106,7 @@
   \label{lem:fe-equal-not-firable}
   \fehyps{} then
   $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
-  $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)("s\_firable")=\mathtt{false}$.
+  $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{false}$.
 \end{lemma}
 
 \begin{proof}
@@ -2680,7 +2681,7 @@
   process defined in the \texttt{transition} design architecture, we
   can deduce:
   \begin{equation*}
-    \sigma'(id_t)("spc")=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{pauths})[i]\label{eq:frd-eq-spc-prod-pauths}
+    \sigma'(id_t)(\texttt{spc})=\prod\limits_{i=0}^{\Delta(id_t)(\texttt{ian})-1}\sigma'(id_t)(\texttt{pauths})[i]\label{eq:frd-eq-spc-prod-pauths}
   \end{equation*}
 
   Rewriting the goal with the above equation:  
@@ -3184,7 +3185,7 @@
           \label{eq:frd-vsots-snd-case}
           \mathtt{vsots}=\sum\limits_{i=0}^{k-1}
           \begin{cases}
-            \sigma'(id_p)(\textt{oaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{otf})[i].\\
+            \sigma'(id_p)(\texttt{oaw})[i]~\mathtt{if}~\sigma'(id_p)(\texttt{otf})[i].\\
             \hspace{19ex}\sigma'(id_p)(\texttt{oat})[i]=\mathtt{basic}\\
             0~otherwise\\
           \end{cases}
@@ -3230,5 +3231,5 @@
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../../main"
+%%% TeX-master: \texttt{../../main}
 %%% End:
