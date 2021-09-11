@@ -1,0 +1,101 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{caption}
+
+% to create listings
+
+\usepackage{listings, lstautogobble}
+\lstset{
+  autogobble=true,
+  frame=single,
+}
+
+\lstdefinelanguage{coq}[Objective]{Caml}{
+  morekeywords={Structure, Definition, Inductive, list, return},
+  sensitive=true
+}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+% Styles macroplace, place et transition pour les nodes tikz.
+\tikzstyle{macroplace}=[circle, draw=black!50, double, double distance=1pt, thick]
+\tikzstyle{place}=[circle, draw=blue!50, fill=blue!20, thick, minimum size=4mm]
+\tikzstyle{transition}=[rectangle, draw=black!50, fill=black!20, thick, minimum size=4mm]
+
+\tikzstyle{arcin}=[<-, shorten <= 1pt, >=stealth', semithick]
+\tikzstyle{arcout}=[->, shorten >= 1pt, >=stealth', semithick]
+
+% Colors the different parts on the picture depending on overlays.
+\newcommand*\focusonmp{}
+\newcommand*\focusonarcs{}
+\newcommand*\focusonexc{}
+
+% to use colors
+
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{tikzpicture}
+  %% THE MACROPLACE
+  \node[macroplace, inner sep=.8mm] (mp) {
+    \begin{tikzpicture}[\focusonmp]
+      \node[place, \focusonmp] (p0) [label={[label distance=-1mm]0:\ssmall $p_0$}] {};
+      
+      \node[transition, \focusonmp] (t0) [below of=p0, label={0:\ssmall $t_0$}] {}
+      edge[arcin, \focusonmp]  (p0);
+      
+      \node[place, \focusonmp] (p1) [below of=t0, label={[label distance=-1mm]0:\ssmall $p_1$}] {}
+      edge[arcin, \focusonmp] (t0);
+    \end{tikzpicture}
+  };
+
+  %% INCOMING PLACE-TRANSITION
+  \node[transition] (tin) [above = 8mm of mp, label={0:\ssmall $t_{in}$}] {}
+  edge[arcout, dotted, \focusonarcs] node[auto] {\ssmall (2$p_0$)} (mp); 
+  \node[place] (pin) [above = 4mm of tin, label={0:\ssmall $p_{in}$}] {}
+  edge [arcout] (tin);
+
+  %% OUTGOING PLACE-TRANSITION(S)
+  \node[transition, rotate=-45] (tout) [below left = 8mm of mp, label={0:\ssmall $t_0\ [1,\infty]$}] {}
+  edge[arcin, dotted, \focusonarcs] node[auto] {\ssmall (2$p_0$,$p_1$)} (mp);
+  \node[place] (pout) [below left= 4mm of tout, label={180:\ssmall $p_{out}$}] {}
+  edge[arcin] (tout);
+  
+  \node[transition, rotate=45] (texc) [below right = 8mm of mp, label={0:\ssmall $t_{exc}$}] {}
+  edge[arcin, dotted, \focusonexc] node[auto, swap] {\ssmall (*)} (mp);
+  \node[place] (pexc) [below right= 4mm of texc, label={0:\ssmall $p_{exc}$}] {}
+  edge[arcin] (texc);
+  
+\end{tikzpicture}
+
+
+\end{document}
