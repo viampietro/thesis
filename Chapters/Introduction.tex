@@ -3,6 +3,122 @@
 \chapter{Introduction}
 \label{chap:intro}
 
+With the use of every human-bred technology is associated a
+risk. Regarding the nature of the technology, and the broader system
+in which it is involved, the consequences of a failure can be
+dramatic. Thus arises the notion of the safety of systems;
+\cite{Bowen1993} gives the following definition of safety:
+
+\begin{center}
+  ``Safety can [\dots] be defined as the freedom from exposure to
+  danger, or the exemption from hurt, injury or loss.''
+\end{center}
+
+A \textit{safety-critical} system can be understood as a system for
+which the safety aspect is the main concern, being that important
+consequences, such as direct human losses, natural catastrophes, or
+economic disasters, could result of the failure of the system. In this
+thesis, conducted in the field of computer sciences, we are of course
+particularly interested in safety-critical \textit{computer}
+systems. The concept of computer system encompasses both the low-level
+hardware-related and the more abstract software-related aspects
+involved in computer technologies. Nowadays, computers pervade a
+considerable number of objects and technologies that pave our
+every-day life, including safety-critical systems. Thus, the risk
+associated with the use of computers in certain critical applications
+is real. Failures of safety-critical computer systems have happened
+and continue happen; the list of critical incidents maintained by the
+ACM Committee on Compters and Public Policy and Peter G. Neumann ever
+since the mid 80s \cite{Neumann1994} is always growing\footnote{The
+  \emph{risks digest} website continues to register the
+  computer-related incidents that resulted or could result in
+  important damages: \url{https://catless.ncl.ac.uk/Risks/} }.
+
+To ensure the safety of computer systems involved in critical domains
+such as avionics, railway, power plants or medicine, there exists a
+number of standards and norms developed by international
+organizations. These standards set of a number of rules and techniques
+to be followed for the design, the production and the validation of
+safety-critical computer systems. To cite some well-known standards,
+the \href{https://www.eurocae.net/}{EUROCAE} and
+\href{https://www.rtca.org/}{RTCA} organisms has devised the
+ED-12C/DO-178C and ED-80/DO-254 industry standards for the development
+cycle of software and hardware computer systems involved in avionics;
+the \href{https://www.cencenelec.eu/}{CENELEC} has defined the
+EN-50128 standard for the development of softwares for railway control
+and protection systems; the \href{https://www.iec.ch}{IEC} is at the
+origin of the IEC-60880 standard for the development of softwares
+involved in the control of power plants. In this thesis, we are
+interested in verifying a \textit{computer-related} methodology
+involved in the production of safety-critical medical devices; thus,
+we need to cite the EU 2017/145 regulation
+text\footnote{\url{http://data.europa.eu/eli/reg/2017/745/2020-04-24}}
+that sets the standard for the development of medical devices,
+including how to validate the technologies involved in the production
+line.
+
+The rules imposed by the standards vary with respect to the criticity
+of the considered systems; for instance, in the medical field, the
+regulation text 2017/145 of the EU, pertaining to the marketing of
+medical devices, sets a different requirement level whether we are
+considering the production of dressings (level 0), or of
+neuroprotheses (highest-level, level 4). The IEC does the same by
+defining of SIL (Safety Integrity Level) measure that qualifies the
+criticity level of a system.
+
+Among the mandatory procedures, prescribed by the standards, that must
+be followed to validate a computer system involved in a
+safety-critical system, tests (unit, functional or integration tests)
+or simulation (especially applied to hardwares) are to be noted.
+However, in the case of the development safety-critical computer
+systems, a particular kind of methods, called \textit{formal methods}
+(FM), are also applied. In formal methods applied to computer systems,
+a computer system is considered as a mathematical object
+\cite{Bjorner2014}. As pointed out in \cite{Bowen1993}, ``formal
+methods address \textit{correctness} issues'', that is whether or not
+a system delivers the required service. The perks of formal methods
+are to set a formal mathematical framework around a computer system.
+This framework will permit to reason about the system and to prove
+that the system meets some required properties. Thus, a ``formal
+methods'' framework for computer systems needs at least a formal
+requirement language, i.e. with a formal semantics, to express the
+properties that a given system must verify. The expression of these
+required properties is called the \textit{specification} of the
+system.  On the hardware side, we can cite some specification
+formalisms such as CCS \cite{Milner1980}, CSP \cite{Hoare1978}, Petri
+nets \cite{Petri1962} or TLA+ \cite{Lamport1994} to describe reactive
+systems (i.e. systems that continuously interact with an environment);
+hardware description languages such as \vhdl{} \cite{Lipsett1986} and
+\textsf{Verilog} \cite{IEEE1996} can also be considered as formal
+specification languages for hardware designs if provided with a formal
+semantics and embedded in a formal proof system (see for instance
+\cite{Borrione1992}). On the software side, we can cite specification
+languages such as VDM \cite{Bjorner1987a}, the Z notation
+\cite{Abrial2013} on which is based the B language \cite{Abrial1991}
+(included in the broader B-method); but also, all the theorem provers
+and proof assistants that come with their own specification languages
+such as \isahol{} \cite{Nipkow2002}, \coq{} \cite{Coq2021},
+\textsf{PVS} \cite{Crow1995}, etc.  A FM framework must also provide a
+formal proof system to reason about the formal specification of the
+system. Some FM frameworks come with means to implement the computer
+system or simplified version of the system (i.e. a model) in a formal
+setting. This latter kind of framework enables to check if the
+implementation of a system always complies with its specification,
+i.e. the \textit{correctness/soundness} of the system, and if all the
+aspects of the specification are met by the implementation, i.e. the
+\textit{completeness} of the system.
+
+Even though the purpose is always to check the correctness of systems,
+there exist families of formal verification techniques. Through
+relation that exists between hardware and software regarding their
+common theoretical foundations, the techniques applied to the formal
+verification of hardware computer systems or software computer systems
+are quite similar. Thus, most of the techniques presented here apply
+to both hardware and software developments.
+
+
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../main"
