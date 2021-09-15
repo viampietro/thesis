@@ -109,12 +109,65 @@ aspects of the specification are met by the implementation, i.e. the
 \textit{completeness} of the system.
 
 Even though the purpose is always to check the correctness of systems,
-there exist families of formal verification techniques. Through
-relation that exists between hardware and software regarding their
-common theoretical foundations, the techniques applied to the formal
+there exist multiple kinds of formal verification techniques. These
+techniques can be separated in two groups. The first group refers to
+the techniques for which a human \textit{programmer} is involved in
+the deduction process that aims at establishing some proofs over a
+computer system; we refer to these techniques as \textit{deductive
+  methods}. The second group refers to the techniques for which the
+proof search is automatic; we refer to them as \textit{automatic
+  theorem proving} techniques.  The techniques applied to the formal
 verification of hardware computer systems or software computer systems
-are quite similar. Thus, most of the techniques presented here apply
-to both hardware and software developments.
+are quite similar.  Thus, most of the techniques presented here apply
+to both hardware and software developments. Note that the following
+presentation of formal verification techniques is not exhaustive.
+
+\paragraph{Deductive methods}
+In the philosophy of deductive methods, the programmer is responsible
+for the specification and the implementation of a computer system, but
+he also expresses theorems and conducts the corresponding proofs in a
+formal proof system. Deductive methods are closely tied to proof
+assistants (cf. \isahol{}, \coq{}, \textsf{PVS}, etc.), which offer
+this kind of framework.  The programmer build the proof for a given
+theorem in an interactive manner, for instance assisted by a
+\textit{tactic} language in the case of the \coq{} proof assistant
+(see Chapter~\ref{chap:prelim-notions} for an example). Contrary to
+the case of automatic theorem proving, there are not many different
+\textit{techniques} to perform interactive theorem proving; however,
+each proof assistant comes with its own specification language and
+underlying proof system.\\
+
+Here are presented techniques related to automatic theorem proving.
+
+\paragraph{Model checking}
+Model checking techniques \cite{Queille1982, Clarke1986} build a model
+reflecting the execution of a computer system by enumerating all the
+possible execution states of the system. Then, the \textit{execution}
+model can be automatically checked against some properties that the
+computer system must verify. The execution model must be a
+finite-state model, i.e. the enumeration of the execution states of
+the model must not be infinite.  Most of the time, the properties that
+the computer system must verify are expressed through formulas of a
+modal logic.  Model-checking techniques are broadely used for the
+formal verification of reactive systems, especially hardware
+systems. In that case, the properties that must be met by the
+considered system are expressed within formulas of the Linear Temporal
+Logic (LTL) \cite{Pnueli1977}, which are handy to express time-related
+properties.
+
+\paragraph{Abstract interpretation}
+Abstract interpretation \cite{Cousot1977} aims at the static analysis
+of programs by approximating the possible execution states of the
+program. To do so, the concrete domains of the program variables are
+related to more abstract domains notably through the use of a lattice
+structure. Afterwards, invariant properties that the program verifies
+can be automatically checked against the lattice structure. For
+instance, abstract interpretation can help to determine if a given
+program terminates.
+
+\paragraph{Symbolic execution}
+Symbolic execution \cite{Boyer1975} 
+
 
 
 
