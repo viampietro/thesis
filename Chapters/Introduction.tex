@@ -114,30 +114,46 @@ techniques can be separated in two groups. The first group refers to
 the techniques for which a human \textit{programmer} is involved in
 the deduction process that aims at establishing some proofs over a
 computer system; we refer to these techniques as \textit{deductive
-  methods}. The second group refers to the techniques for which the
-proof search is automatic; we refer to them as \textit{automatic
-  theorem proving} techniques.  The techniques applied to the formal
-verification of hardware computer systems or software computer systems
-are quite similar.  Thus, most of the techniques presented here apply
-to both hardware and software developments. Note that the following
-presentation of formal verification techniques is not exhaustive.
+  verification} methods. The second group refers to the techniques for
+which the proof search is automatic; we refer to them as
+\textit{automatic theorem proving} techniques.  The techniques applied
+to the formal verification of hardware computer systems or software
+computer systems are quite similar.  Thus, most of the techniques
+presented here apply to both hardware and software developments. Note
+that the following presentation of formal verification techniques is
+not exhaustive.
 
-\paragraph{Deductive methods}
-In the philosophy of deductive methods, the programmer is responsible
-for the specification and the implementation of a computer system, but
-he also expresses theorems and conducts the corresponding proofs in a
-formal proof system. Deductive methods are closely tied to proof
-assistants (cf. \isahol{}, \coq{}, \textsf{PVS}, etc.), which offer
-this kind of framework.  The programmer build the proof for a given
-theorem in an interactive manner, for instance assisted by a
-\textit{tactic} language in the case of the \coq{} proof assistant
-(see Chapter~\ref{chap:prelim-notions} for an example). Contrary to
-the case of automatic theorem proving, there are not many different
-\textit{techniques} to perform interactive theorem proving; however,
-each proof assistant comes with its own specification language and
-underlying proof system.\\
+\paragraph{Symbolic execution}
+Symbolic execution \cite{Boyer1975} aims at the automatic static
+analisys of programs. The method consists in generating all the
+execution traces, also called \textit{symbolic} traces, of a given
+program; the result takes the form of a symbolic execution tree. In
+these traces, some of the program inputs, i.e. the \textit{variables},
+will be associated with \textit{symbolic} expressions denoting the
+fact that the values of these inputs are yet unknown. Thus, by
+reasoning on the definition domains of these inputs, some properties
+of the program can be checked at execution points, that is, at the
+nodes of the symbolic execution tree. The property checking process is
+most of the time performed by a constraint solver \cite{Amadini2020},
+where constraints are expressed over the \textit{symbolic} variables
+of the program. Pertaining to the construction of the symbolic
+execution tree, it is obtained most of the time by applying the rules
+of a structural formal semantics \cite{Plotkin2004} associated with
+the language of the considered program. Typically, a branching in the
+execution tree is the result of the evaluation of a conditional
+statement. Each path of the execution tree is associated with a
+satisfiability condition, i.e. a Boolean formula, that determines if a
+given execution point is reachable or not.
 
-Here are presented techniques related to automatic theorem proving.
+\paragraph{Abstract interpretation}
+Abstract interpretation \cite{Cousot1977} aims at the static analysis
+of programs by approximating the possible execution states of the
+program. To do so, the concrete domains of the program variables are
+related to more abstract domains notably through the use of a lattice
+structure. Afterwards, invariant properties that the program verifies
+can be automatically checked against the lattice structure. For
+instance, abstract interpretation can help to determine if a given
+program terminates.
 
 \paragraph{Model checking}
 Model checking techniques \cite{Queille1982, Clarke1986} build a model
@@ -155,20 +171,160 @@ considered system are expressed within formulas of the Linear Temporal
 Logic (LTL) \cite{Pnueli1977}, which are handy to express time-related
 properties.
 
-\paragraph{Abstract interpretation}
-Abstract interpretation \cite{Cousot1977} aims at the static analysis
-of programs by approximating the possible execution states of the
-program. To do so, the concrete domains of the program variables are
-related to more abstract domains notably through the use of a lattice
-structure. Afterwards, invariant properties that the program verifies
-can be automatically checked against the lattice structure. For
-instance, abstract interpretation can help to determine if a given
-program terminates.
+\paragraph{Interactive deductive verification}
+In the philosophy of deductive verification, the programmer is
+responsible for the specification and the implementation of a computer
+system, but he also expresses theorems and conducts the corresponding
+proofs in a formal proof system. Deductive verification methods are
+closely tied to proof assistants (cf. \isahol{}, \coq{}, \textsf{PVS},
+etc.), which offer the possibility to specify, implement, perform
+proofs over a given program in the same framework.  The programmer
+build the proof for a given theorem in an interactive manner, for
+instance assisted by a \textit{tactic} language in the case of the
+\coq{} proof assistant (see Chapter~\ref{chap:prelim-notions} for an
+example). Contrary to the case of automatic theorem proving, there are
+not many different \textit{techniques} to perform interactive theorem
+proving; however, each proof assistant comes with its own
+specification language and
+underlying proof system.\\
 
-\paragraph{Symbolic execution}
-Symbolic execution \cite{Boyer1975} 
+In this thesis, we address the problem of the formal verification of a
+particular program. This program transforms an input model, which is
+an instance of a particular kind of Petri nets (PNs), into a program
+written in a Hardware Description Language (HDL). The program, the
+context in which it is involved, the specificities of the input model,
+and the target HDL, will all thoroughly be presented in this
+thesis. Here, we only want to zoom in on the nature of the considered
+program submitted to the process of formal verification. The
+transformation from an instance of one formalism to another instance
+of another formalism is analog to the case of a \textit{compiler}
+program. The only difference is that here an input to the
+transformation is not a program of a source \textit{language}, but
+rather a model of an abstract source formalism, namely a PN model.
+Thus, our formal verification task amounts to the formal
+\textit{certification} of a compiler program. Here, we use the word
+\textit{certification} to stay as general as possible because compiler
+\textit{verification} already designates a particular way of proving
+that a compiler is \textit{safe}. The problem of compiler
+certification has greatly stimulated the use of formal methods in the
+field of software verification. Because a complete computer system is
+made out of complete chain of hardware, firmware and software
+components, the ultimate goal of the verification of such a system is
+to be able to prove the safety of all the layer composing it. In this
+system of layers, the place of compiler programs are mandatory as they
+are placed at the layer interfaces. Indeed, one can prove that a given
+program and a given hardware is safe, but what if the compilation
+phase from the given program to low-level version introduces errors
+and behavior divergences. With these considerations in mind, compiler
+certification because very critic aspect for one that needs to certify
+a full computer system.
 
+Thus, certifying a compiler program amounts to proving that the
+compiler verifies certain properties; \cite{Patrignani2019} presents
+three of them. First, one can verify that a compiler is
+\textit{type-preserving}. A type-preserving compiler yields a
+well-typed target program given a well-typed source program. Second,
+one can verify that a compiler is \textit{semantic-preserving}. a
+semantic-preserving compiler yields a target program that behaves
+similarly to the source program. Thirdly, one can verify that the
+compiler is \textit{equivalence-preserving}. Given two source programs
+that verify a certain \textit{source-level} equivalence relation, an
+equivalence-preserving compiler yields two corresponding target
+programs that verify a certain \textit{target-level} equivalence
+relation; this target-level equivalence relation is of course somehow
+related to the source-level equivalence relation. In this thesis, we
+are interested in proving that \textit{compiler-like} transformation
+program is \textit{semantic-preserving}.
 
+\cite{Leroy2009} lists several techniques that exist to establish that
+a compiler is semantic-preserving.
+
+The first is called compiler verification. Compiler verification aims
+at establishing the semantic-preserving property of a compiler program
+by proving a so-called semantic preservation theorem of the form:
+
+\begin{center}
+  For all source program $S$, and compiler $C$ from the language of
+  $S$ to a target language, $S$ has the behavior $B$ (written $S$) iff
+  $C(S)$
+  (i.e. the compiled version of $S$) has the behavior $B$:\\
+
+  $\forall{}S,C,B$,
+  $S\Downarrow{}B\Leftrightarrow{}C(S)\Downarrow{}B$.
+  
+\end{center}
+
+Now the above form of the theorem is the strongest one, i.e. it can be
+proved only for a very particular kind of source and target
+languages. Other refined versions of this semantic preservation
+theorem exist depending on the nature of the source and target
+languages. Proving such a theorem is often performed with the help of
+a proof assistant as can be witnessed in the pioneering work on the
+\ccert{} compiler \cite{Leroy2006}; thus, compiler verification falls
+under the hood of deductive verification methods. 
+
+The second method to compiler certification is called compiler
+\textit{validation}. In that case, no theorem are directly proved over
+the compiler program. However, the compiler is associated with another
+verification technique (that could one of these cited above) that will
+validate the fact that the generated target program behaves in the
+same manner as the source program. This validation step is performed
+after the compilation.
+
+The third method is called \textit{proof-carrying} compilation. In
+this setting, the compiler program generates alongside the target
+program a proof that this program conforms to some property. The
+generated proof must be is such a format that can be verified by a
+\textit{proof-checker}, built in a proof assistant for instance.
+
+In the thesis, we will follow the compiler verification
+technique. Consequently, our aim is to prove a semantic preservation
+theorem over a transformation program and to mechanize the process
+within the framework of the \coq{} proof assistant.
+
+This thesis memoir is structured as follows.
+
+Chapter~\ref{chap:hilecop} presents the context of our work, namely
+the \hilecop{} methodology, which describes a process to design and
+produce safety-critical digital systems. This chapter explains which
+part of the methodology, i.e. the transformation program we talked
+about above, refered to as the \hilecop{} transformation, we propose
+to formally verify; it also exposes our research question(s) with
+respect to this task.  Chapter~\ref{chap:prelim-notions} introduces
+all the necessary mathematical notions to comprehend the remainder of
+the memoir.  Chapter~\ref{chap:hilecop-models} presents in an informal
+and formal way a specific kind of Petri net models; these models are
+the input to the \hilecop{} transformation program.
+Chapter~\ref{chap:hvhdl} gives an informal presentation of the \vhdl{}
+language. The \vhdl{} language is the target language in which the
+programs generated by the \hilecop{} transformation are written. We
+also give in this chapter a formal definition of the syntax and
+semantics of a subset of the \vhdl{} language that we have baptised
+\hvhdl{}.  Chapter~\ref{chap:transformation} presents the algorithm of
+the \hilecop{} transformation and its implementation with the \coq{}
+proof assistant.  Chapter~\ref{chap:proof} details the semantic
+preservation theorem expressing that the \hilecop{} transformation is
+semantic-preserving.  It also gives the high-level theorems and lemmas
+involved in the proof of the semantic preservation theorem.  Finally,
+Chapter~\ref{chap:concl} ends the memoir, and outlines the
+perspectives regarding the full completion of the task of proving that
+the \hilecop{} transformation is semantic-preserving.
+
+The results of a literature review pertaining to the formal semantics
+\vhdl{} is presented at the beginning of
+Chapter~\ref{chap:hvhdl}. Similarly, the results of a literature
+review pertaining to the task of compiler verification in the world of
+deductive verification methods are presented at the beginning of
+Chapters~\ref{chap:transformation} and \ref{chap:proof}.
+
+All the programming tasks of this thesis have been performed within
+the framework of the \coq{} proof assistant. The produced code, of
+which some fragments are presented all along this thesis memoir, is
+fully accessible under the following \textsf{Git} repository:
+
+\begin{center}
+  \url{https://github.com/viampietro/ver-hilecop}
+\end{center}
 
 
 
