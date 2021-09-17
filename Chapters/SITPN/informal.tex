@@ -8,13 +8,13 @@ more information on the topic of Petri nets, the reader can refer to
 \subsection{Preliminary notions on Petri nets}
 \label{subsec:pn-formalism}
 
-Petri nets (PNs), invented by C. A. Petri \cite{Petri1962}, are used
-to model a broad range of \emph{dynamic} systems: resource sharing
-between concurrent processes \cite{David1994}, behavior of agents in
-multi-agent systems \cite{Celaya2007}, behavior of digital components
-\cite{Yakovlev2006}. A Petri net is a directed graph, composed of two
-types of node: place nodes (\emph{circles}) and transition nodes
-(\emph{squares} or \emph{lines}). As shown in
+Petri nets (PNs), invented by C. A. Petri \cite{Petri1962}, have been
+designed to model a broad range of \emph{dynamic} systems: resource
+sharing between concurrent processes \cite{David1994}, behavior of
+agents in multi-agent systems \cite{Celaya2007}, behavior of digital
+components \cite{Yakovlev2006}. A Petri net is a directed graph
+composed of two types of node: place nodes (\emph{circles}) and
+transition nodes (\emph{squares} or \emph{lines}). As shown in
 Figure~\ref{fig:pn-example}, place nodes usually represent a part of
 the state of the modelled system, here, the states of two computer
 processes and a semaphore; transition nodes usually refer to events
@@ -67,25 +67,26 @@ modelled system at a certain moment in its activity cycle.
 In a Petri net, the marking evolves based on a token
 consump\-tion-production system. Transitions consume tokens from their
 input places, and produce tokens to their output places. This whole
-system is called \textit{transition firing}. In order to be
+process is called \textit{transition firing}. In order to be
 \textit{firable}, a transition must be \textit{sensitized} (or
 \textit{enabled}), meaning that the number of tokens in each of its
-input places must be equal or greater than the weight of its incoming
-edges. For instance, in Figure~\ref{fig:pn-example}, the transition
-$t_0$ is sensitized because the weight of the arc ($p_0$, $t_0$) is of
-one (default value), and place $p_0$ is marked with one token, and the
-same stands for the number of tokens in place $sem$ and the weight of
-the arc ($sem$, $t_0$). As a counter example, transition $t_3$ is not
-sensitized because there are no tokens in its input place $p_2$.
-Depending on the class of PNs that is considered, other parameters
-affect the \textit{firability} of transitions (see interpreted Petri
-nets, time Petri nets and
-Section~\ref{subsec:hpn-particularities}). When a sensitized
-transition is fired, tokens are retrieved from its input places (as
-many tokens as the weight of the arcs) and produced in its output
-places (as many tokens as the weight of the arcs).  This process
-represents the occurrence of an event --denoted by the transition--
-triggering the evolution of the system from one state to
+input places must be equal or greater than the weight of the
+associated incoming edges. For instance, in
+Figure~\ref{fig:pn-example}, the transition $t_0$ is sensitized
+because the weight of the arc ($p_0$, $t_0$) is of one (default
+value), and place $p_0$ is marked with one token, and the same stands
+for the number of tokens in place $sem$ and the weight of the arc
+($sem$, $t_0$). As a counter example, transition $t_3$ is not
+sensitized because its input place $p_2$ holds no token, where at
+least one token is expected for $t_3$ to be sensitized.  Depending on
+the class of PNs that is considered, other parameters affect the
+\textit{firability} of transitions (see interpreted Petri nets, time
+Petri nets and Section~\ref{subsec:hpn-particularities}). When a
+sensitized transition is fired, tokens are retrieved from its input
+places (as many tokens as the weight of the arcs) and produced in its
+output places (as many tokens as the weight of the arcs).  This
+process represents the occurrence of an event (denoted by the
+transition) triggering the evolution of the system from one state to
 another. Figure~\ref{fig:firing-example} shows the state of the PN of
 Figure~\ref{fig:pn-example} after the firing of the transition $t_0$.
 
@@ -107,20 +108,20 @@ In Figure~\ref{fig:pn-example}, transition $t_0$ and $t_2$ are enabled
 at the same time. However, the \emph{standard} semantics of PNs is
 such that only one transition can be fired in that case. Either $t_0$
 consumes the token in place $sem$ or $t_2$ does, but never both. Thus,
-the transition firing process in the standard PN semantics is an
+the transition firing process in the standard PN semantics is a
 nondeterministic process. From the marking of
 Figure~\ref{fig:pn-example}, two markings are reachable: the marking
 resulting of the firing of transition $t_0$ and the one resulting of
-the firing of transition $t_2$. Also, the transition firing process is
-asynchronous. As soon as a transition is enabled, the transition
-firing process can be triggered.
+the firing of transition $t_2$. Also, in standard PNs, the transition
+firing process is asynchronous; as soon as a transition is enabled,
+the transition firing process can be triggered.
 
 \paragraph{Extended Petri nets}
 The class of \textit{extended} Petri nets introduces the inhibitor and
-test edges. As shown in Figure~\ref{fig:inhib-test-arcs}, test arc
-tips are black circles and inhibitor arc tips are white
-circles. Inhibitor and test edges are incoming edges, always coming
-from a place toward a transition.
+test edges. As shown in Figure~\ref{fig:inhib-test-arcs}, test arcs
+are represented with a black-circle tip and inhibitor arcs with a
+white-circle tip. Inhibitor and test edges are incoming edges, always
+coming from a place toward a transition.
 %
 \begin{figure}[H]
   \centering
@@ -148,42 +149,35 @@ because there is at least one token in place $p_0$ and three tokens in
 place $p_1$.
 
 \paragraph{Interpreted Petri nets}
-Interpreted Petri nets (IPN) \cite{David1994} describe the interaction
-between a system and its outside environment. This class of PN
-introduces three new concepts: 
+As stated in \cite{David1994}, Interpreted Petri Nets (IPN) ``can be
+applied to various interpretations according to the use wished to be
+made of it''.  In its general definition, an IPN is associated with a
+finite set of variables $V$, a finite set of operations $O$, and a
+finite set of conditions $C$. Operations of the $O$ set are associated
+with places and triggered when the places become marked. The execution
+of operations affects the value of the variables, and the value of
+conditions depends on Boolean expressions computed upon the variables.
+Conditions are associated with transitions and become involved in the
+firing process. Thus, in an IPN, a transition is firable if it is
+enabled and if all its associated conditions are \texttt{true}.
 
-\begin{itemize}
+Among other applications, IPNs are handy to model the behavior of
+hardware controllers. Thus, interpretation aspects have been naturally
+introduced to the \hilecop{} high-level models, which are models of
+hardware systems. The \hilecop{} version of IPNs refines the concepts
+of the general definition as follows. The set of variables corresponds
+to the set of \vhdl{} signals that are handled by the model; a signal
+can be an input port, an output port or an internal signal of the
+modeled hardware circuit. The operations are separated in two kinds,
+namely: actions and functions. Actions (or continuous operations) are
+associated to the places of a Petri net.  All the actions associated
+to a place $p$ are activated as long as $p$ is marked (i.e. as long as
+$p$ holds a token). Functions (or discrete operations) are associated
+to the transitions of a Petri net. When a transition $t$ is fired, all
+functions associated to $t$ are executed once.
 
-\item Continuous actions, associated to the places of a Petri net.
-  Actions associated to a place $p$ are activated as long as $p$ is
-  marked. For instance, when modelling a controller with a IPN,
-  actions can correspond to the setting of a electric signal
-  controlling some actuator (e.g, maintaining a LED on).
-  
-\item Functions (or discrete actions), associated to the transitions
-  of a Petri net. When a transition $t$ is fired, all functions
-  associated to $t$ are executed.  Functions can be any kind of
-  discrete operations --variable incrementation, for instance--
-  manipulating both internal variable and external signal values.
-  
-\item Conditions, associated to the transitions of a Petri net.
-  Conditions are boole\-an expressions receiving their values from the
-  environment of the PN. In an IPN, a transition is firable only if
-  all its associated conditions are \texttt{true} (or \texttt{false}
-  in the case where an inverse condition is associated).
-  
-\end{itemize}
-
-Conditions represent inputs from the environment; actions and
-functions describe the influence of the modelled system on its
-environment. There is an interaction between actions, functions and
-conditions. The execution of actions and functions modify the
-environment of the system, and the modification of the environment
-will be measured through the value of conditions. However, in an IPN,
-the interaction between actions, functions and conditions is not
-described as it would require to model the dynamics of the
-environment. Figure~\ref{fig:ipn} illustrates the use of actions,
-functions and conditions in an interpreted Petri net.
+Figure~\ref{fig:ipn} illustrates the use of actions, functions and
+conditions in an interpreted Petri net. 
 
 \begin{figure}[H]
   \centering
@@ -195,18 +189,90 @@ functions and conditions in an interpreted Petri net.
   \label{fig:ipn}
 \end{figure}%
 %
-In Figure~\ref{fig:ipn}, the action $a_0$ is activated as place $p_0$
-is marked by one token. Also, function $f_0$ will be executed at the
-firing of $t_0$, that is if condition $c_0$ is \texttt{true} and $t_0$
-is sensitized. On the right side of Figure~\ref{fig:ipn}, we associate
-a semantics to conditions, actions and functions in terms of concrete
-tests or operations. However, when considering the semantics of IPNs,
-what is of interest to us is the value of conditions and the execution
-state of actions and functions. We are not interested in interpreting
-the Boolean expressions associated to conditions but only to retrieve
-their value. Likewise, we are only interested in the fact that a given
-action/function is activated/executed but not in what is its effect on
-the environment.
+In Figure~\ref{fig:ipn}, the set of \vhdl{} signals, on which the
+interpretation elements acts upon, is
+$\{\mathit{i}, \mathtt{s}, \mathtt{o}_1, \mathtt{o}_2\}$. Here, signal
+\texttt{i} is an input port of the hardware, \texttt{s} is an internal
+signal, and \texttt{o}$_1$ and \texttt{o}$_2$ are two output
+ports. The action $a_0$ is activated as place $p_0$ is marked by one
+token; thus, the operation \texttt{green\_LED\_on}(\texttt{o}$_2$) is
+currently executed. Also, function $f_0$ will be executed
+(i.e. operation \texttt{set\_temperature}(\texttt{o}$_1$, \texttt{s}))
+at the firing of $t_0$, that is if condition $c_0$ is \texttt{true}
+and $t_0$ is sensitized. On the right side of Figure~\ref{fig:ipn}, we
+associate Boolean expressions with conditions; these expressions
+depend on the value of the signals declared by the model. Also, we
+associate actions and functions with operations that handle the
+signals of the model which are passed as inputs. Concretely, in the
+\hilecop{} high-level models, functions and actions are declared as
+\vhdl{} procedures. Listing~\ref{lst:vhdl-fun} gives one possible
+implementation of the \texttt{set\_temperature} operation as a \vhdl{}
+procedure; the \texttt{set\_temperature} operation associated with
+function $f_0$ in Figure~\ref{fig:ipn}.
+
+\begin{lstlisting}[language=vhdl,caption={[An example of \vhdl{} procedure implementing a function.]An example of \vhdl{} procedure implementing the operation \texttt{set\_temperature} associated with the function $f_0$.},label={lst:vhdl-fun},framexleftmargin=1.5em,xleftmargin=2em,,numbers=left,
+numberstyle=\tiny\ttfamily]
+procedure set_temperature(signal tmp : out integer; signal flag : inout std_logic) is
+begin
+  if flag = '1' then
+    tmp <= 30;
+    flag <= '0';
+  else 
+    tmp <= 10;
+    flag <= '1';
+  endif;
+  return;
+end set_temperature;
+\end{lstlisting}
+
+In Listing~\ref{lst:vhdl-fun}, the \texttt{set_temperature} procedure
+declares two parameters: the \texttt{tmp} signal which is a write-only
+signal of type \texttt{integer}, and the \texttt{flag} signal which is
+a both readable and writable signal of the Boolean type
+(\texttt{std_logic} in \vhdl{}). The \texttt{set_temperature}
+procedure checks the value of the \texttt{flag} signal and assigns a
+new value to the \texttt{tmp} and \texttt{flag} signals
+accordingly. The $\Leftarrow$ operator is the assignment operator for
+signals in the \vhdl{} syntax. 
+
+In our formalization of the \hilecop{} PN structure, given in
+Definition~\ref{def:sitpn}, we consider a simplified version of the
+interpretation. In fact, we do not consider the set of \vhdl{} signals
+as a part of the \hilecop{} PN structure; thus, we are not interested
+in the representation of the Boolean expressions associated with
+conditions, nor in the \vhdl{} procedures that implement functions and
+actions. Regarding conditions, we consider that their associated
+Boolean expressions refer only to the input ports of the hardware
+circuit (and no more to internal signals, as it is the case for
+condition $c_1$ in Figure~\ref{fig:ipn}). Thus, it permits us to
+simplify our interpretation model by stating that
+
+\begin{center}
+  the condition values are determined only by the environment of the
+  modeled hardware circuit.
+\end{center}
+
+As for actions and functions, we are only interested in the fact that
+a given action/function is activated/executed but no more in actually
+executing the associated operation.
+
+% However, when considering the semantics of IPNs, what is of
+% interest to us is the value of conditions and the execution state of
+% actions and functions. We are not interested in interpreting the
+% Boolean expressions associated to conditions but only to retrieve
+% their value. Likewise, we are only interested in the fact that a given
+% action/function is activated/executed but not in what is its effect on
+% the environment.
+
+% Conditions represent inputs from the environment; actions and
+% functions describe the influence of the modelled system on its
+% environment. There is an interaction between actions, functions and
+% conditions. The execution of actions and functions modify the
+% environment of the system, and the modification of the environment
+% will be measured through the value of conditions. However, in an IPN,
+% the interaction between actions, functions and conditions is not
+% described as it would require to model the dynamics of the
+% environment.
 
 \paragraph{Time Petri nets}
 

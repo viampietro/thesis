@@ -90,11 +90,11 @@
   \node[anchor=west] (tab) at ($(pn.east)+(.4,0)$) {
     \begin{tabular}{|l|}
       \hline
-      $c_0$: heat sensor value $>10^{\circ}$C \\
-      $f_0$: launch cooler \\
-      $c_1$: heat sensor value $\le{}10^{\circ}$C \\
-      $a_0$: green LED on \\
-      $a_1$: red LED on \\
+      $c_0$: $\mathtt{i}>10^{\circ}$C \\
+      $f_0$: \texttt{set\_temperature}($\mathtt{o}_1$,$\mathtt{s}$) \\
+      $c_1$: $\mathtt{i}\le{}10^{\circ}$C \texttt{and} $\mathtt{s}$ \\
+      $a_0$: \texttt{green\_LED\_on}($\mathtt{o}_2$) \\
+      $a_1$: \texttt{red\_LED\_on}($\mathtt{o}_2$) \\
       \hline
     \end{tabular}
   };

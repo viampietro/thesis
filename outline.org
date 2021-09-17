@@ -1,6 +1,6 @@
 #+STARTUP: indent
 
-* TODO Introduction
+* DONE Introduction
 * DONE The HILECOP methodology [100%]
 ** DONE Designing critical digital systems [100%]
 ** DONE HILECOP [100%]
@@ -42,7 +42,7 @@
 *** DONE bug detection [0%]
 ** DONE mechanized verification of the proof [100%]
 ** DONE conclusion [100%]
-* TODO Conclusion
+* DONE Conclusion
 * DONE Appendix Full proof of semantic preservation [100%]
 ** DONE initial states
 ** DONE first re

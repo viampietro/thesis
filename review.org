@@ -1,0 +1,26 @@
+#+STARTUP: indent
+
+* TODO Introduction
+* TODO The HILECOP methodology [50%]
+** DONE review DA
+** TODO review DD
+* TODO Preliminary notions 
+** TODO review DA
+** TODO review DD
+* TODO Implementation of the HILECOP high-level models [0%]
+** review DA
+** review DD
+* TODO H-VHDL: a target hardware description language [0%]
+** review DA
+** review DD
+* TODO The HILECOP model-to-text transformation [0%]
+** review DA
+** review DD
+* TODO Proving semantic preservation in HILECOP [0%]
+** review DA
+** review DD
+* TODO Conclusion
+** review DA
+** review DD
+* TODO Appendix Full proof of semantic preservation [0%]
+** review

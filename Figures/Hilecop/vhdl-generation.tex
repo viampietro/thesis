@@ -143,13 +143,13 @@
       \draw ($(compP0Out2.south)$) edge[red,->-=.5] ($(compT0In2.north)$);
 
       \draw ($(compT0Out1.south)$) edge[red,->-=.5,in=90,out=-90] ($(clkP1.north)$);
-      \draw[red] plot [smooth,tension=.5] coordinates { (compT0Out1.south)
+      \draw[red,->-=.6] plot [smooth,tension=.5] coordinates { (compT0Out1.south)
         ($(compT0.south west)-(0,.2)$) ($(compP0.north west)+(0,.2)$) (clkP0.north)};
 
-      \draw[red] plot [smooth,tension=.5] coordinates { (compP1Out0.south)
+      \draw[red,->-=.5] plot [smooth,tension=.5] coordinates { (compP1Out0.south)
         ($(compP1.south west)-(.2,.2)$) ($(compT0.north west)+(-.2,.2)$) (clkT0.north)};
 
-      \draw[red] plot [smooth,tension=.5] coordinates { (compP1Out2.south)
+      \draw[red,->-=.5] plot [smooth,tension=.5] coordinates { (compP1Out2.south)
         ($(compP1.south east)+(.2,-.2)$) ($(compT0.north east)+(.2,.2)$) (compT0In2.north)};
     \end{tikzpicture}
   };
@@ -173,7 +173,7 @@
     \begin{tabular}{@{}c@{}}
       Place\\
       design \\
-      \ssmall(itface + behavior) \\
+      \ssmall(interface + behavior) \\
     \end{tabular}
   };
   
@@ -182,7 +182,7 @@
     \begin{tabular}{@{}c@{}}
       Transition\\
       design \\
-      \ssmall(itface + behavior) \\
+      \ssmall(interface + behavior) \\
     \end{tabular}
   };
 

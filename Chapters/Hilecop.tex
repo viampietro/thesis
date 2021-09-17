@@ -3,16 +3,18 @@
 
 In this chapter, we present the context of our work, and more
 specifically, the subject of our verification task, i.e. \hilecop{}, a
-methodology for the design and implementation of critical digital
-systems.  In Section~\ref{sec:design-crit-digit-systms}, we motivate
-the use of Model-Based Systems Engineering (MBSE) and formal methods
-in the design and production of safety-critical digital systems; in
-Section~\ref{sec:intro-hilecop}, we give an overall presentation of
-the \hilecop{} methodology which applies both the principles of MBSE
-and formal methods; in Section~\ref{sec:verif-hilecop}, we point out
-the specific transformation phase, intervening in the \hilecop{}
-methodology, that we propose to verify and discuss on how we propose
-to verify it and which research questions does it give rise to.
+methodology for the design and the production of safety-critical
+digital systems.  In Section~\ref{sec:design-crit-digit-systms}, we
+motivate the use of Model-Based Systems Engineering (MBSE) and formal
+methods in the design and production of safety-critical digital
+systems; in Section~\ref{sec:intro-hilecop}, we give an overall
+presentation of the \hilecop{} methodology which applies both the
+principles of MBSE and formal methods; in
+Section~\ref{sec:verif-hilecop}, we point out the specific
+\textit{transformation} phase of the \hilecop{} methodology that we
+propose to verify; we also lay out the intended strategy to verify
+this transformation phase and the research questions to which it give
+rise.
 
 \section{Designing critical digital systems}
 \label{sec:design-crit-digit-systms}
@@ -37,12 +39,13 @@ way to design a digital circuit starting from a high-level view of the
 system. This high-level view can follow a graphical formalism such as
 SysML \cite{Friedenthal2014} or Petri nets \cite{Petri1962}, or a
 textual one such as SystemC \cite{Black2009} or VHDL
-\cite{Ashenden2010}. Then, the MBSE process describe many refinements
-phases (the green arrows in Figure~\ref{fig:MBSE-ps}) during which the
-input model will be transformed; at each refinement phase, the model
-goes down in abstraction towards its final implementation as a
-hardware circuit. A refinement phase, which is also a transformation
-phase, can be performed automatically or manually.
+\cite{Ashenden2010}. Then, the MBSE process describes many refinements
+phases (the downward-going green arrows in Figure~\ref{fig:MBSE-ps})
+during which the input model will be transformed; at each refinement
+phase, the model goes down in abstraction towards its final
+implementation as a hardware circuit. A refinement phase, which is
+also a transformation phase, can be performed automatically or
+manually.
 
 \begin{figure}[H]
   \centering
@@ -55,12 +58,11 @@ phase, can be performed automatically or manually.
 \end{figure}
 
 In the case where the digital circuit being designed is a
-safety-critical system, i.e. on its behavior depends the life of
-people, an MBSE process will often employ formal models, i.e. models
-with a formal mathematical definition, as the design formalism.  Thus,
-these models enable a certain extent of mathematical reasoning to
-prove that safety properties are met during the design V\&V phase
-(cf. Figure~\ref{fig:MBSE-ps}).
+safety-critical system, an MBSE process will often employ formal
+models, i.e. models with a formal mathematical definition, as the
+design formalism.  Thus, these models enable a certain extent of
+mathematical reasoning to prove that safety properties are met during
+the design V\&V phase (cf. Figure~\ref{fig:MBSE-ps}).
 
 \section{Introducing the \hilecop{} methodology}
 \label{sec:intro-hilecop}
@@ -71,17 +73,18 @@ medical devices which purpose is to electro-stimulate the nerves of
 patients suffering from moving disabilities. The nerves are responding
 to the stimulation, i.e an electric influx, in order to activate the
 muscles and so that the patient can recover some movements. Thus,
-controlling the intensity and the form of the electric signal sent to
-the patient's nerve is a critical point of the device overall
-functioning. These two parameters are controlled by a digital hardware
-circuit (i.e. a microcontroller) that is a part of the
-neuroprosthesis. Therefore, the design of such digital systems becomes
-utterly critical as a faulty circuit could result in the injury of
-patients. To assist the engineers in the design and the implementation
-of these critical digital systems, the CAMIN team came up with a
-process called the ``\hilecop{} methodology'' \cite{Andreu2009}.  This
-methodology follows the principles of a MBSE process and relies on
-several transformations going from abstract models to concrete FPGA
+controlling stimulation applied to the patient's nerve is a critical
+point of the device overall functioning. This stimulation is generated
+and controlled by an implanted mixed circuit (resp. analogous and
+digital parts), embedded in the neuroprothesis. Therefore, the design
+of such digital systems becomes utterly critical as a faulty circuit
+could result in the injury of patients. To assist the engineers in the
+design and the implementation of these safety-critical digital
+systems, the CAMIN team came up with a process called the ``\hilecop{}
+methodology'' \cite{Andreu2009}.  This methodology follows the
+principles of a MBSE process and relies on several transformations
+going from abstract models to concrete FPGA (Field-Programmable Gate
+Array) or ASIC (Application-Specific Integrated Circuit)
 implementations through the production of VHDL
 code. Figure~\ref{fig:hilecop-wf} details the global workflow of
 \hilecop{}.
@@ -98,10 +101,10 @@ code. Figure~\ref{fig:hilecop-wf} details the global workflow of
 \end{figure}
 
 In Figure~\ref{fig:hilecop-wf}, Step~1 corresponds to the design phase
-of a critical digital system. At this step, the engineers produce a
-model of the wanted system; the leveraged model formalism is a
-graphical formalism specially designed for the methodology and based
-on component diagrams. Figure~\ref{fig:components-and-pn} provides an
+of a digital system. At this step, the engineers produce a model of
+the required system; the leveraged model formalism is a graphical
+formalism specially designed for the methodology and based on
+component diagrams. Figure~\ref{fig:components-and-pn} provides an
 example of such a model.
 %
 \begin{figure}[H]
@@ -120,23 +123,28 @@ other components. The internal behavior of a component is defined with
 a specific kind of Petri Net (PN) model. These PNs and their
 distiguishing features will be thoroughly presented in
 Chapter~\ref{chap:hilecop-models}. The component interface exposes
-places, transitions, and signals, which are references to the elements
-of its internal behavior, to the outside so that multiple components
-can be assembled. Each component has a clock and a reset input port
-(\texttt{clk} and \texttt{rst}) in its interface. Indeed, the
-\hilecop{} methodology has been built for the design of synchronous
-digital systems. To a certain extent, \vhdl{} signals can be
-integrated to the high-level components to represent a direct wiring
-between components. A component behavior can also be defined through
-the composition of other components. In that case, we talk about a
-composite hardware structure.
+references to the places, transitions, and signals of the internal
+behavior to the outside so that multiple components can be
+assembled. Each component has a clock and a reset input port
+(\texttt{clk} and \texttt{rst}) in its interface. The presence of the
+\texttt{clk} port shows that the \hilecop{} methodology has been built
+for the design of synchronous digital systems. To a certain extent,
+\vhdl{} signals can be integrated to the high-level components to
+represent a direct wiring between components. A component behavior can
+also be defined through the composition of other components. In that
+case, we talk about a composite hardware structure.
 
 Next, in Figure~\ref{fig:hilecop-wf}, the transformation from Step~1
 to Step~2 flattens the model. The internal behaviors are connected
 according to the interface compositions, and embedding component
 structures are removed. Figure~\ref{fig:impl-model} gives the result
 of the flattening phase for the model of
-Figure~\ref{fig:components-and-pn}.
+Figure~\ref{fig:components-and-pn}. In Figure~\ref{fig:impl-model}, we
+do not show the \vhdl{} signals that were present in
+Figure~\ref{fig:components-and-pn}. As these signals already
+constitute plain \vhdl{} code, they will simply be copied as they
+stand during the model-to-text transformation happening from Step 2 to
+Step 3.
 %
 \begin{figure}[H]
 \centering
@@ -158,14 +166,15 @@ development of new methods to analyze the \hilecop{} PN models
 is a bit different in preparation of the model analysis. The
 transformation adds new information to the flattened model to help the
 analysis. Figure~\ref{fig:impl-model} only gives the flattened version
-of the model produced in preparation of the next transformation into
-VHDL design.  The analysis phase is here to convince the engineers
-that they are designing a safe system. The analysis process is a round
-trip between Step~1 and Step~2.  It aims at producing a model that is
-conflict-free (see Section~\ref{sec:sitpn-struct} for more details
-about the definition of a conflict), bounded, and deadlock-free, using
-model-checking techniques.  After several iterations, the model should
-reach soundness and is then said to be implementation-ready.
+of the model produced in preparation of the next transformation into a
+\vhdl{} design.  The analysis phase is here to convince the engineers
+that they are indeed designing a safe system. The analysis process is
+a round trip between Step~1 and Step~2.  It aims at producing a model
+that is conflict-free (see Section~\ref{sec:sitpn-struct} for more
+details about the definition of a conflict), bounded, and
+deadlock-free, using model-checking techniques.  After several
+iterations, the model should reach soundness and is then said to be
+\emph{implementation-ready}.
 
 From Step~2 to Step~3, \vhdl{} source code is then generated by means
 of an automatic model-to-text transformation. The generated code
@@ -189,12 +198,13 @@ presented in Chapter~\ref{chap:transformation}.
 \label{fig:vhdl-gen}
 \end{figure}
 %
-For the purpose of the \hilecop{} methodology, two VHDL designs have
-been defined: the place design which is a hardware description of a PN
-place (circle nodes in a PN) and the transition design which is a
-hardware description of a PN transition (square nodes in a PN). Like
-all \vhdl{} designs, the place and the transition design have an input
-and output port interface, and their own internal behavior. A \vhdl{}
+For the purpose of the \hilecop{} methodology, two \vhdl{} designs
+have been defined: the \texttt{place} design which is a hardware
+description of a PN place (circle nodes in a PN) and the
+\texttt{transition} design which is a hardware description of a PN
+transition (square nodes in a PN). Like all \vhdl{} designs, the
+\texttt{place} and the \texttt{transition} designs have an input and
+output port interface, and their own internal behavior. A \vhdl{}
 design is a mould to describe a hardware component. Thus, a design can
 be instantiated in the behavior of other designs in order to obtain
 more complex behaviors. As illustrated in Figure~\ref{fig:vhdl-gen},
@@ -202,52 +212,54 @@ the transformation from Step~2 to Step~3 creates a place component (or
 design) instance (PCI) and a transition component (or design) instance
 (TCI) for each place and transition of the input Petri net. Then, the
 PCIs and TCIs are connected together through their input and output
-port interfaces. These connections mimic the arc connections between
-the places and the transitions of the input PN.
+port interfaces. These connections reflect the arc connections, and
+thus the interactions, between the places and the transitions of the
+input PN model.
 
-From Step~3 to Step~4, the VHDL compilation/synthesis and the FPGA
-programming are finally performed using industrial tools. At the end
-of Step~4, the designed circuit is physically built on an FPGA device.
-What happens between Step~3 and Step~4 appears as a black box in the
-whole \hilecop{} methodology. Therefore, we are not interested in
-detailing this transformation phase.
+From Step~3 to Step~4, the \vhdl{} compilation/synthesis and the FPGA
+programming, or ASIC realization, are finally performed using
+industrial tools. At the end of Step~4, the designed circuit is
+physically built on an FPGA device or an ASIC.  What happens between
+Step~3 and Step~4 appears as a black box in the whole \hilecop{}
+methodology. Therefore, we are not interested in detailing this
+transformation phase.
 
 \section{Verifying the \hilecop{} methodology}
 \label{sec:verif-hilecop}
 
-The \hilecop{} methodology is useful to design and implement critical
-digital systems. The use of Petri nets as the base model of the
-process is one of its major advantage. All the analysis tools that
-accompany the Petri net formalism and that permit to prove the safety
-properties of the models qualify the \hilecop{} methodology as a
-formal method for the design and implementation of critical digital
-systems. However, even with input models that are proved to be safe
-and sound, the advantages provided by the use Petri nets would be lost
-if one of the transformation happening during the process changed the
-input definition of the circuit in a way that would alter its
+% The \hilecop{} methodology is useful to design and implement
+% safety-critical digital systems.
+The use of Petri nets as a base model is one of its major advantage of
+the \hilecop{} methodology. All the analysis tools that accompany the
+Petri net formalism, and thus that permit to prove that the models
+meet some required properties, qualify the \hilecop{} methodology as a
+formal method for the design and implementation of safety-critical
+digital systems. However, even with input models that are proved to be
+\textit{sound}, the advantages provided by the use Petri nets would be
+lost if one of the transformation happening during the process changed
+the input definition of the circuit in a way that would alter its
 behavior. Thus, the engineers would have specified a perfectly correct
 digital system but would never obtain the expected circuit on a
-physical FPGA device. Therefore, in order to reinforce the confidence
-in the \hilecop{} methodology as a reliable formal method to produce
-critical digital systems, the goal of this thesis is to verify,
+physical device. Therefore, in order to reinforce the confidence in
+the \hilecop{} methodology as a reliable formal method to produce
+safety-critical digital systems, the goal of this thesis is to verify,
 i.e. to establish the formal proof, that the model-to-text
 transformation from Step~2 to Step~3 (i.e. the framed part with red
 dotted lines in Figure~\ref{fig:hilecop-wf}) preserves the behavior of
-input models into the generated \vhdl{} designs. We choose to carry
-out this task as a verification task (see
-Section~\ref{sec:lit-rev-transf} for an explanation on the difference
-between validation and verification tasks). It means that we want to
-prove a behavior preservation theorem stating that: for all input
-models of our transformation the generated output designs act
-similarly at the execution time. Chapter~\ref{chap:proof} formally
-presents our behavior preservation theorem, and thus, what we mean
-about the similarity of execution between our input and output
-representation.
+the input models into the generated \vhdl{} designs. We choose to
+carry out this task as a deductive verification task.  We aim at
+proving a theorem stating that the \hilecop{} model-to-text
+transformation is \textit{semantic-preserving}. This theorem will be
+of the following form: for all PN model, input to the \hilecop{}
+transformation, the generated output \vhdl{} design behaves similarly
+at execution time. Chapter~\ref{chap:proof} formally presents our
+behavior preservation theorem, and thus, what we mean about the
+similarity of execution between a PN model and a \vhdl{} design.
 
 One could argue that to qualify the entire \hilecop{} methodology, one
 has to verify all the transformations happening in the methodology,
-i.e. consider also the transformation from Step~1 to Step~2, and the transformation
-from Step~3 to Step~4. In our defence, we shall say that:
+i.e. consider also the transformation from Step~1 to Step~2, and the
+transformation from Step~3 to Step~4. However, we shall say that:
 
 \begin{itemize}
 \item The transformation from Step~1 to Step~2 changes the structure
@@ -259,7 +271,8 @@ from Step~3 to Step~4. In our defence, we shall say that:
   the transformation from Step~1 to Step~2 is semantic preserving.
 \item The transformation from Step~3 to Step~4 is performed by
   industrial tools. We rely on these tools because they are widely
-  used in the industry for the development of critical systems.
+  used in the industry for the development of safety-critical systems
+  (e.g. cadence tools in aerospace and defense domains).
 \end{itemize}
 
 Now that we have clarified the nature of the verification task we want
@@ -273,7 +286,7 @@ to achieve, we can state our research question as follows:
 Even though answering this question is interesting, however, its
 formulation as a question that one can answer only by yes or no does
 not stimulate the scientific interest of the verification
-task. However, this task is really close to the verification of
+task. However, this task is really close to the formal verification of
 compilers for programming languages. Compiler verification has been
 widely explorated, and many works are accessible in the literature
 \cite{Dave2003}. The major source of inspiration of this thesis has
@@ -338,13 +351,19 @@ digital systems having a part in the
 neuroprotheses. Figure~\ref{fig:hilecop-soft} gives a view of the
 existing \hilecop{} software.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[keepaspectratio=true,width=\textwidth] {Figures/Hilecop/Hilecop.png}
-  \caption[A view of the \hilecop{} software.]{A view of the
-    \hilecop{} software implemented on top of the Eclipse framework.}
-  \label{fig:hilecop-soft}
-\end{figure}
+\begin{landscape}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[keepaspectratio=true,width=\linewidth]{Figures/Hilecop/Hilecop2.png}
+    \caption[A view of the \hilecop{} software.]{A view of the
+      \hilecop{} software implemented on top of the Eclipse
+      framework. The middle frame shows high-level model of digital
+      system such as can be designed in the \hilecop{} methodology. On
+      the right side, the frames correspond to the palette of tools
+      available to the user to build a model of a digital system.}
+    \label{fig:hilecop-soft}
+  \end{figure}
+\end{landscape}
 
 To the purpose of formal verification, we will implement the
 \hilecop{} model-to-text transformation leveraging the functional
