@@ -1,44 +1,47 @@
-The intent here is to give an overview of the VHDL language, its
+The intent here is to give an overview of the \vhdl{} language, its
 purpose, its main syntactal constructs, and an informal description of
 its semantics as presented in the Language Reference Manual (LRM)
-\cite{VHDL2000}. The VHDL language offers a lot of possibility in
+\cite{VHDL2000}. The \vhdl{} language offers a lot of possibility in
 terms of hardware (and even software) description. Here, we are not
 trying to be exhaustive in our presentation of the language. We will
-only maintain our description of the VHDL concepts in the scope that
+only maintain our description of the \vhdl{} concepts in the scope that
 is of interest to us. The readers that are interested in learning more
-about the VHDL language can refer to \cite{VHDL2000},
+about the \vhdl{} language can refer to \cite{VHDL2000},
 \cite{Ashenden2010} and \cite{Pedroni2020}.
 
 \subsection{Main concepts}
 \label{sec:vhdl-main-concepts}
 
-The VHDL acronym stands for Very high speed integrated circuit
+The \vhdl{} acronym stands for Very high speed integrated circuit
 Hardware Description Language. The main purpose
-of the VHDL language is to describe hardware circuits.
+of the \vhdl{} language is to describe hardware circuits.
  
-A top-level VHDL program is called a \emph{design}.  A VHDL design is
-composed of two descriptive parts. The first part is called the entity
-and describes the interfaces of a circuit, namely: the input and
-output ports, and the generic
+A top-level \vhdl{} program is called a \emph{design}.  A \vhdl{}
+design is composed of two descriptive parts. The first part is called
+the entity and describes the interfaces of a circuit, namely: the
+input and output ports, and the generic
 constants. Listing~\ref{lst:trans-design-entity} is an excerpt of the
 \texttt{transition} design's entity that defines the generic
 constants, the input and output port interfaces of the design. The
 generic clause of the entity holds the declaration of the generic
-constants.  The purpose of generic constants is either to represent
-some dimensions of the design (e.g. the size of ports, internal
+constants. Figure~\ref{fig:trans-design-entity} is a visual
+representation of the interfaces of the \texttt{transition} design.
+
+The purpose of generic constants is either to represent some
+dimensions of the design (e.g. the size of ports, internal
 signals\dots) or to represent constant values used throughout the
 design. In Listing~\ref{lst:trans-design-entity}, one can see that the
 \texttt{conditions_number} generic constant gives a dimension to the
 type of the \texttt{input_conditions} input port, which is an array of
 Boolean values with indexes ranging from 0 to
 \texttt{conditions_number-1} (that is the meaning of
-\texttt{std_logic_vector (conditions_number-1 downto 0)}.  The port
-clause holds the declaration of input and output ports of the
+``\texttt{std_logic_vector (conditions_number-1 downto 0)}'').  The
+port clause holds the declaration of input and output ports of the
 design. The \texttt{in} keyword indicates the declaration of an input
 port and the \texttt{out} indicates the declaration of an output port.
 
 \begin{lstlisting}[language=VHDL,label={lst:trans-design-entity},
-caption={The entity part of the transition design in concrete VHDL
+caption={The entity part of the transition design in concrete \vhdl{}
   syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 entity transition is
@@ -62,31 +65,31 @@ entity transition is
 end transition;
 \end{lstlisting}
 
-Figure~\ref{fig:trans-design-entity} is a visual representation of the
-interfaces of the \texttt{transition} design.
+
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.6\textwidth]{Figures/H-VHDL/trans-design-entity}
-  \caption[A representation of the transition design entity.]{A
-    representation of the \texttt{transition} design entity. On the
-    left side, the input port interface of the transition design;
-    \textit{cn} stands for \textit{conditions\_number} and
-    \textit{ian} stands for \textit{input\_arcs\_number}, i.e. two of
-    the generic constants declared in the generic clause of the
-    \texttt{transition} design entity; the numbers at the right of the
-    input pins represent the pin indexes. On the right side, the
-    output port interface of the \texttt{transition} design.}
+  \caption[A representation of the \texttt{transition} design
+  entity.]{A representation of the \texttt{transition} design
+    entity. On the left side, the input port interface of the
+    \texttt{transition} design; \texttt{cn} stands for
+    \texttt{conditions\_number} and \texttt{ian} stands for
+    \texttt{input\_arcs\_number}, i.e. two of the generic constants
+    declared in the generic clause of the \texttt{transition} design
+    entity; the numbers at the right of the input pins represent the
+    pin indexes. On the right side, the output port interface of the
+    \texttt{transition} design.}
   \label{fig:trans-design-entity}
 \end{figure}
 
-The second part of a VHDL design is called the architecture. The
+The second part of a \vhdl{} design is called the architecture. The
 architecture describes the internal behavior of the design. It
 declares all the internal signals, i.e. the wires, involved in the
 description of the design behavior. Then, there are three ways to
 describe the behavior itself: by using processes, by instantiating
 other designs (also called, component instantiations), or by combining
-both technics (the latter option is chosen in the VHDL designs
+both technics (the latter option is chosen in the \vhdl{} designs
 generated by the \hilecop{} transformation).
 
 \paragraph{Behavior specification with processes}
@@ -96,8 +99,8 @@ description of processes. Processes are concurrent statements that
 describes the wiring or the operations performed on the signals of a
 given design. These operations are described by sequential statements
 in the body of processes. A process declares a sensitivy list that
-corresponds to the signals read in the process statement body; also,
-it possibly declares internal variables.
+corresponds to the signals read in its statement body; also, it
+possibly declares internal variables.
 % The sensitivity list is only useful for the purpose of
 % simulation. It permits to resume the execution of a process when the
 % value of one of the signals of its sensitivity list changes.
@@ -113,17 +116,18 @@ of the \texttt{transition} design. Line~\ref{line:condev-ps} starts
 the declaration of the \texttt{condition_evaluation} process. The
 sensitivity list of the \texttt{condition_evaluation} process holds
 one signal, the \texttt{input_conditions} input port. The value of the
-\texttt{input_conditions} input port is read is the process
-body. Then, as a design rule, it must be declared in the sensitivity
+\texttt{input_conditions} input port is read is the process body;
+then, as a design rule, it must be declared in the sensitivity
 list. The process defines a local variable
-\texttt{v_internal_condition} at Line~12. At Line~13, the
-\texttt{begin} keyword starts the declaration of the process body,
-i.e. the block of sequential statements performing operations on the
-signals of the \texttt{transition} design.
+\texttt{v_internal_condition} at Line~\ref{line:var-internal-cond}. At
+Line~\ref{line:begin-cond-eval}, the \texttt{begin} keyword starts the
+declaration of the process body, i.e. the block of sequential
+statements performing operations on the signals of the
+\texttt{transition} design.
 
 \begin{lstlisting}[language=VHDL,label={lst:trans-design-arch},
 caption={An excerpt of the architecture part of the transition design
-  in concrete VHDL
+  in concrete \vhdl{}
   syntax.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 architecture transition_architecture of transition is
@@ -137,8 +141,8 @@ architecture transition_architecture of transition is
 begin
   
   condition_evaluation : process (input_conditions) #\label{line:condev-ps}#
-    variable v_internal_condition : std_logic;
-  begin
+    variable v_internal_condition : std_logic;#\label{line:var-internal-cond}#
+  begin #\label{line:begin-cond-eval}#
     v_internal_condition := '1';
     
     for i in 0 to conditions_number $-$ 1 loop #\label{line:for-begin}#
@@ -155,7 +159,7 @@ begin
     if (reset_n = '0') then
       s_firable <= '0';
     elsif falling_edge(clock) then
-      s_firable <= s_firing_condition;
+      s_firable <= s_firing_condition;#\label{line:assign-firable}#
     end if;
   end process firable;
 
@@ -170,10 +174,10 @@ end transition_architecture;
 In the statement body of a process, the designer can use control flow
 statements common to most of the generic programming languages (if
 statement, for loops\dots), and also statements that are specific to
-the VHDL language. The most representative statement, and the one of
-interest to us, is the \emph{signal assignment} statement. The signal
-assignment statement relate a given signal identifier to a source
-expression. For instance, at Line~\ref{line:assign-scc} of
+the \vhdl{} language. The most representative statement, and the one
+of interest to us, is the \emph{signal assignment} statement. The
+signal assignment statement relates a given signal identifier to a
+source expression. For instance, at Line~\ref{line:assign-scc} of
 Listing~\ref{lst:trans-design-arch}, the signal assignment statement,
 represented with the $\Leftarrow$ operator, assigns the value of the
 internal variable \texttt{v_internal_condition} to the
@@ -183,7 +187,7 @@ between the subelements of the \texttt{input_conditions} input port
 performed in the \texttt{for} loop of Lines~\ref{line:for-begin} to
 \ref{line:for-end}.
 
-When considering a VHDL design in the point of view of hardware
+When considering a \vhdl{} design in the point of view of hardware
 synthesis, a signal assignment statement specifies a wiring between a
 target signal identifier and other source
 signals. Figure~\ref{fig:trans-design-arch-excerpt-1} gives a
@@ -194,8 +198,8 @@ Listing~\ref{lst:trans-design-arch}.
   \centering
   \includegraphics[keepaspectratio=true, width=.8\textwidth]{Figures/H-VHDL/trans-design-arch-excerpt-1}
   \caption[Representation of a part of the transition design
-  architecture.]{A representation of a part of the transition design
-    architecture comprising three processes. On the left side, the
+  architecture.]{A representation of three of the processes defining
+    the \texttt{transition} design architecture. On the left side, the
     \texttt{condition_evaluation} process connecting the
     \texttt{input_conditions} input port to the
     \texttt{s_condition_combination} internal signal; the
@@ -208,36 +212,47 @@ Listing~\ref{lst:trans-design-arch}.
 
 In Figure~\ref{fig:trans-design-arch-excerpt-1}, the
 \texttt{condition_evaluation} process is represented as an
-\texttt{and} port performing the product over the elements of the
+``\texttt{and}'' port performing the product over the elements of the
 \texttt{input_conditions} input port. The \texttt{fired_evaluation}
-process is a simple \texttt{and} gate connecting the \texttt{fired}
-output port to the \texttt{s_firable} and
+process is a simple ``\texttt{and}'' gate connecting the
+\texttt{fired} output port to the \texttt{s_firable} and
 \texttt{s_priority_combination} internal signals. The
 \texttt{fired_evaluation} and the \texttt{condition_evaluation}
 processes are combinational processes. They describe the value of an
 output signal based on the value of input signals. For instance, the
 value of the \texttt{s_condition_combination} signal is a function of
-the value of the \texttt{input_conditions} input port, i.e
-\texttt{s_condition_combination}$=f($\texttt{input_conditions}$)$. This
-equation always holds, and we refer to it as a combinational equation.
+the value of the \texttt{input_conditions} input port such that:
 
-The \texttt{firable} process is a \textit{synchronous} process. It is
+\begin{equation*}
+  \texttt{s\_condition\_combination}=\prod_{i=0}^{\texttt{conditions\_number}-1}(\texttt{input\_conditions}[i])
+\end{equation*}
+
+This equation always holds, and we refer to it as a combinational
+equation.  Here, the \texttt{input_conditions} input port is a
+composite signal, meaning that it is composed of multiple subelements
+(multiple pins) each having a unique index. We denote the value of the
+subelement of index $i$ in a composite signal $a$ with the
+square-bracketed notation $a[i]$.\\
+
+Also presented in Figure~\ref{fig:trans-design-arch-excerpt-1}, the
+\texttt{firable} process is a \textit{synchronous} process. It is
 executed only at the occurence of the falling edge event of the
 \texttt{clock} signal, and thus represents a \emph{memory} point. In
-its statement body, the \texttt{firable} process assigns the value of
-the internal signal \texttt{s_firing_condition} to the signal
-\texttt{s_firable} only at the occurrence of the falling edge of the
-\texttt{clock} signal (captured by the expression
+its statement body (Line~\ref{line:assign-firable} of
+Listing~\ref{lst:trans-design-arch}), the \texttt{firable} process
+assigns the value of the internal signal \texttt{s_firing_condition}
+to the signal \texttt{s_firable} only at the occurrence of the falling
+edge of the \texttt{clock} signal (captured by the expression
 \texttt{falling_edge(clock)} where \texttt{falling_edge} is a
-primitive function of the VHDL language). In the point of view of
+primitive function of the \vhdl{} language). In the point of view of
 simulation, there are no distinction between synchronous processes and
 \emph{combinational} processes. However, in the point of view of
 synthesis, processes responding to a \texttt{clock} signal follow the
-rules of the synchronous (or sequentia) logic, whereas, combinational
+rules of the synchronous (or sequential) logic, whereas, combinational
 processes follow the rules of combinational logic.
 
 To complete the presentation of the statements to be found in the body
-of processes, the VHDL language is also equipped with \texttt{timing}
+of processes, the \vhdl{} language is also equipped with \texttt{timing}
 constructs, i.e. statements that explicitly specify an amount of time
 in a given time unit. The signal assignement statement possibly
 specifies a time clause indicating when the assignment must be
@@ -253,7 +268,7 @@ assignment. $\delta$-delay signal assignments are synthetizable,
 meaning they have an equivalent implementation on a physical device,
 whereas, unit-delay signal assignments can not be
 synthetized. Unit-delay signal assignments do not appear neither in
-the VHDL designs generated by \hilecop{} transformation nor in the
+the \vhdl{} designs generated by \hilecop{} transformation nor in the
 declaration of the place and transition designs. We are only
 mentioning their existence because they play a part in the simulation
 algorithm described in Section~\ref{sec:vhdl-informal-sem}.
@@ -261,21 +276,21 @@ algorithm described in Section~\ref{sec:vhdl-informal-sem}.
 \paragraph{Behavior specification with design instances}
 
 The second way to specify the behavior of a design is to use other
-designs, or rather instances of other designs, as subcomponents. In
-that case, the design is said to be composite as it embeds instances
-of other designs in its own behavior. Also, a design at the highest
-level of embedding, i.e. that is not instantiated as a part of another
+designs, or rather instances of other designs, as components. In that
+case, the design is said to be composite as it embeds instances of
+other designs in its own behavior. Also, a design at the highest level
+of embedding, i.e. that is not instantiated as a part of another
 design's behavior, is called a \emph{top-level} design. The design
 instantiation, or component instantiation, statement permits to
 instantiate a design in an embedding architecture. When instantiating
 a design with a design instantiation statement, the designer provides
-the component instance with an identifier. Then, the design instance
-must be dimensioned; this is performed through a generic map that
-associates the generic constants of the design being instantiated to a
-static value. Finally, the designer specifies how the component
-instance is connected to the other elements of the architecture. A
-port map associates the input ports and output ports of the component
-instance to expressions or to the signals of the embedding
+the component instance with an identifier. Then, the instance must be
+dimensioned; this is performed through a generic map that associates
+the generic constants of the design being instantiated to a static
+value. Finally, the designer specifies how the component instance is
+connected to the other elements of the architecture. A port map
+associates the input ports and output ports of the component instance
+to expressions or to the signals of the embedding
 architecture. Listing~\ref{lst:trans-design-instantiation} shows an
 example of instantiation of the \hilecop{}'s \texttt{transition}
 design. This instance is involved in the definition of the behavior of
@@ -358,15 +373,15 @@ input and output port interfaces inside the \texttt{toplevel} design.
 % statement is only useful for the purpose of simulation. Indeed, the
 % wait statement is no synthetizable. 
 
-\subsection{Informal semantics of the VHDL language}
+\subsection{Informal semantics of the \vhdl{} language}
 \label{sec:vhdl-informal-sem}
 
-There are two approaches to the description of circuits with the VHDL
-language. The first aims at the simulation of the described circuits,
-and the second aims at the synthesis of described circuits on physical
-supports. These two approaches arise from the practice and the use of
-the VHDL language by electronicians.
-% Thus, the constructs of the VHDL language must be
+There are two approaches to the description of circuits with the
+\vhdl{} language. The first aims at the simulation of the described
+circuits, and the second aims at the synthesis of the described
+circuits on physical supports. These two approaches arise from the
+practice and the use of the \vhdl{} language by electronicians.
+% Thus, the constructs of the \vhdl{} language must be
 % interpreted depending on the purpose of the designer.  For instance,
 % the language gives the possibility to describe the connection of wires
 % inside a circuit. A wire is represented by the concept of
@@ -375,15 +390,15 @@ the VHDL language by electronicians.
 % holds a value that fluctuates in the course of the simulation. In the
 % context of synthesis, a signal describes a physical wire and must be
 % considered as so.
-Even though, in practice, there are two ways to consider a VHDL
+Even though, in practice, there are two ways to consider a \vhdl{}
 design, i.e. a synthesis-oriented way and a simulation-oriented way,
-the LRM does not define a synthesis-oriented semantics for the VHDL
+the LRM does not define a synthesis-oriented semantics for the \vhdl{}
 language.  A synthesis-oriented semantics gives an interpretation to a
 design by describing an equivalent in a lower level formalism, closer
 to the physical circuit. For instance, the Verilog language gives a
 synthesis-oriented semantics to its programs by defining an equivalent
 RTL level description \cite{Verilog2005}.  The LRM gives an informal
-semantics to VHDL designs through the definition of a simulation
+semantics to \vhdl{} designs through the definition of a simulation
 algorithm \cite[p.167]{VHDL2000}. The purpose of simulation is to
 compute the evolution of the values of signals during a certain time
 interval. Through the simulation process, the designer is able to
@@ -402,10 +417,10 @@ their types. In the default simulation state, each signal is
 associated with a current value (i.e. the default value of the
 signal's type) and with a driver. A driver maps time points to values
 and the association between a given time point and a signal value is
-called a transaction. The need for drivers the values associated with
-a given singal is explained by the presence of unit-delay signal
-assignments. A unit-delay signal assignment specify a time clause
-indicating when a giving assignment must be performed,
+called a transaction. The need for drivers to express the values
+associated with a given signal is explained by the presence of
+unit-delay signal assignments. A unit-delay signal assignment specify
+a time clause indicating when a giving assignment must be performed,
 e.g. \texttt{$a\Leftarrow{}b$ in 3ms} (signal \texttt{a} takes the
 value of signal \texttt{b} in 3 milliseconds). Thus, when a unit-delay
 signal assignment is executed in the course of a simulation, its
@@ -430,7 +445,7 @@ design. It also checks that the connection between signals respect
 certain rules, for instance, that there are no multiply-driven
 signals, i.e. signals that are written to by multiple
 processes. Finally, the elaboration operates some transformations over
-the VHDL code, and thus builds the \emph{execution} model. To
+the \vhdl{} code, and thus builds the \emph{execution} model. To
 summarize, all concurrent statements of the behavioral part are
 transformed until the top-level design behavior is only composed of
 processes.
@@ -443,13 +458,13 @@ after the elaboration of the top-level design's behavior, and a
 it handles the time of the simulation, i.e. it holds a variable
 describing the current time of the simulation, and controls the
 execution of processes. Figure~\ref{fig:vhdl-sim-alg}, which is an
-excerpt from \cite{Borger1995}, describes the structure of the VHDL
+excerpt from \cite{Borger1995}, describes the structure of the \vhdl{}
 simulation algorithm.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.7\textwidth]{Figures/H-VHDL/vhdl-sim-alg}
-  \caption[The VHDL simulation loop.]{The VHDL simulation loop. Excerpt from \cite{Borger1995}.}
+  \caption[The \vhdl{} simulation loop.]{The \vhdl{} simulation loop. Excerpt from \cite{Borger1995}.}
   \label{fig:vhdl-sim-alg}
 \end{figure}
 

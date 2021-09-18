@@ -163,6 +163,16 @@
     \end{tabular}
   };
   \draw ($(firablePs.east)$) -| ($(firedEvalPs.in 1)$);
+
+  \draw ($(firablePs.west)$) --++($(-.3,0)$) |- ($(firablePs.west)-(.6,1)$) coordinate (sfc);
+
+  \node[anchor=north,font=\ssmall] at ($(sfc.west)$) {
+    \begin{tabular}{@{}c@{}}
+      \tt s\_firing \\
+      \tt condition \\
+    \end{tabular}
+  };
+  \node[anchor=east] at (sfc) {\dots};
   
   \coordinate (spcWire) at ($(firedEvalPs.in 2)-(.4,.6)$);
   \draw (spcWire) -| ($(firedEvalPs.in 2)$);

@@ -1,20 +1,20 @@
 In the previous section, we presented the main concepts underlying the
-VHDL language and its informal semantics. We want to prove that the
-\hilecop{} transformation that generates VHDL code from SITPNs
+\vhdl{} language and its informal semantics. We want to prove that the
+\hilecop{} transformation that generates \vhdl{} code from SITPNs
 preserves the behavior of the initial model (i.e, the SITPN model)
-into the generated VHDL program.  A formal semantics for the VHDL
+into the generated \vhdl{} program.  A formal semantics for the \vhdl{}
 language is therefore a necessary element to be able to reason about
-the generated VHDL programs, and moreover to be able to compare their
+the generated \vhdl{} programs, and moreover to be able to compare their
 behaviors with the behaviors of the source SITPN models. Keeping that
-in mind, which formal semantics should we consider for VHDL?
+in mind, which formal semantics should we consider for \vhdl{}?
 
 The same holds for any task: there is a tradeoff between finding a
 tool designed by others that will fit our needs, and creating our own
 tool that will mitigate the gaps between our needs and what is
 available in the literature. In the present case, the tool is a formal
-semantics for VHDL. Adopting a fully-set semantics found in the
+semantics for \vhdl{}. Adopting a fully-set semantics found in the
 literature as a baseground for the implementation of a formal
-semantics for VHDL has multiple perks. First, it reduces the
+semantics for \vhdl{} has multiple perks. First, it reduces the
 formalization effort, which is not a lesser point considering that the
 proof ahead might be long and must still be completed within the time
 span of the thesis. Still, the semantics would need to be implemented
@@ -25,30 +25,30 @@ a generic framework to reason about programs. However, we must not
 loose sight of our goal which is to prove behavior preservation; a
 generic formal semantics could turn out to be too complex, or
 necesitate too much tweaking and thus hinder the fullfillment of our
-task. On the other side, creating our own formal semantics for VHDL,
-based on the work of others, is the best way to fit our needs in
-compliance with our final aim. However, the pitfalls are that the
+task. On the other side, creating our own formal semantics for
+\vhdl{}, based on the work of others, is the best way to fit our needs
+in compliance with our final aim. However, the pitfalls are that the
 resulting semantics might prove to be very specific, therefore
 preventing others from using it. Also, a work of formalization would
 be necessary which, as we already stated, would be time consuming. In
 order to determine whether we ought to use an existing semantics or
-design a new one, we must first clearly specify our needs pertaining
-to the VHDL language.
+design a new one, we must first clearly specify our needs regarding
+the \vhdl{} language.
 
-\subsection{Specifying our needs: \hilecop{} and VHDL}
+\subsection{Specifying our needs: \hilecop{} and \vhdl{}}
 \label{subsec:specifying-needs}
 
 Two elements are of major influence to the specification of our needs
 for a formal semantics: first, the context of \hilecop{} and the
-specificities of the VHDL programs that are generated; second, the
+specificities of the \vhdl{} programs that are generated; second, the
 context of theorem proving. These two aspects entail the following
 considerations.
 
 \paragraph{The need for coverage} The \hilecop{} methodology generates
-particular VHDL programs.  Even if some transformations can be
+particular \vhdl{} programs.  Even if some transformations can be
 operated on the generated programs to simplify them, the looked-for
 formal semantics must be able to deal with a certain subset of the
-VHDL language. Especially, this subset must include:
+\vhdl{} language. Especially, this subset must include:
 
 \begin{itemize}
 \item 0-delay (or $\delta$-delay) signal assignments (equivalent to
@@ -59,37 +59,37 @@ VHDL language. Especially, this subset must include:
   constants in a design entity)
 \end{itemize}
 
-\hilecop{}'s VHDL programs only deal with 0-delay signal assignments
-because they are the only kind of signal assignments that can be
-synthesized. As a matter of fact, the industrial compiler/synthetizer
-used in the \hilecop{} methodology only accepts VHDL programs with no
-timing constructs (i.e, no delayed signal assignments) as
-input. % However, 0-delay signal assignments do not
+\hilecop{}'s \vhdl{} programs only deal with 0-delay signal
+assignments because they are the only kind of signal assignments that
+can be synthesized. As a matter of fact, the industrial
+compiler/synthetizer used in the \hilecop{} methodology only accepts
+\vhdl{} programs with no timing constructs (i.e, no delayed signal
+assignments) as inputs. % However, 0-delay signal assignments do not
 % specify a delay after which the assignment of a value to a signal must
 % be performed. The time taken by a signal assignment to be performed
 % (the time of propagation) is only relevant in relation to the clock
 % period that regulates the modeled circuit. It is sufficient if the
-% semantics handles only this dimension of time, even if the VHDL
+% semantics handles only this dimension of time, even if the \vhdl{}
 % language gathers both the ``dimension of delta time and the dimension
 % of real time'' \cite{Reetz95}.
 
-Regarding component instantiation statements, the VHDL LRM describes a
-way to transform these statements into equivalent process statements
-and block constructs \cite[p.~141]{VHDL2000} which are a part of the
+Regarding component instantiation statements, the \vhdl{} LRM
+describes a way to transform these statements into equivalent process
+statements and block constructs \cite[p.~141]{VHDL2000} during the
 elaboration of the design. However, we want to preserve the
 hierarchical structure provided by the component instantiation
 statements arguing that it will be easier to compare the state of a
-given SITPN model with a VHDL design state with an explicit
+given SITPN model with a \vhdl{} design state with an explicit
 hierarchical structure. Indeed, there exists a mapping between places
 and transitions of an SITPN and their mirror (generated by the
 transformation) place and transition component instances (PCIs and
 TCIs). This one-to-one correspondence might turn out to be handy to
 perform the proof of behavior preservation. Obviously, the semantics
 must cover the evaluation of process statements which are the core
-concurrent statements of VHDL programs.
+concurrent statements of \vhdl{} programs.
 
-The types of signals and variables used in \hilecop{} VHDL designs
-must have finite ranges of values. For instance, a VHDL signal that
+The types of signals and variables used in \hilecop{} \vhdl{} designs
+must have finite ranges of values. For instance, a \vhdl{} signal that
 ranges over $\mathbb{N}$ cannot be synthetized on a physical circuit.
 Indeed, $\mathbb{N}$ has an infinite number of values, and would
 therefore require an infinite number of latches to be physically
@@ -100,19 +100,19 @@ to optimize the dimensioning of the circuit. The generic constants,
 declared in the entity part of a design, are involved in the
 dimensioning of the circuit. The generic constants define the bound of
 the array and natural range types for the different signals and
-variables declared in the place and transition designs'
-architecture. When a place or a transition component is instantiated,
-that is during the transformation of the SITPN model into VHDL code,
-its generic constants receive values via a generic map; we call it the
-dimensioning of the component instance. Therefore, generic constant
-clauses must belong to the subset of the VHDL language covered by the
-semantics.
+variables declared in the \texttt{place} and \texttt{transition}
+designs' architecture. When a place or a transition component is
+instantiated, that is during the transformation of the SITPN model
+into \vhdl{} code, its generic constants receive values via a generic
+map; we call it the dimensioning of the component instance. Therefore,
+generic constant clauses must belong to the subset of the \vhdl{}
+language covered by the semantics.
 
 \paragraph{The need for a synchronous execution} The second property
-of \hilecop{}'s generated VHDL programs is their synchronous
+of \hilecop{}'s generated \vhdl{} programs is their synchronous
 execution. The digital circuits designed with the \hilecop{}
 methodology are all synchronously executed on physical target. The
-generated VHDL designs declare a clock signal as an input port of
+generated \vhdl{} designs declare a clock signal as an input port of
 their entity port interface. Thus, the behavioral part of the designs
 contains two kinds of processes: \emph{synchronous} processes, i.e
 processes that are sensitive to the clock signal, and
@@ -123,17 +123,17 @@ events of the clock signal, i.e the rising and the falling edge, and
 possess blocks of sequential statements that are only executed at the
 precise moment of the clock event\footnote{These blocks are guarded by
   the expressions \texttt{rising\_edge(clk)} and
-  \texttt{falling\_edge(clk)}.}. Therefore, we are in a strong need of
-a semantics that deal with synchronism, and that explicitly integrates
-the synchronization with a clock signal into the expression of the
+  \texttt{falling\_edge(clk)}.}. Therefore, we need a semantics that
+is able to deal with synchronism, and that explicitly integrates the
+synchronization with a clock signal into the expression of the
 simulation
 cycle. % Thus, the two dimensions of time, respectively delta
-% time and ``real'' time \cite{Reetz1995}, that are part of the VHDL
+% time and ``real'' time \cite{Reetz1995}, that are part of the \vhdl{}
 % language, must be handled by our semantics.
 % Delta time pertains to
 % delta-cycles, which are triggered by the execution of delta-delay
 % signal assignments, that is, the only kind of signal assignments found
-% in \hilecop{} VHDL programs. Real time pertains to time-steps. When
+% in \hilecop{} \vhdl{} programs. Real time pertains to time-steps. When
 % all signal values are stable (when there are no more delta-cycles),
 % the simulation advances the current time value to the next time point
 % where a relevant event happens.
@@ -141,52 +141,58 @@ cycle. % Thus, the two dimensions of time, respectively delta
 % execution of the next pending signal assignment that was associated
 % with a delay, or the end of a \texttt{wait for x} statement (where
 % \texttt{x} specifies a time delay). In our case, neither delayed
-% signal assignments nor wait statements are part the covered VHDL
+% signal assignments nor wait statements are part the covered \vhdl{}
 % language subset.
 % In our case, the only two relevant events to which the simulation
 % advances during a time-step are the rising edge and the falling edge
 % of the clock signal.
 
-\paragraph{Other considerations} Considering the kind of proof that
-needs to be established, we would rather consider an operational
-semantics for VHDL. The reason is that, in the \ccert{} project
-\cite{Leroy2009}, which is one of our major inpsiration source, the
-whole C compiler toolchain is verified by reasoning over the
-operational semantics of the source and target languages. A last
-consideration pertains to whether or not the VHDL semantics must
+% \paragraph{Other considerations} Considering the kind of proof that
+% needs to be established, we would rather consider an operational
+% semantics for \vhdl{}. The reason is that, in the \ccert{} project
+% \cite{Leroy2009}, which is one of our major inpsiration source, the
+% whole C compiler toolchain is verified by reasoning over the
+% operational semantics of the source and target languages.
+A last
+consideration pertains to whether or not the \vhdl{} semantics must
 explicitly handle errors. As the SITPN semantics does not include the
-production of error values, the handling of errors by the VHDL
+production of error values, the handling of errors by the \vhdl{}
 semantics is not a mandatory aspect.
 
 \paragraph{Qualifying criterions}
 \label{sec:qualifying-criterions}
 
 We here give the list of the qualifying criterions that will help to
-analyze the different VHDL semantics encountered in the literature and
-presented in the next section. The three most relevant criterions are:
+analyze the different \vhdl{} semantics encountered in the literature
+and that are presented in the next section. The three most relevant
+criterions are:
 
 \begin{itemize}
-\item \emph{Synchronism}. We distinguish three levels for this
-  criterion:
+\item \emph{Synchronism}. Regarding this criterion, there are three
+  possibilities:
   \begin{itemize}
-  \item Synchronism is not expressible in the considered VHDL semantics.
-  \item Synchronism is expressible in the considered VHDL
+  \item Synchronism is not expressible in the considered \vhdl{}
+    semantics; this completely disqualifies the adoption of the
+    semantics.
+  \item Synchronism is expressible in the considered \vhdl{}
     semantics. Synchronism is expressible if time-steps are handle in
     the semantics, at least to be able to represent clock events.
   \item Synchronism is explicit, i.e. the simulation loop is built
     around the occurrences of clock events.
   \end{itemize}
   We will foster the semantics that explicitly formalize a
-  synchronized execution of a VHDL design.
+  synchronized execution of a \vhdl{} design.
 \item \emph{Component instantiation}. Either the semantics handle the
   component instantiation statement in its simulation rules, or
   component instantiation statements must be transformed in order to
   be executed. We will foster the semantics that handle component
   instantiation statements without transformation.
-\item \emph{Elaboration}. This criterion expresses the ability of the
+\item \emph{Elaboration}.  This criterion pertains to the
+  formalization of the elaboration phase as integrated to the \vhdl{}
+  semantics. This criterion also expresses the ability of the
   semantics to handle constrained types, i.e. arrays and natural
   ranges, and generic constant clauses that are both dealt with during
-  \emph{elaboration} phase. Either the semantics handle these
+  the \emph{elaboration} phase. Either the semantics handle these
   constructs or it does not. Of course, we will foster the first kind
   of semantics.
 \end{itemize}
@@ -195,7 +201,7 @@ presented in the next section. The three most relevant criterions are:
 \label{subsec:looking-for-sem}
 
 Here, we give a summary of the work found in the literature pertaining
-to the formalization of the VHDL language semantics. Articles are
+to the formalization of the \vhdl{} language semantics. Articles are
 gathered and presented depending on the type of semantics used in the
 formalization (operational, denotational, axiomatic\dots). Each
 semantics is analyzed regarding the needs that were previously
@@ -203,12 +209,12 @@ expressed.
 
 \paragraph{Denotational semantics}
 Some authors have been interested in giving a formal denotational
-semantics to VHDL. In a general manner, these authors want to reason
-about VHDL programs: prove properties over a VHDL program, prove that
+semantics to \vhdl{}. In a general manner, these authors want to reason
+about \vhdl{} programs: prove properties over a \vhdl{} program, prove that
 two programs are equivalent\dots
 
 In \cite{Fuchs1995}, the authors give a denotational semantics to the
-VHDL language within the \textsf{Focus} \cite{Dederichs1993}
+\vhdl{} language within the \textsf{Focus} \cite{Dederichs1993}
 framework, a method for the development of distributed systems. Signal
 values and their evolution through time are represented as streams of
 values. Statements are denoted as stream-processing
@@ -222,40 +228,41 @@ processes. % Resolution functions are used in case of multiply-driven
 The authors only consider 0-delay signal assignments in their
 semantics, stating that it is sufficient to ``consider time at a
 logical level to model both synchronous and asynchronous designs''.
-However, it necesitates some transformations on a design that has a
-synchronous execution to express it only with 0-delay signal
-assignments. Therefore, this semantics does not express synchronism of
-execution in an explicit manner. Moreover, the component instantiation
-statements are not dealt with, and no mention is made of the
-elaboration phase.
+However, some transformations must be applied to a design that has a
+synchronous execution to express its equivalent only with 0-delay
+signal assignments. Therefore, this semantics does not express
+synchronism of execution in an explicit manner. Moreover, the
+component instantiation statements are not dealt with, and no mention
+is made of the elaboration phase.
 
 In \cite{Breuer1995a}, the authors give a denotational, yet
-relational, semantics for VHDL. A state of a VHDL design is
-represented by a function binding signals to values; a worldline is a
-time-ordered list of states. Statements (including processes) are
-denoted in the semantics by a relation that binds an input couple,
-composed of a time point and a worldline, to an output couple of the
-same type. Multiple input and output couples possibly satisfy the
-relation denoting a particular statement; thus, the semantics is
-undeterministic.  The semantics tries to abstract from the
-formalization of the simulation cycle as it is done in the LRM. The
-authors want to establish a semantics that is abstract enough to be
-able to compare all other works of formalization with the authors
-semantics. The authors also give an axiomatic semantics (i.e, in the
-Hoare logic style) which is proved to be sound and complete with the
-first denotational semantics. A \textsf{Prolog} \cite{Colmerauer1990}
-implementation of the axiomatic semantics is given. Regarding our
-needs, the semantics only deals with unit-delay signal
-assignments. However, this semantics enables the representation of a
-$\delta$-delay signal assignment with a unit-delay signal assignment
-adorned with a ``\texttt{after 0 ns}'' time clause. The hierarchical
-structure of designs is not preserved, and, although expressible, the
-semantics does not explicitly express a synchronous simulation cycle.
+relational, semantics to the \vhdl{} language. A state of a \vhdl{}
+design is represented by a function binding signals to values; a
+worldline is a time-ordered list of states. Statements (including
+processes) are denoted in the semantics by a relation that binds an
+input couple, composed of a time point and a worldline, to an output
+couple of the same type. Multiple input and output couples possibly
+satisfy the relation denoting a particular statement; thus, the
+semantics is undeterministic.  The semantics tries to abstract from
+the formalization of the simulation cycle as it is done in the
+LRM. The authors want to establish a semantics that is abstract enough
+to be able to compare all other works of formalization with the
+authors semantics. The authors also give an axiomatic semantics (i.e,
+in the Hoare logic style) which is proved to be sound and complete
+with the first denotational semantics. A \textsf{Prolog}
+\cite{Colmerauer1990} implementation of the axiomatic semantics is
+given. Regarding our needs, the semantics only deals with unit-delay
+signal assignments. However, this semantics enables the representation
+of a $\delta$-delay signal assignment with a unit-delay signal
+assignment adorned with a ``\texttt{after 0 ns}'' time clause. The
+hierarchical structure of designs is not preserved, and, although
+expressible, the semantics does not explicitly express a synchronous
+simulation cycle.
 
 The denotational semantics expressed in \cite{Pandey1999} uses
 interval temporal logic as an underlying model. Leveraging this
 underlying model, the authors are interested in proving some
-properties over VHDL designs to help compilers to optimize the code,
+properties over \vhdl{} designs to help compilers to optimize the code,
 for instance, by using rewrite rules proved to be valid against the
 model. Some of the proofs laid out by the authors are embedded in PVS
 \cite{Owre1994}. The expression of the dynamic model uses many
@@ -264,42 +271,44 @@ and effective values for signals. The semantics deals with both
 unit-delay and $\delta$-delay signal assignments. The semantics works
 on fully-elaborated designs, therefore, it does not deal with
 component instantiation statements. Moreover, interval temporal logic
-is useful to reason on the VHDL designs in the presence of delays,
+is useful to reason on the \vhdl{} designs in the presence of delays,
 however, it looses its interest for designs presenting only 0-delay
 assignments.
 
 In \cite{Borrione1995}, the author states that ``denotational
 semantics is more adequate for mathematical reasoning''. The author
-formalizes the VHDL semantics to prove the equivalence between VHDL
-programs (for instance, a specification and an implementation). What
-is of major interest regarding our needs is that the author has
-expressed a simulation cycle for synchronous designs. Therefore, a
-distinction is made between combinational and synchronous processes in
-the abstract syntax. Moreover, this work formalizes the elaboration
-part of a VHDL design former to the simulation; also, the elaboration
-keeps the hierarchical setting of the VHDL design, that is component
-instantiation statements are not replaced by processes.  Due to the
-time abstraction, the semantics only deals with 0-delay. It is
-explained by the fact that the reference time-unit is the clock period
-(i.e, the only known time-step), and the advancing of time, happening
-during the simulation cycle as described in the LRM, is captured
-within the setting of the simulation cycle. Also, the semantics takes
-primary inputs into account (i.e, input ports of the top-level
-design); to preserve a synchronous behavior for the simulated design,
-the hypothesis is made that the values of the primary inputs are
-stable between two clock events. % The only critic that can be made to
+formalizes the \vhdl{} semantics to prove the equivalence between
+\vhdl{} programs (for instance, a specification and an
+implementation). What is of major interest regarding our needs is that
+the author has expressed a simulation cycle for synchronous
+designs. Therefore, a distinction is made between combinational and
+synchronous processes in the abstract syntax. Moreover, this work
+formalizes the elaboration part of a \vhdl{} design former to the
+simulation; also, the elaboration keeps the hierarchical setting of
+the \vhdl{} design, that is component instantiation statements are not
+replaced by processes.  Due to the time abstraction, the semantics
+only deals with 0-delay signal assignments. It is explained by the
+fact that the reference time-unit is the clock period (i.e, the only
+known time-step), and the advancing of time, happening during the
+simulation cycle as described in the LRM, is captured within the
+setting of the simulation cycle. % Also, the semantics takes primary
+% inputs into account (i.e, input ports of the top-level design); to
+% preserve a synchronous behavior for the simulated design, the
+% hypothesis is made that the values of the primary inputs are stable
+% between two clock events.
+% The only critic that can be made to
 % this semantics regarding our needs is that it is expressed in
 % denotational style.
 
 \paragraph{Operational semantics}
 
-Multiple works formalize an operational semantics for VHDL.  These
-works are interested in the formal description of the VHDL simulator.
+Multiple works formalize an operational semantics for \vhdl{}.  These
+works are interested in the formal description of the \vhdl{} simulator.
 The aim is to devise a formal semantics that acts as a formal
 specification for a simulator.
 
 In \cite{Breuer1995}, a formal description of a \emph{functional}
-semantics for VHDL is laid out based on stream-processing
+semantics for \vhdl{} is laid out based on stream-processing
 functions. The semantics is expressed with the functional programming
 language \textsf{Gofer} \cite{Jones1994}, thus enabling the computation
 of execution traces, that is, the computation of the streams
@@ -308,19 +317,19 @@ work of the same author \cite{Breuer1995a}, only unit-delay
 signal assignments are dealt with, however, this time the author
 describes a deterministic operational semantics. Regarding our needs,
 this work is neither interested in preserving the hierarchical
-structure of VHDL designs, and no mention is made regarding how a
+structure of \vhdl{} designs, and no mention is made regarding how a
 design is elaborated, nor in expressing an explicit synchronous
 simulation cycle.
 
 In \cite{Borger1995}, the authors formalize the simulation loop of the
 LRM using Evolving Algebra machines (EA-machines). All important
-constructs of the VHDL language are represented as records; processes
+constructs of the \vhdl{} language are represented as records; processes
 are represented as concurrent agents running pseudo-codes, and the
 simulation control flow is passed to and fro between the kernel
 process (i.e, the simulation orchestrator) and the rest of the
 processes that execute the design behavior. This semantics implements
 closely the simulation loop as described in the LRM. Therefore, it is
-very rich and deals with most of the VHDL constructs, including the
+very rich and deals with most of the \vhdl{} constructs, including the
 two time paradigms of the language (i.e. $\delta$ time and unit
 time). Moreover, the semantics works on fully-elaborated designs,
 therefore, component instantiation statements are omitted. However, a
@@ -328,28 +337,28 @@ synchronous execution is fully expressible even if not explicitly
 embedded in the expression of the simulation loop.
 
 In \cite{VanTassel1995}, the author presents a natural semantics for
-VHDL. The simulation loop is expressed by inference rules, and the
+\vhdl{}. The simulation loop is expressed by inference rules, and the
 execution of processes is based on the events over signals of their
 corresponding sensitivity lists. The execution of statements computes
-transaction traces, that is, the projected waveforms for signals over
-the future of the simulation. The semantics deals both with unit and
-delta delays. Regarding our needs, this semantics covers does not
-entirely cover the subset of VHDL we are interested in. Component
-instantiation statements are not dealt with.  A synchronous execution
-is expressible within the semantics, although it would be hidden in
-the inference rule formalizing the generic simulation loop.  Also, the
-semantics does not provided its simulation loop with a simulation
-horizon (a maximum number of simulation cycle to be computed). The
-simulation ends when signal values evolve no more.  The question of
-the influence of the environment, measured through the values of the
-primary inputs of a design, is not discussed.
+transaction traces, that is, the drivers of the signals. The semantics
+deals both with unit and delta delay signal assignments. Regarding our
+needs, this semantics does not entirely cover the subset of \vhdl{} we
+are interested in. Component instantiation statements are not dealt
+with.  A synchronous execution is expressible within the semantics,
+although it would be hidden in the inference rule formalizing the
+generic simulation loop.  Also, the semantics does not provide its
+simulation loop with a simulation horizon (a maximum number of
+simulation cycle to be computed). The simulation ends when signal
+values evolve no more.  % The question of the influence of the
+% environment, measured through the values of the primary inputs of a
+% design, is not discussed.
 
 In \cite{Goossens1995}, the author presents an operational semantics
-for VHDL in the small-step style. The semantics follows closely the
+for \vhdl{} in the small-step style. The semantics follows closely the
 simulation cycle described in the LRM; however it is very concise and
-clear. The covered VHDL subset comprises both unit and delta-delay
+clear. The covered \vhdl{} subset comprises both unit and delta-delay
 signal assignments. There is a interesting discussion about the
-non-determinism of VHDL, since it is a concurrent programming
+non-determinism of \vhdl{}, since it is a concurrent programming
 language: it entails that non-determinism is only existent at the
 processes level, that is, internal sequential statement of processes
 can be executed in an undeterministic manner (refered to by the author
@@ -357,15 +366,15 @@ as A actions, that is, \emph{internal} actions).  But at every delta
 or time step (refered to as $\delta$ and T actions) of the execution,
 the design state can be computed in a deterministic manner, since all
 processes have reached a suspension point at the end of their inner
-body. The author is interested in comparing the behaviors of two VHDL
+body. The author is interested in comparing the behaviors of two \vhdl{}
 designs by proving that some relation of equivalence holds between the
-two. He describes two strategies to compare VHDL programs. The first
+two. He describes two strategies to compare \vhdl{} programs. The first
 one is bisimulation; it is based on the comparison of the sequence of
 actions (either A, $\delta$ or T actions) performed by the two
 programs. The second one is observational equivalence; it is based on
-the observation of the value of the output signals of two VHDL
+the observation of the value of the output signals of two \vhdl{}
 programs (the observees), that receive values in their input signals
-from another VHDL program (the observer). The observer stimulates the
+from another \vhdl{} program (the observer). The observer stimulates the
 entries of the observees and reaches a success state based on its
 observations of the value of the outputs. Regarding our needs, this
 semantics permits the description of our synchronous simulation
@@ -380,54 +389,68 @@ execution of a process body. We are more interested in "weak
 bisimulation", therefore forsaking the internal actions % (i.e, A
 % actions, execution of a process body that does not end in a wait
 % statement)
-performed by a VHDL design.
+performed by a \vhdl{} design.
 % A natural operational semantics in the style of Van Tassel's
 % \cite{VanTassel1995} is sufficient in our case.
 In \cite{Thirunarayan2001}, the authors extend the work of
 \cite{Goossens1995}, especially by handling shared variables, in the
-presence of which a VHDL program can have a concrete underterministic
-behavior. The authors are also interested in the equivalence between
-two VHDL programs, and they are interested in determining a unique
-meaning property for VHDL programs. The unique meaning property states
-that the execution of a VHDL design in the presence of shared
-variables is unique. This work is interesting as it points out the
-fact that VHDL is not only subject to benign undeterminism. However,
-we are not interested in dealing with constructs so advanced as shared
-variables, therefore, this work is not really relevant to us.
+presence of which a \vhdl{} program can have a concrete
+underterministic behavior. The authors are also interested in the
+equivalence between two \vhdl{} programs, and they are interested in
+determining a unique meaning property for \vhdl{} programs. The unique
+meaning property states that the execution of a \vhdl{} design in the
+presence of shared variables is unique. This work is interesting as it
+points out the fact that the \vhdl{} language is not only subject to
+``\textit{benign} undeterminism''. By benign underterminism, the
+authors of \cite{Thirunarayan2001} mean that the only moment where the
+state of a \vhdl{} design can not be decided in a deterministic way is
+when the processes are in the middle of the execution of their
+statement body. However, the state of a \vhdl{} design at that moment
+is of no interest; it corresponds to nothing regarding the concrete
+functioning of a hardware circuit. Also, two different processes can
+never be writing to the same signal at the same time. If such a design
+happens, this is a case of \textit{multiply-driven} signal, which is
+utterly forbidden. So, there can be no undeterminism, regarding the
+value of a signal, coming from the concurrent execution of two
+processes (at least when shared variables are not involved).
+
+% However, we are not interested in
+% dealing with constructs so advanced as shared variables, therefore,
+% this work is not really relevant to us.
 
 \paragraph{Translational semantics}
 Another kind of semantics, called ``translational'', formalizes the
-VHDL language semantics by translating a VHDL design into another
-formal model. Thus, the semantics of VHDL is modeled by the
+\vhdl{} language semantics by translating a \vhdl{} design into
+another formal model. Thus, the semantics of \vhdl{} is modeled by the
 translation and the formal semantics of the target model. The target
 model has the ability to model concurrency, which is one of the
-specificity of VHDL. Moreover, target models are chosen because of the
-tools that they provide for analysis, and thus, a translational
-semantics for VHDL is often related to model checking considerations.
+specificity of \vhdl{}. Moreover, target models are chosen regarding
+the tools they provide for analysis, and thus, a translational
+semantics for \vhdl{} is often related to model checking
+considerations.
 
-In \cite{Reetz1995}, the author expresses the formal semantics of VHDL
-by translating a VHDL design into a corresponding
-\emph{flowgraph}. All VHDL constructs, ranging from sequential
+In \cite{Reetz1995}, the author expresses the formal semantics of
+\vhdl{} by translating a \vhdl{} design into a corresponding
+\emph{flowgraph}. All \vhdl{} constructs, ranging from sequential
 statements to concurrent processes, are expressed with individual
 flowgraphs that are then composed together through their
-interfaces. The simulation cycle of VHDL is also encoded by means of
-connected flow graphs: one for the ``execution part'' of the
+interfaces. The simulation cycle of \vhdl{} is also encoded by means
+of connected flow graphs: one for the ``execution part'' of the
 semantics, that is, all processes run until suspension, and one for
-the update part (i.e, the kernel process in the semantics of
-\cite{Borger1995}). Flowgraphs come with a large amount of tools for
-analysis, and this translational semantics is involved in the setting
-of a framework to reason about VHDL programs using multiple technics
-(automatic theorem proving, model checking\dots). All these technics
-lean on the flowgraph formalism.
+the update part (i.e, the kernel process). Flowgraphs come with a
+large amount of tools for analysis, and this translational semantics
+is involved in the setting of a framework to reason about \vhdl{}
+programs using multiple technics (automatic theorem proving, model
+checking\dots). All these technics rely on the flowgraph formalism.
 
 In \cite{Dohmen1995}, the author introduces a translational semantics
-for VHDL based on deterministic finite-state automatons. Again, the
+for \vhdl{} based on deterministic finite-state automatons. Again, the
 reason for using such automatons lies in the existence of many
 analysis tools. Moreover, forcing the generation of deterministic
 automatons improves the time execution of model-checking technics.
-The translation is performed on an elaborated VHDL design; a data
+The translation is performed on an elaborated \vhdl{} design; a data
 space stores the values of signals and variables, and automatons
-represent the control-flow of VHDL statements. Each VHDL statement is
+represent the control-flow of \vhdl{} statements. Each \vhdl{} statement is
 associated to a specific automaton; sequence of statements are
 achieved by automaton composition. The simulation kernel is also
 represented by a specific automaton. Processes are composed together
@@ -435,21 +458,21 @@ with respect to synchronization states, i.e. states that permit to
 pass the control from one process to another, therefore achieving
 determinism in the control flow of the overall automaton.
 
-In \cite{Olcoz1995}, the author presents a translation from VHDL to
-Coloured Petri Nets (CPNs) thus giving a formal semantics to VHDL
-constructs. The author approach to VHDL semantics is a strict
-translation of the ``event-based'' VHDL simulator by means of Petri
-nets.  The author translates VHDL execution models (sea of processes)
-into CPNs, and also translates the kernel process into a CPN. The
-kernel process has previously been expressed as a VHDL process so that
-the translation into CPN is similar to the translation of other
-processes.  Signals are not represented in the subnets, instead, three
-shared variables depict the signal states: one variable for the
-driving, one for the effective and one for the current value of a
-given signal (see \cite[p.167]{VHDL2000} for the details on the values
-associated with signals during the simulation).  Colour domains of
-places in the subnets represent the different types of VHDL domains.
-Variables are represented by tokens.  Values in drivers are
+In \cite{Olcoz1995}, the author presents a translation from \vhdl{} to
+Coloured Petri Nets (CPNs) thus giving a formal semantics to the
+\vhdl{} constructs. The author approach to the \vhdl{} semantics is a
+strict translation of the ``event-based'' \vhdl{} simulator by means
+of Petri nets.  The author translates \vhdl{} execution models (sea of
+processes) into CPNs, and also translates the kernel process into a
+CPN. The kernel process has previously been expressed as a \vhdl{}
+process so that the translation into CPN is similar to the translation
+of other processes.  Signals are not represented in the subnets,
+instead, three shared variables depict the signal states: one variable
+for the driving, one for the effective and one for the current value
+of a given signal (see \cite[p.167]{VHDL2000} for the details on the
+values associated with signals during the simulation).  Colour domains
+of places in the subnets represent the different types of \vhdl{}
+domains.  Variables are represented by tokens.  Values in drivers are
 represented by sequences of transactions (equivalent to waveforms);
 the author defines a set of functions that are convenient to handle
 sequences of transactions.  Sequential statements are partitioned into
@@ -463,16 +486,16 @@ process is a broad CPN having some of its places interfaced with the
 process subnets.  The decoloration of the Petri net enables the
 analysis of the model and the detection of dead-locks.
 
-In \cite{Deharbe1995}, the author gives a formal semantics to VHDL by
-transforming a VHDL design into an abstract machine, i.e defined by a
+In \cite{Deharbe1995}, the author gives a formal semantics to \vhdl{} by
+transforming a \vhdl{} design into an abstract machine, i.e defined by a
 set of inputs, outputs, states and transition function over states and
 outputs. The author is interested in the verification of properties
-over VHDL designs (temporal properties) or to prove equivalence
+over \vhdl{} designs (temporal properties) or to prove equivalence
 between designs (bisimulation).  To operate this transformation, only
-a subset of VHDL is considered, otherwise a finite-state
-representation is not reachable.  The covered VHDL subset consists of
+a subset of \vhdl{} is considered, otherwise a finite-state
+representation is not reachable.  The covered \vhdl{} subset consists of
 objects with finite types, and no quantitative timing constructs (no
-after clause in signal assignments).  % The author claims that a VHDL
+after clause in signal assignments).  % The author claims that a \vhdl{}
 % design is implemented by an abstract machine if they have the same
 % observational behavior, i.e. given the same inputs they yield the
 % same outputs.
@@ -483,22 +506,22 @@ states and outputs.  Process statements are composed with a special
 composition operator to obtain a global abstract machine. Moreover,
 the article lays out a method to transform a block statement into an
 abstract machine. The initiative is to be noticed as there are only a
-few papers, dealing with the formalization of the VHDL semantics, that
+few papers, dealing with the formalization of the \vhdl{} semantics, that
 are interested in such hierarchical constructs as block or component
 instantiation statements. The article concludes with an expression of
-the space of complexity entailed by the transformation of a VHDL
+the space of complexity entailed by the transformation of a \vhdl{}
 design into an abstract machine.
 
 Although the translational semantics described above meet most of the
 qualifying criterions in relation to our needs, we are not especially
 interested in implementing one of these. The main reason being that it
 would necesitate the implementation of the tranformation from the
-abstract VHDL syntax to the target model in addition to the
+abstract \vhdl{} syntax to the target model in addition to the
 implementation of the semantics of the target model.
 
-Table~\ref{tab:sum-vhdl-sem} summarizes the analysis of the VHDL
+Table~\ref{tab:sum-vhdl-sem} summarizes the analysis of the \vhdl{}
 semantics encountered during our literature
-review. Table~\ref{tab:sum-vhdl-sem} compares the different VHDL
+review. Table~\ref{tab:sum-vhdl-sem} compares the different \vhdl{}
 semantics in relation to our qualifying criterions (see
 Section~\ref{sec:qualifying-criterions}).
 
@@ -596,7 +619,7 @@ Section~\ref{sec:qualifying-criterions}).
       \hline
     \end{tabular}%
   }
-  \caption{A comparative summary on VHDL formal semantics.}
+  \caption{A comparative summary on \vhdl{} formal semantics.}
   \label{tab:sum-vhdl-sem}
 
   \begin{itemize}[label=-]
@@ -617,17 +640,16 @@ Section~\ref{sec:qualifying-criterions}).
 
 \newpage
 
-To summarize, we are interesting in a semantics with an operational
-setting, built for the purpose of interactive theorem proving
-(ideally, with an existing implementation in the \coq{} proof
-assistant). Most important, the formal semantics must be able to deal
-with the expression of synchronous designs, that is, designs
-synchronized with a clock signal. Therefore, a synchronous simulation
-cycle must be at least expressible within the semantics. Moreover, the
-semantics must handle component instantiation statements as they are,
-that is, without transforming them into equivalent processes. As a
-bonus, the semantics should formalize the elaboration part of VHDL
-semantics.
+To summarize, we are interested in a semantics built for the purpose
+of interactive theorem proving (ideally, with an existing
+implementation in the \coq{} proof assistant). Most important, the
+formal semantics must be able to deal with the expression of
+synchronous designs, that is, designs synchronized with a clock
+signal. Therefore, a synchronous simulation cycle must be at least
+expressible within the semantics. Moreover, the semantics must handle
+component instantiation statements as they are, that is, without
+transforming them into equivalent processes. As a bonus, the semantics
+should formalize the elaboration part of \vhdl{} semantics.
 
 In Table~\ref{tab:sum-vhdl-sem}, cells are colored in green when the
 cell's content foster the adoption of the semantics, in yellow when
@@ -636,28 +658,28 @@ not disqualifying, and red when the content is a disqualifying
 criterion. With regards to the semantics adoption, cells are labelled
 in light grey when their content is neutral. Now comparing the entries
 of Table~\ref{tab:sum-vhdl-sem} with the expression of our needs, we
-can discard the semantics with a cell labelled in red, that is most of
-the denotational semantics; moreover, all translational semantics are
-let aside for the reasons cited before. The candidate semantics are
-the operational semantics, plus the denotational semantics by Borrione
-and Salem \cite{Borrione1995}, the only semantics that formalizes an
-explicitly synchronous simulation cycle. The semantics that is the
-most likely to be adopted is the Borrione and Salem's
-semantics. However, we prefer an operational setting for our semantics
-because it is more fit to our task. To lower down the complexity of
-proofs, we really need a semantics that builds the synchronism into
-its simulation cycle, therefore putting aside all the intricacies of
-the full-blown VHDL simulation cycle. Moreover, the big-step style for
+can discard the semantics with a cell labelled in red, that is, most
+of the denotational semantics; moreover, all translational semantics
+are disqualified for the previously mentioned reasons. The candidate
+semantics are the operational semantics, plus the denotational
+semantics by Borrione and Salem \cite{Borrione1995}, the only
+semantics that formalizes an explicitly synchronous simulation
+cycle. The semantics that is the most likely to be adopted is the
+Borrione and Salem's semantics. However, we prefer an operational
+setting for our semantics. To lower down the complexity of proofs, we
+really need a semantics that builds the synchronism into its
+simulation cycle, therefore putting aside all the intricacies of the
+full-blown \vhdl{} simulation cycle. Moreover, the big-step style for
 an operational semantics is more relevant to us; as stated before, we
 are not interested in the intermediary states of computation that a
 small-step style semantics considers.  Based on these observations, we
-have decided to formalize our own VHDL semantics inspired from the
+have decided to formalize our own \vhdl{} semantics inspired from the
 semantics of Borrione and Salem's \cite{Borrione1995} and Van Tassel's
 \cite{VanTassel1995}. The following sections are dedicated to the
-presentation of the syntax and semantics of a subset of VHDL called
-\hvhdl{}. \hvhdl{} embeds the subset of VHDL that we are interested in
-when considering the VHDL designs generated by the \hilecop{}
-transformation.
+presentation of the syntax and semantics of a subset of \vhdl{} that
+we baptise \hvhdl{}. \hvhdl{} embeds the subset of \vhdl{} that we are
+interested in when considering the \vhdl{} designs generated by the
+\hilecop{} transformation.
 
 %%% Local Variables:
 %%% mode: latex
