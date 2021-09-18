@@ -221,9 +221,13 @@
   % EDGES between PNs
   % 
 
+  \draw ($(pn1.west)-(.6,0)$) edge[->,double, line width=1pt] node[above,midway]{\Large$\downarrow$} ($(pn1.west)+(.2,0)$);
   \draw ($(pn1.east)-(.1,0)$) edge[->,double, line width=1pt] node[above,midway]{\Large$\uparrow$} ($(pn2.west)+(.1,0)$);
   \draw ($(pn2.east)-(.1,0)$) edge[->,double, line width=1pt] node[above,midway]{\Large$\downarrow$} ($(pn3.west)+(.1,0)$);
+  \draw ($(pn3.east)-(.1,0)$) edge[->,double, line width=1pt] node[above,midway]{\Large$\uparrow$} ($(pn3.east)+(.6,0)$);
   
+  \node at ($(pn1.west)-(.9,0)$) {\dots};
+  \node at ($(pn3.east)+(.9,0)$) {\dots};
 \end{tikzpicture}
 
 \end{document}

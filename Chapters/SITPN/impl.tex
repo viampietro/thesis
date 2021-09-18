@@ -55,13 +55,13 @@ define the finite sets of places (Line~\ref{line:pls}), transitions
 \texttt{Sitpn} record. We want to use these finite sets in the
 signature of functions appearing in the structure (e.g use the finite
 set of places $P$ in the signature of the initial marking
-$M_0\in{}P\rightarrow\mathbb{N}$). To do son we leverage the \coq{}
+$M_0\in{}P\rightarrow\mathbb{N}$). To do so, we leverage the \coq{}
 \texttt{sig} type to define subsets of elements verifying a certain
 property. Thus, we define the finite set $P$ as the subset of natural
 numbers that are members of the \texttt{places} list
 (Line~\ref{line:P}). We use the \texttt{In} relation defined in the
 \coq{} standard library to express the membership of a natural number
-regarding the elements of \texttt{places} list. Also, the
+regarding the elements of the \texttt{places} list. Also, the
 \texttt{ArcT} type (Line~\ref{line:pre}) implements the set
 $\{\mathtt{inhib},\mathtt{test},\mathtt{basic}\}$; the
 \texttt{TimeInterval} type (Line~\ref{line:Is}) implements the set

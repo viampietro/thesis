@@ -158,39 +158,44 @@ with places and triggered when the places become marked. The execution
 of operations affects the value of the variables, and the value of
 conditions depends on Boolean expressions computed upon the variables.
 Conditions are associated with transitions and become involved in the
-firing process. Thus, in an IPN, a transition is firable if it is
-enabled and if all its associated conditions are \texttt{true}.
+firing process. Thus, in an IPN, a transition is firable if:
+
+\begin{itemize}[label=--]
+\item it is enabled
+\item all its associated conditions are \texttt{true}.
+\end{itemize}
 
 Among other applications, IPNs are handy to model the behavior of
 hardware controllers. Thus, interpretation aspects have been naturally
 introduced to the \hilecop{} high-level models, which are models of
 hardware systems. The \hilecop{} version of IPNs refines the concepts
-of the general definition as follows. The set of variables corresponds
-to the set of \vhdl{} signals that are handled by the model; a signal
-can be an input port, an output port or an internal signal of the
-modeled hardware circuit. The operations are separated in two kinds,
-namely: actions and functions. Actions (or continuous operations) are
-associated to the places of a Petri net.  All the actions associated
+of the general definition. In this version, the set of variables
+corresponds to the set of \vhdl{} signals that are handled by the
+model; a signal can be an input port, an output port or an internal
+signal of the modeled hardware circuit. The operations are separated
+in two kinds, namely: actions and functions. Actions (or continuous
+operations) are associated to the places; all the actions associated
 to a place $p$ are activated as long as $p$ is marked (i.e. as long as
 $p$ holds a token). Functions (or discrete operations) are associated
-to the transitions of a Petri net. When a transition $t$ is fired, all
-functions associated to $t$ are executed once.
+to the transitions; when a transition $t$ is fired, all functions
+associated to $t$ are executed once.
 
 Figure~\ref{fig:ipn} illustrates the use of actions, functions and
-conditions in an interpreted Petri net. 
+conditions in an interpreted Petri net as applied in the \hilecop{}
+high-level models.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=.7\textwidth]{Figures/SITPN/interpreted-pn}
   \caption[An example of Interpreted Petri net.]{An example of
-    Interpreted Petri net; on the left side, the interpreted Petri
+    interpreted Petri net; on the left side, the interpreted Petri
     net; on the right side, examples of tests associated to conditions
     and operations associated to actions and functions.}
   \label{fig:ipn}
 \end{figure}%
 %
 In Figure~\ref{fig:ipn}, the set of \vhdl{} signals, on which the
-interpretation elements acts upon, is
+interpretation elements act upon, is
 $\{\mathit{i}, \mathtt{s}, \mathtt{o}_1, \mathtt{o}_2\}$. Here, signal
 \texttt{i} is an input port of the hardware, \texttt{s} is an internal
 signal, and \texttt{o}$_1$ and \texttt{o}$_2$ are two output
@@ -207,7 +212,7 @@ signals of the model which are passed as inputs. Concretely, in the
 \hilecop{} high-level models, functions and actions are declared as
 \vhdl{} procedures. Listing~\ref{lst:vhdl-fun} gives one possible
 implementation of the \texttt{set\_temperature} operation as a \vhdl{}
-procedure; the \texttt{set\_temperature} operation associated with
+procedure; the \texttt{set\_temperature} operation is associated with
 function $f_0$ in Figure~\ref{fig:ipn}.
 
 \begin{lstlisting}[language=vhdl,caption={[An example of \vhdl{} procedure implementing a function.]An example of \vhdl{} procedure implementing the operation \texttt{set\_temperature} associated with the function $f_0$.},label={lst:vhdl-fun},framexleftmargin=1.5em,xleftmargin=2em,,numbers=left,
@@ -235,26 +240,31 @@ new value to the \texttt{tmp} and \texttt{flag} signals
 accordingly. The $\Leftarrow$ operator is the assignment operator for
 signals in the \vhdl{} syntax. 
 
-In our formalization of the \hilecop{} PN structure, given in
-Definition~\ref{def:sitpn}, we consider a simplified version of the
-interpretation. In fact, we do not consider the set of \vhdl{} signals
+Therefore, to compute the evolution of an IPN, we must be able to
+interpret the content of operations associated with actions and
+functions, and also to evaluate the Boolean expressions associated
+with conditions.  This implies the definition of interpretation rules
+that give an execution semantics to operations and expressions.  For
+now, we consider a simplified version of the interpretation that
+permits us not to bother with the semantics of operations and Boolean
+expressions.  In fact, we do not consider the set of \vhdl{} signals
 as a part of the \hilecop{} PN structure; thus, we are not interested
 in the representation of the Boolean expressions associated with
 conditions, nor in the \vhdl{} procedures that implement functions and
 actions. Regarding conditions, we consider that their associated
 Boolean expressions refer only to the input ports of the hardware
 circuit (and no more to internal signals, as it is the case for
-condition $c_1$ in Figure~\ref{fig:ipn}). Thus, it permits us to
-simplify our interpretation model by stating that
-
-\begin{center}
-  the condition values are determined only by the environment of the
-  modeled hardware circuit.
-\end{center}
-
-As for actions and functions, we are only interested in the fact that
-a given action/function is activated/executed but no more in actually
-executing the associated operation.
+condition $c_1$ in Figure~\ref{fig:ipn}). Thus, the value of the
+Boolean expressions associated with conditions only depend on the
+environment of the modeled hardware circuit; indeed, it is the
+environment that provides values to the input ports of the circuit.
+Moreover, since the value of conditions only depends on input ports
+which values are set by the environment, then we can consider that
+conditions directly receive their value from the environment; we no
+more have to consider the Boolean expressions associated with
+conditions. Regarding actions and functions, we are only interested in
+the fact that a given action/function is activated/executed but no
+more in actually executing the associated operation.
 
 % However, when considering the semantics of IPNs, what is of
 % interest to us is the value of conditions and the execution state of
@@ -292,7 +302,7 @@ structure of the TPN.
   \centering
   \includegraphics[keepaspectratio=true, width=0.2\textwidth]{Figures/SITPN/time-pn}
   \caption[An example of time Petri net.]{An example of time Petri
-    net. The value of time counters appears in red.}
+    net. The value of time counters appears in \textcolor{red}{red}.}
   \label{fig:tpn}
 \end{figure}
 
@@ -306,12 +316,19 @@ When a transition associated with a time interval is fired or
 disabled, a reset order is sent to the transition to set its time
 counter to zero. The value of reset orders (Boolean values) is also a
 part of the TPN state.  In time Petri nets, a transition is firable
-only if its time counter value is within its time interval. For
-instance, in Figure~\ref{fig:tpn}, only transition $t_0$ is
+if:
+
+\begin{itemize}[label=--]
+\item it is enabled
+\item its time counter value is within its time interval.
+\end{itemize}
+
+For instance, in Figure~\ref{fig:tpn}, only transition $t_0$ is
 firable. Moreover, there are several possible firing policies for
 TPNs. Here, we will only consider the \textit{imperative} firing
 policy: as soon as a time counter reaches the lower bound of a time
-interval, the associated transition must be fired.
+interval, the associated transition must be fired if all the other
+firability conditions are verified.
 
 \paragraph{Petri nets with priorities}
 
@@ -355,12 +372,12 @@ its synchronous execution.
 
 The class of interpreted Petri nets increases the expressiveness of
 the \hilecop{} high-level models. However, to ensure the safe
-execution of functions after the synthesis of the designed circuit on
-an FPGA card, the whole system must be synchronized with a clock
-signal \cite{Leroux2014}. As a consequence, a clock signal also
-regulates the evolution of SITPNS (i.e. it is a part of their
-semantics). The evolution of a SITPN is \textit{synchronized} with
-two clock events: the rising edge and the falling edge of the
+execution of functions after the synthesis of the designed circuit,
+the whole system must be synchronized with a clock signal
+\cite{Leroux2014}. As a consequence, a clock signal also regulates the
+evolution of SITPNS (i.e. it is a part of their semantics). The
+evolution of a SITPN is \textit{synchronized} with two clock events:
+the rising edge and the falling edge of the
 signal. Figure~\ref{fig:sync-exec} depicts the process of state
 evolution, following the clock signal.
 
@@ -409,24 +426,33 @@ formal definition in Section~\ref{sec:sitpn-sem}.
 From Step~1 to Step~2, the rising edge of the clock signal triggers
 the SITPN state evolution. Here, transition $t_0$ is fired. At Step~1,
 transition $t_0$ gathers all the necessary conditions to trigger the
-firing process, namely: $t_0$ is enabled by the current marking,
-condition $c_0$ is \texttt{true} (appears in
-\textcolor{Green}{green}), the value of $t_0$'s time counter is within
-the time interval. As a consequence, one token is consumed in place
-$p_0$ and one token is produced in place $p_1$. Also, function $f_0$
-is executed at Step~2 (appears in \textcolor{Green}{green}) and a
-reset order is sent to the time counter of $t_0$ (appears in
-\textcolor{blue}{blue}). From Step~2 to Step~3, the falling edge
-updates the action activation status: $a_0$ stays activated as place
-$p_0$ is still marked; $a_1$ becomes newly activated as $p_1$ is
-marked. The value of time counters are updated: $t_0$'s time counter
-is set to zero as the transition previously received a reset
-order. However, as $t_0$ is still enabled by the new marking, its time
-counter is incremented. Thus, the resulting time counter value at
-Step~3 is of one (i.e. result of reset plus increment). Also, the
-environment provides a new value to each condition. As a consequence,
-condition $c_0$ takes the value \texttt{false} and condition $c_1$
-keeps the same value.
+firing process, namely:
+
+\begin{itemize}[label=--]
+\item $t_0$ is enabled by the current marking
+\item condition $c_0$ is \texttt{true} (appears in
+  \textcolor{Green}{green})
+  
+\item the value of $t_0$'s time counter is within the associated time
+  interval ($2\in[2,4]$).
+\end{itemize}
+
+As a consequence, one token is consumed in place $p_0$ and one token
+is produced in place $p_1$. Also, function $f_0$ is executed at the
+occurrence of the rising edge of the clock signal, and thus, $f_0$
+appears in in \textcolor{Green}{green} at Step~2. Due to the firing of
+$t_0$ at the rising edge, a reset order is sent to the time counter of
+$t_0$ and it appears in \textcolor{blue}{blue} at Step~2. From Step~2
+to Step~3, the falling edge updates the action activation status:
+$a_0$ stays activated as place $p_0$ is still marked; $a_1$ becomes
+newly activated as $p_1$ is marked. The value of time counters are
+updated: $t_0$'s time counter is set to zero as the transition
+previously received a reset order. However, as $t_0$ is still enabled
+by the new marking, its time counter is incremented. Thus, the
+resulting time counter value at Step~3 is of one (i.e. result of reset
+plus increment). Also, the environment provides a new value to each
+condition. As a consequence, condition $c_0$ takes the value
+\texttt{false} and condition $c_1$ keeps the same value.
 
 \paragraph{A remark on priorities}
 
@@ -467,15 +493,21 @@ mechanism. As illustrated in Figure~\ref{fig:resid-marking}, to
 determine which transitions of $t_0$, $t_1$ and $t_2$ must be fired, a
 \emph{residual marking} is computed by following the priority
 order. For each transition of the group $t_0$, $t_1$ and $t_2$, the
-residual marking represents the remnant of tokens in $p_0$ after the
+residual marking represents the remaining tokens in $p_0$ after the
 firing of transitions with a higher firing priority. Thus, in the
 semantics of SITPNs, we add an extra condition to the firing of a
-transition: to be fired, a transition must be enabled by the current
-marking, must have all its conditions valuated to \texttt{true}, must
-have its time counter within its time interval \emph{and} must be
-enabled by the residual marking. The computation of the residual
-marking only involves the consumption phase of the firing process;
-tokens are withdrawn from places, but none are generated.
+transition: to be fired, a transition must be
+
+\begin{itemize}[label=--]
+\item enabled by the current marking  
+\item must have all its conditions valuated to \texttt{true}
+\item must have its time counter within its time interval
+\item \emph{and} must be enabled by the residual marking.
+\end{itemize}
+
+The computation of the residual marking only involves the consumption
+phase of the firing process; tokens are withdrawn from places, but
+none are generated.
 
 \begin{figure}[H]
   \centering
@@ -485,7 +517,7 @@ tokens are withdrawn from places, but none are generated.
     group of conflicting transitions. At \circled{1}
     (resp. \circled{2} and \circled{3}), the residual marking for
     transition $t_0$ (resp. $t_1$ and $t_2$). Condition $c_0$ is in
-    \textcolor{red}{red} to indicate that its currentl value is
+    \textcolor{red}{red} to indicate that its current value is
     \texttt{false}.}
   \label{fig:resid-marking}
 \end{figure}
@@ -501,7 +533,7 @@ marking obtained after the firing of $t_0$, i.e. the only transition
 with a higher priority. As illustrated at \circled{2}, $t_1$ is
 enabled by the residual marking. However, $t_1$ does not gather all
 the conditions to be firable as the value of condition $c_0$ is
-\texttt{false}. Thus, $t_1$ will not be fired on the newt rising
+\texttt{false}. Thus, $t_1$ will not be fired on the new rising
 edge. The residual marking for $t_2$ is obtained after the firing of
 $t_0$ only. Even though transition $t_1$ has a higher firing priority
 than $t_2$, $t_1$ is not a member of the set of fired transitions.
@@ -537,7 +569,10 @@ In Figure~\ref{fig:locked-tc}, condition $c$ is valuated to
 transition $t$ can not be fired but is still enabled by the
 marking. On the next falling edge, the time counter of transition $t$
 is incremented and overreaches the upper bound of interval $[2,4]$ and
-thus becomes locked.
+thus becomes locked. If the designer of the model has not anticipated
+the case of a locked time counter, and has not provided an alternative
+to disable place $p$ in that case, then the transition $t$ will never
+be firable again.
 
 %%% Local Variables:
 %%% mode: latex
