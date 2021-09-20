@@ -1,5 +1,5 @@
 \subsection{Typing relation}
-\label{subsec:constr-satif-rel}
+\label{sec:constr-satif-rel}
 
 The typing relation $\in_c$ checks that a given value conforms to a
 given type.
@@ -220,7 +220,7 @@ instance, owner of the input port map, if:
     {\begin{prooftree}
 
         % Lists formal parts.
-        \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}_\emptyset\vdash\mathrm{ipmap}\xrightarrow{list_{ipm}}\mathcal{L}}
+        \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}_\emptyset\vdash\mathrm{i}\xrightarrow{list_{ipm}}\mathcal{L}}
 
         % Well-formed port map.
         \hypo{\mathtt{check}_{pm}(Ins(\Delta_c),\mathcal{L})}
@@ -228,7 +228,7 @@ instance, owner of the input port map, if:
         % Conclusion
         \infer[template={\inserttext}]2
         {
-          $\Delta,\Delta_c,\sigma\vdash\mathtt{valid}_{ipm}(\mathrm{ipmap})$
+          $\Delta,\Delta_c,\sigma\vdash\mathtt{valid}_{ipm}(\mathrm{i})$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -246,8 +246,11 @@ the identifier or indexed identifier of the formal part.
   \item $\mathrm{id}_f\in{}Ins(\Delta_c)$ checks that the identifier
     $\mathrm{id}_f$ is an input port identifier of $\Delta_c$.
   \item $\mathrm{id}_f\notin\mathcal{L}$ checks that the port
-    identifier $id_f$ is not already mapped, i.e. it is not already
-    referenced in the $\mathcal{L}$ set.
+    identifier $\mathrm{id}_f$ is not already mapped, i.e. it is not
+    already referenced in the $\mathcal{L}$ set.
+  \item $\nexists{}v_i$ s.t. $(\mathrm{id}_f,v_i)\in\mathcal{L}$
+    checks that a subelement of id$_f$ is not already map, that is, if
+    id$_f$ denotes a signal identifier of the \texttt{array} type.
   \end{itemize}
 \end{sideconds}
 
@@ -268,6 +271,7 @@ the identifier or indexed identifier of the formal part.
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{l}
             $\mathrm{id}_f\notin\mathcal{L}$, $\mathrm{id}_f\in{}Ins(\Delta_c)$\\
+            $\nexists{}v_i$ s.t. $(\mathrm{id}_f,v_i)\in\mathcal{L}$\\
             $\Delta_c(\mathrm{id}_f)=T$ \\
           \end{tabular}
         }]
@@ -302,7 +306,7 @@ the identifier or indexed identifier of the formal part.
     \hypo{SE_l(\mathrm{e}_i)}
 
     % Evaluates e_i and e.
-    \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+    \hypo{&\mathrm{e}_i\xrightarrow{e}v_i}
     \infer[no rule]1{\Delta,\sigma&\vdash\mathrm{e}\xrightarrow{e}v}
     
     % Evaluates e.
@@ -339,16 +343,13 @@ the identifier or indexed identifier of the formal part.
     \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}\vdash\mathrm{assoc}_{ip}\xrightarrow{list_{ipm}}\mathcal{L}'}
 
     % Lists lassoc.
-    \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}'\vdash\mathrm{ipmap}\xrightarrow{list_{ipm}}\mathcal{L}''}
+    \hypo{\Delta,\Delta_c,\sigma,\mathcal{L}'\vdash\mathrm{i}\xrightarrow{list_{ipm}}\mathcal{L}''}
     
     % Conclusion
-    \infer[template={\inserttext}]
-    2
-    {
+    \infer[template={\inserttext}] 2 {
       $\Delta,\Delta_c,\sigma,\mathcal{L}\vdash
-      ~\mathrm{assoc}_{ip}\mathtt{,}~\mathrm{ipmap}~$
-      $\xrightarrow{list_{ipm}}\mathcal{L}''$
-    }
+      ~\mathrm{assoc}_{ip}\mathtt{,}~\mathrm{i}~$
+      $\xrightarrow{list_{ipm}}\mathcal{L}''$ }
   \end{prooftree}
 \end{figure}
 
@@ -405,7 +406,7 @@ output ports are \texttt{open} by default.
         % Lists formal parts.
         \hypo{
           \Delta,\Delta_c,\mathcal{L}_\emptyset,\mathcal{L}_{ids\emptyset}\vdash
-          \mathrm{opmap}
+          \mathrm{o}
           \xrightarrow{list_{opm}}
           \mathcal{L},\mathcal{L}_{ids}
         }
@@ -414,7 +415,7 @@ output ports are \texttt{open} by default.
         \infer[template={\inserttext}]
         1
         {
-          $\Delta,\Delta_c\vdash\mathtt{valid}_{opm}(\mathrm{opmap})$
+          $\Delta,\Delta_c\vdash\mathtt{valid}_{opm}(\mathrm{o})$
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -466,9 +467,9 @@ output ports are \texttt{open} by default.
   $Outs_c(\mathrm{id}_f)=T$ and
   $Sigs(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ checks that the
   type of $\mathrm{id}_f$ and the type of the elements of
-  $\mathrm{id}_a$ are the same. Note that $\mathrm{id_a}$ must denote
-  an array as $\mathrm{id}_f$ is mapped to one subelement of
-  $\mathrm{id}_a$.
+  $\mathrm{id}_a$ are the same. Note that $\mathrm{id}_a$ be an signal
+  identifier of the \texttt{array} type as $\mathrm{id}_f$ is mapped
+  to one subelement of $\mathrm{id}_a$.
 \end{sideconds}
 
 \begin{table}[H]
@@ -480,7 +481,7 @@ output ports are \texttt{open} by default.
         \hypo{SE_l(\mathrm{e}_i)}
 
         % Evaluates e_i.
-        \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \hypo{\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i (in array bounds).
         \hypo{v_i\in_c{}nat(n,m)}
@@ -547,7 +548,7 @@ output ports are \texttt{open} by default.
         \hypo{SE_l(\mathrm{e}_i)}
 
         % Evaluates e_i.
-        \hypo{\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \hypo{\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v_i (in array bounds).
         \hypo{v_i\in_c{}nat(n,m)}
@@ -585,8 +586,8 @@ output ports are \texttt{open} by default.
         \infer[no rule]1{&SE_l(\mathrm{e}_i)}
 
         % Evaluates e_i.
-        \hypo{&\vdash\mathrm{e'}_i\xrightarrow{e}v'_i}
-        \infer[no rule]1{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \hypo{&\mathrm{e'}_i\xrightarrow{e}v'_i}
+        \infer[no rule]1{&\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Well-typed v'_i and v_i.
         \hypo{v'_i&\in_c{}nat(n',m')}
@@ -663,9 +664,9 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
 
 \begin{premises}
   \begin{itemize}
-  \item $\Delta,\sigma,\Lambda\vdash{}e\xrightarrow{e}v$ evaluates the
-    expression assigned to signal $\mathrm{id}_s$ in the context
-    $\Delta,\sigma,\Lambda$.%  During the elaboration, $\sigma$
+  \item $\Delta,\sigma,\Lambda\vdash{}\mathrm{e}\xrightarrow{e}v$
+    evaluates the expression assigned to signal $\mathrm{id}_s$ in the
+    context $\Delta,\sigma,\Lambda$.% During the elaboration, $\sigma$
     % corresponds to the default design state, i.e. where each signal is
     % associated to its type default value.
   \item $v\in_c{}T$ checks that the value of expression $e$ conforms
@@ -679,7 +680,7 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
     {\begin{prooftree}
 
         % Evaluates e.
-        \hypo{\Delta,\sigma,\Lambda\vdash{}e\xrightarrow{e}v}
+        \hypo{\Delta,\sigma,\Lambda\vdash{}\mathrm{e}\xrightarrow{e}v}
         
         % Well-typed v.
         \hypo{v\in_c{}T}
@@ -707,8 +708,8 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
     {\begin{prooftree}
 
         % Evaluates e and e_i.
-        \hypo{\Delta,\sigma,\Lambda&\vdash{}e\xrightarrow{e}v}
-        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash{}e_i\xrightarrow{e}v_i}
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e_i}\xrightarrow{e}v_i}
         
         % Well-typed v and v_i.
         \hypo{v&\in_c{}T}
@@ -765,8 +766,8 @@ is well-typed in the context $\Delta,\sigma,\Lambda$.
     {\begin{prooftree}
 
         % Evaluates e and e_i.
-        \hypo{\Delta,\sigma,\Lambda&\vdash{}e\xrightarrow{e}v}
-        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash{}e_i\xrightarrow{e}v_i}
+        \hypo{\Delta,\sigma,\Lambda&\vdash\mathrm{e}\xrightarrow{e}v}
+        \infer[no rule]1{\Delta,\sigma,\Lambda&\vdash\mathrm{e_i}\xrightarrow{e}v_i}
         
         % Well-typed v and v_i.
         \hypo{v&\in_c{}T}

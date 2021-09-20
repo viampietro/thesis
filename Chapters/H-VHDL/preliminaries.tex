@@ -21,13 +21,13 @@ set. The $type$ and $value$ semantic types are defined as follows:
 
 In Table~\ref{tab:type-value}, the $type$ type is in any way similar
 to the $\tau$ entry of the \hvhdl{} abstract syntax. However, all
-constraint bounds, that were taking the form of expressions in the
-constrained natural and the array type indications, have been
-evaluated to natural numbers. $\mathtt{NATMAX}$ denotes the maximum
-value for a natural number.  The $\mathtt{NATMAX}$ value depends on
-the implementation of the VHDL language; $\mathtt{NATMAX}$ must at
-least be equal to $2^{31}-1$. Note that the $array$ value contains at
-least one value as an array's index range contains at least one index.
+constraint bounds, that were expressions in the constrained natural
+and the array type indications, have been evaluated to natural
+numbers. $\mathtt{NATMAX}$ denotes the maximum value for a natural
+number.  The $\mathtt{NATMAX}$ value depends on the implementation of
+the \vhdl{} language; $\mathtt{NATMAX}$ must at least be equal to
+$2^{31}-1$. Note that the $array$ value contains at least one value as
+an array's index range contains at least one index.
 
 % \begin{notation}[Partial functions]
 %   In the following sections, when the context is free from any
@@ -50,11 +50,11 @@ least one value as an array's index range contains at least one index.
 \label{sec:elab-design-and-state}
 
 Now, let us define the structure of \textit{elaborated design}. An
-elaborated design is built during the elaboration of an \hvhdl{}
-design (see Section~\ref{sec:elab-rules}). Then, the elaborated design
-will act as a runtime environment in the expression of the simulation
-rules. Let $ElDesign$ be the set of the elaborated designs. An
-elaborated design is a composite environment built out of multiple
+elaborated design is built during the elaboration of a \hvhdl{} design
+(see Section~\ref{sec:elab-rules}). Then, the elaborated design will
+act as a runtime environment in the expression of the simulation
+rules. Let $ElDesign$ be the set of elaborated designs. An elaborated
+design is a composite environment built out of multiple
 sub-environments.  Each sub-environment is a table, represented as a
 function, mapping identifiers of a certain category of constructs
 (e.g, input port identifiers) to their declaration information (e.g,
@@ -87,24 +87,26 @@ design is defined as follows:
   \end{itemize}
 \end{definition}
 
-We assume that there are no overlapping between the identifiers of the
+We assume that there is no overlapping between the identifiers of the
 sub-environments (i.e, an identifier belongs to at most one
 sub-environment), and also between the identifiers of the
 sub-environments and the identifiers of local environments. When there
 is no ambiguity, we write $\Delta(x)$ to denote the value returned for
 identifier $x$, where $x$ is looked up in the appropriate field of
 $\Delta$. We write $x\in\Delta$ to state that identifier $x$ is
-defined in one of $\Delta$'s fields. We note $\Delta(x)\leftarrow{}v$
-the overriding of the value associated to identifier $x$ with value
-$v$ in the appropriate field of $\Delta$, $\Delta\cup{}(x,v)$ to note
-the addition of the mapping from identifier $x$ to value $v$ in the
-appropriate field of $\Delta$, that assuming $x\notin\Delta$. We write
-$x\in\mathcal{F}(\Delta)$, where $\mathcal{F}$ is a field of $\Delta$,
-when more precision is needed regarding the lookup of identifier $x$
-in the record $\Delta$.
+defined in the domain of one of $\Delta$'s field. We note
+$\Delta(x)\leftarrow{}v$ the overriding of the value associated to
+identifier $x$ with value $v$ in the appropriate field of $\Delta$,
+$\Delta\cup{}(x,v)$ to note the addition of the mapping from
+identifier $x$ to value $v$ in the appropriate field of $\Delta$, that
+assuming $x\notin\Delta$. We write $x\in\mathcal{F}(\Delta)$, where
+$\mathcal{F}$ is a field of $\Delta$, when more precision is needed
+regarding the lookup of identifier $x$ in the record $\Delta$.\\
 
-Let $\Sigma$ be the set of design states.  A design state of
-$\sigma\in{}\Sigma$ is defined as follows:
+Now let us define the run-time state of a design, i.e. the state that
+describes the value of signals and component instances in the course
+of a simulation. Let $\Sigma$ be the set of design states.  A design
+state of $\sigma\in{}\Sigma$ is defined as follows:
 
 \begin{definition}[Design state]
   \label{def:design-state}
@@ -125,17 +127,18 @@ $\sigma\in{}\Sigma$ is defined as follows:
 
 The $signal\mhyphen{}id$ subset is the disjoint union of
 $input\mhyphen{}id$, $output\mhyphen{}id$ and
-$declared\mhyphen{}signal\mhyphen{}id$. We use $\sigma(id)$ to denote
-the value associated to an identifier in the signal store
-$\mathcal{S}$ or in the component store $\mathcal{C}$ fields. When
-there is no ambiguity, we write $id\in\sigma$ to state that an
-identifier is defined in either the signal store $\mathcal{S}$ or the
-component store $\mathcal{C}$ fields. Also, when there is no
-ambiguity, we rely on indices or exponents to qualify the signal
-store, the component instance store and the set of events of a given
-design state. For instance, $\mathcal{C}_0$ denotes the component
-instance store of design state $\sigma_0$, and $\mathcal{E}'$ denotes
-the set of events of design state $\sigma'$, etc.
+$declared\mhyphen{}signal\mhyphen{}id$. When there is no ambiguity
+regarding to which store a given identifier belongs, we use
+$\sigma(id)$ to denote the value associated to an identifier in the
+signal store $\mathcal{S}$ or in the component store $\mathcal{C}$
+fields.  We write $id\in\sigma$ to state that an identifier is defined
+in either the signal store $\mathcal{S}$ or the component store
+$\mathcal{C}$ fields. Also, when there is no ambiguity, we rely on
+indices or exponents to qualify the signal store, the component
+instance store and the set of events of a given design state. For
+instance, $\mathcal{C}_0$ denotes the component instance store of
+design state $\sigma_0$, and $\mathcal{E}'$ denotes the set of events
+of design state $\sigma'$, etc.
 
 \begin{notation}[No events design state]
   \label{notation:noev}
@@ -149,7 +152,7 @@ the set of events of design state $\sigma'$, etc.
 % \subsection{Design evaluation workflow.}
 % \label{subsec:elab-sim-wflow}
 
-% The workflow to evaluate a top-level VHDL design comprises two phases
+% The workflow to evaluate a top-level \vhdl{} design comprises two phases
 % with some pre-requisites.
 
 % \begin{figure}[H]
@@ -170,7 +173,7 @@ the set of events of design state $\sigma'$, etc.
 %   follows:
 
 %   \begin{enumerate}
-%   \item All types and subtypes defined in VHDL standard library packages
+%   \item All types and subtypes defined in \vhdl{} standard library packages
 %     are present in the environment, under the $\Gamma$ parameter.
 %   \item All types and subtypes defined in user-defined packages are
 %     present in the environment, under the $\Gamma$ parameter.
@@ -212,7 +215,7 @@ the set of events of design state $\sigma'$, etc.
 % \end{figure}
 
 % Here is how to interpret the above judgment: some syntactic element
-% \texttt{a} of the VHDL language is interpreted as \textit{i}
+% \texttt{a} of the \vhdl{} language is interpreted as \textit{i}
 % with respect to the relation \textit{rel}, in the environment
 % \textit{env}.
 
@@ -250,7 +253,7 @@ the set of events of design state $\sigma'$, etc.
 % interpreted as \textit{j} both with respect to relation \textit{rel},
 % then the syntactic element $S\mathtt{(a,b)}$ is interpreted as
 % $I\mathtt{(i,j)}$ with respect to relation \textit{rel}. Here, $S$ is
-% a relation appearing in the syntax of the VHDL language and bounding
+% a relation appearing in the syntax of the \vhdl{} language and bounding
 % syntactic elements \texttt{a} and \texttt{b}, whereas $I$ is a
 % relation belonging to the interpretation world, bounding elements $i$
 % and $j$ which are both interpretation results.
