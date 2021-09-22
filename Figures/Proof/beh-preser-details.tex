@@ -72,10 +72,10 @@
   \node (sigspoint) [draw,circle,fill=black,inner sep=1pt] at ($(sspoint.east)+(2,0)$) {};
 
   \node (sigrepoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigpoint.south)!.66!(sigppoint.north)$) {};
-  \node (sigfepoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigppoint.south)!.66!(sigspoint.north)$) {};
+  \node (sigfepoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigppoint.south)!.5!(sigspoint.north)$) {};
 
   \node (siginjrpoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigpoint.south)!.33!(sigppoint.north)$) {};
-  \node (siginjfpoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigppoint.south)!.33!(sigspoint.north)$) {};
+  % \node (siginjfpoint) [draw,circle,fill=black,inner sep=1pt] at ($(sigppoint.south)!.33!(sigspoint.north)$) {};
   
   \node at ($(spoint)!0.5!(sigpoint)+(0,3pt)$) {$\stackrel{\downarrow}{\approx}$};
   \node at ($(sppoint)!0.5!(sigppoint)+(0,3pt)$) {$\stackrel{\uparrow}{\approx}$};
@@ -95,7 +95,7 @@
   \node[anchor=west] (sigfelabel) at ($(sigfepoint)$) {$\sigma_\downarrow$};
   \node[anchor=west] (sigslabel) at ($(sigspoint)$) {$\sigma''$};
   \node[anchor=west] (siginjrlabel) at ($(siginjrpoint)$) {$\sigma_{i}$};
-  \node[anchor=west] (siginjflabel) at ($(siginjfpoint)$) {$\sigma'_{i}$};
+  % \node[anchor=west] (siginjflabel) at ($(siginjfpoint)$) {$\sigma'_{i}$};
   
 
   % SQUIGGY PATH LABELS.
@@ -103,11 +103,11 @@
   \node[anchor=east] at ($(spoint)!0.5!(sppoint)$) {$\uparrow$};
   \node[anchor=east] at ($(sppoint)!0.5!(sspoint)$) {$\downarrow$};
 
-  \node[anchor=west] at ($(sigpoint)!0.5!(siginjrpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject_\uparrow}$};
+  \node[anchor=west] at ($(sigpoint)!0.5!(siginjrpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject}$};
   \node[anchor=west] at ($(siginjrpoint)!0.5!(sigrepoint)$) {\fontsize{6}{8}\selectfont $\uparrow$};
   \node[anchor=west] at ($(sigrepoint)!0.5!(sigppoint)$) {\fontsize{6}{8}\selectfont $\downlsquigarrow$};
-  \node[anchor=west] at ($(sigppoint)!0.5!(siginjfpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject_\downarrow}$};
-  \node[anchor=west] at ($(siginjfpoint)!0.5!(sigfepoint)$) {\fontsize{6}{8}\selectfont $\downarrow$};
+  % \node[anchor=west] at ($(sigppoint)!0.5!(siginjfpoint)$) {\fontsize{6}{8}\selectfont $\mathtt{Inject_\downarrow}$};
+  % \node[anchor=west] at ($(siginjfpoint)!0.5!(sigfepoint)$) {\fontsize{6}{8}\selectfont $\downarrow$};
   \node[anchor=west] at ($(sigfepoint)!0.5!(sigspoint)$) {\fontsize{6}{8}\selectfont $\downlsquigarrow$};
   
   
@@ -133,10 +133,7 @@
   ($(sigrepoint.south)-(0,2pt)$) -- ($(sigppoint.north)+(0,3pt)$);
 
   \path[draw,->]
-  ($(sigppoint.south)-(0,2pt)$) -- ($(siginjfpoint.north)+(0,3pt)$);
-
-  \path[draw,->]
-  ($(siginjfpoint.south)-(0,2pt)$) -- ($(sigfepoint.north)+(0,3pt)$);
+  ($(sigppoint.south)-(0,2pt)$) -- ($(sigfepoint.north)+(0,3pt)$);
 
   \path[draw,->]
   ($(sigfepoint.south)-(0,2pt)$) -- ($(sigspoint.north)+(0,3pt)$);

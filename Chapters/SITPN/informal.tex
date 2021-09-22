@@ -238,7 +238,8 @@ a both readable and writable signal of the Boolean type
 procedure checks the value of the \texttt{flag} signal and assigns a
 new value to the \texttt{tmp} and \texttt{flag} signals
 accordingly. The $\Leftarrow$ operator is the assignment operator for
-signals in the \vhdl{} syntax. 
+signals in the \vhdl{} syntax (more on that in
+Chapter~\ref{chap:hvhdl}).
 
 Therefore, to compute the evolution of an IPN, we must be able to
 interpret the content of operations associated with actions and
@@ -251,20 +252,23 @@ expressions.  In fact, we do not consider the set of \vhdl{} signals
 as a part of the \hilecop{} PN structure; thus, we are not interested
 in the representation of the Boolean expressions associated with
 conditions, nor in the \vhdl{} procedures that implement functions and
-actions. Regarding conditions, we consider that their associated
-Boolean expressions refer only to the input ports of the hardware
-circuit (and no more to internal signals, as it is the case for
-condition $c_1$ in Figure~\ref{fig:ipn}). Thus, the value of the
-Boolean expressions associated with conditions only depend on the
-environment of the modeled hardware circuit; indeed, it is the
-environment that provides values to the input ports of the circuit.
-Moreover, since the value of conditions only depends on input ports
-which values are set by the environment, then we can consider that
-conditions directly receive their value from the environment; we no
-more have to consider the Boolean expressions associated with
-conditions. Regarding actions and functions, we are only interested in
-the fact that a given action/function is activated/executed but no
-more in actually executing the associated operation.
+actions. Regarding conditions, we consider % that their associated
+% Boolean expressions refer only to the input ports of the hardware
+% circuit (and no more to internal signals, as it is the case for
+% condition $c_1$ in Figure~\ref{fig:ipn}). Thus, the value of the
+% Boolean expressions associated with conditions only depend on the
+% environment of the modeled hardware circuit; indeed, it is the
+% environment that provides values to the input ports of the circuit.
+% Moreover, since the value of conditions only depends on input ports
+% which values are set by the environment, then we can consider
+that they directly receive their value from an environment that would
+have computed in our stead the values of the Boolean
+expressions. Thus, we no more have to consider the Boolean expressions
+associated with conditions, and only have to rely on the values given
+by the environment. Regarding actions and functions, we are only
+interested in the fact that a given action/function is
+activated/executed but no more in actually executing the associated
+operation.
 
 % However, when considering the semantics of IPNs, what is of
 % interest to us is the value of conditions and the execution state of

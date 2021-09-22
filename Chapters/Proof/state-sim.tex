@@ -232,6 +232,8 @@ post rising edge state similarity relation is defined as follows:
     \end{cases}$\\
     where
     $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
+  \item $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)$
+    s.t. $\gamma(c)=id_c$, $\sigma(id_c)=E_c(\tau,c)$.
   \end{enumerate}
 \end{definition}
 
@@ -240,7 +242,19 @@ Definition~\ref{def:post-re-state-sim} with the correspondence of the
 sensitization of transitions and the value of signal
 $\texttt{s\_enabled}$, and the computation of the boolean product of
 condition values and the value of signal
-$\texttt{s\_condition\_combination}$.
+$\texttt{s\_condition\_combination}$. The last item of
+Definition~\ref{def:full-post-re-state-sim} relates the value of the
+input port identifiers to the value of conditions yielded by the
+environment at the clock cycle $\tau$. In the \hvhdl{} simulation
+cycle, the input ports receive new values from the environment at the
+beginning of the clock cycle, whereas, in the SITPN semantics, the
+value of conditions are updated at the falling edge of the clock
+signal (i.e. in the middle of the clock cycle). The last item of
+Definition~\ref{def:full-post-re-state-sim} is a way to register the
+value of input port identifiers at the end of a rising edge
+phase. This information will then permit us to prove the equality of
+value between the input port identifiers and their corresponding
+conditions at the occurrence of the next falling edge.
 
 Now, let us define the state similarity relation describing how things
 must be compared between an SITPN state and a \hvhdl{} design state

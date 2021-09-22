@@ -21,10 +21,10 @@
   $E_c,\tau\vdash{}sitpn,s\xrightarrow{\downarrow}s'$, we can deduce
   $s.M(p)=s'.M(p)$.
 
-  By property of the $\mathtt{Inject}_\downarrow$ relation, the
-  \hvhdl{} falling edge relation, the stabilize relation and
-  \InCsCompP, and through the examination of the \texttt{marking}
-  process defined in the place design architecture, we can deduce
+  By property of the \hvhdl{} falling edge relation, the stabilize
+  relation and \InCsCompP, and through the examination of the
+  \texttt{marking} process defined in the place design architecture,
+  we can deduce
   $\sigma'(id_p)(\texttt{s\_marking})=\sigma(id_p)(\texttt{s\_marking})$.
 
   Rewriting the goal with $s.M(p)=s'.M(p)$ and
@@ -488,10 +488,9 @@
 
   \exT{}
 
-  \noindent{}By property of the elaboration,
-  $\mathtt{Inject}_\downarrow$, \hvhdl{} rising edge and stabilize
-  relations, \InCsCompT{}, and through the examination of the
-  \texttt{time_counter} process defined in the transition design
+  \noindent{}By property of the elaboration, \hvhdl{} rising edge and
+  stabilize relations, \InCsCompT{}, and through the examination of
+  the \texttt{time_counter} process defined in the transition design
   architecture, we can deduce:
   \begin{equation}
     \begin{split}
@@ -977,16 +976,16 @@
   By definition of \dwSitpn (Rule~\ref{it:cond-env}), we have
   $s'.cond(c)=E_c(\tau,c)$.
 
-  By property of the $\mathtt{Inject_\downarrow}$, the \hvhdl{}
-  falling edge, the stabilize relations and $id_c\in{}Ins(\Delta)$, we
-  have $\sigma'(id_c)=E_p(\tau,\downarrow)(id_c)$.
+  \noindent{}By definition of
+  $\gamma,E_c,\tau\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, we
+  have $\sigma(id_c)=E_c(\tau,c)$
+  
+  By property of the \hvhdl{} falling edge, the stabilize relations
+  and $id_c\in{}Ins(\Delta)$, we have
+  $\sigma'(id_c)=\sigma(id_c)=E_c(\tau,c)$.
 
   \noindent{}Rewriting the goal with $s'.cond(c)=E_c(\tau,c)$ and
-  $\sigma'(id_c)=E_p(\tau,\downarrow)(id_c)$:\\
-  \fbox{$E_c(\tau,c)=E_p(\tau,\downarrow)(id_c)$}
-  
-  \noindent{}By definition of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$:
-  \qedbox{$E_c(\tau,c)=E_p(\tau,\downarrow)(id_c)$.}
+  $\sigma'(id_c)=E_c(\tau,c)$, \qedbox{tautology.}
   
 \end{niproof}
 
@@ -1050,7 +1049,7 @@
     of the \texttt{action} process body executed during the falling
     edge phase, and $n=\vert{}pls(a)\vert-1$.
 
-    \noindent{}By property of the $\mathtt{Inject}_\downarrow$, the
+    \noindent{}By property of the
     \hvhdl{} falling edge relation, the stabilize relation, and\\
     $\mathtt{ps}(\texttt{action},$ $\emptyset,$ $sl,$ $ss)\in{}d.cs$:
     \begin{equation}
@@ -1196,9 +1195,9 @@
   \texttt{function} process only during the initialization or during a
   rising edge phase.
 
-  \noindent{}By property of the \hvhdl{} $\mathtt{Inject_{\uparrow}}$,
-  rising edge, stabilize relations, and the \texttt{function} process,
-  we can deduce $\sigma(id_f)=\sigma'(id_f)$.
+  \noindent{}By property of the \hvhdl{} rising edge, stabilize
+  relations, and the \texttt{function} process, we can deduce
+  $\sigma(id_f)=\sigma'(id_f)$.
 
   \noindent{}Rewriting the goal with $s.ex(f)=s'.ex(f)$ and
   $\sigma(id_f)=\sigma'(id_f)$, \fbox{$s.ex(f)=\sigma(id_f)$.}
@@ -1256,10 +1255,10 @@
   
   \exT{}
 
-  By property of the $\mathtt{Inject}_\downarrow$ relation, the
-  \hvhdl{} falling edge relation, the stabilize relation, \InCsCompT,
-  and through the examination of the \texttt{firable} process defined
-  in the transition design architecture, we can deduce:
+  By property of the \hvhdl{} falling edge relation, the stabilize
+  relation, \InCsCompT, and through the examination of the
+  \texttt{firable} process defined in the transition design
+  architecture, we can deduce:
   \begin{equation}
     \label{eq:fe-eq-sfa}
     \sigma'(id_t)(\texttt{sfa})=\sigma(id_t)(\texttt{se})~.~\sigma(id_t)(\texttt{scc})~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))
@@ -1685,10 +1684,10 @@
   
   \exT{}
 
-  By property of the $\mathtt{Inject}_\downarrow$ relation, the
-  \hvhdl{} falling edge relation, the stabilize relation, \InCsCompT,
-  and through the examination of the \texttt{firable} process defined
-  in the transition design architecture, we can deduce:
+  By property of the \hvhdl{} falling edge relation, the stabilize
+  relation, \InCsCompT, and through the examination of the
+  \texttt{firable} process defined in the transition design
+  architecture, we can deduce:
   \begin{equation}
     \label{eq:fe-eq-sfa-true}
     \sigma'(id_t)(\texttt{sfa})=\sigma(id_t)(\texttt{se})~.~\sigma(id_t)(\texttt{scc})~.~\mathtt{checktc}(\Delta(id_t),\sigma(id_t))=\mathtt{true}
@@ -3231,5 +3230,5 @@
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: \texttt{../../main}
+%%% TeX-master: "../../main"
 %%% End:

@@ -4,7 +4,7 @@
   $\gamma\in{}WM(sitpn,d),$ $\Delta\in{}ElDesign,$
   $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma\in{}\Sigma$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,\\
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
@@ -13,7 +13,7 @@
   \item $\sigma_0$ is the initial state of $\Delta$: 
     $\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
   \item $E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$
-  \item $\mathtt{Inject}_\uparrow(\sigma_0, E_p, \tau, \sigma_i)$
+  \item $\mathtt{Inject}(\sigma_0, E_p, \tau, \sigma_i)$
     and
     $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_{\uparrow}$
     and
@@ -79,6 +79,8 @@
       where
       $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.
       \label{item:fst-re-cond-comb-eq}
+    \item $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)$
+      s.t. $\gamma(c)=id_c$, $\sigma(id_c)=E_c(\tau,c)$.\label{item:fst-re-cond-eq}
     \end{enumerate}
   \end{frameb}
 
@@ -96,6 +98,8 @@
     \ref{item:fst-re-sens-neq}.
   \item Apply the \nameref{lem:fst-re-equal-cond-comb} lemma to solve
     \ref{item:fst-re-cond-comb-eq}.
+  \item Apply the \nameref{lem:fst-re-equal-cond} lemma to solve
+    \ref{item:fst-re-cond-eq}.
   \end{itemize}
   
 \end{proof}
@@ -116,10 +120,10 @@
   
   \exP{}
     
-  By property of the \texttt{Inject}$_\uparrow$ relation, the \hvhdl{}
-  rising edge relation, the stabilize relation, \InCsCompP, and
-  through the examination of the \texttt{marking} process defined in
-  the place design architecture, we can deduce:
+  By property of the \texttt{Inject} relation, the \hvhdl{} rising
+  edge relation, the stabilize relation, \InCsCompP, and through the
+  examination of the \texttt{marking} process defined in the place
+  design architecture, we can deduce:
   \begin{equation}
     \sigma(id_p)(\texttt{sm})=\sigma_0(id_p)(\texttt{sm})+\sigma_0(id_p)(\texttt{sits})-\sigma_0(id_p)(\texttt{sots})\label{eq:eq-sm-after-fst-re}
   \end{equation}
@@ -170,7 +174,7 @@
     $s_0.I(t)\le{}lower(I_s(t))$, let us show\\
     \framebox{${}s_0.I(t)=\sigma(id_t)(\texttt{stc})$.}
     
-    By property of the $\mathtt{Inject_\uparrow}$ relation, the
+    By property of the $\mathtt{Inject}$ relation, the
     \hvhdl{} rising edge and stabilize relations, and \InCsCompT{}, we
     can deduce $\sigma(id_t)(\texttt{stc})=\sigma_0(id_t)(\texttt{stc})$.
     
@@ -199,7 +203,7 @@
     $s_0.I(t)\le{}upper(I_s(t))$, let us show\\
     \framebox{$s_0.I(t)=\sigma(id_t)(\texttt{stc})$.}
 
-    By property of the $\mathtt{Inject_\uparrow}$ relation, the
+    By property of the $\mathtt{Inject}$ relation, the
     \hvhdl{} rising edge and stabilize relations, and \InCsCompT{}, we
     can deduce $\sigma(id_t)(\texttt{stc})=\sigma_0(id_t)(\texttt{stc})$.
 
@@ -375,7 +379,7 @@
   assigns a value to the output port $id_a$ only during the
   initialization phase or a falling edge phase.
 
-  \noindent{}By property of the $\mathtt{Inject_{\uparrow}}$, \hvhdl{}
+  \noindent{}By property of the $\mathtt{Inject}$, \hvhdl{}
   rising edge and stabilize relations, we can deduce
   $\sigma(id_a)=\sigma_0(id_a)$.
   
@@ -438,7 +442,7 @@
     $n=\vert{}trs(f)\vert-1$, and for all $i\in[0,n-1]$, $id_{ft_i}$
     is a internal signal of design $d$.
 
-    By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{} rising
+    By property of the $\mathtt{Inject}$, the \hvhdl{} rising
     edge and stabilize relations, we can deduce
     $\sigma(id_f)=\sigma_0(id_{ft_0})+\dots+\sigma_0(id_{ft_n})$.
 
@@ -498,7 +502,7 @@
   See the proof of Lemma~\ref{lem:re-equal-not-sens}.
 \end{niproof}
 
-\subsection{First rising edge and condition combination}
+\subsection{First rising edge and conditions}
 \label{sec:fst-re-cond-comb}
 
 \begin{lemma}[First rising edge equal condition combination]
@@ -519,7 +523,19 @@
   See the proof of Lemma~\ref{lem:re-equal-cond-comb}.
 \end{niproof}
 
+\begin{lemma}[First rising edge equal conditions]
+  \label{lem:fst-re-equal-cond}
+  \fstrehyps{} then\\
+  $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)$
+  s.t. $\gamma(c)=id_c$, $\sigma(id_c)=E_c(\tau,c)$.
+\end{lemma}
+
+\begin{niproof}
+  See the proof of Lemma~\ref{lem:re-equal-cond}.
+\end{niproof}
+
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: \texttt{../../main}
+%%% TeX-master: "../../main"
 %%% End:

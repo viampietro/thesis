@@ -15,7 +15,7 @@ changing of the value of the clock input port as the result of the
 execution of a unit-delay signal assignment where the time clause is
 equal to half the clock period. Listing~\ref{lst:clk-unit-delay}
 illustrates how a \hvhdl{} design \texttt{tl} can be embedded in
-another top-level design with a process regulating the value of a
+another top-level design alongside a process regulating the value of a
 clock signal by using a unit-delay signal
 assignment. Listing~\ref{lst:clk-unit-delay} presents the behavioral
 part the embedding top-level design.
@@ -80,7 +80,7 @@ simulation trace is built incrementally through the execution of
 simulation cycles, and is returned at the end of
 Algorithm~\ref{alg:simulation}. However, the execution of sequential
 statements in the body of processes are expressed with a big-step
-operational semantics.
+operational semantics.\\
 
 \begin{algorithm}[H]
   \DontPrintSemicolon
@@ -91,7 +91,7 @@ operational semantics.
   \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
   % \NoCaptionOfAlgo
 
-  \caption{Simulation($\Delta$, $\sigma_{e}$, $cs$, $E_p$, $nbOfCycles$)}
+  \caption{Simulation($\Delta$, $\sigma_{e}$, $cs$, $E_p$, $T_c$)}
   \label{alg:simulation}
   
   \AlFnt % overriding the new font
@@ -107,17 +107,16 @@ operational semantics.
   
   \BlankLine
 
-  \While{$nbOfCycles>0$}{
-    $\sigma_i\leftarrow$ \texttt{Inject$_\uparrow$($\Delta$,$\sigma$,$E_p$,$T_c$)}\;
+  \While{$T_c>0$}{
+    $\sigma_i\leftarrow$ \texttt{Inject($\Delta$,$\sigma$,$E_p$,$T_c$)}\;
     $\sigma_\uparrow\leftarrow$ \texttt{RisingEdge($\Delta$,$\sigma_i$,$cs$)}\;
     $\sigma'\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_\uparrow$,$cs$)}\;
-    $\sigma'_i\leftarrow$ \texttt{Inject$_\downarrow$($\Delta$,$\sigma'$,$E_p$,$T_c$)}\;
-    $\sigma_\downarrow\leftarrow$ \texttt{FallingEdge($\Delta$,$\sigma'_i$,$cs$)}\;
+    $\sigma_\downarrow\leftarrow$ \texttt{FallingEdge($\Delta$,$\sigma'$,$cs$)}\;
     $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_\downarrow$,$cs$)}\;
 
     \BlankLine
     $\theta\leftarrow\theta\mdoubleplus[\sigma',\sigma]$\; \label{line:append-states}
-    $nbOfCycles\leftarrow{}nbOfCycles-1$\;
+    $T_c\leftarrow{}T_c-1$\;
   }
 
   \Return{$\theta$}\;
@@ -130,28 +129,25 @@ simulated. $cs$ corresponds to the behavior of the design, i.e. the
 one that will be executed during the simulation. $E_p$ is the
 environment that will provide values to the primary input ports; it is
 a function that maps the set of input port identifiers to
-values. $nbOfCycles$ corresponds to the number of simulation cycles to
-be performed. Algorithm~\ref{alg:simulation} begins with an
+values. $T_c$ corresponds to the number of simulation cycles to be
+performed. Algorithm~\ref{alg:simulation} begins with an
 initialization phase (following the LRM simulation algorithm); all
 processes are run exactly once (Line~\ref{line:run-once}) followed by
 a stabilization phase (Line~\ref{line:stab-init}, multiple delta
 cycles). Line~\ref{line:init-trace} initializes the variable $\theta$
 with a singleton list holding state $\sigma$, i.e. the initial
-simulation state. Then, the same loop is performed until $nbOfCycles$
-reaches zero. First, the values of primary input ports are retrieved
-from the environment $E_p$ for the current time value $nbOfCycles$ and
-the current clock event (i.e. either $\uparrow$ or $\downarrow$); this
-is performed by the \texttt{Inject}$_\uparrow$
-(resp. \texttt{Inject}$_\downarrow$) at the rising edge (resp. falling
-edge) of the clock; then, all parts of $cs$ that react to the rising
-edge (resp. falling edge) of the clock signal are executed; finally,
-the combinational parts of $cs$ are executed until stabilization of
-all signals. At Line~\ref{line:append-states}, the states obtained
-after the rising edge phase (i.e. $\sigma'$) and after the falling
-edge phase (i.e. $\sigma$) are appended to the simulation trace
-$\theta$. Note that we only register stable states in the simulation
-trace. At the end of the simulation cycle, the parameter $nbOfCycles$
-is decremented. After the execution of all simulation cycles,
+simulation state. Then, the same loop is performed until $T_c$ reaches
+zero. First, the values of primary input ports are retrieved from the
+environment $E_p$ at the current time value $T_c$; this is performed
+by the \texttt{Inject} function; then, all parts of $cs$ that react to
+the rising edge (resp. falling edge) of the clock signal are executed;
+finally, the combinational parts of $cs$ are executed until
+stabilization of all signals. At Line~\ref{line:append-states}, the
+states obtained after the rising edge phase (i.e. $\sigma'$) and after
+the falling edge phase (i.e. $\sigma$) are appended to the simulation
+trace $\theta$. Note that we only register stable states in the
+simulation trace. At the end of the simulation cycle, the parameter
+$T_c$ is decremented. After the execution of all simulation cycles,
 Algorithm~\ref{alg:simulation} returns the simulation trace.
 
 \subsection{Full simulation}
@@ -163,8 +159,8 @@ is the elaboration phase that builds an elaborated version of a
 elaboration phase, the top-level design receives a value for each of
 its generic constant; we refer to it as the \emph{dimensioning} of the
 top-level design. The second step is the simulation phase that
-executes the behavioral part of the top-level design starting from an
-initial state; this step has been presented through the
+executes the behavioral part of the top-level design, and yields an
+simulation/execution trace; this step has been presented through the
 Algorithm~\ref{alg:simulation}.
 % The initial state is built by a specific initialization
 % phase. Then, the simulation is decomposed into simulation cycles. Each
@@ -185,13 +181,14 @@ Algorithm~\ref{alg:simulation}.
 %%% DESIGN ELABORATION AND SIMULATION.
 
 The $full$ simulation relation, defined by the \textsc{FullSim} rule,
-holds eight parameters, namely: a top-level design d, a design store
-$\mathcal{D}\in{}id\nrightarrow{}design$, an elaborated design
-$\Delta\in{}ElDesign$, a dimensioning function
-$\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, a primary input
+formalizes the full simulation process for a given \hvhdl{} design.
+The relation holds eight parameters, namely: a top-level design d, a
+design store $\mathcal{D}\in{}id\nrightarrow{}design$, an elaborated
+design $\Delta\in{}ElDesign$, a dimensioning function
+$\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, a simulation
 environment
-$E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
-a simulation cycle count $\tau\in\mathbb{N}$, an initial state
+$E_p\in\mathbb{N}\rightarrow{}(Ins(\Delta)\rightarrow{}value)$, a
+simulation cycle count $\tau\in\mathbb{N}$, an initial state
 $\sigma_0\in\Sigma$, and a simulation trace
 $\theta\in{}\mathtt{list}(\Sigma)$, corresponding to the list of
 states yielded by the simulation of design d during $\tau$
@@ -205,6 +202,29 @@ of the initialization and simulation relations. % The states in
 % $\sigma$ is written $\sigma$. The trace resulting of the concatenation
 % of two traces $\sigma_t$ and $\sigma_t'$ is written
 % $\sigma_t.\sigma_t'$.
+
+\begin{premises}
+  \begin{itemize}[label=-]
+  \item $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, the
+    function yielding the values of generic constants for a given
+    top-level design, refered to as the \emph{dimensioning}
+    function. Here, $Gens(\Delta)$ is a shorthand notation for the
+    domain of $Gens(\Delta)$, normally written
+    $\mathtt{dom}(Gens(\Delta))$, i.e. the set of generic constant
+    identifiers of $\Delta$.
+  \item
+    $E_p\in\mathbb{N}\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
+    the function yielding a mapping from primary inputs (i.e, input
+    ports of the top-level design) to values at a given simulation
+    cycle count. Here, $Ins(\Delta)$ is a shorthand notation for the
+    domain of $Ins(\Delta)$, normally written
+    $\mathtt{dom}(Ins(\Delta))$, i.e. the set of input port
+    identifiers of $\Delta$.
+  \item $\tau$, the number of simulation cycles to execute.  The value
+    of $\tau$ is decremented at each clock cycle until it reaches zero
+    (see Section~\ref{sec:sim-loop}).
+  \end{itemize}  
+\end{premises}
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{FullSim}}
@@ -225,31 +245,6 @@ of the initialization and simulation relations. % The states in
   \end{prooftree}
 \end{table}
 
-\noindent{}where:
-
-\begin{itemize}[label=-]
-\item $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, the
-  function yielding the values of generic constants for a given
-  top-level design, refered to as the \emph{dimensioning}
-  function. Here, $Gens(\Delta)$ is a shorthand notation for the
-  domain of $Gens(\Delta)$, normally written
-  $\mathtt{dom}(Gens(\Delta))$, i.e. the set of generic constant
-  identifiers of $\Delta$.
-\item
-  $E_p\in{}(\mathbb{N}\times{}Clk)\rightarrow{}(Ins(\Delta)\rightarrow{}value)$,
-  the function yielding a mapping from primary inputs (i.e, input
-  ports of the top-level design) to values at a given simulation cycle
-  count (i.e, the $\mathbb{N}$ argument), and a given clock event
-  (i.e, the $Clk$ argument, where
-  $Clk=\{\uparrow,\downarrow\}$). Here, $Ins(\Delta)$ is a shorthand
-  notation for the domain of $Ins(\Delta)$, normally written
-  $\mathtt{dom}(Ins(\Delta))$, i.e. the set of input port identifiers
-  of $\Delta$.
-\item $\tau$, the number of simulation cycles to execute.  The value
-  of $\tau$ is decremented at each clock cycle until it reaches zero
-  (see Section~\ref{sec:sim-loop}).
-\end{itemize}
-
 Our simulation algorithm aims at representing the execution of a
 hardware system in the presence of an environment. Thus, we need to
 make some hypotheses regarding the relation between the environment
@@ -259,15 +254,17 @@ system:
 \begin{hypothesis}[Stable primary inputs]
   \label{hyp:stable-pi}
   The values of primary inputs (i.e, input ports of the top-level
-  design) are captured at each clock event, but remain stable (i.e,
-  their values do not change) during a whole clock cycle.
+  design) are captured at the beginning of a clock cycle, and thus
+  remain stable (i.e, their values do not change) during a whole clock
+  cycle.
 \end{hypothesis}
 
 Hypothesis~\ref{hyp:stable-pi} arises from the fact that the clock
 signal sample rate respects the Nyquist-Shannon sampling theorem.
 Therefore, the sample rate of the design's clock is sufficient to
 capture all events possibly arising in the environment.  We only need
-to settle the values of the primary inputs at the clock edges.
+to settle the values of the primary inputs at the beginning of a clock
+cycle.
 
 Also, after each clock event phase follows a signal stabilization
 phase in the proceedings of a simulation cycle. One more hypothesis is
@@ -366,16 +363,15 @@ two notations.
 \end{notation}
 
 \begin{definition}[Input port values update]
-  Given an elaborated design and a simulation environment
-  $E_p\in{}(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow(Ins(\Delta)\rightarrow{}value)$,
-  let us define the relation expressing the update of the value of
-  input ports at a given design state $\sigma\in\Sigma$, clock cycle
-  count $\tau\in{}\mathbb{N}$, and clock event
-  $clk\in\{\uparrow,\downarrow\}$, and thus resulting in a new state
+  Given an elaborated design $\Delta$ and a simulation environment
+  $E_p\in\mathbb{N}\rightarrow(Ins(\Delta)\rightarrow{}value)$, let us
+  define the relation expressing the update of the value of input
+  ports at a given design state $\sigma\in\Sigma$ and clock cycle
+  count $\tau\in{}\mathbb{N}$, thus resulting in a new state
   $\sigma_i\in\Sigma$. The relation is written
-  $\mathtt{Inject}_{clk}(\sigma,E_p,\tau,\sigma_i)$ and verifies that:
+  $\mathtt{Inject}(\sigma,E_p,\tau,\sigma_i)$ and verifies that:
   $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$ and
-  $\sigma_i={<}\mathcal{S}\ocup{}E_p(\tau,clk),\mathcal{C},\mathcal{E}{>}$.
+  $\sigma_i={<}\mathcal{S}\ocup{}E_p(\tau),\mathcal{C},\mathcal{E}{>}$.
 \end{definition}
 
 The \hvhdl{} simulation cycle relation, written
@@ -389,10 +385,9 @@ and $\sigma''$ is the state obtained at the end of the clock cycle,
 i.e. after the falling edge phase and the second stabilization phase.
 As mentioned in Hypothesis~\ref{hyp:stable-pi}, the update of the
 value of input ports is performed at each clock event. New input port
-values are coming from the environment $E_p$. The updates are made
-through the definitions of states $\sigma_i$ and $\sigma'_i$ which are
-qualified in the side conditions by the $\mathtt{Inject}_{\uparrow}$
-and $\mathtt{Inject}_{\downarrow}$ relations.
+values are coming from the environment $E_p$. The update is made
+through the definitions of state $\sigma_i$ which is qualified in the
+side condition by the $\mathtt{Inject}$ relation.
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{SimCyc}}
@@ -403,7 +398,7 @@ and $\mathtt{Inject}_{\downarrow}$ relations.
     \hypo{$\mathcal{D},\Delta,\sigma_i\vdash\mathrm{cs}\xrightarrow{\uparrow}\sigma_\uparrow$}
     
     % Falling
-    \infer[no rule]1{$\mathcal{D},\Delta,\sigma'_i\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_\downarrow$}
+    \infer[no rule]1{$\mathcal{D},\Delta,\sigma'\vdash\mathrm{cs}\xrightarrow{\downarrow}\sigma_\downarrow$}
 
     % Stabilize after rising.
     \hypo{$\mathcal{D},\Delta,\sigma_\uparrow\vdash\mathrm{cs}\xrightarrow{\rightsquigarrow}\sigma'$}
@@ -415,8 +410,7 @@ and $\mathtt{Inject}_{\downarrow}$ relations.
     [{
       \renewcommand{\arraystretch}{1.5}
       \begin{tabular}{@{}l}
-        $\mathtt{Inject}_\uparrow(\sigma,E_p,\tau,\sigma_i)$\\
-        $\mathtt{Inject}_\downarrow(\sigma',E_p,\tau,\sigma'_i)$\\
+        $\mathtt{Inject}(\sigma,E_p,\tau,\sigma_i)$\\
       \end{tabular}
     }] {
       $\mathcal{D},E_p,\Delta,\tau,\sigma\vdash\mathrm{cs}\xrightarrow{\uparrow,\downarrow}$
@@ -427,11 +421,10 @@ and $\mathtt{Inject}_{\downarrow}$ relations.
 \subsection{Initialization rules}
 \label{sec:init-rules}
 
-The $init$ relation, defined through the only Rule~\textsc{Init},
-describes the initialization phase of the \hvhdl{} simulation
-algorithm. It produces an initial simulation state $\sigma_0$ by
-executing the design behavior cs in the context
-$\mathcal{D},\Delta,\sigma$.
+The $init$ relation, defined through the Rule~\textsc{Init}, describes
+the initialization phase of the \hvhdl{} simulation algorithm. It
+produces an initial simulation state $\sigma_0$ by executing the
+design behavior cs in the context $\mathcal{D},\Delta,\sigma$.
 
 \begin{table}[H]
   {\fontsize{10}{13}\selectfont\textsc{Init}}
@@ -454,7 +447,7 @@ $\mathcal{D},\Delta,\sigma$.
 \end{table}
 
 During the initialization phase, each process is executed exactly
-once. This is formalized by the $runinit$ relation. Then a
+once. This is formalized by the $runinit$ relation. Then, a
 stabilization phase follows, formalized by the $stabilize$ relation,
 written $\xrightarrow{\rightsquigarrow}$. The initialization phase
 triggers the execution of the first part of reset blocks. A reset
@@ -462,10 +455,10 @@ block (\vhdle|rst| ss ss') is equivalent to (\vhdle|if rst = '0' then|
 ss \vhdle|else| ss' \vhdle|end if;|).  Therefore, when considering a
 (\texttt{rst} ss ss') block, the $runinit$ relation always executes
 the ss block; at every other moment of the simulation, the ss' block
-is executed. This mimicks the conventional execution of a hardware
-system where a \textit{reset} signal set to false triggers the
-initialization of the system, and then is set to true for the rest of
-the execution.
+is executed. This corresponds to the conventional execution of a
+hardware system where a \textit{reset} signal set to false triggers
+the initialization of the system, and then is set to true for the rest
+of the execution.
 
 The $runinit$ relation is defined by the Rules~\textsc{PsRunInit},
 \textsc{CompRunInit}, \textsc{ParRunInit} and \textsc{NullRunInit}
@@ -718,11 +711,11 @@ state similar to the starting state.
 \label{sec:clk-phases-rules}
 
 The following rules express the evaluation of concurrent statements at
-clock phases, i.e. the $\uparrow$ and $\downarrow$ phases. The clock
-signal, trigerring the evaluation of synchronous process statements,
-is represented by the reserved signal identifier \texttt{clk}. Thus,
-synchronous processes are processes containing the \texttt{clk} signal
-in their sensitivity list.
+clock phases, i.e. the rising edge ($\uparrow$) and the falling edge
+($\downarrow$) phases. The clock signal, trigerring the evaluation of
+synchronous process statements, is represented by the reserved signal
+identifier \texttt{clk}. Thus, synchronous processes are processes
+containing the \texttt{clk} signal in their sensitivity list.
 
 \subsubsection{Evaluation of a process statement}
 
@@ -1004,7 +997,7 @@ process uses the set of events to resume the activity of processes. If
 one of the signal declared in a process' sensitivity list is
 registered in the current set of events, then the process body must be
 executed. We choose to disregard this aspect of the execution of
-process in the formalization of our simulation algorithm. Thus, all
+processes in the formalization of our simulation algorithm. Thus, all
 combinational processes are executed when a delta cycle is performed,
 regardless of the intersection between the set of events and the
 sensitivity lists.
@@ -1074,8 +1067,8 @@ stabilization phase.
     evaluation of the process statement body. It corresponds to the
     consumption of the information brought by the event set. Once the
     information has been consumed, new events can be generated by
-    executing the process body. Otherwise, the set of events is never
-    empty, and a stable state is never reached.
+    executing the process body. Otherwise, if the set of events is
+    never emptied, then a stable state might never be reached.
   \end{itemize}
 \end{premises}
 
@@ -1243,7 +1236,7 @@ the $mapip$ relation.
 
         % Evaluates e_i and e.
         \hypo{\Delta,\sigma&\vdash\mathrm{e}\xrightarrow{e}v}
-        \infer[no rule]1{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}        
+        \infer[no rule]1{&\mathrm{e}_i\xrightarrow{e}v_i}        
 
         % Checks that v complies with T.
         \hypo{v&\in_c{}T}
@@ -1317,14 +1310,14 @@ in an output port map:
   or an output port identifier of the embedding design
   (Rule~\textsc{MapopSimpleToSimple})
 \item an output port identifier is associated with an indexed internal
-  signal or an output port identifier of the embedding design
+  signal or an indexed output port identifier of the embedding design
   (Rule~\textsc{MapopSimpleToPartial})
 \item an indexed output port identifier is associated with an internal
   signal or an output port identifier of the embedding design
   (Rule~\textsc{MapopPartialToSimple})
 \item an indexed output port identifier is associated with an indexed
-  internal signal or an output port identifier of the embedding design
-  (Rule~\textsc{MapopPartialToPartial})
+  internal signal or an indexed output port identifier of the
+  embedding design (Rule~\textsc{MapopPartialToPartial})
 \end{itemize}
 
 \begin{remark}[Out ports and $e$]
@@ -1357,17 +1350,22 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
         }
       \end{prooftree}} \\
   \end{tabular}
+% \begin{sideconds}
+%   The value $v_i$ corresponds to the index associated with the
+%   identifier id$_s$. In \vhdl{}, an array type indication can have
+%   an index range constraint with a lower bound greater than zero,
+%   e.g. \texttt{array}(\texttt{bool}, $4$, $8$) to denote an array
+%   which first element has index $4$ and last element has index $8$.
+%   In the semantic domain, we consider that all arrays start at index
+%   $0$; thus, we need to project the index belonging to an interval
+%   $[n, m]$ (where $n,m\in\mathbb{N}$) to the interval $[0,m-n]$.
+% \end{sideconds}
   \begin{tabular}{@{}l}
     {\fontsize{10}{13}\selectfont\textsc{IdxOutO}} \\
     {\begin{prooftree}
 
         % Evaluates e_i.
-        \hypo{
-          \vdash
-          \mathrm{e}_i
-          \xrightarrow{e}
-          v_i
-        }
+        \hypo{\mathrm{e}_i\xrightarrow{e}v_i}
 
         % Checks well-typed v_i.
         \hypo{v_i\in_c{}nat(n,m)}
@@ -1379,14 +1377,13 @@ $\sigma={<}\mathcal{S},\mathcal{C},\mathcal{E}{>}$.
             $\mathrm{id}_s\in{}Outs(\Delta)$ \\
             $\mathrm{id}_s\in\sigma$ \\
             $\Delta(\mathrm{id}_s)={}array(T,n,m\mathtt{)}$ \\
-            $i=v_i~\mathtt{mod}~n$ \\
           \end{tabular}
         }]
         {
           \Delta,\sigma\vdash
           \mathrm{id}_s(\mathrm{e}_i)
           \xrightarrow{e_o}
-          \mathtt{get\_at}(i,\sigma(\mathrm{id}_s))
+          \mathtt{get\_at}(v_i,\sigma(\mathrm{id}_s))
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1459,7 +1456,7 @@ The following rules define the $mapop$ relation.
     {\begin{prooftree}
 
         % Evaluates id_f and e_i.
-        \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \hypo{&\mathrm{e}_i\xrightarrow{e}v_i}
         \infer[no rule]1{&\Delta_c,\sigma_c\vdash\mathrm{id}_f\xrightarrow{e_o}v}
 
         % Checks that v complies with T.
@@ -1524,7 +1521,7 @@ The following rules define the $mapop$ relation.
     {\begin{prooftree}
 
         % Evaluates id_f and e_i.
-        \hypo{&\vdash\mathrm{e}_i\xrightarrow{e}v_i}
+        \hypo{&\mathrm{e}_i\xrightarrow{e}v_i}
         \infer[no rule]1{&\Delta_c,\sigma_c\vdash\mathrm{id}_f(\mathrm{e}'_i)\xrightarrow{e_o}v}
 
         % Checks that v complies with T.
@@ -1579,7 +1576,7 @@ The following rules define the $mapop$ relation.
 \label{subsec:seq-stmts}
 
 Here, we define the $ss$ relation that evaluates the sequential
-statements defining the body of processes. The phases of a simulation
+statements composing the body of processes. The phases of a simulation
 cycle affect the evaluation of sequential statements. For instance,
 reset blocks are only evaluated during an initialization phase,
 falling blocks during a falling edge phase\dots Thus, we append a
@@ -1591,15 +1588,16 @@ execution of reset blocks, the $\uparrow$ (resp. $\downarrow$) flag to
 enable the execution of rising (resp. falling) blocks.  Writing the
 $ss$ relation with no flag indicates that the evaluation of a given
 sequential statement is the same for every phase of the simulation
-cycle. A flag is tranferred from the conclusion to the premises when
-an sequential statement is composed of inner sequential blocks.
+cycle. A flag is passed from the conclusion to the premises when an
+sequential statement is composed of inner sequential blocks.
 
 \subsubsection{Signal assigment statement} A signal assignment
 generates a new design state with a modified signal store and a new
 set of events. Note that there are two states on the left side of the
-thesis symbol. $\sigma$ represents the state holding the current
-values of signals, and $\sigma_w$ holds the new values of signals
-(i.e. the \emph{written} state).
+thesis symbol. State $\sigma$ represents the state holding the current
+values of signals (i.e. the \textit{reading} state), and state
+$\sigma_w$ holds the new values of signals (i.e. the \emph{written}
+state).
 
 \begin{sideconds}
   The expression $\mathcal{S}\dcap\mathcal{S}'_w$ registers signal
@@ -1675,10 +1673,39 @@ values of signals, and $\sigma_w$ holds the new values of signals
   \end{tabular}
 \end{table}
 
+\begin{remark}[Signal assignments]
+  Let us take the example of a synchronous process that performs a
+  swap between the value of two signals $s_1$ and $s_2$ at the falling
+  edge of the clock signal \texttt{clk}. This process is implemented
+  by the following listing written in \vhdl{} concrete syntax:
+\begin{lstlisting}[language=VHDL]
+swap : process(clk)
+begin
+  if falling_edge(clk) then
+    s$_1$ <= s$_2$;
+    s$_2$ <= s$_1$;
+  end if;
+end process swap; 
+\end{lstlisting}
+
+  In the above listing, the two signal assignment statements must be
+  considered as being executed in parallel, even though they are
+  written as a sequence. Thus, when the statement
+  $\mathtt{s}_2\Leftarrow\mathtt{s}_1$ is evaluated, the value to
+  consider for signal $\mathtt{s}_1$ is not the one resulting from the
+  execution of statement $\mathtt{s}_1\Leftarrow\mathtt{s}_2$ but the
+  one at the beginning of the process evaluation.  For these reasons,
+  we must include a reading state and a written state in the
+  environment of the $ss$ relation.
+\end{remark}
+
 \subsubsection{Variable assignment statement}
 
 A variable assignment statement modifies the value of a variable
-defined in a local environment $\Lambda$.
+defined in a local environment $\Lambda$. Contrary to the case of
+signal assignments, a sequence of variable assignment statements are
+to be considered as a real sequence, and not as being executed in
+parallel.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1803,7 +1830,7 @@ statements.
     {\begin{prooftree}
 
         % Evaluates condition.
-        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{expr}\top}
+        \hypo{\Delta,\sigma,\Lambda\vdash\mathrm{e}\xrightarrow{e}\top}
 
         % Evaluates ss.
         \hypo{\Delta,\sigma,\sigma_w,\Lambda\vdash\mathrm{ss}\xrightarrow{ss}\sigma'_w,\Lambda'}
@@ -1842,7 +1869,18 @@ statements.
 
 \subsubsection{Loop statement}
 
-Here, we present the classical evaluation of for-loop statements.
+Here, we present the classical evaluation of for-loop
+statements. Rule~\textsc{LoopInit} corresponds to the evaluation of a
+for loop in the case where the range variable $\mathrm{id}_v$ in not
+already defined in the local environment; in that case, the loop range
+bounds are evaluated and binding between the variable $\mathrm{id}_v$
+and its type and initial value is added to the local environment;
+finally the loop statement is re-evaluated with the updated local
+environment. Rule~\textsc{Loop}$\bot$ denotes the evaluation of a loop
+statement in the case where the range variable $\mathrm{id}_v$ has not
+yet reached the upper bound of the loop
+range. Rule~\textsc{Loop}$\top$ denotes the evaluation of a loop
+statement in the opposite case.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -1866,7 +1904,7 @@ Here, we present the classical evaluation of for-loop statements.
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
             $\Lambda(\mathrm{id}_v)=(T,val)$ \\
-            $\Lambda_i=\Lambda(id_v)\leftarrow{}(T,val+1)$ \\
+            $\Lambda_i=\Lambda(\mathrm{id}_v)\leftarrow{}(T,val+1)$ \\
           \end{tabular}
         }]
         {
@@ -1893,14 +1931,14 @@ Here, we present the classical evaluation of for-loop statements.
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\in\Lambda$ \\
             $\Lambda(\mathrm{id}_v)=(T,val)$ \\
-            $\Lambda_i=\Lambda(id_v)\leftarrow(T,val+1)$ \\
+            $\Lambda_i=\Lambda(\mathrm{id}_v)\leftarrow(T,val+1)$ \\
           \end{tabular}
         }]
         {
           \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|for|$~(\mathrm{id}_v,\mathrm{e},\mathrm{e}')~\mathrm{ss}
           \xrightarrow{ss}
-          \sigma_w,\Lambda\setminus(id_v,\Lambda(id_v))
+          \sigma_w,\Lambda\setminus(\mathrm{id}_v,\Lambda(\mathrm{id}_v))
         }
       \end{prooftree}} \\
   \end{tabular}
@@ -1926,7 +1964,7 @@ Here, we present the classical evaluation of for-loop statements.
         [{\renewcommand{\arraystretch}{1.5}
           \begin{tabular}{@{}l}
             $\mathrm{id}_v\notin\Lambda$ \\
-            $\Lambda_i=\Lambda\cup(id_v,({}nat(v,v'),v))$ \\
+            $\Lambda_i=\Lambda\cup(\mathrm{id}_v,({}nat(v,v'),v))$ \\
           \end{tabular}
         }]
         {
@@ -1959,7 +1997,12 @@ $\Lambda$ (Rules~\textsc{RisingEdgeDefault} and
         
         % Conclusion.
         \infer0
-        [$f\neq\uparrow$]
+        [
+        \begin{tabular}{@{}l@{}}
+          $f\neq\uparrow$ \\
+          $f\in\{\downarrow,i,o\}$ \\
+        \end{tabular}
+        ]
         {
           \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rising|$~\mathrm{ss}
@@ -1974,7 +2017,12 @@ $\Lambda$ (Rules~\textsc{RisingEdgeDefault} and
         
         % Conclusion.
         \infer0
-        [$f\neq\downarrow$]
+        [
+        \begin{tabular}{@{}l@{}}
+          $f\neq\downarrow$ \\
+          $f\in\{\uparrow,i,o\}$ \\
+        \end{tabular}
+        ]
         {
           \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|falling|$~\mathrm{ss}
@@ -2042,7 +2090,12 @@ devised for the \hvhdl{} abstract syntax.
         
         % Conclusion.
         \infer1
-        [$f\neq{}i$]
+        [
+        \begin{tabular}{@{}l@{}}
+          $f\neq{}i$ \\
+          $f\in\{\uparrow,\downarrow,o\}$ \\
+        \end{tabular}
+        ]
         {
           \Delta,\sigma,\sigma_w,\Lambda\vdash~
           $\vhdle|rst|$~\mathrm{ss}~\mathrm{ss'}
@@ -2120,8 +2173,8 @@ constants. Rule~\textsc{Aggreg} describes the evaluation of an
 aggregate expression. Rule~\textsc{Gen} presents the evaluation of a
 generic constant identifier. Rules~\textsc{Sig} and \textsc{Var}
 describe the evaluation of signal and variable identifiers.
-Rules~\textsc{IdxSig} and \textsc{IdxVar} corresponds to the
-evaluation of indexed signal and indexed variable identifiers. In
+Rules~\textsc{IdxSig} and \textsc{IdxVar} correspond to the evaluation
+of indexed signal and indexed variable identifiers. In
 Rules~\textsc{IdxSig} and \textsc{IdxVar}, \texttt{get\_at}$(i,a)$ is
 a function returning the $i$-th element of array $a$.
 

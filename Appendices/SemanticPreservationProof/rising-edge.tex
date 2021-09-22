@@ -8,10 +8,10 @@
   $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
-  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$,
-  assume that:
+  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, assume
+  that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
@@ -19,7 +19,7 @@
   \item $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
   \item
     $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
-  \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_i)$ and
+  \item $\mathtt{Inject}(\sigma, E_p, \tau, \sigma_i)$ and
     $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
     and
     $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
@@ -58,7 +58,7 @@
     s'.M(p)=s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)
   \end{equation}
 
-  By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{} rising
+  By property of the $\mathtt{Inject}$, the \hvhdl{} rising
   edge and the stabilize relations, \InCsCompP{}, and through the
   examination of the \texttt{marking} process defined in the place
   design architecture, we can deduce:
@@ -93,7 +93,7 @@
 %%%%%%%%%% RISING EDGE EQUAL CONDITION COMBINATION  %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Rising edge and condition combination}
+\subsection{Rising edge and conditions}
 \label{sec:re-cond-comb}
 
 \begin{lemma}[Rising edge equal condition combination]
@@ -137,7 +137,7 @@
       \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
     \end{cases}$.}\\
 
-  Let us perform case analysis on $conds(t)$; there are two cases:
+  \noindent{}Let us perform case analysis on $conds(t)$; there are two cases:
 
   \begin{itemize}
   \item \textbf{CASE} $conds(t)=\emptyset$:
@@ -228,16 +228,16 @@
             \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
           \end{cases}$}
 
-        By property of the $\mathtt{Inject}_\uparrow$ relation and
+        By property of the $\mathtt{Inject}$ relation and
         $id_c\in{}Ins(\Delta)$, we can deduce
-        $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$.
+        $\sigma'(id_c)=E_p(\tau)(id_c)$.
 
         By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
-        deduce $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
+        deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
 
         Rewriting the goal with
-        $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$ and
-        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$:
+        $\sigma'(id_c)=E_p(\tau)(id_c)$ and
+        $E_p(\tau)(id_c)=E_c(\tau,c)$:
 
         \fbox{$E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
@@ -279,16 +279,16 @@
             \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
           \end{cases}$}
 
-        By property of the $\mathtt{Inject}_\uparrow$ relation and
+        By property of the $\mathtt{Inject}$ relation and
         $id_c\in{}Ins(\Delta)$, we can deduce
-        $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$.
+        $\sigma'(id_c)=E_p(\tau)(id_c)$.
 
         By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
-        deduce $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$.
+        deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
 
         Rewriting the goal with
-        $\sigma'(id_c)=E_p(\tau,\uparrow)(id_c)$ and
-        $E_p(\tau,\uparrow)(id_c)=E_c(\tau,c)$:
+        $\sigma'(id_c)=E_p(\tau)(id_c)$ and
+        $E_p(\tau)(id_c)=E_c(\tau,c)$:
 
         \fbox{$\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
           \prod\limits_{c\in{}conds(t)}
@@ -318,6 +318,31 @@
   \end{itemize}
   
 \end{proof}
+
+\begin{lemma}[Rising edge equal conditions]
+  \label{lem:re-equal-cond}
+  \rehyps{} then\\
+  $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)$
+  s.t. $\gamma(c)=id_c$, $\sigma'(id_c)=E_c(\tau,c)$.
+\end{lemma}
+
+\begin{niproof}
+  Given a $c\in\mathcal{C}$ and an $id_c\in{}Ins(\Delta)$ such that
+  $\gamma(c)=id_c$, let us show
+  \begin{frameb}
+    $\sigma'(id_c)=E_c(\tau,c)$
+  \end{frameb}
+
+  By property of the $\mathtt{Inject}$ relation and
+  $id_c\in{}Ins(\Delta)$, we can deduce
+  $\sigma'(id_c)=E_p(\tau)(id_c)$.
+
+  By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
+  deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
+
+  Rewriting the goal with $\sigma'(id_c)=E_p(\tau)(id_c)$ and
+  $E_p(\tau)(id_c)=E_c(\tau,c)$, \qedbox{tautology}.
+\end{niproof}
 
 \subsection{Rising edge and time counters}
 \label{sec:re-tc}
@@ -359,10 +384,10 @@
     $s'.I(t)\le{}lower(I_s(t))$, let us show\\
     \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
-    By property of the $\mathtt{Inject}_\uparrow$, \hvhdl{} rising
-    edge and stabilize relations, \InCsCompT, and through the
-    examination of the \texttt{time_counter} process defined in the
-    transition design architecture, we can deduce
+    By property of the $\mathtt{Inject}$, \hvhdl{} rising edge and
+    stabilize relations, \InCsCompT, and through the examination of
+    the \texttt{time_counter} process defined in the transition design
+    architecture, we can deduce
     $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
     By property of
@@ -487,8 +512,8 @@
       \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.}
 
       By property of the stabilize, the \hvhdl{} rising edge and the
-      $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
-      the examination of the \texttt{firable} process defined in the
+      $\mathtt{Inject}$ relations, \InCsCompT, and through the
+      examination of the \texttt{firable} process defined in the
       transition design architecture, we can deduce\\
       $\sigma(id_t)(\texttt{s\_firable})=\sigma'(id_t)(\texttt{s\_firable})$.
 
@@ -521,7 +546,7 @@
       \fbox{$\sigma'(id_t)(\texttt{s\_firable})=\mathtt{false}$.}
 
       By property of the stabilize, the \hvhdl{} rising edge and the
-      $\mathtt{Inject}_\uparrow$ relations, \InCsCompT, and through
+      $\mathtt{Inject}$ relations, \InCsCompT, and through
       the examination of the \texttt{firable} process defined in the
       transition design architecture, we can deduce
       $\sigma(id_t)(\texttt{sfa})=\sigma'(id_t)(\texttt{sfa})$.
@@ -595,7 +620,7 @@
       $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$,
       \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{true}$.}
 
-      By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+      By property of the $\mathtt{Inject}$, the \hvhdl{}
       rising edge and the stabilize relations, \InCsCompP, and through
       the examination of the
       \texttt{reinit_transitions_time_evaluation} process defined in
@@ -709,7 +734,7 @@
         $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$, we have\\
         \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{true}$.}
 
-        By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+        By property of the $\mathtt{Inject}$, the \hvhdl{}
         rising edge and the stabilize relation, and through the
         examination of the \texttt{reinit_transitions_time_evaluation}
         process defined in the place design architecture, we can
@@ -813,7 +838,7 @@
         $\sigma'(id_t)(\texttt{rt})[i]=\sigma'(id_{ji})=\sigma'(id_p)(\texttt{rtt})[j]$:\\
         \fbox{$\sigma'(id_p)(\texttt{rtt})[j]=\mathtt{false}$.}
 
-        By property of the $\mathtt{Inject}_\uparrow$, the \hvhdl{}
+        By property of the $\mathtt{Inject}$, the \hvhdl{}
         rising edge and the stabilize relations, \InCsCompP, and
         through the examination of the
         \texttt{reinit_transitions_time_evaluation} process defined in
@@ -972,7 +997,7 @@
   process is responsible for the assignment of the $id a$ only during
   the initialization phase or during a falling edge phase.
 
-  By property of the \hvhdl{} $\mathtt{Inject_{\uparrow}}$, rising
+  By property of the \hvhdl{} $\mathtt{Inject}$, rising
   edge, stabilize relations, and the \texttt{``action''} process, we
   can deduce $\sigma(id_a)=\sigma'(id_a)$.
 
@@ -1048,7 +1073,7 @@
     the \texttt{function} process body executed during a rising edge
     phase, and $n=\vert{}trs(f)\vert-1$.
 
-    By property of the $\mathtt{Inject}_\uparrow$, the
+    By property of the $\mathtt{Inject}$, the
     \hvhdl{} rising edge, the stabilize relations, and\\
     $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$, we can
     deduce:
@@ -1455,5 +1480,5 @@
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: \texttt{../../main}
+%%% TeX-master: "../../main"
 %%% End:

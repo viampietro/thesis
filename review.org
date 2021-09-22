@@ -10,8 +10,8 @@
 * TODO Implementation of the HILECOP high-level models [50%]
 ** DONE review DA
 ** TODO review DD
-* TODO H-VHDL: a target hardware description language [0%]
-** TODO review DA
+* TODO H-VHDL: a target hardware description language [50%]
+** DONE review DA
 ** TODO review DD
 * TODO The HILECOP model-to-text transformation [0%]
 ** TODO review DA

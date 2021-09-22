@@ -25,7 +25,7 @@ in the implementation of the elaborated design structure.  The first
 one defines the \texttt{SemanticObject} inductive type. Each
 constructor of this type corresponds to a sub-environment of the
 elaborated design. For instance, the \texttt{Generic} constructor
-correspond to the couple $(type\times{}value)$ associated with a
+corresponds to the couple $(type\times{}value)$ associated with a
 generic constant identifier in the $Gens$ sub-environment of
 Definition~\ref{def:elab-design}. The \texttt{Process} constructor
 corresponds to the local variable environment associated with the
@@ -40,7 +40,7 @@ Table~\ref{tab:type-value}. The \texttt{ElDesign} type implements the
 elaborated design structure. It is an alias to the \texttt{IdMap
   SemanticObject} type. The \texttt{IdMap} is the type of maps from
 identifiers (i.e. belonging to the \texttt{ident} type) to instances
-of the type passed as a parameter. Here, the parameter is the
+of the type passed as an input. Here, the input is the
 \texttt{SemanticObject} type. Thus, an elaborated design is
 implemented as a map between identifiers and terms of the
 \texttt{SemanticObject} type. We leverage the \texttt{FMaps} module
@@ -144,10 +144,10 @@ with ebeh ($\mathcal{D}$ : IdMap design) : ElDesign -> DState -> cs -> ElDesign 
 $\dots$
 \end{lstlisting}
 
-The \texttt{edesign} relation necesitates a mutually recursive
-definition with the \texttt{ebeh} relation. The mutually recursive
-definition is performed leveraging the \texttt{with} clause at the end
-of Listing~\ref{lst:design-elab-rel-impl}. The \texttt{ebeh} relation
+The \texttt{edesign} relation requires a mutually recursive definition
+with the \texttt{ebeh} relation. The mutually recursive definition is
+performed leveraging the \texttt{with} clause at the end of
+Listing~\ref{lst:design-elab-rel-impl}. The \texttt{ebeh} relation
 needs the \texttt{edesign} relation to elaborate the component
 instances found in the behavior of a
 design. Listing~\ref{lst:ebeh-rel-impl} gives the details of the
@@ -305,11 +305,9 @@ $\downarrow$ relation, i.e. the falling edge phase of the cycle. At
 Lines~14 and 16, the \texttt{stabilize} relation implements the
 $\rightsquigarrow$ relation, i.e. the stabilization phases of the
 simulation cycle. At Lines~18 and 19, the \texttt{IsInjectedDState}
-relation implements the \texttt{Inject}$_\downarrow$ and
-\texttt{Inject}$_\uparrow$ relations. Line~18 states that the
-$\sigma_i$ state is the result of the injection of the map
-\coqe|($E_p$ $\tau$ $\uparrow$)| in the signal store of state
-$\sigma$.
+relation implements the \texttt{Inject} relation. Line~18 states that
+the $\sigma_i$ state is the result of the injection of the map
+\coqe|($E_p$ $\tau$)| in the signal store of state $\sigma$.
 
 \begin{lstlisting}[language=coq,label={lst:sim-cycle-impl},
 caption={[\coq{} implementation of the simulation cycle relation.]The
@@ -317,24 +315,22 @@ caption={[\coq{} implementation of the simulation cycle relation.]The
   proof
   assistant.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
-  Inductive simcycle ($\mathcal{D}$ : IdMap design) ($E_p$ : nat ->
-  Clk -> IdMap value) ($\Delta$ : ElDesign) ($\tau$ : nat) ($\sigma$ :
-  DState) (behavior : cs) ($\sigma'$ $\sigma''$ : DState) : Prop := |
-  SimCycle : forall $\sigma_i$ $\sigma_\uparrow$ $\sigma'_i$
-  $\sigma_\downarrow$,
+Inductive simcycle ($\mathcal{D}$ : IdMap design) ($E_p$ : nat -> IdMap value) 
+    ($\Delta$ : ElDesign) ($\tau$ : nat) ($\sigma$ : DState) (behavior : cs) 
+    ($\sigma'$ $\sigma''$ : DState) : Prop := 
+| SimCycle : forall $\sigma_i$ $\sigma_\uparrow$ $\sigma_\downarrow$,
       
       (* * Premises * *)      
       vrising $\mathcal{D}$ $\Delta$ $\sigma_i$ behavior $\sigma_\uparrow$ ->
       stabilize $\mathcal{D}$ $\Delta$ $\sigma_\uparrow$ behavior $\sigma'$ ->
-      vfalling $\mathcal{D}$ $\Delta$ $\sigma'_i$ behavior $\sigma_\downarrow$ ->
+      vfalling $\mathcal{D}$ $\Delta$ $\sigma'$ behavior $\sigma_\downarrow$ ->
       stabilize $\mathcal{D}$ $\Delta$ $\sigma_\downarrow$ behavior $\sigma$'' ->
 
       (* * Side conditions * *)
-      IsInjectedDState $\sigma$ ($E_p$ $\tau$ $\uparrow$) $\sigma_i$ ->
-      IsInjectedDState $\sigma'$ ($E_p$ $\tau$ $\downarrow$) $\sigma'_i$ ->
+      IsInjectedDState $\sigma$ ($E_p$ $\tau$) $\sigma_i$ ->
       
       (* * Conclusion * *)
-      simcycle $\mathcal{D}$ $E_p$ $\Delta$ $\tau$ $\sigma$ behavior $\sigma''$.
+      simcycle $\mathcal{D}$ $E_p$ $\Delta$ $\tau$ $\sigma$ behavior $\sigma'$ $\sigma''$.
 \end{lstlisting}
 
 

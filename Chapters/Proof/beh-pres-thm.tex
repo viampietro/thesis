@@ -63,22 +63,14 @@ given \hvhdl{} design are similar.
   $\mathcal{D}\in{}entity\mhyphen{}id\nrightarrow{}design$, an
   elaborated version $\Delta\in{}ElDesign$ of design $d$, and a binder
   $\gamma\in{}WM(sitpn,d)$, the environment
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  that yields the value of the primary input ports of $\Delta$ at a
-  given simulation cycle and a given clock event, and the environment
-  $E_c$, that yields the value of conditions of $sitpn$ at a given
-  execution cycle, are similar, written
-  $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, if for all
-  $\tau\in{}\mathbb{N}$, $clk\in\{\uparrow,\downarrow\}$,
-  $c\in\mathcal{C}$, $id_c\in{}Ins(\Delta)$ s.t.  $\gamma(c)=id_c$,
-  $E_p(\tau,clk)(id_c)=E_c(\tau)(c)$.
+  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$, that
+  yields the value of the primary input ports of $\Delta$ at a given
+  simulation cycle, and the environment $E_c$, that yields the value
+  of conditions of $sitpn$ at a given execution cycle, are similar,
+  written $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, if for all
+  $\tau\in{}\mathbb{N}$, $c\in\mathcal{C}$, $id_c\in{}Ins(\Delta)$
+  s.t.  $\gamma(c)=id_c$, $E_p(\tau)(id_c)=E_c(\tau)(c)$.
 \end{definition}
-
-Definition~\ref{def:sim-env} also states that every input port of the
-top-level design related to a SITPN condition by the $\gamma$ binder
-has a stable boolean value during a whole clock cycle. That is to say,
-in the context of Definition~\ref{def:sim-env}, there exists no $id_c$
-such that $E_p(\tau,\uparrow)(id_c)\neq{}E_p(\tau,\downarrow)(id_c)$. \\
 
 To prove that the behavior of an SITPN and a \hvhdl{} design are
 similar, we want to compare the states composing their
@@ -223,7 +215,7 @@ axioms.
   $\Delta\in{}ElDesign$ and a simulation trace
   $\theta_\sigma\in\mathtt{list}(\Sigma)$ s.t.\\
   for all simulation environment
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$
+  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$
   verifying $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ (simulation and
   execution environments are similar), we have:
   \begin{itemize}
@@ -369,7 +361,7 @@ transformation of a well-defined SITPN.
   \noindent{}then there exists a simulation trace
   $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that for all simulation
   environment
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   and simulation cycle count $\tau\in\mathbb{N}$, design $d$ yields
   the simulation trace $\theta_\sigma$ after
   $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
@@ -418,7 +410,7 @@ given in Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
   $\tau\in\mathbb{N}$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
   $\theta_s\in\mathtt{list}(S(sitpn))$, $\Delta\in{}ElDesign$,
-  $E_p\in{}(\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\theta_\sigma\in\mathtt{list}(\Sigma)$ s.t.
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
@@ -630,13 +622,13 @@ clock count $\tau$.
     \item $E_c,\tau+1\vdash{}s\xrightarrow{\uparrow}{}s'$ and
       $E_c,\tau+1\vdash{}s'\xrightarrow{\downarrow}{}s''$ and
       $E_c,\tau\vdash{}sitpn,s''\rightarrow\theta$.
-    \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau+1, \sigma_i)$ and
+    \item $\mathtt{Inject}(\sigma, E_p, \tau+1, \sigma_i)$
+    \item
       $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
       and
       $\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
-    \item $\mathtt{Inject}_\downarrow(\sigma', E_p, \tau+1, \sigma'_i)$
-      and
-      $\Delta,\sigma'_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_\downarrow$
+    \item 
+      $\Delta,\sigma'\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_\downarrow$
       and
       $\Delta,\sigma_\downarrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma''$
     \item $E_p,\Delta,\tau,\sigma''\vdash{}d.cs\rightarrow\theta'$
@@ -750,7 +742,7 @@ similarity relation follows the same two-fold pattern:
 \item First, reason on the SITPN structure and on the transformation
   function to determine the content of the target \hvhdl{} design.
 \item Then, reason on the SITPN state transition relation and the
-  \hvhdl{} ``simulation'' relations (i.e, the $\mathtt{Inject}_{clk}$,
+  \hvhdl{} ``simulation'' relations (i.e, the $\mathtt{Inject}$,
   $\uparrow$, $\downarrow$ and $\rightsquigarrow$ relations) to
   establish the equality between the values coming from the SITPN
   world (i.e, marking, time counters, reset orders, etc. and also
@@ -770,7 +762,7 @@ Section~\ref{sec:detailled-proof}.
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
-  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
   $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, assume
   that:
@@ -781,7 +773,7 @@ Section~\ref{sec:detailled-proof}.
   \item $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
   \item
     $E_c,\tau\vdash{}s\srarrow{\uparrow}{\fontsize{7}{7}\selectfont}s'$
-  \item $\mathtt{Inject}_\uparrow(\sigma, E_p, \tau, \sigma_i)$ and
+  \item $\mathtt{Inject}(\sigma, E_p, \tau, \sigma_i)$ and
     $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\uparrow}\sigma_\uparrow$
     and
     $\mathcal{D}_{\mathcal{H}},\Delta,\sigma_\uparrow\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
@@ -833,6 +825,9 @@ Section~\ref{sec:detailled-proof}.
       \end{cases}$\\
       where
       $conds(t)=\{c\in\mathcal{C}~\vert~\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1\}$.\label{it:cond-comb-eq-re}
+    \item $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)$
+      s.t. $\gamma(c)=id_c$,
+      $\sigma'(id_c)=E_c(\tau,c)$.\label{it:cond-eq-re}
     \end{enumerate}
   \end{frameb}
   
@@ -853,6 +848,8 @@ Section~\ref{sec:detailled-proof}.
     \ref{it:not-sens-eq-re}.
   \item Apply the \nameref{lem:re-equal-cond-comb} lemma to solve
     \ref{it:cond-comb-eq-re}.
+  \item Apply the \nameref{lem:re-equal-cond} lemma to solve
+    \ref{it:cond-eq-re}.
   \end{itemize}
 \end{niproof}
 
@@ -861,9 +858,9 @@ Section~\ref{sec:detailled-proof}.
   For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
-  $E_p\in(\mathbb{N}\times\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\downarrow,\sigma'\in\Sigma$,
+  $\sigma_e,\sigma,\sigma_\downarrow,\sigma'\in\Sigma$,
   assume that:
   \begin{itemize}
   \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
@@ -871,9 +868,8 @@ Section~\ref{sec:detailled-proof}.
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$
   \item $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
-  \item $\mathtt{Inject}_\downarrow(\sigma, E_p, \tau, \sigma_i)$
-    and
-    $\Delta,\sigma_i\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
+  \item
+    $\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{\downarrow}\sigma_{\downarrow}$
     and
     $\Delta,\sigma_{\downarrow}\vdash\mathrm{d.cs}\xrightarrow{\rightsquigarrow}\sigma'$
   \item State $\sigma$ is a stable design state:
