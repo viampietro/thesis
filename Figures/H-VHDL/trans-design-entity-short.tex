@@ -1,0 +1,131 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{circuitikz}
+  \ctikzset{multipoles/dipchip/width=2}
+  \ctikzset{multipoles/dipchip/pin spacing=.24}
+  
+  \node(entity) [dipchip,
+  num pins=32,
+  hide numbers,
+  no topmark,
+  external pins width=0] {
+  };
+  % \node(entityLabel) at ($(entity.south)-(0,10pt)$) [inner sep=1cm]{\small\tt transition design};
+  
+  % CLKS and PORTS
+  
+  \draw (entity.bpin 2) -- ++(-.3,0) coordinate (pina) node [left] {\tt rst};
+  \draw (entity.bpin 1) ++(0,0.1) -- ++(0.1,-0.1) coordinate (entclk) node[left, xshift=-4mm]{\tt clk} -- ++(-0.1,-0.1);
+  \draw (entity.east) -- ++(.3,0) node [right] {\tt f};
+
+  % input conditions
+  
+  \coordinate (ic0) at ($(entity.bpin 3)-(.3,0)$);
+  \coordinate (icn) at ($(entity.bpin 5)-(.3,0)$);
+  \draw (ic0) -- ($(entity.bpin 3)$);
+  \draw (icn) -- ($(entity.bpin 5)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(ic0)!.5!(icn)$) {\dots};
+  \draw (entity.bpin 3) -- ++(-.3,0);
+  \draw (entity.bpin 5) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 3)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 5)$) {$\texttt{cn}-1$};
+  
+  \node[left] at ($(ic0)$) {\tt ic};
+  \node[left] at ($(icn)$) {\tt ic};
+  
+  % time A and time B
+  \draw (entity.bpin 6) -- ++(-.3,0) coordinate (timeA) node [left] {\texttt{A}};
+  \draw (entity.bpin 7) -- ++(-.3,0) coordinate (timeB) node [left] {\texttt{B}};
+
+  % input arcs valid
+  
+  \coordinate (iav0) at ($(entity.bpin 8)-(.3,0)$);
+  \coordinate (iavn) at ($(entity.bpin 10)-(.3,0)$);
+  \draw (iav0) -- ($(entity.bpin 8)$);
+  \draw (iavn) -- ($(entity.bpin 10)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(iav0)!.5!(iavn)$) {\dots};
+  \draw (entity.bpin 8) -- ++(-.3,0);
+  \draw (entity.bpin 10) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 8)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 10)$) {$\texttt{ian}-1$};
+  
+  \node[left] at ($(iav0)$) {\tt iav};
+  \node[left] at ($(iavn)$) {\tt iav};
+  
+  % reinit time
+  
+  \coordinate (rt0) at ($(entity.bpin 11)-(.3,0)$);
+  \coordinate (rtn) at ($(entity.bpin 13)-(.3,0)$);
+  \draw (rt0) -- ($(entity.bpin 11)$);
+  \draw (rtn) -- ($(entity.bpin 13)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(rt0)!.5!(rtn)$) {\dots};
+  \draw (entity.bpin 11) -- ++(-.3,0);
+  \node[right,font=\ssmall] at ($(entity.bpin 11)$) {\tt 0};
+  \draw (entity.bpin 13) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 13)$) {$\texttt{ian}-1$};
+  
+  \node[left] at ($(rt0)$) {\tt rt};
+  \node[left] at ($(rtn)$) {\tt rt};
+
+  % priority authorizations
+  
+  \coordinate (pauths0) at ($(entity.bpin 14)-(.3,0)$);
+  \coordinate (pauthsn) at ($(entity.bpin 16)-(.3,0)$);
+  \draw (pauths0) -- ($(entity.bpin 14)$);
+  \draw (pauthsn) -- ($(entity.bpin 16)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(pauths0)!.5!(pauthsn)$) {\dots};
+  \draw (entity.bpin 14) -- ++(-.3,0);
+  \draw (entity.bpin 16) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 14)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 16)$) {$\texttt{ian}-1$};
+  
+  \node[left] at ($(pauths0)$) {\tt pauths};
+  \node[left] at ($(pauthsn)$) {\tt pauths};
+  
+  % LABELS
+ 
+  % \node (eq) at ($(entcode.west)!.6!(entity.east)$) {\LARGE $\Leftrightarrow$};
+  
+\end{circuitikz}
+
+\end{document}

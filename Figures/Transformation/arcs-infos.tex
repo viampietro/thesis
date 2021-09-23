@@ -1,0 +1,185 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{circuitikz}
+  \ctikzset{multipoles/dipchip/width=2}
+  \ctikzset{multipoles/dipchip/pin spacing=.24}
+  
+  \node(entity) [dipchip,
+  num pins=36,
+  hide numbers,
+  no topmark,
+  external pins width=0] {
+  };
+  % \node(entityLabel) at ($(entity.south)-(0,10pt)$) [inner sep=1cm]{\small\tt transition design};
+  
+  % CLKS and PORTS
+  
+  \draw (entity.bpin 2) -- ++(-.3,0) coordinate (pina) node [left] {\tt rst};
+  \draw (entity.bpin 1) ++(0,0.1) -- ++(0.1,-0.1) coordinate (entclk) node[left, xshift=-4mm]{\tt clk} -- ++(-0.1,-0.1);
+
+
+  % initial marking
+  \draw (entity.bpin 3) -- ++(-.3,0) coordinate (im) node [left] {\texttt{im}};
+  
+  % input arc weights
+  
+  \coordinate (iaw0) at ($(entity.bpin 4)-(.3,0)$);
+  \coordinate (iawn) at ($(entity.bpin 6)-(.3,0)$);
+  \draw (iaw0) -- ($(entity.bpin 4)$);
+  \draw (iawn) -- ($(entity.bpin 6)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(iaw0)!.5!(iawn)$) {\dots};
+  \draw (entity.bpin 4) -- ++(-.3,0);
+  \draw (entity.bpin 6) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 4)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 6)$) {$\texttt{ian}-1$};
+  
+  \node[left] at ($(iaw0)$) {\tt iaw};
+  \node[left] at ($(iawn)$) {\tt iaw};
+
+  % output arc types
+
+  \coordinate (oat0) at ($(entity.bpin 7)-(.3,0)$);
+  \coordinate (oatn) at ($(entity.bpin 9)-(.3,0)$);
+  \draw (oat0) -- ($(entity.bpin 7)$);
+  \draw (oatn) -- ($(entity.bpin 9)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(oat0)!.5!(oatn)$) {\dots};
+  \draw (entity.bpin 4) -- ++(-.3,0);
+  \draw (entity.bpin 6) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 7)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 9)$) {$\texttt{oan}-1$};
+  
+  \node[left] at ($(oat0)$) {\tt oat};
+  \node[left] at ($(oatn)$) {\tt oat};
+
+  % output arc weights
+
+  \coordinate (oaw0) at ($(entity.bpin 10)-(.3,0)$);
+  \coordinate (oawn) at ($(entity.bpin 12)-(.3,0)$);
+  \draw (oaw0) -- ($(entity.bpin 10)$);
+  \draw (oawn) -- ($(entity.bpin 12)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(oaw0)!.5!(oawn)$) {\dots};
+  \draw (entity.bpin 4) -- ++(-.3,0);
+  \draw (entity.bpin 6) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 10)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 12)$) {$\texttt{oan}-1$};
+  
+  \node[left] at ($(oaw0)$) {\tt oaw};
+  \node[left] at ($(oawn)$) {\tt oaw};
+
+  % input transitions fired
+
+  \coordinate (itf0) at ($(entity.bpin 13)-(.3,0)$);
+  \coordinate (itfn) at ($(entity.bpin 15)-(.3,0)$);
+  \draw (itf0) -- ($(entity.bpin 13)$);
+  \draw (itfn) -- ($(entity.bpin 15)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(itf0)!.5!(itfn)$) {\dots};
+  \draw (entity.bpin 13) -- ++(-.3,0);
+  \draw (entity.bpin 15) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 13)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 15)$) {$\texttt{ian}-1$};
+  
+  \node[left] at ($(itf0)$) {\tt itf};
+  \node[left] at ($(itfn)$) {\tt itf};
+
+  % output transitions fired
+
+  \coordinate (otf0) at ($(entity.bpin 16)-(.3,0)$);
+  \coordinate (otfn) at ($(entity.bpin 18)-(.3,0)$);
+  \draw (otf0) -- ($(entity.bpin 16)$);
+  \draw (otfn) -- ($(entity.bpin 18)$);
+  \node[rotate=90, yshift=-3pt, xshift=1pt] at ($(otf0)!.5!(otfn)$) {\dots};
+  \draw (entity.bpin 16) -- ++(-.3,0);
+  \draw (entity.bpin 18) -- ++(-.3,0);
+  \node [right,font=\ssmall] at ($(entity.bpin 16)$) {\tt 0};
+  \node [right,font=\ssmall] at ($(entity.bpin 18)$) {$\texttt{oan}-1$};
+  
+  \node[left] at ($(otf0)$) {\tt otf};
+  \node[left] at ($(otfn)$) {\tt otf};
+
+  % output arcs valid
+
+  \coordinate (oav0) at ($(entity.bpin 33)+(.3,0)$);
+  \coordinate (oavn) at ($(entity.bpin 31)+(.3,0)$);
+  \draw (oav0) -- ($(entity.bpin 33)$);
+  \draw (oavn) -- ($(entity.bpin 31)$);
+  \node[rotate=90, yshift=2pt] at ($(oav0)!.5!(oavn)$) {\dots};
+  \node [left,font=\ssmall] at ($(entity.bpin 33)$) {\tt 0};
+  \node [left,font=\ssmall] at ($(entity.bpin 31)$) {$\texttt{oan}-1$};
+  
+  \node[right] at ($(oav0)$) {\tt oav};
+  \node[right] at ($(oavn)$) {\tt oav};
+
+  % priority authorizations
+
+  \coordinate (pauths0) at ($(entity.bpin 30)+(.3,0)$);
+  \coordinate (pauthsn) at ($(entity.bpin 28)+(.3,0)$);
+  \draw (pauths0) -- ($(entity.bpin 30)$);
+  \draw (pauthsn) -- ($(entity.bpin 28)$);
+  \node[rotate=90, yshift=2pt] at ($(pauths0)!.5!(pauthsn)$) {\dots};
+  \node [left,font=\ssmall] at ($(entity.bpin 30)$) {\tt 0};
+  \node [left,font=\ssmall] at ($(entity.bpin 28)$) {$\texttt{oan}-1$};
+  
+  \node[right] at ($(pauths0)$) {\tt pauths};
+  \node[right] at ($(pauthsn)$) {\tt pauths};
+
+  % reinit transitions time
+
+  \coordinate (rtt0) at ($(entity.bpin 27)+(.3,0)$);
+  \coordinate (rttn) at ($(entity.bpin 25)+(.3,0)$);
+  \draw (rtt0) -- ($(entity.bpin 27)$);
+  \draw (rttn) -- ($(entity.bpin 25)$);
+  \node[rotate=90, yshift=2pt] at ($(rtt0)!.5!(rttn)$) {\dots};
+  \node [left,font=\ssmall] at ($(entity.bpin 27)$) {\tt 0};
+  \node [left,font=\ssmall] at ($(entity.bpin 25)$) {$\texttt{oan}-1$};
+  
+  \node[right] at ($(rtt0)$) {\tt rtt};
+  \node[right] at ($(rttn)$) {\tt rtt};
+
+  % marked
+  \draw ($(entity.bpin 23)$) --++($(.3,0)$) node[right] {\tt m};
+  \draw[red] ($(entity.bpin 3)-(1,.2)$) rectangle ($(itf0)+(1.3,.2)$); 
+  
+  
+\end{circuitikz}
+
+\end{document}

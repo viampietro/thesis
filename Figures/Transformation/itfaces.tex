@@ -1,0 +1,58 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+
+\usepackage{listings,lstautogobble}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage{xcolor}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+\usepackage{circuitikzgit}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing, positioning, calc, arrows, shapes, automata, petri, patterns}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  \node (pdesign) {
+    \includegraphics{../H-VHDL/place-design-entity-short}
+  };
+  \node[anchor=north] at ($(pdesign.south)$) {\large\it \texttt{place} design interface};
+
+  
+  \node[anchor=west] (tdesign) at ($(pdesign.east)+(1,0)$) {
+    \includegraphics[keepaspectratio]{../H-VHDL/trans-design-entity-short}
+  };
+  \node[anchor=north] at ($(tdesign.south)$) {\large\it \texttt{transition} design interface};
+  
+\end{tikzpicture}
+
+\end{document}
