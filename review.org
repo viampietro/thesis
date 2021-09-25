@@ -13,8 +13,8 @@
 * TODO H-VHDL: a target hardware description language [50%]
 ** DONE review DA
 ** TODO review DD
-* TODO The HILECOP model-to-text transformation [0%]
-** TODO review DA
+* TODO The HILECOP model-to-text transformation [50%]
+** DONE review DA
 ** TODO review DD
 * TODO Proving semantic preservation in HILECOP [0%]
 ** TODO review DA

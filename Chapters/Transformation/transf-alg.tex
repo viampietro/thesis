@@ -543,7 +543,25 @@ signal of the Boolean type. This generated signal joins the internal
 signal declaration list of design $d$. The connection between the
 \texttt{marked} output port and the internal signal will be used
 later, during the generation of the \texttt{action} process (see
-Section~\ref{sec:genports}). \\
+Section~\ref{sec:genports}).
+
+Figure~\ref{fig:gen-pci-ex} shows the generic, input port and output
+port map of the PCI $id_{p_0}$ (cf. Figure~\ref{fig:transf-arch})
+after the execution of the \texttt{generate_PCIs} procedure.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.4\textwidth]{Figures/Transformation/gen-pci-ex}
+  \caption{A graphical representation of the interface of the PCI
+    \texttt{id}$_{p_0}$ after the \texttt{generate_PCIs}
+    procedure. The generic map associations appear in
+    \textcolor{blue}{blue} underneath the PCI. The indexes of
+    composite ports appear in \textcolor{blue}{blue} to stress the
+    relation between the interface dimensioning and the generic
+    constants. The \texttt{m} output port is connected to an internal
+    signal represented by a \textcolor{red}{red} wire.}
+  \label{fig:gen-pci-ex}
+\end{figure}
 
 The \texttt{generate\_TCIs} procedure, presented in
 Algorithm~\ref{alg:gentcis}, iterates over the set of transitions $T$
@@ -750,6 +768,24 @@ with the size of the set in the generic map $g_t$. In that case, the
 Algorithm~\ref{alg:genconds}, will handle the connection of the
 subelements of the \texttt{ic} input port.
 
+Figure~\ref{fig:gen-tci-ex} shows the generic, input port and output
+port map of the TCI $id_{t_0}$ (cf. Figure~\ref{fig:transf-arch})
+after the execution of the \texttt{generate_TCIs} procedure.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.4\textwidth]{Figures/Transformation/gen-tci-ex}
+  \caption{A graphical representation of the interface of the TCI
+    \texttt{id}$_{t_0}$ after the \texttt{generate_TCIs}
+    procedure. The generic map associations appear in
+    \textcolor{blue}{blue} underneath the TCI. The indexes of
+    composite ports appear in \textcolor{blue}{blue} to stress the
+    relation between the interface dimensioning and the generic
+    constants. The \texttt{f} output port is connected to an internal
+    signal represented by a \textcolor{red}{red} wire.}
+  \label{fig:gen-tci-ex}
+\end{figure}
+
 \subsection{Interconnection of the place and transition component
   instances}
 \label{sec:geninter}
@@ -953,6 +989,20 @@ associated with \texttt{true} in the input port map $i_t$
 that, since the transition $t$ is not a conflicting transition of
 place $p$, then, transition $t$ always has the authorization to be
 fired, given that it is firable.
+
+Figure~\ref{fig:gen-inter-ex} shows the interconnections between the
+PCI $id_{p_0}$ and the TCI $id_{t_0}$
+(cf. Figure~\ref{fig:transf-arch}) after the execution of the
+\texttt{generate_interconnections} procedure.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.7\textwidth]{Figures/Transformation/gen-inter-ex}
+  \caption{A graphical representation of the interconnections of the
+    PCI $id_{p_0}$ and the TCI \texttt{id}$_{t_0}$ after the execution
+    of \texttt{generate_interconnections} procedure. }
+  \label{fig:gen-inter-ex}
+\end{figure}
 
 \subsection{Generation of ports, the \texttt{action} and the
   \texttt{function} process}

@@ -1,0 +1,258 @@
+\documentclass{standalone}
+
+\usepackage[english]{babel}
+
+% to define font size
+
+\usepackage{ulem}
+\usepackage{moresize}
+\usepackage{anyfontsize}
+
+% to use colors
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{MnSymbol}
+
+% to use tikz and its libraries
+
+\usepackage{tikz-timing}
+\usepackage{tikz}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning, calc, arrows, shapes, automata, petri, patterns,decorations.markings}
+
+% to use tikzmark, to place and refer to marks outside the current figure
+
+\tikzset{every picture/.style={remember picture}}
+
+% styles for transitions
+
+\tikzset{transition/.append style={fill=black!20, thick}}
+\tikzset{transition/.append style={fill=black!20, thick}}
+
+% styles for test and inhib arcs.
+
+\tikzstyle{test}=[pre, *-]
+\tikzstyle{inhib}=[pre, o-]
+
+\usepackage{circuitikzgit}
+\ctikzset{
+  logic ports=ieee,
+}
+
+% Arrow positioning in a path
+
+\tikzset{->-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{>}}},postaction={decorate}}}
+
+\tikzset{-<-/.style={decoration={
+  markings,
+  mark=at position #1 with {\arrow{<}}},postaction={decorate}}}
+
+% shift values
+
+\newcommand{\outportshift}{0mm}
+\newcommand{\outportidpshift}{0mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  BEGIN DOCUMENT                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{circuitikz}
+
+  \ctikzset{multipoles/dipchip/width=2}
+  \ctikzset{multipoles/dipchip/pin spacing=.18}
+
+  % \node[draw,rectangle,inner sep=7mm] (tl) {
+  %   \begin{circuitikz}
+
+  %     % PCI idp
+
+      % interface
+      \draw       
+      node [dipchip, num pins=16, hide numbers,
+      no topmark, external pins width=0]
+      (idp) {$\mathtt{id}_{p_0}$};
+
+      \draw ($(idp.bpin 1)$) ++(0,0.1) -- ++(0.1,-0.1) node[right, font=\ssmall] {\tt clk} -- ++(-0.1,-0.1) ;
+      
+      \draw ($(idp.bpin 2)$) --++ (-.3,0) coordinate (idprst);
+      \node at (idp.bpin 2) [anchor=west, font=\ssmall]  {\tt rst};
+
+      \draw ($(idp.bpin 3)$) -- ++(-.3,0) coordinate (idpim);
+      \node at (idp.bpin 3) [anchor=west, font=\ssmall]  {\tt im};
+      \node at (idpim) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{1}};
+      
+      \draw ($(idp.bpin 4)$) -- ++(-.3,0) coordinate (idpiaw0);
+      \node at (idp.bpin 4) [anchor=west, font=\ssmall]  {\tt iaw(\textcolor{blue}{0})};
+      \node at (idpiaw0) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{1}};
+
+      \draw ($(idp.bpin 5)$) -- ++(-.3,0) coordinate (idpoat0);
+      \node at (idp.bpin 5) [anchor=west, font=\ssmall]  {\tt oat(\textcolor{blue}{0})};
+      \node at (idpoat0) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{basic}};
+
+      \draw ($(idp.bpin 6)$) -- ++(-.3,0) coordinate (idpoaw0);
+      \node at (idp.bpin 6) [anchor=west, font=\ssmall]  {\tt oaw(\textcolor{blue}{0})};
+      \node at (idpoaw0) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{1}};
+      
+      \draw ($(idp.bpin 7)$) --++ (-.3,0) coordinate (idpitf0);
+      \node at (idp.bpin 7) [anchor=west, font=\ssmall]  {\tt itf(\textcolor{blue}{0})};
+
+      \draw ($(idp.bpin 8)$) --++ (-.3,0) coordinate (idpotf0);
+      \node at (idp.bpin 8) [anchor=west, font=\ssmall]  {\tt otf(\textcolor{blue}{0})};
+
+      \draw ($(idp.bpin 15)$) --++(.3,0) coordinate (idpoav0);
+      \node at (idp.bpin 15) [anchor=east, font=\ssmall, xshift=\outportidpshift]  {\tt oav(\textcolor{blue}{0})};
+      
+      \draw ($(idp.bpin 13)$) --++(.3,0) coordinate (idprtt0) ;
+      \node at (idp.bpin 13) [anchor=east, font=\ssmall, xshift=\outportidpshift]  {\tt rtt(\textcolor{blue}{0})};
+
+      \draw ($(idp.bpin 11)$) -- ++(.3,0) coordinate (idppauths0);
+      \node at (idp.bpin 11) [anchor=east, font=\ssmall, xshift=\outportidpshift]  {\tt pauths(\textcolor{blue}{0})};
+
+      \draw[red,->-=.4] ($(idp.bpin 9)$) --++(.6,0) coordinate (idpmarked);
+      \node at (idp.bpin 9) [anchor=east, font=\ssmall, xshift=\outportidpshift]  {\tt m};
+
+      % generic map
+      \node[anchor=north] at (idp.south) {\ssmall\tt
+        \begin{tabular}{@{}c@{}}
+          \textcolor{blue}{(ian, 1), (oan, 1), (mm, $b(p_0)$)}   \\
+        \end{tabular}
+      };
+      
+      % TCI idt
+      % \ctikzset{multipoles/dipchip/width=2.2}
+      % \draw       
+      % node [dipchip, anchor=east, num pins=16, hide numbers,
+      % no topmark, external pins width=0]
+      % (idt) at ($(idp.east)+(5,0)$) {$\mathtt{id}_{t_0}$};
+
+      % \draw ($(idt.bpin 1)$) ++(0,0.1) -- ++(0.1,-0.1) node[right, font=\ssmall] {\tt clk} -- ++(-0.1,-0.1) ;
+      
+      % \draw ($(idt.bpin 2)$) --++ (-.3,0) coordinate (idtrst);
+      % \node at (idt.bpin 2) [anchor=west, font=\ssmall]  {\tt rst};
+
+      % \draw ($(idt.bpin 4)$) -- ($(idt.bpin 4)+(-.3,0)$) coordinate (idtA);
+      % \node at (idt.bpin 4) [anchor=west, font=\ssmall]  {\tt A};
+      % \node at (idtA) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{1}};
+      
+      % \draw ($(idt.bpin 5)$) -- ($(idt.bpin 5)+(-.3,0)$) coordinate (idtB);
+      % \node at (idt.bpin 5) [anchor=west, font=\ssmall]  {\tt B};
+      % \node at (idtB) [anchor=east, font=\ssmall,xshift=\outportshift] {\tt \textcolor{blue}{3}};
+
+      % \draw ($(idt.bpin 6)$) -- ++(-.3,0) coordinate (idtpauths0);
+      % \node at (idt.bpin 6) [anchor=west, font=\ssmall]  {\tt pauths(\textcolor{blue}{0})};
+      
+      % \draw ($(idt.bpin 7)$) --++ (-.3,0) coordinate (idtiav0);
+      % \node at (idt.bpin 7) [anchor=west, font=\ssmall]  {\tt iav(\textcolor{blue}{0})};
+
+      % \draw ($(idt.bpin 8)$) --++ (-.3,0) coordinate (idtrt0) ;
+      % \node at (idt.bpin 8) [anchor=west, font=\ssmall]  {\tt rt(\textcolor{blue}{0})};
+
+      % \draw ($(idt.bpin 3)$) --++ (-.3,0) coordinate (idtic0);
+      % \node at (idt.bpin 3) [anchor=west, font=\ssmall]  {\tt ic(\textcolor{blue}{0})};
+
+      % \draw[red,->-=.4] ($(idt.east)$) --++ (.6,0) coordinate (idtfired);
+      % \node at (idt.east) [anchor=east, font=\ssmall, xshift=\outportshift]  {\tt f};
+
+      % \node[anchor=north] at (idt.south) {\ssmall\tt
+      %   \begin{tabular}{@{}c@{}}
+      %     \textcolor{blue}{(tt, temp\_a\_b), (ian, 1),} \\
+      %     \textcolor{blue}{(cn, 1), (mtc, 3)} \\
+      %   \end{tabular}
+      % };
+      % Process functions
+  %     \ctikzset{multipoles/dipchip/width=2.2}
+  %     \draw       
+  %     node [dipchip, anchor=east, num pins=6, hide numbers,
+  %     no topmark, external pins width=0]
+  %     (funps) at ($(idt.east)+(5,0)$) {$\mathtt{functions}$};
+
+  %     \draw ($(funps.bpin 1)$) ++(0,0.1) -- ++(0.1,-0.1) node[right, font=\ssmall,xshift=-6mm] {\tt clk} -- ++(-0.1,-0.1) ;
+      
+  %     \coordinate (funpsrst) at ($(funps.bpin 2)+(-.3,0)$);
+  %     \node at (funps.bpin 2) [anchor=west, font=\ssmall, xshift=-6mm]  {\tt rst};
+      
+  %     \coordinate (funpsf) at ($(funps.bpin 3)+(-.3,0)$);
+  %     \node at (funps.bpin 3) [anchor=west, font=\ssmall, xshift=-6mm]  {};
+      
+  %     % Process actions
+  %     \draw       
+  %     node [dipchip, anchor=north, num pins=6, hide numbers,
+  %     no topmark, external pins width=0]
+  %     (actps) at ($(funps.south)-(0,2)$) {$\mathtt{actions}$};
+
+  %     \draw ($(actps.bpin 1)$) ++(0,0.1) -- ++(0.1,-0.1) node[right, font=\ssmall,xshift=-6mm] {\tt clk} -- ++(-0.1,-0.1) ;
+      
+  %     \coordinate (actpsrst) at ($(actps.bpin 2)+(-.3,0)$);
+  %     \node at (actps.bpin 2) [anchor=west, font=\ssmall, xshift=-6mm]  {\tt rst};
+      
+  %     \coordinate (actpsm) at ($(actps.bpin 3)+(-.3,0)$);
+  %     \node at (actps.bpin 3) [anchor=west, font=\ssmall, xshift=-6mm] {};
+  %   \end{circuitikz}
+  % };
+
+  % % TOP-LEVEL PORTS
+  
+  % \draw ($(tl.west)+(0,2)$) ++(0,0.1) -- ++(0.1,-0.1) coordinate (tlclk) node[left, xshift=-4mm]{\tt clk} -- ++(-0.1,-0.1);
+  % \draw ($(tl.west)+(0,1)$) -- ++(-.3,0) coordinate (tlrst) node [left] {\tt rst};
+  % \draw ($(tl.west)$) -- ++(-.3,0) coordinate (idc0) node [left] {\tt id$_{c_0}$};
+
+  % \draw ($(tl.east)+(0,1)$) -- ++(.3,0) coordinate (idf0) node [right] {\tt id$_{f_0}$};
+
+  % \draw ($(tl.east)+(0,-1)$) -- ++(.3,0) coordinate (ida0) node [right] {\tt id$_{a_0}$};
+
+  % % INTERCONNECTIONS between TL and INTERNAL BEHAVIOR
+
+  % % clk to clks
+  % \draw [red,->-=.4] (tlclk) --++(1,0) |- (idt.bpin 1);
+  % \draw [red,->-=.4] (tlclk) --++(1,0) -|++ (0,-2.6) -- (idp.bpin 1);
+  % \draw [red,->-=.4] (tlclk) --++(1,0) -|++ (0,1.5) -| ($(funps.bpin 1)-(.3,0)$) -- ($(funps.bpin 1)$);
+  % \draw [red](tlclk) --++(1,0) -|++ (0,1.5) -| ($(actps.bpin 1)-(.8,0)$) -- ($(actps.bpin 1)$);
+
+  % % rst to rsts
+  % \draw [blue,->-=.4] (tlrst) --++(3,0) |- (idt.bpin 2);
+  % \draw [blue,->-=.4] (tlrst) --++(.7,0) |- (idp.bpin 2);
+  % \draw [blue,->-=.4] (tlrst) --++(.7,0) --++ (0,2.7) -| ($(funps.bpin 2)-(.5,0)$) -- ($(funps.bpin 2)$);
+  % \draw [blue] (tlrst) --++(.7,0) --++ (0,2.7) -| ($(funps.bpin 2)-(.5,0)$) |- ($(actps.bpin 2)$);
+
+  % % idc0 to ic(0)
+  % \draw [Green,->-=.4] (idc0) -|  (idtic0) -- ($(idtic0)+(.3,0)$);
+
+  % % functions to idf0
+  % \draw [Purple,->-=.2] (funps.east) -| ($(idf0)-(.6,0)$) -- (idf0);
+
+  % % actions to ida0
+  % \draw [Purple,->-=.2] (actps.east) -| ($(ida0)-(.6,0)$) -- (ida0);
+
+  % % INTERCONNECTIONS in INTERNAL BEHAVIOR
+  
+  % % idt.fired to idp.itf/idp.otf/functions
+  % \draw [Orange,->-=.4] (idt.east) -- (idtfired) |- ($(idpitf0)-(0,.7)$) |- (idp.bpin 8);
+  % \draw [Orange] (idt.east) -- (idtfired) |- ($(idpitf0)-(0,.7)$) |- (idp.bpin 7);
+  % \draw [Orange,->-=.4] (idt.east) -- (idtfired) |- (funpsf) --++(.3,0);
+  
+  % % idp.oav(0) to idt.iav(0)
+  % \draw [Orange,->-=.4] (idp.bpin 9) -- (idpoav0) -| ($(idtiav0)-(.2,0)$) -- (idt.bpin 6);
+
+  % % idp.rtt(0) to idt.rt(0)
+  % \draw [Orange,->-=.4] (idp.bpin 13) -- (idprtt0) -| ($(idtrt0)-(.4,0)$) -- (idt.bpin 7);
+
+  % % idp.marked to actions
+  % \draw [Orange,->-=.4] (idp.bpin 15) -- (idpmarked) -| ($(actpsm)-(.6,0)$) -- (actps.bpin 3);
+  
+  % \draw [->-=.4] (tlclk) --++(1,0) -|++ (0,-2.6) -- (idp.bpin 1);
+  % \draw [->-=.4] (tlclk) --++(1,0) -|++ (0,2) -| ($(funps.bpin 1)-(.3,0)$) -- ($(funps.bpin 1)$);
+  % \draw (tlclk) --++(1,0) -|++ (0,2) -| ($(actps.bpin 1)-(.8,0)$) -- ($(actps.bpin 1)$);
+  
+\end{circuitikz}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
