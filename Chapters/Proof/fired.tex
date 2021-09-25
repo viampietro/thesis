@@ -1,7 +1,7 @@
 The goal of this section is to present the overall proof strategy that
 we adopted to establish the semantic preservation property for the
-\hilecop{} model-to-text transformation. We use the proof of
-Lemma~\ref{lem:fe-equal-fired}, involved in the proof of
+\hilecop{} model-to-text transformation. We take advantage of the
+proof of Lemma~\ref{lem:fe-equal-fired}, involved in the proof of
 Lemma~\ref{lem:fe}, to illustrate our demonstration technics. The
 proof of Lemma~\ref{lem:fe-equal-fired} has been one complex part of
 the overall demonstration; we believe it is worth to be
@@ -36,16 +36,16 @@ the falling edge phase:
 
 \begin{definition}[Falling edge hypotheses]
   \label{def:fe-hyps}
-  Given a $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  Given a $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
   $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_\downarrow,\sigma'\in\Sigma$,
-  assume that:
+  $\sigma_e,\sigma,\sigma_\downarrow,\sigma'\in\Sigma$, assume that:
   \begin{itemize}
-  \item SITPN $sitpn$ translates into \hvhdl{} design $d$ and yields a
-    binder $\gamma$: $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item SITPN $sitpn$ is transformed into the \hvhdl{} design $d$ and
+    yields the binder $\gamma$: $\lfloor{}sitpn\rfloor_b=(d,\gamma)$
   \item Simulation/Execution environments are similar:
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
   \item $\Delta$ is the elaborated version of design $d$, and
@@ -67,7 +67,7 @@ the falling edge phase:
   \end{itemize}
 \end{definition}
 
-\def\fehyps{For all $sitpn$, $d$, $\gamma$, $\Delta$, $\sigma_e$,
+\def\fehyps{For all $sitpn$, $b$, $d$, $\gamma$, $\Delta$, $\sigma_e$,
   $E_c$, $E_p$, $\tau$, $s$, $s'$, $\sigma$, $\sigma_{\downarrow}$,
   $\sigma'$ that verify the hypotheses of
   Definition~\ref{def:fe-hyps},}
@@ -739,7 +739,7 @@ a given transition is fired in relation to the $IsFiredSet$ relation.
 \begin{definition}[Fired]
   \label{def:cons-fired}
   A transition $t\in{}T$ is said to be fired at the SITPN state
-  $s={<}M,I,reset_t,ex,cond{>}$, iff there exists a subset
+  $s={<}M,I,reset_t,$ $ex,$ $cond{>}$, iff there exists a subset
   $Fset\subseteq{}T$ such that $IsFiredSet(s,Fset)$ and $t\in{}Fset$.
 \end{definition}
 

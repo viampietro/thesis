@@ -4,8 +4,8 @@
 
 \begin{definition}[Rising edge hypotheses]
   \label{def:re-hyps}
-  Given an $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$,
+  Given an $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
   $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
@@ -13,7 +13,7 @@
   $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, assume
   that:
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{7}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
@@ -28,10 +28,10 @@
   \end{itemize}
 \end{definition}
 
-\def\rehyps{For all $sitpn$, $d$, $\gamma$, $E_c$, $E_p$, $\tau$,
+\def\rehyps{For all $sitpn$, $b$, $d$, $\gamma$, $E_c$, $E_p$, $\tau$,
   $\Delta$, $\sigma_e$, $s$, $s'$, $\sigma$, $\sigma_i$,
   $\sigma_\uparrow$, $\sigma'$ that verify the hypotheses of
-  Def.~\ref{def:re-hyps},}
+  Definition~\ref{def:re-hyps},}
 
 \subsection{Rising edge and Marking}
 \label{sec:re-marking}

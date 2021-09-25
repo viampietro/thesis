@@ -7,8 +7,8 @@ executable). We use the same articles to perform our literature review
 in this chapter and in the following chapter,
 i.e. Chapter~\ref{chap:proof}. However, our research questions,
 i.e. the questions we try to give an answer to while reading the
-chosen articles, and our presentation axis differ from one chapter to
-the other.  Here, the following questions guide our reading:
+articles, and our presentation axis differ from one chapter to the
+other.  Here, the following questions guide our reading:
 
 \begin{itemize}
 \item Is there a proper way to build a transformation function? Are
@@ -71,8 +71,8 @@ constructs is clearly defined.
   \label{fig:java-expr-to-java-bytecode}
 \end{figure}
 In the works pertaining to the well-known \ccert{} project
-\cite{Leroy2009, Blazy2006}, the many passes building the compiler
-from C programs to assembly languages are also clearly mapping each
+\cite{Leroy2009, Blazy2006}, the many steps that compose the compiler
+from C programs to assembly programs are also clearly mapping each
 construct of source program to target program constructs.  Moreover,
 the pattern matching possibilities offered by languages like \coq{},
 \isa{}, \hol{} and other interactive theorem provers enable a clear
@@ -118,13 +118,13 @@ algorithm (see Section~\ref{sec:trans-coq-impl}).
 
 The other category of compilers that we are interested in are
 compilers for hardware description languages (HDL). The \hilecop{}
-methodology's goal is the design of harware circuits. For that reason,
-we are interested in studying the case of compilers for HDLs. However,
-one should notice that compiling a HDL program into a lower level
-representation is one level of abstraction down compared to the
-transformation we propose to verify. Indeed, it corresponds to Step~3
-in the \hilecop{} methodology, i.e. the transformation of VHDL source
-code into a RTL representation.
+methodology's goal is the design of hardware circuits. For that
+reason, we are interested in studying the case of compilers for
+HDLs. However, one should notice that compiling a HDL program into a
+lower level representation is one level of abstraction down compared
+to the transformation we propose to verify. Indeed, it corresponds to
+Step~3 in the \hilecop{} methodology, i.e. the transformation of VHDL
+source code into a RTL representation.
 
 In the context of formal verification applied to HDLs compilers, only
 a few works describe the specificities of their translation function.
@@ -160,22 +160,22 @@ trickier when it comes to decide the composition of RTL circuits to
 respect the execution order prescribed by the scheduler.
 
 In \cite{Bourke}, the authors present the verification of a compiler
-toolchain from Lustre programs to an imperative language (Obc), and
-from Obc to Clight.  The Clight target is the one defined in
-\ccert{}\cite{Leroy2009}.  Lustre permits the definition of programs
-composed of nodes that are executed synchronously.  Nodes treat input
-streams and yield output streams of values.  A node body is composed
-of sequence of equations that determine the values of output streams
-based on the input.  Obc programs are composed of class
+toolchain from \textsf{Lustre} programs to an imperative language
+(Obc), and from Obc to Clight.  The Clight target is the one defined
+in \ccert{} \cite{Leroy2009}.  \textsf{Lustre} permits the definition
+of programs composed of nodes that are executed synchronously.  Nodes
+treat input streams and yield output streams of values.  A node body
+is composed of sequence of equations that determine the values of
+output streams based on the input.  Obc programs are composed of class
 declarations. A class declaration has a vector of memory variables, a
 vector of instances of other classes, and method declarations.  The
-translation turns each node of a Lustre program into a class of Obc
-accompanied by two methods: the reset method, for the initialization
-of the streams, and the step method, for the update of values
-resulting of a synchronous step.
+translation turns each node of a \textsf{Lustre} program into a class
+of Obc accompanied by two methods: the reset method, for the
+initialization of the streams, and the step method, for the update of
+values resulting of a synchronous step.
 
 In \cite{Loow2021}, the authors describe a compiler that transforms
-Verilog programs into netlists targetting certain FPGA models. Verilog
+Verilog programs into netlists targetting given FPGA models. Verilog
 programs are a lot like VHDL programs; they describe a hardware
 circuit behavior in terms of processes. A netlist is composed of
 registers, variables and a list of cells corresponding to
@@ -186,12 +186,12 @@ circuits by means of cell composition.
 
 \paragraph{Model transformations}
 
-We are now presenting the works pertaining to model-to-model and
+We will now present the works pertaining to model-to-model and
 model-to-text transformations in the context of formal
-verification. Because of the very nature of the transformation we
-propose to verify, i.e a model-to-text transformation, the following
-works are of particular interest to us. We will focus here on the
-manner to express transformations in the case of model-to-model and
+verification. Because of the nature of the transformation we propose
+to verify, i.e a model-to-text transformation, the following works are
+of particular interest to us. We will focus here on the manner to
+express transformations in the case of model-to-model and
 model-to-text transformations. Also, we tried to find articles related
 to model transformations involving Petri nets.
 
@@ -205,7 +205,7 @@ models. The translation rules from source to target models are
 expressed within the setting of the OMG standard QVT language
 (Query/View/Transform). The QVT language offers a formal way to
 express model transformations, partly based on the Object Constraint
-Language (OCL). The translation rules maps the different kind of
+Language (OCL). The translation rules map the different kind of
 structures that can be found in UML state diagrams to specific
 structures of Petri nets. Even though the two models used as source
 and target of transformations are executable, the authors leverage the
@@ -246,19 +246,20 @@ relationships between source model $s$ and target model $t$''.
 The work described is \cite{Fronc2011} is really close to our own
 verification task. The article describes how Coloured Petri Nets
 (CPNs, specifically LLVM-labelled Petri nets) are transformed into
-LLVM programs representing the state space (the graph of reachable
-markings) of these PNs.  The aim is to enable an efficient
-model-checking of the CPNs.  LLVM-labelled PNs are CPNs whose places,
-transitions and arcs have LLVM constructs for colour domains. Places
-are labelled with data types.  Transitions are labelled with boolean
-expressions that correspond to the guard of the transition. Arcs are
-labelled by multisets of expressions. A marking is a function that
-maps each place to a multiset of values belonging to the place's type.
-The authors define data structures (multisets, sets, markings,...)
-with interfaces, i.e. sets of operations over structures, to represent
-the Petri nets in LLVM.  They define interpretation functions that
-draw equivalences between Petri nets objects and LLVM data structures.
-The authors define two algorithms: $\mathtt{fire\_t}$ and
+LLVM (Low Level Virtual Machine) programs representing the state space
+(the graph of reachable markings) of these PNs. LLVM is a low-level
+assembly language. The aim is to enable an efficient model-checking of
+the CPNs.  LLVM-labelled PNs are CPNs whose places, transitions and
+arcs have LLVM constructs for colour domains. Places are labelled with
+data types.  Transitions are labelled with boolean expressions that
+correspond to the guard of the transition. Arcs are labelled by
+multisets of expressions. A marking is a function that maps each place
+to a multiset of values belonging to the place's type.  The authors
+define data structures (multisets, sets, markings,...)  with
+interfaces, i.e. sets of operations over structures, to represent the
+Petri nets in LLVM.  They define interpretation functions that draw
+equivalences between Petri nets objects and LLVM data structures.  The
+authors define two algorithms: $\mathtt{fire\_t}$ and
 $\mathtt{succ\_t}$ to compute the graph of reachable states.  These
 are the functions that transform CPNs into concrete LLVM programs.
 
@@ -291,24 +292,24 @@ the transformation is semantic preserving. Thus, in
 compilers are presented, the compilation is split into many simple
 pass to ease the verification effort coming afterwards. In the case of
 the \hilecop{} transformation, we are not yet concerned with the
-optimization of the generated VHDL code. Thus, our transformation
+optimization of the generated \vhdl{} code. Thus, our transformation
 algorithm performs the generation of the target \hvhdl{} design in a
 single pass. We do not need to use intermediary representations
 between the input SITPN model and the generated \hvhdl{} design.
 
 Also, while transforming source programs, the compiler must often
 generate fresh constructs belonging to the target language (for
-instance, generating an fresh RTL register for each variable
-referenced in a source C program in \cite{Leroy2009}). The compiler
-must keep a binding, that is, a memory of the mapping between the
-elements of the source program and their mirror in the target
-program. This consideration is of interest in our case of
-transformation where the elements of SITPNs are also mirrored by
-elements in the generated \hvhdl{} design.
+instance, generating a fresh RTL register for each variable referenced
+in a source C program in \cite{Leroy2009}). The compiler must keep a
+binding, that is, a memory of the mapping between the elements of the
+source program and their mirror in the target program. This
+consideration is of interest in our case of transformation where the
+elements of SITPNs are also mirrored by elements in the generated
+\hvhdl{} design.
 
 It remains hard to establish a standard way to express a
 transformation function as it really depends on the form of the input
-and the output representation. Compilers for programming languages
+and the output representations. Compilers for programming languages
 tend to be a lot more compositional than model transformations. Here,
 the word \textit{compositional} means that the translation rules can
 be split into simple and independent cases of translation, e.g
@@ -331,9 +332,9 @@ In the world of models, there exist some standard formalisms to
 express transformation rules (QVT, ATL, transformation graphs\dots).
 However, the complexity of the transformation rules depends on the
 richness of the elements composing the source model, and the distance
-to the concepts of the target model. In our case, we could not see
-what would the perks of using such formalisms as QVT or ATL to devise
-our transformation.
+to the concepts of the target model. In our case, we were not able to
+grab the perks of using such formalisms as QVT or ATL to devise our
+transformation.
 
 
 

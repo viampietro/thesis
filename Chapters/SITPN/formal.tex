@@ -678,6 +678,45 @@ compile-time errors during the transformation of the SITPN into a
   \end{itemize}
 \end{definition}
 
+\subsection{Boundedness of a SITPN}
+\label{sec:sitpn-bounded}
+
+We conclude the formalization of the SITPN structure and semantics by
+the expression of the boundedness of a SITPN model with respect to its
+execution trace. In the manner of the well-definition property, the
+boundedness of a SITPN model is a mandatory condition to apply the
+semantic preservation theorem (cf. Remark~\ref{rem:bounded-sitpn} in
+Chapter~\ref{chap:proof}). A SITPN model is bounded if there exists a
+\textit{bound} for the number of tokens that the places can hold in
+the course of the execution of the model; formally:
+
+\begin{definition}[Bounded SITPN]
+  \label{def:bounded-sitpn}
+  A given $sitpn\in{}SITPN$ is said to be bounded if for all execution
+  environment
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, clock
+  cycle count $\tau\in\mathbb{N}$, execution trace
+  $\theta\in\mathtt{list}(S(sitpn))$ such that
+  $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta$, then there exists a
+  bound $k\in\mathbb{N}$ such that for all $p\in{}P$ and
+  $s\in{}\theta$, $s.M(p)\le{}k$.
+\end{definition}
+
+We extend the definition of a bounded SITPN model to a version where
+the bound denoting the maximal marking of each place of the model is
+passed through a function $b\in{}P\rightarrow\mathbb{N}$.
+
+\begin{definition}[Bounded SITPN through a maximal marking function]
+  A given $sitpn\in{}SITPN$ is said to be bounded through the maximal
+  marking function $b\in{}P\rightarrow\mathbb{N}$, written
+  $\lceil{}sitpn\rceil^b$, if for all execution environment
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$, clock
+  cycle count $\tau\in\mathbb{N}$, execution trace
+  $\theta\in\mathtt{list}(S(sitpn))$ such that
+  $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta$, then for all
+  $p\in{}P$ and $s\in{}\theta$, $s.M(p)\le{}b(p)$.
+\end{definition}
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../../main"

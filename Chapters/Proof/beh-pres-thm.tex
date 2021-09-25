@@ -178,16 +178,16 @@ similarity relation starting with a rising edge step.
 Theorem~\ref{thm:beh-pres} expresses our behavior preservation
 theorem. Theorem~\ref{thm:beh-pres} states that the \hilecop{}
 transformation function is semantic preserving when the input model is
-a well-defined SITPN (see Definition~\ref{def:wd-sitpn}). As a
-complementary task, we could show that if the transformation function
-returns a couple \hvhdl{} design and binder, and not an error, then
-the input SITPN is well-defined. To prove Theorem~\ref{thm:beh-pres},
-we must first exhibit an elaborated version of the returned \hvhdl{}
-design (Theorem~\ref{thm:elab-ex}), an initial state
-(Theorem~\ref{thm:init-ex}), and a simulation trace over $\tau$
-simulation cycles (Theorem~\ref{thm:sim-ex}). Finally, we can
-establish that the behaviors are similar by comparing the respective
-SITPN execution and \hvhdl{} design simulation traces
+a well-defined (see Definition~\ref{def:wd-sitpn}) and bounded (see
+Definition) SITPN. As a complementary task, we could show that if the
+transformation function returns a couple \hvhdl{} design and binder,
+and not an error, then the input SITPN is well-defined. To prove
+Theorem~\ref{thm:beh-pres}, we must first exhibit an elaborated
+version of the returned \hvhdl{} design (Theorem~\ref{thm:elab-ex}),
+an initial state (Theorem~\ref{thm:init-ex}), and a simulation trace
+over $\tau$ simulation cycles (Theorem~\ref{thm:sim-ex}). Finally, we
+can establish that the behaviors are similar by comparing the
+respective SITPN execution and \hvhdl{} design simulation traces
 (Theorem~\ref{thm:full-bisim}). In this thesis, we are focusing on the
 proof that the execution/simulation traces are similar when they are
 produced by the SITPN execution relation and the \hvhdl{} simulation
@@ -198,14 +198,16 @@ axioms.
 
 \begin{thm}[Behavior preservation]
   \label{thm:beh-pres}
-  For all well-defined $sitpn\in{}SITPN$, an \hvhdl{} design
-  $d\in{}design$, a binder $\gamma\in{}WM(sitpn,d)$, a clock cycle
-  count $\tau\in\mathbb{N}$, an execution environment
-  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
-  and an execution trace $\theta_s\in\mathtt{list}(S(sitpn))$ s.t.
+  For all well-defined $sitpn\in{}SITPN$, \hvhdl{} design
+  $d\in{}design$, binder $\gamma\in{}WM(sitpn,d)$, clock cycle count
+  $\tau\in\mathbb{N}$, execution environment
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  execution trace $\theta_s\in\mathtt{list}(S(sitpn))$ and maximal
+  marking function $b\in{}P\rightarrow\mathbb{N}$ such that
   \begin{itemize}
-  \item SITPN $sitpn$ translates into \hvhdl{} design $d$ and yields a
-    binder $\gamma$: $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item SITPN $sitpn$ is transformed into the \hvhdl{} design $d$ and
+    yields the binder $\gamma$: $\lfloor{}sitpn\rfloor_b=(d,\gamma)$
+  \item SITPN $sitpn$ is bounded through $b$: $\lceil{}sitpn\rceil^b$
   \item SITPN $sitpn$ yields the execution trace $\theta_s$ after
     $\tau$ execution cycles in environment $E_c$:\\
     $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
@@ -234,8 +236,8 @@ axioms.
 \begin{niproof}
   Given a $sitpn\in{}SITPN$, a $d\in{}design$, a
   $\gamma\in{}WM(sitpn,d)$, a $\tau\in\mathbb{N}$, an
-  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$
-  and a $\theta_s\in\mathtt{list}(S(sitpn))$, let us show that\\
+  $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
+  a $\theta_s\in\mathtt{list}(S(sitpn))$, and a $b\in{}P\rightarrow\mathbb{N}$, let us show that\\
   \framebox{$\exists\Delta,\theta_\sigma,\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c\Rightarrow$
     $(\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma)\land\theta_s\sim\theta_\sigma$}\\
 
@@ -296,7 +298,6 @@ axioms.
 
 \end{niproof}
 
-
 Theorem~\ref{thm:elab-ex} states that every \hvhdl{} design returned
 by the \hilecop{} transformation function can be elaborated. The
 elaboration relation verifies that a given \hvhdl{} design is
@@ -310,9 +311,10 @@ program.
 \begin{thm}[Elaboration]
   \label{thm:elab-ex}
   For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$ s.t.
+  $\gamma\in{}WM(sitpn,d)$ and $b\in{}P\rightarrow\mathbb{N}$ such
+  that
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$
   \end{itemize}
   \noindent{}then there exists an elaborated design
   $\Delta\in{}ElDesign$ and a design state $\sigma_e\in\Sigma$ s.t.
@@ -323,15 +325,17 @@ program.
 
 Theorem~\ref{thm:init-ex} states that one can always build an initial
 state for every \hvhdl{} design returned by the \hilecop{}
-transformation function.
+transformation function; that is, if the input SITPN model is
+well-defined and bounded.
 
 \begin{thm}[Initialization]
   \label{thm:init-ex}
   For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
-  $\sigma_e\in\Sigma(\Delta)$ s.t.
+  $b\in{}P\rightarrow\mathbb{N}$, $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign$, $\sigma_e\in\Sigma(\Delta)$ s.t.
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
+    $\lceil{}sitpn\rceil^b$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
   \end{itemize}
   \noindent{}then there exists a design state
@@ -349,10 +353,11 @@ transformation of a well-defined SITPN.
 \begin{thm}[Simulation]
   \label{thm:sim-ex}
   For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
-  $\sigma_e,\sigma_0\in\Sigma$ s.t.
+  $b\in{}P\rightarrow\mathbb{N}$, $\gamma\in{}WM(sitpn,d)$,
+  $\Delta\in{}ElDesign$, $\sigma_e,\sigma_0\in\Sigma$ s.t.
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
+    $\lceil{}sitpn\rceil^b$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
     and
     $\mathcal{D}_\mathcal{H},\Delta,\sigma_{e}\vdash{}d.cs\srarrow{init}{\fontsize{6}{8}\selectfont}\sigma_0$
@@ -361,12 +366,46 @@ transformation of a well-defined SITPN.
   \noindent{}then there exists a simulation trace
   $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that for all simulation
   environment
-  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  and simulation cycle count $\tau\in\mathbb{N}$, design $d$ yields
-  the simulation trace $\theta_\sigma$ after
+  $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$ and
+  simulation cycle count $\tau\in\mathbb{N}$, design $d$ yields the
+  simulation trace $\theta_\sigma$ after
   $\tau$ simulation cycles, starting from initial state $\sigma_0$:\\
   $\mathcal{D}_\mathcal{H},E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta_\sigma$
 \end{thm}
+
+\begin{remark}[Bounded SITPN and behavior preservation]
+  \label{rem:bounded-sitpn}
+  A part of the analysis is interested in determining the maximal
+  number of tokens that a place can hold during the execution of a
+  SITPN. If each place of the SITPN can only hold a limited number of
+  tokens during the execution of the model, then the model is said to
+  be \emph{bounded}. In that case, it is possible to compute a
+  function that associates the places of the SITPN with a maximal
+  marking value. % Thus, the presence of the $mmf$ function as a
+  % parameter of the \texttt{sitpn\_to\_hvhdl} function implies that
+  % the input SITPN model is bounded.
+  In the case of an unbounded input model, there exists a place that
+  can accumulate an infinite number of tokens during the model
+  execution. In the world of hardware description, and especially when
+  aiming at hardware synthesis, every element must have a finite
+  dimension. In the definition of the \texttt{place} design, the
+  internal signal \texttt{s\_marking} represents the marking value of
+  a place. The maximal value of the \texttt{s\_marking} signal is
+  bounded by the generic constant \texttt{maximal\_marking}. Thus,
+  when generating, a PCI from a place in the course of the
+  transformation, we must be able to give a value to the
+  \texttt{maximal\_marking} generic constant. However, even with a
+  settled \texttt{maximal\_marking} value, the execution of a \hvhdl{}
+  design, resulting from the transformation of an unbounded SITPN
+  model, infallibly leads to the overflow of the value of the
+  \texttt{s\_marking} signals in the internal states of PCIs.  In that
+  case, there exist a clock cycle count where the next design state
+  can never be derived because of the overflow. Passed this clock
+  cycle count, the simulation of the \hvhdl{} design ends, the
+  execution of the corresponding unbounded SITPN model continues, and
+  we are no more able to prove the equivalence between the two
+  behaviors.
+\end{remark}
 
 \subsection{The bisimulation theorem}
 \label{sec:bisim-thm-and-proof}
@@ -376,12 +415,12 @@ states that if an SITPN and its corresponding \hvhdl{} design are
 executed/simulated over $\tau$ execution/simulation cycles, then the
 produced traces are semantically similar, i.e they verify the full
 execution trace similarity relation of
-Definition~\ref{def:full-exec-trace-sim}. In this thesis, we proved
-this particular theorem, and as said before, we left the proofs of
-Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex} for
-later. We choose to focus our work on the bisimulation theorem,
-because it directly addresses the semantic preservation property of
-\hilecop{}'s transformation function.
+Definition~\ref{def:full-exec-trace-sim}. In this thesis, we have
+proved this particular theorem. The proofs of
+Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex}
+will be tackle down in future works. We chose to focus our work on the
+bisimulation theorem, because it directly addresses the semantic
+preservation property of \hilecop{}'s transformation function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% FULL BISIMULATION THM %%%%%%%%%%
@@ -406,14 +445,14 @@ given in Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
 
 \begin{thm}[Full bisimulation]
   \label{thm:full-bisim}
-  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
-  $\tau\in\mathbb{N}$,
+  For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$, $\tau\in\mathbb{N}$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
   $\theta_s\in\mathtt{list}(S(sitpn))$, $\Delta\in{}ElDesign$,
   $E_p\in{}\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  $\theta_\sigma\in\mathtt{list}(\Sigma)$ s.t.
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$
   \item $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ 
   \item $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$
   \item $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$
@@ -548,10 +587,14 @@ clock count $\tau$.
 
 \begin{lemma}[Bisimulation]
   \label{lem:simulation}
-  For all $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, $s$, $\theta_s$,
-  $\sigma$, $\theta_\sigma$, $\Delta$, $\sigma_e$, assume that:
+  For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
+  $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
+  $E_c\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
+  $\tau\in\mathbb{N}$, $s\in{}S(sitpn)$, $\sigma_e,\sigma\in\Sigma$,
+  $\theta_s,\theta_\sigma\in\mathtt{list}(\Sigma)$, such that
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$
   \item Starting states are fully similar as intended after a falling
@@ -564,8 +607,8 @@ clock count $\tau$.
 \end{lemma}
 
 \begin{niproof}
-  Given a $sitpn$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, and assuming
-  $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  Given a $sitpn$, $b$, $d$, $\gamma$, $E_p$, $E_c$, $\tau$, such that
+  $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
   $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
   $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{7}{9}\selectfont}\Delta,\sigma_e$,
   let us show
@@ -759,15 +802,16 @@ Section~\ref{sec:detailled-proof}.
 
 \begin{lemma}[Rising edge]
   \label{lem:re}
-  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
   $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, assume
-  that:
+  $\sigma_e,\sigma,\sigma_i,\sigma_\uparrow,\sigma'\in\Sigma$, such
+  that
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{7}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$
@@ -786,7 +830,7 @@ Section~\ref{sec:detailled-proof}.
 
 \begin{niproof}
   By definition of the \nameref{def:full-post-re-state-sim} relation,
-  there are 8 points to prove:
+  there are 9 points to prove:
   \begin{frameb}
     \begin{enumerate}
     \item
@@ -855,15 +899,15 @@ Section~\ref{sec:detailled-proof}.
 
 \begin{lemma}[Falling edge]
   \label{lem:fe}
-  For all $sitpn\in{}SITPN$, $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
+  For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,d)$,
   $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\Delta\in{}ElDesign$,
   $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, $s,s'\in{}S(sitpn)$,
-  $\sigma_e,\sigma,\sigma_\downarrow,\sigma'\in\Sigma$,
-  assume that:
+  $\sigma_e,\sigma,\sigma_\downarrow,\sigma'\in\Sigma$, such that
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
     $\gamma\vdash{}E_p\stackrel{env}{=}E_c$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash\mathrm{d}\srarrow{elab}{\fontsize{5}{7}\selectfont}\Delta,\sigma_e$
   \item $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$

@@ -13,11 +13,11 @@ caption={[The \coq{} implementation of the \texttt{sitpn\_to\_hvhdl} function.] 
 numberstyle=\tiny\ttfamily]
 Definition sitpn_to_hvhdl (sitpn : Sitpn)
    (decpr : forall x y : T sitpn, {pr x y} + {~pr x y})
-   ($id_e$ $id_a$ : ident) (mmf : P sitpn -> nat) :
+   ($id_e$ $id_a$ : ident) (b : P sitpn -> nat) :
    (design * Sitpn2HVhdlMap sitpn) + string :=
   RedV 
     ((do _ <- generate_sitpn_infos sitpn decpr;
-      do _ <- generate_architecture sitpn mmf;
+      do _ <- generate_architecture sitpn b;
       do _ <- generate_ports sitpn;
       do _ <- generate_comp_insts sitpn;
       generate_design_and_binder $id_e$ $id_a$)
@@ -25,12 +25,12 @@ Definition sitpn_to_hvhdl (sitpn : Sitpn)
 \end{lstlisting}
 
 In Listing~\ref{lst:sitpn2hvhdl}, the \texttt{sitpn\_to\_hvhdl}
-function has five parameter: \texttt{sitpn}, the input SITPN model;
+function has five parameters: \texttt{sitpn}, the input SITPN model;
 \texttt{decpr}, a proof that the \texttt{pr} relation (i.e. the
 implementation of the firing priority relation) is decidable over the
 set of transitions of \texttt{sitpn} (i.e. \texttt{T sitpn}); $id_e$
 and $id_a$, the entity and architecture idenfifiers for the generated
-\hvhdl{} design; the \texttt{mmf} function that maps the places of the
+\hvhdl{} design; the \texttt{b} function that maps the places of the
 \texttt{sitpn} parameter to a maximal marking value, i.e. a natural
 number. The \texttt{sitpn\_to\_hvhdl} function returns a couple
 composed of the generated \hvhdl{} design, of type \texttt{design},
@@ -223,18 +223,20 @@ instance of the \texttt{PlaceInfo} type. This mapping is built by the
 \texttt{generate\_sitpn\_infos} function. While building an instance
 of the \texttt{PlaceInfo} type for a given place $p$, the
 \texttt{generate_place_infos} function computes the list of output
-transitions of $p$ that are conflict in the manner of the
+transitions of $p$ that are in conflict (in the manner of the
 \texttt{output}$_c$ function described in
-Section~\ref{sec:prim-funs}. First, it computes the list of output
+Section~\ref{sec:prim-funs}). First, it computes the list of output
 transitions that are linked to the place $p$ through a \texttt{basic}
 arc; then, the function checks if all conflicts between the
 transitions of this list are solved by means of mutual exclusion. If
 it is the case, the \texttt{tconflict} field is left empty, and all
 transitions of the list join the \texttt{toutputs} list. Otherwise,
 the function tries to establish a strict total order over the
-transitions of the list, by decreasing level of priority. If no such
+transitions of the list, by decreasing level of priority.  If no such
 order can be established, the function raises an error; otherwise, the
-\texttt{tconflict} field is filled with the ordered list.
+\texttt{tconflict} field is filled with the ordered list. This process
+never fails if the input \texttt{sitpn} parameter is indeed
+well-defined (cf. Definition~\ref{def:wd-sitpn}).
 
 The \texttt{TransInfo} record type is composed of two lists that
 represent the input places, \texttt{pinputs}, and the output places,
@@ -290,15 +292,15 @@ Algorithm~\ref{alg:gentcis}.
 \begin{lstlisting}[language=coq,label={lst:gen-arch},
 caption={[The \texttt{generate\_architecture} function.]The \texttt{generate\_architecture} function that implements the \texttt{generate\_architecture} procedure of Algorithm~\ref{alg:genarch}.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
-Definition generate_architecture (sitpn : Sitpn) (mmf : P sitpn -> nat) :
+Definition generate_architecture (sitpn : Sitpn) (b : P sitpn -> nat) :
   Mon (Sitpn2HVhdlState sitpn) unit :=
-  do _ <- generate_place_map sitpn mmf;
+  do _ <- generate_place_map sitpn b;
   do _ <- generate_trans_map sitpn;
   generate_interconnections.
 \end{lstlisting}
 
 The \texttt{generate\_architecture} function takes an \texttt{Sitpn}
-instance and the \texttt{mmf} function as inputs, and modifies the
+instance and the \texttt{b} function as inputs, and modifies the
 compile-time state. The \texttt{generate\_architecture} function fills
 the \texttt{arch} field of the compile-time state; the \texttt{arch}
 field is an instance of the \texttt{Architecture} record
@@ -474,19 +476,22 @@ Definition generate_design_and_binder (sitpn : Sitpn) ($id_e$ $id_a$ : ident) :
   Ret ((design_ $id_e$ $id_a$ [] ((iports s) $\mdoubleplus$ (oports s)) (sigs (arch s)) (beh s)), ($\gamma$ s)).
 \end{lstlisting}
 
-The \texttt{generate\_comp\_insts} function is needed
-because we are using an intermediary representation for the
-component instantiation statements. Even though this representation is
-convenient to manipulate data during the different phases of the
-transformation, it also implies an extra generation step to complete
-the generation of the \hvhdl{} design and the $\gamma$ binder.
-The \texttt{generate_comp_insts} function calls the 
-\texttt{generate_place_comp_insts} and the \texttt{generate_trans_comp_insts} functions.
-These two functions being similar in all points, except for their type of the inputs, we are
-only presenting the \texttt{generate_place_comp_insts} function here.
-The \texttt{generate_place_comp_insts} function calls the \texttt{generate\_place\_comp\_inst} function
-for each place defined in the set of places of the \texttt{sitpn}
-parameter. Listing~\ref{lst:gen-pcomp-inst} presents the code the \texttt{generate\_place\_comp\_inst} function.   
+The \texttt{generate\_comp\_insts} function is needed because we are
+using an intermediary representation for the component instantiation
+statements. Even though this representation is convenient to
+manipulate data during the different phases of the transformation, it
+also implies an extra generation step to complete the generation of
+the \hvhdl{} design and the $\gamma$ binder.  The
+\texttt{generate_comp_insts} function calls the
+\texttt{generate_place_comp_insts} and the
+\texttt{generate_trans_comp_insts} functions.  These two functions
+being similar in all points, except for the type of their inputs, we
+are only presenting the \texttt{generate_place_comp_insts} function
+here.  The \texttt{generate_place_comp_insts} function calls the
+\texttt{generate\_place\_comp\_inst} function for each place defined
+in the set of places of the \texttt{sitpn}
+parameter. Listing~\ref{lst:gen-pcomp-inst} presents the code the
+\texttt{generate\_place\_comp\_inst} function.
 
 \begin{lstlisting}[language=coq,label={lst:gen-pcomp-inst},
 caption={[The \texttt{generate\_place\_comp\_inst} function.]The \texttt{generate\_place\_comp\_inst} function.},framexleftmargin=1.5em,xleftmargin=2em,numbers=left,numberstyle=\tiny\ttfamily]
@@ -532,7 +537,7 @@ compile-time state \texttt{s} with the \texttt{Get} function. Then,
 based on the value of the different fields of the compile-time state,
 the function builds an \hvhdl{} design and returns it along with the
 $\gamma$ binder.  The \hvhdl{} design receives the $id_e$ and $id_a$
-identifiers passed as parameters as its entity and architecture
+identifiers, passed as inputs, as the design's entity and architecture
 identifiers.  The generic constant declaration list of the \hvhdl{}
 design is empty, i.e. it receives the empty list value.  The port
 declaration list of the \hvhdl{} design is built by concatenating the

@@ -1,13 +1,13 @@
 \begin{definition}[First rising edge hypotheses]
   \label{def:fst-re-hyps}
-  Given an $sitpn\in{}SITPN,$ $d\in{}design,$\\
+  Given a $sitpn\in{}SITPN,$ $b\in{}P\rightarrow\mathbb{N}$, $d\in{}design,$\\
   $\gamma\in{}WM(sitpn,d),$ $\Delta\in{}ElDesign,$
   $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma\in{}\Sigma$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,\\
   $E_p\in\mathbb{N}\times{}\{\uparrow,\downarrow\})\rightarrow{}Ins(\Delta)\rightarrow{}value$,
   $\tau\in\mathbb{N}$, assume that:
   \begin{itemize}
-  \item $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$ and
+  \item $\lfloor{}sitpn\rfloor_b=(d,\gamma)$ and
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
     and $\gamma\vdash{}E_p\stackrel{env}{=}E_c$
   \item $\sigma_0$ is the initial state of $\Delta$: 
@@ -22,7 +22,7 @@
   
 \end{definition}
 
-\def\fstrehyps{For all $sitpn,d,\gamma,\Delta,$
+\def\fstrehyps{For all $sitpn,b,d,\gamma,\Delta,$
   $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma$, $E_c$,
   $E_p$, $\tau$ that verify the hypotheses of
   Definition~\ref{def:fst-re-hyps},}

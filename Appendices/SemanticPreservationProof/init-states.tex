@@ -4,15 +4,14 @@
 
 \begin{definition}[Initial state hypotheses]
   \label{def:init-states-hyps}
-  Given an $sitpn\in{}SITPN$, $d\in{}design$,
-  $\gamma\in{}WM(sitpn,$ $d)$,
-  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$,
-  assume that:
+  Given an $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
+  $d\in{}design$, $\gamma\in{}WM(sitpn,$ $d)$,
+  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$, assume that:
   \begin{itemize}
-  \item SITPN $sitpn$ translates into design $d$:
-    $\lfloor{}sitpn\rfloor_\mathcal{H}=(d,\gamma)$
+  \item SITPN $sitpn$ is transformed into the design $d$ and yields
+    the binder $\gamma$: $\lfloor{}sitpn\rfloor_b=(d,\gamma)$
   \item $\Delta$ is the elaborated version of $d$, $\sigma_e$ is the
-    default state of $\Delta$, i.e, state of $\Delta$ where all signals have their default value:\\
+    default state of $\Delta$, i.e. the state of $\Delta$ where all signals are initialized to their default value:\\
     $\mathcal{D}_\mathcal{H},\emptyset\vdash{}d\srarrow{elab}{\fontsize{6}{8}\selectfont}(\Delta,\sigma_{e})$
     
   \item $\sigma_0$ is the initial state of $\Delta$: 
@@ -20,10 +19,11 @@
   \end{itemize}
 \end{definition}
 
-\def\inithyps{For all $sitpn\in{}SITPN$, $d\in{}design$,
+\def\inithyps{For all $sitpn\in{}SITPN$,
+  $b\in{}P\rightarrow\mathbb{N}$, $d\in{}design$,
   $\gamma\in{}WM(sitpn,d)$,
-  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$
-  that verify the hypotheses of Definition~\ref{def:init-states-hyps},}
+  $\Delta\in{}ElDesign,\sigma_{e},\sigma_0\in{}\Sigma$ that verify the
+  hypotheses of Definition~\ref{def:init-states-hyps},}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% SIMILAR INITIAL STATES LEMMA %%%%%%
@@ -579,7 +579,8 @@
   simplifying the goal, \qedbox{tautology.}
 \end{niproof}
 
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: \texttt{../../main}
+%%% TeX-master: "../../main"
 %%% End:
