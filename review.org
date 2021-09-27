@@ -1,11 +1,13 @@
 #+STARTUP: indent
 
-* TODO Introduction
-* TODO The HILECOP methodology [50%]
-** DONE review DA
-** TODO review DD
+* TODO Introduction [50%]
+** DONE review DD
+** TODO review DA
 * TODO Preliminary notions [0%]
 ** TODO review DA
+** TODO review DD
+* TODO The HILECOP methodology [50%]
+** DONE review DA
 ** TODO review DD
 * TODO Implementation of the HILECOP high-level models [50%]
 ** DONE review DA
@@ -19,7 +21,7 @@
 * TODO Proving semantic preservation in HILECOP [0%]
 ** TODO review DA
 ** TODO review DD
-* TODO Conclusion
+* TODO Conclusion [%]
 ** TODO review DA
 ** TODO review DD
 * TODO Appendix Full proof of semantic preservation [0%]

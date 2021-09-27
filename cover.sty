@@ -37,6 +37,9 @@
 \def\@titlefootnote{}
 \newcommand{\titlefootnote}[1]{\gdef\@titlefootnote{#1}}
 
+\def\@englishtitle{}
+\newcommand{\englishtitle}[1]{\gdef\@englishtitle{#1}}
+
 \definecolor{rougefonce}{rgb}{0.91, 0.31, 0.32}
 \definecolor{grisdegueulasse}{rgb}{0.53, 0.55, 0.63}
 \contourlength{0.1pt}
@@ -67,11 +70,13 @@
     \node[yshift=-6.9cm] at (vcenter) {\fontsize{12}{12} {\bf Unit\'e de recherche \@researchunit}};
 
     \node[yshift=-9cm,inner sep=20pt] at (vcenter) {\fontsize{17}{17} {\bf {\color{grisdegueulasse}\contour{grisdegueulasse}{ \@title}}}};        
-        
+    \node[yshift=-9cm,inner sep=20pt,anchor=north] at ($(vcenter)-(0,1)$) {\fontsize{17}{17} {
+        \bf {\color{grisdegueulasse}\contour{grisdegueulasse}{ \@englishtitle}}}
+    };
         
     % -9.5cm
     % -11cm
-    \node[yshift=-12.8cm] at (vcenter) {\fontsize{14}{14} {\bf Pr\'esent\'e par \@author}};
+    \node[yshift=-12.8cm] at (vcenter) {\fontsize{14}{14} {\bf Pr\'esent\'ee par \@author}};
     \node[yshift=-13.5cm] at (vcenter) {\fontsize{14}{14} {\bf Le \@date{}}};
     
     \node[yshift=-14.7cm] at (vcenter) {\fontsize{13}{13} {\bf Sous la direction de \@directorA}};
