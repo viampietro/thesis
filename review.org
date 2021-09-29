@@ -6,9 +6,9 @@
 * TODO Preliminary notions [0%]
 ** TODO review DA
 ** TODO review DD
-* TODO The HILECOP methodology [50%]
+* TODO The HILECOP methodology [100%]
 ** DONE review DA
-** TODO review DD
+** DONE review DD
 * TODO Implementation of the HILECOP high-level models [50%]
 ** DONE review DA
 ** TODO review DD

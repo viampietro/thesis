@@ -40,39 +40,38 @@
 In this thesis, we were interested in the formal verification of a
 part of the \hilecop{} methodology. The \hilecop{} methodology has
 been devised to help the design and the production critical digital
-systems. To summarize the content of Chapter~\ref{chap:hilecop}, the
-\hilecop{} methodology proposes a high-level graphical modelling
-formalism; the aim of the formalism is to provide the engineers with a
-framework to model critical digital systems in a way that foster the
-communication around the design models (hence the graphical aspect of
-the formalism). The formalism is based on component diagrams and the
-internal behavior of components are described with a particular kind
-of Petri nets. Therefore, the mathematical foundations of the Petri
-net formalism provides the possibility to formally analyze the
-\hilecop{} high-level models, and thereby to bring the proof that the
-models verify certain safety properties.  The high-level formalism of
-\hilecop{} has been devised to be handy for the humans; however, the
-ultimate goal of the methodology is to obtain a physical version of
-the critical digital system designed by the engineers on a FPGA
-card. Thus, from the state of high-level model to its concrete
-implementation on a FPGA card, the designed critical digital system
-goes through multiple transformations in the \hilecop{} methodology.
-In this thesis, we tackled the formal verification of one of these
-transformations: the \textit{model-to-text} transformation from a
-flattened Petri net version of the high-level model of the critical
-digital system (i.e. an SITPN) to its implementation into a \vhdl{}
-design. This transformation is performed by a computer program. It was
-our purpose to formally verify that this transformation is
-\textit{semantic preserving}; that is, for any input model of the
-transformation the corresponding output model behaves in the same way
-as the input model. Pragmatically, the research question that we
-formalized in the introduction of this thesis was:
+systems. To summarize, the \hilecop{} methodology proposes a
+high-level graphical modelling formalism; the aim of the formalism is
+to provide the engineers with a framework to model critical digital
+systems in a way that foster the communication around the design
+models (hence the graphical aspect of the formalism). The formalism is
+based on component diagrams and the internal behavior of components
+are described with a particular kind of Petri nets. Therefore, the
+mathematical foundations of the Petri net formalism provides the
+possibility to formally analyze the \hilecop{} high-level models, and
+thereby to bring the proof that the models verify certain safety
+properties.  The high-level formalism of \hilecop{} has been devised
+to be handy for the humans; however, the ultimate goal of the
+methodology is to obtain a physical version of the critical digital
+system designed by the engineers on a FPGA card. Thus, from the state
+of high-level model to its concrete implementation on a FPGA card, the
+designed critical digital system goes through multiple transformations
+in the \hilecop{} methodology.  In this thesis, we tackled the formal
+verification of one of these transformations: the
+\textit{model-to-text} transformation from a flattened Petri net
+version of the high-level model of the critical digital system
+(i.e. an SITPN) to its implementation into a \vhdl{} design. This
+transformation is performed by a computer program. It was our purpose
+to formally verify that this transformation is \textit{semantic
+  preserving}; that is, for any input model of the transformation the
+corresponding output model behaves in the same way as the input
+model. Pragmatically, the research question that we formalized in the
+introduction of this thesis was:
 
 \begin{center}
   \textsc{Can we prove that the model-to-text transformation described
     in the \hilecop{} methodology is semantic preserving?}
 \end{center}
-
 
 From this question, which accepts yes or no as an answer, arises a lot
 more of interesting questions. As pointed out in the literature
