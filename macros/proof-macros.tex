@@ -18,11 +18,31 @@
 \def\upSitpn{$E_c,\tau\vdash{}s\xrightarrow{\uparrow}s'$}
 \def\dwSitpn{$E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$}
 
-\newenvironment{niproof}{%
-  \begin{proof}
+\newtcolorbox{myproofA}[1][Proof]{%
+  fonttitle=\bfseries, 
+  title={#1.},
+  breakable,
+  colframe=iris!5,
+  colbacktitle=iris!5,
+  colback=iris!5,
+  coltitle=black,
+  lines before break=2
+}
+
+\newenvironment{niproof}{
+  \begin{myproofA}
     \setlength{\parindent}{0pt}
-  }{%
-  \end{proof}}
+}
+{
+ \qed
+\end{myproofA}
+}
+
+% \newenvironment{niproof}{%
+%   \begin{proof}
+%     \setlength{\parindent}{0pt}
+%   }{%
+%   \end{proof}}
 
 %%% Local Variables:
 %%% mode: latex
