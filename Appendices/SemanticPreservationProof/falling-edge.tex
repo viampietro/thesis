@@ -562,8 +562,8 @@
       By definition of \upSim, we can deduce
       $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
-      By construction, and as $upper(I_s(t))=\infty$,
-      ${<}\mathtt{transition\_type\Rightarrow{}TEMP\_A\_INF}{>}\in{}g_t$. By
+      By construction, and as $upper(I_s(t))=\infty$, we have
+      ${<}\mathtt{tt\Rightarrow{}TEMP\_A\_INF}{>}\in{}g_t$. By
       property of the elaboration relation, we have
       $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$.
 
@@ -1057,7 +1057,7 @@
     \end{equation}
 
     Rewriting the goal with \eqref{eq:fe-eq-exa} and
-    \eqref{eq:fe-eq-ida-sum}:
+    \eqref{eq:fe-eq-ida-sum}:\\
     \fbox{$\sum\limits_{p\in{}marked(s.M)}\mathbb{A}(p,a)=\sigma(id_{mp_0})+\dots+\sigma(id_{mp_n})$.}
 
     Let us reason on the value of $\sigma(id_{mp_0})+\dots+\sigma(id_{mp_n})$; there are two cases:
@@ -1267,19 +1267,23 @@
   Term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ is defined as
   follows:
   \begin{equation}
-    \label{eq:checktc}
-    \begin{split}
-      \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
-      & \quad\begin{split}
-        \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
-        &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
-      \end{split} \\
-      & \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))\\
-      &
-      \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
-      & +\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)\\
-      & +\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}\\
-    \end{split}
+    \label{eq:checktc}    
+    \begin{array}{@{}c@{}}
+      \mathtt{checktc}(\Delta(id_t),\sigma(id_t)) \\
+      = \\
+      {\begin{split}
+        &\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
+        & \quad\begin{split}
+          \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
+          &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
+        \end{split} \\
+        & \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))\\
+        &
+        \quad+(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
+        & +\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)\\
+        & +\Delta(id_t)(\texttt{tt})=\mathtt{NOT\_TEMP}\\
+      \end{split}} \\
+    \end{array}
   \end{equation}
 
   Rewriting the goal with \eqref{eq:fe-eq-sfa}:
@@ -1393,23 +1397,27 @@
       as follows:
       \begin{equation}        
         \label{eq:eq-checktc-minus-not-temp}
-        \begin{split}
-          \mathtt{checktc}(\Delta(id_t),\sigma(id_t))=&\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
-          & \quad\begin{split}
-            \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
-            &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
-          \end{split} \\
-          & \quad{\begin{array}{l}
-                    +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.\\
-                    \quad~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1)) \\
-                  \end{array}}\\
-          &
-          \quad{\begin{array}{l}
-                  +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~. \\
-                  \quad~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
-                \end{array}}\\
-          & +\big(\sigma(id_t)(\texttt{srtc})~.~\sigma(id_t)(\texttt{A})=1\big)\\
-        \end{split}
+        \begin{array}{@{}c@{}}
+          \mathtt{checktc}(\Delta(id_t),\sigma(id_t)) \\
+          = \\
+          {\begin{split}
+              &\bigg(\mathtt{not}~\sigma(id_t)(\texttt{srtc})~.~\\
+              & \quad\begin{split}
+                \big[\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~&.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~\\
+                &.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)\\
+              \end{split} \\
+              & \quad{\begin{array}{l}
+                        +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.\\
+                        \quad~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1)) \\
+                      \end{array}}\\
+                    &
+                    \quad{\begin{array}{l}
+                            +(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~. \\
+                            \quad~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1))\big]\bigg) \\
+                          \end{array}}\\
+                        & +\big(\sigma(id_t)(\texttt{srtc})~.~\sigma(id_t)(\texttt{A})=1\big)\\
+                      \end{split}} \\
+        \end{array}
       \end{equation}
       
       By definition of \upSim, we have

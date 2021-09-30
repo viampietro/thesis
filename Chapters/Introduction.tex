@@ -222,7 +222,7 @@ as natural deduction (e.g. \isa{} \cite{Nipkow2002}), the tableaux
 method (e.g. the FaCT++ reasoner \cite{Tsarkov2006}, Zenon
 \cite{Bonichon2007}), or resolution algorithms (e.g. the E theorem
 prover \cite{Schulz2002}, Vampire
-\cite{Riazanov2001}). \\
+\cite{Riazanov2001}).\\
 
 In this thesis, we address the problem of the formal verification of a
 particular program. This program transforms an input model, which is
@@ -515,7 +515,7 @@ of the model produced in preparation of the next transformation into a
 \vhdl{} design.  The analysis phase is here to convince the engineers
 that they are indeed designing a safe system. The analysis process is
 a round trip between Step~1 and Step~2.  It aims at producing a model
-that is conflict-free (see Section~\label{sec:sitpn-wd} for more
+that is conflict-free (see Section~\ref{sec:sitpn-wd} for more
 details about the definition of a conflict), bounded, and
 deadlock-free, using model-checking techniques.  After several
 iterations, the model should reach soundness and is then said to be
@@ -620,8 +620,8 @@ transformation from Step~3 to Step~4. However, we shall say that:
   of the component-based input model. Even if the removal of the
   component structures induces some structural rearrangements, the
   behavior of the flattened model is almost similar to the one of the
-  component-based model Therefore, we argue that verifying that this
-  transformation is semantic-preserving is an easy enough task.
+  component-based model. Therefore, we argue that verifying that this
+  transformation is semantic-preser\-ving is an easy enough task.
 
 \item The transformation from Step~3 to Step~4 is performed by
   industrial tools. We rely on these tools because they are widely
@@ -639,8 +639,8 @@ Now that we have clarified the nature of the verification task we want
 to achieve, we can state our research question as follows:
 
 \begin{center}
-  \sc Can we prove that the model-to-text transformation described in
-  the \hilecop{} methodology is semantic preserving?
+  \textsc{ Can we prove that the model-to-text transformation
+    described in the \hilecop{} methodology is semantic preserving?}
 \end{center}
 
 This task is really close to the formal verification of compilers for

@@ -38,12 +38,14 @@ headsepline, % Uncomment to get a line under the header
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
+\hfuzz=10pt
+
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
 \usepackage{mathpazo} % Use the Palatino font by default
 
-\usepackage[backend=bibtex,% style=authoryear,
+\usepackage[backend=biber,% style=authoryear,
 natbib=true]{biblatex} 
 \addbibresource{references.bib} % The filename of the bibliography
 
@@ -115,14 +117,12 @@ natbib=true]{biblatex}
     verification of a methodology for the design and production of
     safety-critical digital systems}}
 
-% \author{Tom Davot}
-
 \directorA{David Delahaye}
 \directorB{David Andreu}
 % si deux personnes pour direction these, utiliser directorB et enlever %direction-2% dans fichier couverture.sty
 %\directorB{[]}
 
-\date{Date de la soutenance}
+\date{16 décembre 2021}
 
 \thispagestyle{empty}
 
@@ -145,11 +145,11 @@ natbib=true]{biblatex}
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
-\begin{acknowledgements}
-  \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-  The acknowledgments and the people to thank go here, don't forget to
-  include your project advisor\ldots
-\end{acknowledgements}
+% \begin{acknowledgements}
+%   \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
+%   The acknowledgments and the people to thank go here, don't forget to
+%   include your project advisor\ldots
+% \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES

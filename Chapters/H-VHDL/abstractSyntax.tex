@@ -13,7 +13,7 @@ Similarly to \cite{VanTassel1995}, we define the \emph{design}
 construct in the \hvhdl{}'s abstract syntax which has no
 equivalent in the concrete syntax of \vhdl{}.
 
-\begin{table*}[!h]
+\begin{table*}[!ht]
   \begin{tabular}{lcl}
     design & ::= & \texttt{design} id$_e$ id$_a$ gens ports sigs cs \\
     gens & ::= & gdecl* \\
@@ -24,7 +24,7 @@ equivalent in the concrete syntax of \vhdl{}.
 
 % \subsection{Generic constant, port and internal signal declaration.}
 % \label{subsec:ent-decl}
-\begin{table*}[!h]
+\begin{table*}[!ht]
 \begin{tabular}{lcl}
   gdecl & ::= & \texttt{(}id\texttt{,} $\tau$\texttt{,} e\texttt{)} \\
   pdecl & ::= & \texttt{(}(\vhdle|in||\vhdle|out|)\texttt{,} id\texttt{,} $\tau$\texttt{)}\\

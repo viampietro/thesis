@@ -118,6 +118,7 @@
 \newtheorem{hypothesis}{Hypothesis}
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
+\newtheorem{axiom}{Axiom}
 
 \makeatletter
 \newcommand*{\inlineequation}[2][]{%
@@ -153,24 +154,6 @@
 \definecolor{mediumjunglegreen}{rgb}{0.11, 0.21, 0.18}
 \definecolor{mediumseagreen}{rgb}{0.24, 0.7, 0.44}
 
-% \newcommand{\newTH}[4]{
-%   \newtcbtheorem{#1}{#3}{
-%     attach boxed title to top left,
-%     boxed title style={colframe=#2!40},
-%     colback=orange!10,
-%     colframe=firebrick!10,
-%     colbacktitle=#2!20,
-%     coltitle=black,
-%     fonttitle=\bfseries, 
-%     borderline west={0.75mm}{0mm}{#2},
-%     enhanced,
-%     separator sign dash,
-%     breakable,
-%     lines before break=2,
-%     attach boxed title to top left={yshift=-2mm, xshift=0mm}
-%   }{#4}
-% }
-
 \newcommand{\newTH}[2]{
   \tcolorboxenvironment{#1}{
     attach boxed title to top left,
@@ -189,13 +172,13 @@
   }
 }
 
-
 \newTH{thm}{redA}
 \newTH{definition}{iris}
 \newTH{notation}{orange}
 \newTH{remark}{forestgreen}
 \newTH{hypothesis}{black}
 \newTH{lemma}{goldenpoppy}
+\newTH{axiom}{brown}
 
 % \newTH{notation}{orange}{Notation}{not}
 

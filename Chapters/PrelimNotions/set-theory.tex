@@ -1,20 +1,66 @@
-\subsection{Intuitionistic first order logic}
-\label{sec:fol-intuitionistic}
+In this section, we introduce classical first-order logic and the
+Zermelo-Fraenkel (ZF) set theory which combination constitutes the
+base formalism for all our mathematical definitions, and our framework
+for the expression and the interpretation of logical formulas.
 
-The intuitionistic first-order logic \cite{Moschovakis2018}
-constitutes our framework for the expression and the interpretation of
-logical formulas.  The language to express logical formulas is the
-same between classical and intuitionistic first-order logic. A logical
-formula is either:
+\subsection{Classical first-order logic}
+\label{sec:fol-classical}
+
+In this section, we define the syntax of the first-order logic. Here,
+we already use concepts and notations that belong to set theory; set
+theory will be presented in the following section.  For now, the
+reader has only to consider the \textit{intuitive} definition of a set
+as a collection of elements, and a function as an entity that relates
+each element of a set to a unique element of another set.
+
+To define the syntax of the first-order logic, let us first define:
+
+\begin{itemize}
+\item the set $\mathcal{V}$ of variables x, y, etc.
+\item the set $\mathcal{S}_\mathcal{F}$ of function symbols f, g, etc.
+\item the set $\mathcal{S}_\mathcal{P}$ of predicate symbols P, Q,
+  etc.
+\end{itemize}
+
+Let us also consider a function
+$a\in{}\mathcal{S}_\mathcal{F}\cup{}\mathcal{S}_\mathcal{P}\rightarrow\mathbb{N}$
+that associates a given function or predicate symbol to an arity,
+i.e. the number of parameters of the function or the predicate. E.g,
+if $f(x,y)$ with $f\in{}\mathcal{S}_\mathcal{F}$ then $a(f)=2$; if
+$P(x,y,z)$ with $P\in\mathcal{S}_\mathcal{P}$ then $a(P)=3$. Constants
+are functions of arity 0, i.e. with no parameter.
+
+The syntax of classical first-order logic \cite{Moschovakis2018} is
+divided between \textit{terms} and \textit{formulas}.  We define a
+term of the classical first-order logic with the following BNF entry:
+
+\begin{center}
+  $t::=v~\vert{}~f(t_1,\dots,t_n)$
+\end{center}
+
+This entry states that a term is either a variable
+$v\in{}\mathcal{V}$, or a function symbol
+$f\in\mathcal{S}_\mathcal{F}$ of arity $n$ with terms $t_1,\dots,t_n$
+as inputs.
+
+We define a formula of the classical
+first-order logic with the following BNF entry:
+
+\begin{center}
+  $\mathcal{F}::=\bot~\vert~\top~\vert~P(t_1,\dots,t_n)~\vert~\mathcal{F}\land\mathcal{F}$
+  $~\vert~\mathcal{F}\lor\mathcal{F}~\vert~\mathcal{F}\Rightarrow\mathcal{F}~\vert~\mathcal{F}\Leftrightarrow\mathcal{F}$
+  $~\vert~\neg\mathcal{F}$
+  $~\vert~\forall{}x,\mathcal{F}~\vert~\exists{}x,\mathcal{F}$
+\end{center}
+
+This entry states that a formula is either:
 
 \begin{itemize}
 \item $\bot$ (bottom), the always \textit{false} formula, or $\top$
   (top), the always \textit{true} formula
-\item a predicate (i.e. an atomic formula). A predicate $P$ possibly
-  takes $n$ parameters as inputs. We write $P(x_0,\dots,x_n)$ to
-  denote an $n$-ary predicate $P$ applied to the inputs
-  $x_0,\dots,x_n$. 
-
+\item a predicate $P(t_1,\dots,t_n)$ (i.e. an atomic formula) of arity
+  $n$, where $P\in\mathcal{S}_\mathcal{P}$ with terms $t_1,\dots,t_n$
+  as inputs.
 \item the composition of two subformulas with one of the following
   binary operators: the conjunction $\land$, the disjunction $\lor$,
   the implication $\Rightarrow$, the double implication
@@ -24,57 +70,147 @@ formula is either:
   $\neg$
   
 \item a subformula prefixed by the universal quantifier $\forall$ or
-  the existantial quantifier $\exists$. For instance, the formula
-  $\forall{}x.P(x)$ denotes the atomic formula $P(x)$ where the
+  the existential quantifier $\exists$. For instance, the formula
+  $(\forall{}x,P(x))$ denotes the atomic formula $P(x)$ where the
   parameter $x$ is a universally quantified variable of the
   formula. As a shorthand notation, we write $\forall{}x,y,z.\dots$ to
   denote $\forall{}x,\forall{}y,\forall{}z.\dots$. The same stands for
-  the existantial quantifier $\exists$. Variables that are introduced
+  the existential quantifier $\exists$. Variables that are introduced
   in a logical formula by one of the previous quantifiers are called
   the \textit{bound} variables of the formula. Variables that appear
   in a logical formula without being introduced by a quantifier are
   called \textit{free} variables. For instance, in the logical formula
-  $\forall{}x.~P(x)\land{}Q(y)$, $x$ is a bound variable and $y$ is a
-  free variable of the formula.
+  $(\forall{}x,~P(x)\land{}Q(y))$, $x$ is a bound variable and $y$ is
+  a free variable of the formula.
 \end{itemize}
 
-The difference between the classical first-order logic and the
-intuitionistic one relies in the absence of the \emph{law of the
-  excluded middle} in the latter logic. In classical logic, the
-\emph{law of the excluded middle} considers that a formula can always
-be either interpreted as true or false, i.e. a formula is always
-\emph{decidable} regardless the valuation of its inputs. In
-intuitionistic logic, such an assumption is discarded. Thus, a formula
-of the intuitionistic logic can be \emph{undecidable}, i.e. given a
-valuation of its input, one can not always state that the formula is
-true or false. The consequence is that one as to exhibit a
-\emph{explicitly-built} proof to show that a given formula is
-true. One can not rely on the law of excluded middle to perform a
-proof by contradiction. As so, the intuitionistic logic is said to be
-\emph{constructive} in the sense that one as to \emph{construct} a
-concrete proof object to show that a formula is true. The
-intuitionistic first-order logic is built in the \coq{} proof
-assistant. Thus, a logic formula expressed with the \coq{} proof
-assistant is an intuitionistic formula by default. For this reason, we
-choose the intuitionistic first-order logic as our mathematical
-framework for the expression of logic formulas.
+In this thesis, our formulas are interpreted as formulas of the
+\textit{classical} logic \cite{Shapiro2021}. Thus, during a proof, we
+can appeal to the \textit{law of excluded middle} to reason on the
+truth value of a given formula.
 
-In what follows, we often give the definition of a predicate by
-relating its semantics to the semantics of an underlying formula. For
-instance, we define the predicate $IsEven(n)$, for all
-$n\in{}\mathbb{N}$, as follows:
-$IsEven(n)\equiv{}\exists{}k\in\mathbb{N}~s.t.~2k=n$.
+% The difference between the classical first-order logic and the
+% intuitionistic one relies in the absence of the \emph{law of the
+%   excluded middle} in the latter logic. In classical logic, the
+% \emph{law of the excluded middle} considers that a formula can always
+% be either interpreted as true or false, i.e. a formula is always
+% \emph{decidable} regardless the valuation of its inputs. In
+% intuitionistic logic, such an assumption is discarded. Thus, a formula
+% of the intuitionistic logic can be \emph{undecidable}, i.e. given a
+% valuation of its input, one can not always state that the formula is
+% true or false. The consequence is that one as to exhibit a
+% \emph{explicitly-built} proof to show that a given formula is
+% true. One can not rely on the law of excluded middle to perform a
+% proof by contradiction. As so, the intuitionistic logic is said to be
+% \emph{constructive} in the sense that one as to \emph{construct} a
+% concrete proof object to show that a formula is true. The
+% intuitionistic first-order logic is built in the \coq{} proof
+% assistant. Thus, a logic formula expressed with the \coq{} proof
+% assistant is an intuitionistic formula by default. For this reason, we
+% choose the intuitionistic first-order logic as our mathematical
+% framework for the expression of logic formulas.
 
-\subsection{Set theory}
+% In what follows, we often give the definition of a predicate by
+% relating its semantics to the semantics of an underlying formula. For
+% instance, we define the predicate $IsEven(n)$, for all
+% $n\in{}\mathbb{N}$, as follows:
+% $IsEven(n)\equiv{}\exists{}k\in\mathbb{N}~s.t.~2k=n$.
+
+\subsection{ZF Set theory}
 \label{sec:set-theory}
 
-In this thesis, we use set theory as the base formalism for all our
-mathematical definitions and proofs. In set theory, a set represents a
-group of elements called the members of the set. For every set $X$, we
-write $x\in{}X$ to denote that the element $x$ is a member of set
-$X$. We note $X\subseteq{}Y$ the fact that a set $X$ is a subset of
-set $Y$ such that for all $x$ if $x\in{}X$ then $x\in{}Y$.  From here,
-there are multiple ways to define a set.
+In this thesis, we use the ZF set theory as the base formalism for all
+our mathematical definitions and proofs.
+
+In the ZF set theory, a set represents a group of elements called the
+members of the set. For every set $A$, we write $a\in{}A$ to denote
+that the element $a$ is a member of set $A$. The \textit{membership}
+property is a basic set-theoretic property. Now, let us define the
+axioms of the ZF set theory.
+
+\begin{axiom}[Existence]
+  \label{ax:existence}
+  There exists a set which has no elements,
+  i.e. $\exists{}A,\forall{}a,a\notin{}X$.
+\end{axiom}
+
+We call the \textit{empty set} the unique set with no element, written
+$\emptyset$.
+
+\begin{axiom}[Extensionality]
+  \label{ax:extensionality}
+  If every element of $A$ is an element of $B$, and vice-versa, then
+  $A=B$,
+  i.e.
+  $\forall{}A,B,x,~(x\in{}A\Leftrightarrow{}x\in{}B)\Rightarrow{}A=B$.
+\end{axiom}
+
+\begin{axiom}[Schema of comprehension]
+  \label{ax:schema-of-compr}
+  Let $P(x)$ be a property of $x$. For all set $A$, there exists a set
+  $B$ such that $x\in{}B$ if and only if $x\in{}A$ and $P(x)$
+  holds. I.e.
+  $\forall{}A,B,x,~x\in{}B\Leftrightarrow{}x\in{}A\land{}P(x)$.
+\end{axiom}
+
+\begin{axiom}[Pair]
+  \label{ax:pair}
+  For all set $A$ and $B$, there exist a set $C$ such that $x\in{}C$
+  if and only if $x=A$ and $x=B$. I.e.
+  $\forall{}A,B,\exists{}C,\forall{}x,~(x\in{}C\Leftrightarrow{}x=A\lor{}x=B)$.
+\end{axiom}
+
+More intuitively, Axiom~\ref{ax:pair} states that if $A$ and $B$ are
+sets then their corresponding pair $C$ is also a set.
+
+\begin{axiom}[Union]
+  \label{ax:union}
+  For all set $A$ having sets as elements, there exists a set $C$
+  corresponding to the union of the elements of
+  $A$. I.e. $\forall{}A,\exists{}U,~x\in{}U\Leftrightarrow\exists{}B,~B\in{}A\land{}x\in{}B$.
+\end{axiom}
+
+We write $A\subseteq{}B$ the fact that a set $A$ is a subset of set
+$B$ such that for all $x$ if $x\in{}A$ then $x\in{}B$.
+
+We write $A\cup{}B$ the set formed by the union of the members of $A$
+and the members of $B$,
+i.e. $\forall{}x,x\in{}A\cup{}B\Leftrightarrow{}x\in{}A\lor{}x\in{}B$.
+
+\begin{axiom}[Infinity]
+  \label{ax:infty}
+  There exists a set $A$ such that the empty set belongs to $A$ and
+  for all $x$ such that $x\in{}A$ then $x\cup\{x\}\in{}A$. I.e.
+  $\exists{}A,\emptyset\in{}A\land(\forall{}x,~x\in{}A\Rightarrow{}x\cup\{x\}\in{}A)$.
+\end{axiom}
+
+\begin{axiom}[Power set]
+  \label{ax:pow-set}
+  For all set $A$, there exists a set $B$ such that for all set $X$,
+  $X\in{}B$ if and only if
+  $X\subseteq{}A$. I.e.
+  $\forall{}A,\exists{}B,\forall{}X,(X\in{}B\Leftrightarrow{}X\subseteq{}A)$.
+\end{axiom}
+
+\begin{axiom}[Schema of replacement]
+  \label{ax:sch-of-repl}
+  Let $P(x,y)$ be a property such that for all $x$ there exists a
+  unique $y$ such that $P(x,y)$ holds. For all set $A$, there exists a
+  set $B$ such that for all $x\in{}A$, there exists $y\in{}B$ for
+  which $P(x,y)$ holds. I.e. $(\forall{}x,\exists{}y,P(x,y))\land{}$
+  $\forall{}A,\exists{}B,\forall{}x,(x\in{}A\Leftrightarrow\exists{}y,y\in{}B\land{}P(x,y))$.
+\end{axiom}
+
+We write $A\cap{}B$ to denote the set formed by the intersection of
+set $A$ and $B$,
+i.e. $\forall{}x,x\in{}A\cap{}B\Leftrightarrow{}~x\in{}A\land{}x\in{}B$.
+
+\begin{axiom}[Foundation]
+  \label{ax:foundation}
+  For all non-empty set $A$, there exists a set $B$ such that
+  $B\in{}A$ and $B$ has no common element with $A$. I.e.
+  $\forall{}A,x\neq\emptyset\Rightarrow\exists{}B,B\in{}A\land(A\cap{}B=\emptyset)$.
+\end{axiom}
 
 \paragraph{Extensional definition} A set is defined by
 \emph{extension} with the enumeration of all its members. For
@@ -94,9 +230,6 @@ Set theory also defines some operators to compose sets together. Given
 two sets $A$ and $B$, the following sets are formed:
 
 \begin{itemize}
-\item $A\cup{}B$ denotes the set formed by the union of the members of
-  $A$ and the members of $B$,
-  i.e. $A\cup{}B=\{x~\vert~x\in{}A\lor{}x\in{}B\}$.
   
 \item $A\cap{}B$ denotes the set formed by the intersection of set $A$
   and $B$, i.e. $A\cap{}B=\{x~\vert~x\in{}A\land{}x\in{}B\}$.

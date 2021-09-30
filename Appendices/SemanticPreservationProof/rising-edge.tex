@@ -72,8 +72,14 @@
   Rewriting the goal with \ref{eq:re-eq-marking-eqmp} and
   \ref{eq:re-eq-marking-eqsm},
   
-  \fbox{$s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)=\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})
-    +\sigma(id_p)(\texttt{sits})$.}\\
+  \fbox{
+    \begin{tabular}{@{}c@{}}
+      $s.M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)$\\
+      $=$ \\
+      $\sigma(id_p)(\texttt{sm})-\sigma(id_p)(\texttt{sots})
+      +\sigma(id_p)(\texttt{sits})$ \\
+    \end{tabular}
+  }\\
   
   By definition of the \nameref{def:full-post-fe-state-sim} relation,
   we can deduce $s.M(p)=\sigma(id_p)(\texttt{sm})$,
@@ -780,16 +786,27 @@
         $\sigma(id_p)(\texttt{sots})=\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)$,
         and simplifying the goal:
         \begin{equation*}
-          \fbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})=\mathtt{true}$}
+          \fbox{
+            \begin{tabular}{@{}c@{}}
+              $\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})$ \\
+              $=$\\
+              $\mathtt{true}$\\
+            \end{tabular}
+          }
         \end{equation*}
 
         We assumed that
         $s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega$ and
-        $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0$. Thus, by
-        assumption:
-        \begin{equation*}
-          \qedbox{$\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})=\mathtt{true}$}
-        \end{equation*}
+        $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0$.
+
+        Thus, by assumption: \\
+        \qedbox{
+          \begin{tabular}{@{}c@{}}
+            $\big((s.M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega)~.~(\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0)\big)+\sigma(id_t)(\texttt{fired})$ \\
+            $=$ \\
+            $\mathtt{true}$\\
+          \end{tabular}
+        }
         
       \item \textbf{CASE} such a place does not exist:\\
         Then, let us assume that, for all place $p\in{}P$
