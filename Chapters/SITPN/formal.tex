@@ -57,6 +57,17 @@ the concept of a \emph{well-defined} SITPN at the end of the section.
   \end{enumerate}
 \end{definition}
 
+In the current formal definition of the SITPN structure, and as
+discussed in Section~\ref{subsec:pn-formalism}, we do not consider the
+set of \vhdl{} signals manipulated by a SITPN model. As a consequence,
+the structure holds neither the association between conditions and
+boolean expressions, and nor the association between actions/functions
+and operations (i.e. \vhdl{} procedures that act upon signal values)
+that would be necessary in the presence of the set of \vhdl{} signals.
+In this simplified version of the SITPN structure, conditions, actions
+and functions are only considered as finite sets of indexed elements
+associated with the places and transitions of an SITPN.
+
 \subsection{SITPN State}
 \label{sec:sitpn-state}
 

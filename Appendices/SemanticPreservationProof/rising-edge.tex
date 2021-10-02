@@ -149,14 +149,13 @@
   \item \textbf{CASE} $conds(t)=\emptyset$:
     \fbox{$\prod\limits_{i=0}^{\Delta(id_t)(\texttt{cn})-1}\sigma'(id_t)(\texttt{ic})[i]=\mathtt{true}$.}\\
     
-    By construction,
-    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}g_t$ and
-    ${<}\mathtt{input\_conditions(0)\Rightarrow{}true}{>}\in{}i_t$.
+    By construction, ${<}\mathtt{cn\Rightarrow{}1}{>}\in{}g_t$ and
+    ${<}\mathtt{ic(0)\Rightarrow{}true}{>}\in{}i_t$.
 
     By property of the stabilize relation,
-    ${<}\mathtt{conditions\_number\Rightarrow{}1}{>}\in{}g_t$ and
-    ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}true}{>}\in{}i_t$,
-    we can deduce $\Delta(id_t)(\texttt{cn})=1$ and
+    ${<}\mathtt{cn\Rightarrow{}1}{>}\in{}g_t$ and
+    ${<}$\texttt{ic(0)}$\mathtt{\Rightarrow{}true}{>}\in{}i_t$, we can
+    deduce $\Delta(id_t)(\texttt{cn})=1$ and
     $\sigma'(id_t)(\texttt{ic})[0]=\mathtt{true}$.
 
     Rewriting the goal with $\Delta(id_t)(\texttt{cn})=1$ and
@@ -164,8 +163,8 @@
     
   \item \textbf{CASE} $conds(t)\neq\emptyset$:\\
     By construction,
-    ${<}\mathtt{conditions\_number\Rightarrow{}\vert{}conds(t)\vert}{>}\in{}g_t$,
-    and by property of the stabilize relation, we can deduce
+    ${<}\mathtt{cn\Rightarrow{}\vert{}conds(t)\vert}{>}\in{}g_t$, and
+    by property of the stabilize relation, we can deduce
     $\Delta(id_t)(\texttt{cn})=\vert{}conds(t)\vert$.
     
     Rewriting the goal with $\Delta(id_t)(\texttt{cn})=\vert{}conds(t)\vert$:\\
@@ -176,151 +175,97 @@
         \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
       \end{cases}$}\\
 
-    Let us reason by induction on the left product term:
+    There exists a mapping, given by the transformation function,
+    between the set $conds(t)$ and the indexes of
+    $[0,\vert{}conds(t){}\vert-1]$.
+
+    Let $\beta\in{}conds(t)\rightarrow[0,\vert{}conds(t){}\vert-1]$ be
+    this mapping.
+
+    To prove the current goal, it suffices to prove that for all
+    condition $c\in{}conds(t)$, we have
+
+    \begin{frameb}
+      $\bigg(\begin{cases}
+        E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
+        \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
+      \end{cases}\bigg)=\sigma'(id_t)(\texttt{ic})[\beta(c)]$
+    \end{frameb}
+
+    Given a $c\in{}conds(t)$, let us show the above goal.
+    
+    By construction, for all $c\in{}conds(t)$, there exists an
+    $id_c\in{}Ins(\Delta)$ such that
+    \begin{itemize}
+    \item $\gamma(c)=id_c$
+    \item $\mathbb{C}(t,c)=1$ implies
+      ${<}\mathtt{ic(}\beta(c)\mathtt{)\Rightarrow{}id_c}{>}\in{}i_t$
+    \item $\mathbb{C}(t,c)=-1$ implies
+      ${<}\mathtt{ic(}\beta(c)\mathtt{)\Rightarrow{}not~id_c}{>}\in{}i_t$
+    \end{itemize}
+
+    Let us take such an $id_c$ with the above properties.
+
+    By definition of $c\in{}conds(t)$, we have
+    $\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1$. Let us perform case
+    analysis on $\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1$:
 
     \begin{itemize}
-    \item \textbf{BASE CASE}:
-      $\prod\limits_{i=0}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=0$
-      and $\vert{}conds(t)\vert-1<0$. Thus, we can deduce that
-      $\vert{}conds(t)\vert=0$ which \qedbox{contradicts
-        $conds(t)\neq\emptyset$.}
-    \item \textbf{INDUCTION CASE}:
-      \begin{ih}
-        $\forall{}conds'\subseteq{}\mathcal{C},~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-        \prod\limits_{c\in{}conds'}
-        \begin{cases}
-          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-        \end{cases}$
-      \end{ih}
+    \item \textbf{CASE} $\mathbb{C}(t,c)=1$:
 
-      \fbox{$\sigma'(id_t)(\texttt{ic})[0]~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-        \prod\limits_{c\in{}conds(t)}
-        \begin{cases}
-          E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-          \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-        \end{cases}$}
+      In that case, we must show:
+      \fbox{$E_c(\tau,c)=\sigma'(id_t)(\texttt{ic})[\beta(c)]$}
 
-      By construction, for all $i\in[0,\vert{}conds(t)\vert-1]$, there
-      exists $c\in{}conds(t)$ and an $id_c\in{}Ins(\Delta)$ such that
-      \begin{itemize}
-      \item $\gamma(c)=id_c$
-      \item $\mathbb{C}(t,c)=1$ implies
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}id_c}{>}\in{}i_t$
-      \item $\mathbb{C}(t,c)=-1$ implies
-        ${<}\mathtt{input\_conditions(i)\Rightarrow{}not~id_c}{>}\in{}i_t$
-      \end{itemize}
+      By assumption, we have
+      ${<}\mathtt{ic(}\beta(c)\mathtt{)\Rightarrow{}id_c}{>}\in{}i_t$
+      and by property of the stabilize relation, we can deduce
+      $\sigma(id_t)(\texttt{ic})[\beta(c)]=\sigma'(id_c)$.
 
-      For $i=0$, let us take such a $c\in{}conds(t)$ and an $id_c$
-      with the above properties. By definition of $c\in{}conds(t)$, we
-      can deduce $\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1$. Let us
-      perform case analysis on
-      $\mathbb{C}(t,c)=1\lor\mathbb{C}(t,c)=-1$:
+      Rewriting the goal with
+      $\sigma(id_t)(\texttt{ic})[\beta(c)]=\sigma'(id_c)$:
 
-      \begin{itemize}
-      \item \textbf{CASE} $\mathbb{C}(t,c)=1$:
+      \fbox{$E_c(\tau,c)=\sigma'(id_c)$}
 
-        Then, we have
-        ${<}\mathtt{input\_conditions(0)\Rightarrow{}id_c}{>}\in{}i_t$
-        and by property of the stabilize relation, we can deduce
-        $\sigma(id_t)(\texttt{ic})[0]=\sigma'(id_c)$.
+      By property of the $\mathtt{Inject}$ relation and
+      $id_c\in{}Ins(\Delta)$, we can deduce
+      $\sigma'(id_c)=E_p(\tau)(id_c)$.
 
-        Rewriting the goal with $\sigma(id_t)(\texttt{ic})[0]=\sigma'(id_c)$:
+      By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
+      deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
 
-        \fbox{$\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-          \prod\limits_{c\in{}conds(t)}
-          \begin{cases}
-            E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-            \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-          \end{cases}$}
+      Rewriting the goal with $\sigma'(id_c)=E_p(\tau)(id_c)$ and
+      $E_p(\tau)(id_c)=E_c(\tau,c)$:
+      \fbox{$E_c(\tau,c)=E_c(\tau,c)$}, then \qedbox{tautology.}
 
-        By property of the $\mathtt{Inject}$ relation and
-        $id_c\in{}Ins(\Delta)$, we can deduce
-        $\sigma'(id_c)=E_p(\tau)(id_c)$.
+    \item \textbf{CASE} $\mathbb{C}(t,c)=-1$:
 
-        By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
-        deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
+      In that case, we must show:
+      \fbox{$\mathtt{not}~E_c(\tau,c)=\sigma'(id_t)(\texttt{ic})[\beta(c)]$}
 
-        Rewriting the goal with
-        $\sigma'(id_c)=E_p(\tau)(id_c)$ and
-        $E_p(\tau)(id_c)=E_c(\tau,c)$:
+      By assumption, we have
+      ${<}\mathtt{ic(}\beta(c)\mathtt{)\Rightarrow{}not~id_c}{>}\in{}i_t$
+      and by property of the stabilize relation, we can deduce
+      $\sigma(id_t)(\texttt{ic})[\beta(c)]=\mathtt{not}~\sigma'(id_c)$.
 
-        \fbox{$E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-          \prod\limits_{c\in{}conds(t)}
-          \begin{cases}
-            E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-            \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-          \end{cases}$}
+      Rewriting the goal with
+      $\sigma(id_t)(\texttt{ic})[\beta(c)]=\mathtt{not}~\sigma'(id_c)$:
 
-        By definition of the $\prod$ operator, we can rewrite the right term of the goal as follows:
+      \fbox{$\mathtt{not}~E_c(\tau,c)=\mathtt{not}~\sigma'(id_c)$}
 
-        \begin{frameb}
-          \begin{tabular}{c}
-            $E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]$ \\
-            $=$ \\
-            $E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
-            \begin{cases}
-              E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
-              \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
-            \end{cases}$ \\
-          \end{tabular}
-        \end{frameb}
+      By property of the $\mathtt{Inject}$ relation and
+      $id_c\in{}Ins(\Delta)$, we can deduce
+      $\sigma'(id_c)=E_p(\tau)(id_c)$.
 
-        Appealing to the induction hypothesis, \qedbox{tautology.}
+      By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
+      deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
 
-      \item \textbf{CASE} $\mathbb{C}(t,c)=-1$:
-
-        Then, we have
-        ${<}$\texttt{input\_conditions(0)}$\mathtt{\Rightarrow{}not~id_c}{>}\in{}i_t$
-        and by property of the stabilize relation, we can deduce
-        $\sigma(id_t)(\texttt{ic})[0]=\mathtt{not}~\sigma'(id_c)$.
-
-        Rewriting the goal with
-        $\sigma(id_t)(\texttt{ic})[0]=\mathtt{not}~\sigma'(id_c)$:
-
-        \fbox{$\mathtt{not}~\sigma'(id_c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-          \prod\limits_{c\in{}conds(t)}
-          \begin{cases}
-            E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-            \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-          \end{cases}$}
-
-        By property of the $\mathtt{Inject}$ relation and
-        $id_c\in{}Ins(\Delta)$, we can deduce
-        $\sigma'(id_c)=E_p(\tau)(id_c)$.
-
-        By property of $\gamma\vdash{}E_p\stackrel{env}{=}E_c$, we can
-        deduce $E_p(\tau)(id_c)=E_c(\tau,c)$.
-
-        Rewriting the goal with
-        $\sigma'(id_c)=E_p(\tau)(id_c)$ and
-        $E_p(\tau)(id_c)=E_c(\tau,c)$:
-
-        \fbox{$\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]=
-          \prod\limits_{c\in{}conds(t)}
-          \begin{cases}
-            E_c(\tau,c) & if~\mathbb{C}(t,c)=1 \\
-            \mathtt{not}(E_c(\tau,c)) & if~\mathbb{C}(t,c)=-1 \\
-          \end{cases}$}
-
-        By definition of the $\prod$ operator, we can rewrite the right term of the goal as follows:
-
-        \begin{frameb}
-          \begin{tabular}{c}
-            $\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{i=1}^{\vert{}conds(t)\vert-1}\sigma'(id_t)(\texttt{ic})[i]$ \\
-            $=$ \\
-            $\mathtt{not}~E_c(\tau,c)~.~\prod\limits_{c'\in{}conds(t)\setminus\{c\}}
-            \begin{cases}
-              E_c(\tau,c') & if~\mathbb{C}(t,c')=1 \\
-              \mathtt{not}(E_c(\tau,c')) & if~\mathbb{C}(t,c')=-1 \\
-            \end{cases}$ \\
-          \end{tabular}
-        \end{frameb}
-        Appealing to the induction hypothesis, \qedbox{tautology.}
-        
-      \end{itemize}
+      Rewriting the goal with $\sigma'(id_c)=E_p(\tau)(id_c)$ and
+      $E_p(\tau)(id_c)=E_c(\tau,c)$:
+      \fbox{$\mathtt{not}~E_c(\tau,c)=\mathtt{not}~E_c(\tau,c)$}, then
+      \qedbox{tautology.}
       
     \end{itemize}
+    
   \end{itemize}
   
 \end{niproof}
