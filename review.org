@@ -3,9 +3,9 @@
 * TODO Introduction [50%]
 ** DONE review DD
 ** TODO review DA
-* TODO Preliminary notions [0%]
+* TODO Preliminary notions [50%]
 ** TODO review DA
-** TODO review DD
+** DONE review DD
 * TODO The HILECOP methodology [100%]
 ** DONE review DA
 ** DONE review DD

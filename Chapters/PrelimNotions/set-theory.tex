@@ -119,14 +119,22 @@ truth value of a given formula.
 \subsection{ZF Set theory}
 \label{sec:set-theory}
 
-In this thesis, we use the ZF set theory as the base formalism for all
-our mathematical definitions and proofs.
+In this thesis, we use the Zermelo-Fraenkel (ZF) set theory as the
+base formalism for all our mathematical definitions and proofs. In
+this section, we present the axioms of the ZF set theory, and the
+associated definitions and notations that will be used throughout this
+memoir. The reader will find further information on the ZF set theory
+in \cite{Moschovakis1994}.
 
 In the ZF set theory, a set represents a group of elements called the
 members of the set. For every set $A$, we write $a\in{}A$ to denote
 that the element $a$ is a member of set $A$. The \textit{membership}
-property is a basic set-theoretic property. Now, let us define the
-axioms of the ZF set theory.
+property is a basic set-theoretic property. Given a set $A$, we
+sometimes have to express a property $P$ of the elements of $A$ in the
+following form: $\forall{}x,x\in{}A\Rightarrow{}P(x)$. When there is
+no ambiguity, we equivalently write $\forall{}x\in{}A,~P(x)$.
+
+Now, let us define the axioms of the ZF set theory.
 
 \begin{axiom}[Existence]
   \label{ax:existence}
@@ -134,8 +142,10 @@ axioms of the ZF set theory.
   i.e. $\exists{}A,\forall{}a,a\notin{}X$.
 \end{axiom}
 
-We call the \textit{empty set} the unique set with no element, written
-$\emptyset$.
+\begin{definition}[Empty set]
+  We call the \textit{empty set} the unique set with no element,
+  written $\emptyset$.
+\end{definition}
 
 \begin{axiom}[Extensionality]
   \label{ax:extensionality}
@@ -170,12 +180,17 @@ sets then their corresponding pair $C$ is also a set.
   $A$. I.e. $\forall{}A,\exists{}U,~x\in{}U\Leftrightarrow\exists{}B,~B\in{}A\land{}x\in{}B$.
 \end{axiom}
 
-We write $A\subseteq{}B$ the fact that a set $A$ is a subset of set
-$B$ such that for all $x$ if $x\in{}A$ then $x\in{}B$.
+\begin{definition}[Subset]
+  A set $A$ is a subset of set $B$, written $A\subseteq{}B$, if for
+  all $x$ if $x\in{}A$ then $x\in{}B$,
+  i.e. $\forall{}x,x\in{}A\Rightarrow{}x\in{}B$.
+\end{definition}
 
-We write $A\cup{}B$ the set formed by the union of the members of $A$
-and the members of $B$,
-i.e. $\forall{}x,x\in{}A\cup{}B\Leftrightarrow{}x\in{}A\lor{}x\in{}B$.
+\begin{definition}[Union]
+  Given a set $A$ and $B$, the set $A\cup{}B$ is the union of the
+  members of $A$ and the members of $B$, i.e.
+  $\forall{}x,x\in{}A\cup{}B\Leftrightarrow{}x\in{}A\lor{}x\in{}B$.
+\end{definition}
 
 \begin{axiom}[Infinity]
   \label{ax:infty}
@@ -201,9 +216,11 @@ i.e. $\forall{}x,x\in{}A\cup{}B\Leftrightarrow{}x\in{}A\lor{}x\in{}B$.
   $\forall{}A,\exists{}B,\forall{}x,(x\in{}A\Leftrightarrow\exists{}y,y\in{}B\land{}P(x,y))$.
 \end{axiom}
 
-We write $A\cap{}B$ to denote the set formed by the intersection of
-set $A$ and $B$,
-i.e. $\forall{}x,x\in{}A\cap{}B\Leftrightarrow{}~x\in{}A\land{}x\in{}B$.
+\begin{definition}[Intersection]
+  Given a set $A$ and $B$, th set $A\cap{}B$ denotes the set formed by
+  the intersection of set $A$ and $B$, i.e.
+  $\forall{}x,x\in{}A\cap{}B\Leftrightarrow{}~x\in{}A\land{}x\in{}B$.
+\end{definition}
 
 \begin{axiom}[Foundation]
   \label{ax:foundation}
@@ -212,116 +229,128 @@ i.e. $\forall{}x,x\in{}A\cap{}B\Leftrightarrow{}~x\in{}A\land{}x\in{}B$.
   $\forall{}A,x\neq\emptyset\Rightarrow\exists{}B,B\in{}A\land(A\cap{}B=\emptyset)$.
 \end{axiom}
 
-\paragraph{Extensional definition} A set is defined by
-\emph{extension} with the enumeration of all its members. For
-instance, $\{1,0,-1\}$, $\{a,b,c\}$ or $\{p_0,\dots,p_n\}$ are all
-sets defined by extension.
+Based on the previous axioms, we can complement the theory with
+following definitions and notation.
 
-\paragraph{Intensional definition}
-The intensional definition of a set specifies a given property
-verified by all the members of the set. For instance, here is the
-intensional definition of the set of even numbers:
-$\{n\in\mathbb{N}~\vert~\exists{}k\in\mathbb{N}~s.t.~n=2k\}$ or
-$\{n\in\mathbb{N}~\vert~IsEven(n)\}$.
+\begin{notation}[Extension]
+  A set is defined by \emph{extension} with the enumeration of all its
+  members. For instance, $\{1,0,-1\}$, $\{a,b,c\}$ or
+  $\{p_0,\dots,p_n\}$ are all sets defined by extension.
+\end{notation}
 
-\paragraph{Set operators}
 
-Set theory also defines some operators to compose sets together. Given
-two sets $A$ and $B$, the following sets are formed:
+\begin{notation}[Intension]
+  Let $P(x)$ be a property of $x$, we write $\{x~\vert~P(x)\}$ the set
+  of $x$ for which $P(x)$ holds. The set $\{x~\vert~P(x)\}$ is defined
+  by \textit{intension}.  For instance, here is the intensional
+  definition of the set of even numbers:
+  $\{n\in\mathbb{N}~\vert~\exists{}k\in\mathbb{N},~n=2k\}$.
+\end{notation}
 
-\begin{itemize}
-  
-\item $A\cap{}B$ denotes the set formed by the intersection of set $A$
-  and $B$, i.e. $A\cap{}B=\{x~\vert~x\in{}A\land{}x\in{}B\}$.
-  
-\item $A\setminus{}B$ denotes the set formed by the elements of set
-  $A$ that are not elements of set $B$ (the difference between set $A$
-  and $B$), i.e. $A\setminus{}B=\{x~\vert~x\in{}A\land{}x\notin{}B\}$.
+Given two sets $A$ and $B$, the following sets are formed:
 
-\item $A\times{}B$ denotes the cartesian product between the elements
+\begin{definition}[Difference]
+  $A\setminus{}B$ denotes the set formed by the elements of set $A$
+  that are not elements of set $B$ (the difference between set $A$ and
+  $B$), i.e. $A\setminus{}B=\{x~\vert~x\in{}A\land{}x\notin{}B\}$.
+\end{definition}
+
+\begin{definition}[Cartesian product]
+  $A\times{}B$ denotes the cartesian product between the elements
   of set $A$ and set $B$, i.e. the set of all ordered pairs defined by
   $\{(x,y)~\vert~x\in{}A\land{}y\in{}B\}$. We generalize the
   definition to build the set of $n$-tuples
   $A_0\times{}A_1\times\dots\times{}A_n$ defined by
   $\{(x_0,
   (x_1,\dots(\dots,x_n)))~\vert~x_0\in{}A_0,x_1\in{}A_1,\dots,x_n\in{}A_n\}$.
-  It is sometimes useful to give a name to the elements of a tuple
-  without refering to their index. In such a case, a tuple is called a
-  record where each element, called a field, has been given an
-  explicit name. This formalism is useful to represent rather complex
-  data structures. For instance, say that we want to represent the set
-  of humans by a triplet composed of the size, weight, and eye color
-  of a given human.  We can define this set as the set of triplet
-  $\mathbb{R}\times\mathbb{R}\times\{green,blue,brown\}$. If we want
-  to give a concrete name to the elements of the triplet, we can
-  equivalently define such a triplet as a record, written
-  ${<}size,weight,eye{>}$, where $size\in\mathbb{R}$,
-  $weight\in\mathbb{R}$ and $eye\in\{green,blue,brown\}$.
-  
-\item $A\sqcup{}B$ denotes the set formed by the disjoint union of set
-  $A$ and set $B$. The disjoint union is obtained by adjoining an
-  index $i$ to the elements of $A$ and an index $j$ to the elements of
-  $B$ such that $i\neq{}j$. Then, the two sets of couples are joined
+\end{definition}
+
+It is sometimes useful to give a name to the elements of a tuple
+without referring to their index. In such a case, a tuple is called a
+record where each element, called a field, has been given an explicit
+name. This formalism is useful to represent rather complex data
+structures. For instance, say that we want to represent the set of
+humans by a triplet composed of the size, weight, and eye color of a
+given human.  We can define this set as the set of triplet
+$\mathbb{R}\times\mathbb{R}\times\{green,blue,brown\}$. If we want to
+give a concrete name to the elements of the triplet, we can
+equivalently define such a triplet as a record, written
+${<}size,weight,eye{>}$, where $size\in\mathbb{R}$,
+$weight\in\mathbb{R}$ and $eye\in\{green,blue,brown\}$.
+
+\begin{definition}[Disjoint union]
+  $A\sqcup{}B$ denotes the set formed by the disjoint union of set $A$
+  and set $B$. The disjoint union is obtained by adjoining an index
+  $i$ to the elements of $A$ and an index $j$ to the elements of $B$
+  such that $i\neq{}j$. Then, the two sets of couples are joined
   together to build the disjoint union of $A$ and $B$. For instance,
   consider that $A=\{a,b,c\}$ and $B=\{a,b\}$. To obtain the disjoint
   union $A\sqcup{}B$, we create the two sets
   $A_i=\{(i,a),(i,b),(i,c)\}$ and $B_i=\{(j,a),(j,b)\}$, and then join
   the sets together
-  s.t. $A\sqcup{}B=\{(i,a),(i,b),(i,c),(j,a),(j,b)\}$. When the two
-  sets $A$ and $B$ are disjoint, i.e. $A\cap{}B=\emptyset$, then
-  $A\sqcup{}B$ is isomorphic to $A\cup{}B$. To stress the fact that we
-  are building a set from the union of two disjoint sets, we prefer to
-  use the disjoint union operator. For instance, we write
-  $\mathbb{N}\sqcup{}\{\infty\}$, instead of
-  $\mathbb{N}\cup{}\{\infty\}$, to denote the set of values ranging
-  from the set of natural numbers with the addition of the infinite
-  value $\infty$.
+  s.t. $A\sqcup{}B=\{(i,a),(i,b),(i,c),(j,a),(j,b)\}$.
+\end{definition}
 
-\item $\mathcal{P}(A)$ denotes the powerset of $A$ defined by all the
+When the two sets $A$ and $B$ are disjoint, i.e. $A\cap{}B=\emptyset$,
+then $A\sqcup{}B$ is isomorphic to $A\cup{}B$. To stress the fact that
+we are building a set from the union of two disjoint sets, we prefer
+to use the disjoint union operator. For instance, we write
+$\mathbb{N}\sqcup{}\{\infty\}$, instead of
+$\mathbb{N}\cup{}\{\infty\}$, to denote the set of values ranging from
+the set of natural numbers with the addition of the infinite value
+$\infty$.
+
+\begin{definition}[Powerset]
+  $\mathcal{P}(A)$ denotes the powerset of $A$ defined by all the
   possible subsets formed with the elements of set $A$, i.e.
   $\mathcal{P}(A)=\{X~\vert~X\subseteq{}Y\}$.
-\end{itemize}
+\end{definition}
 
 \paragraph{Relations and functions}
 
-A binary relation $R$ between two sets $X$ and $Y$ is a subset of the
-set of pairs $X\times{}Y$, i.e. $R\subseteq{}X\times{}Y$, or an
-element of the powerset $\mathcal{P}(X\times{}Y)$,
-i.e. $R\in\mathcal{P}(X\times{}Y)$. We write $R(x,y)$ to denote
-$(x,y)\in{}R$. We generalize the definition to n-ary relations. A
-n-ary relation between sets $X_0,\dots,X_n$ is a subset of the set of
-n-tuples $X_0\times\dots\times{}X_n$,
-i.e. $R\subseteq{}X_0\times\dots\times{}X_n$, or an element of the
-powerset $\mathcal{P}(X_0\times\dots\times{}X_n)$,
-i.e. $R\in\mathcal{P}(X_0\times\dots\times{}X_n)$. We write
-$R(x_0,\dots,x_n)$ to denote $(x_0,\dots,x_n)\in{}R$. \\
+\begin{definition}[Relation]
+  A binary relation $R$ between two sets $X$ and $Y$ is a subset of
+  the set of pairs $X\times{}Y$, i.e. $R\subseteq{}X\times{}Y$, or an
+  element of the powerset $\mathcal{P}(X\times{}Y)$,
+  i.e. $R\in\mathcal{P}(X\times{}Y)$. We write $R(x,y)$ to denote
+  $(x,y)\in{}R$. We generalize the definition to n-ary relations. An
+  n-ary relation between sets $X_0,\dots,X_n$ is a subset of the set
+  of n-tuples $X_0\times\dots\times{}X_n$,
+  i.e. $R\subseteq{}X_0\times\dots\times{}X_n$, or an element of the
+  powerset $\mathcal{P}(X_0\times\dots\times{}X_n)$,
+  i.e. $R\in\mathcal{P}(X_0\times\dots\times{}X_n)$. We write
+  $R(x_0,\dots,x_n)$ to denote $(x_0,\dots,x_n)\in{}R$.
+\end{definition}
 
-A partial function $f$ from set $X$ to set $Y$ is a binary relation
-from $X$ to $Y$ verifying that
-$\forall{}x\in{}X,y,y'\in{}Y,~(x,y)\in{}f\land{}(x,y')\in{}f\Rightarrow{}y=y'$,
-i.e. $x$ appears at most once as the first element of a pair in $f$.
-We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from $X$
-to $Y$. The set of the first elements of the pairs defined in $f$ is
-called the \emph{domain} of $f$. We write it
-$\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.  When there
-is no ambiguity, and given an $x\in{}X$ and $f\in{}X\nrightarrow{}Y$,
-we write $x\in{}f$ as a shorthand to $x\in\mathtt{dom}(f)$.\\
+\begin{definition}[Partial function]
+  A partial function $f$ from set $X$ to set $Y$ is a binary relation
+  from $X$ to $Y$ verifying that
+  $\forall{}x\in{}X,y,y'\in{}Y,~(x,y)\in{}f\land{}(x,y')\in{}f\Rightarrow{}y=y'$,
+  i.e. $x$ appears at most once as the first element of a pair in $f$.
+  We note $f\in{}X\nrightarrow{}Y$ to denote a partial function from
+  $X$ to $Y$. The set of the first elements of the pairs defined in
+  $f$ is called the \emph{domain} of $f$. We write it
+  $\mathtt{dom}(f)=\{x~\vert~\exists{}y~s.t.(x,y)\in{}f\}$.  When
+  there is no ambiguity, and given an $x\in{}X$ and
+  $f\in{}X\nrightarrow{}Y$, we write $x\in{}f$ as a shorthand to
+  $x\in\mathtt{dom}(f)$.
+\end{definition}
 
-A total function $a$, or application, from $X$ to $Y$ is a partial
-function verifying that all the elements of $X$ appear as the first
-element of a pair in $a$, i.e. for all $x\in{}X$, there exists
-$y\in{}Y$ such that $(x,y)\in{}a$. In other words, the domain of an
-application from $X$ to $Y$ is equal to the set $X$. We note
-$a\in{}X\rightarrow{}Y$ to denote an application from $X$ to $Y$.
+\begin{definition}[Application]
+  A total function $a$, or application, from $X$ to $Y$ is a partial
+  function verifying that all the elements of $X$ appear as the first
+  element of a pair in $a$, i.e. for all $x\in{}X$, there exists
+  $y\in{}Y$ such that $(x,y)\in{}a$. In other words, the domain of an
+  application from $X$ to $Y$ is equal to the set $X$. We note
+  $a\in{}X\rightarrow{}Y$ to denote an application from $X$ to $Y$.
+\end{definition}
 
 \subsection{Rule-based definition of sets}
 \label{sec:rule-based-def}
 
-While describing the operational semantics of a subset of the \vhdl{}
-language in Chapter~\ref{chap:hvhdl}, we define some of the sets (e.g,
-simulation relations) with rule instances, also called inference rules
-or judgments. A rule instance, defining the members of a set $A$, can
-take the following forms:
+All along this memoir, we define sets (especially relations) with rule
+instances, also called inference rules or judgments. A rule instance
+can take the following forms:
 
 \begin{center}
 \begin{prooftree}[template=\inserttext]
@@ -334,19 +363,50 @@ take the following forms:
 \end{prooftree}
 \end{center}
 
-The left form of rule instance is called an axiom; it states that
-$C\in{}A$.  The rule instance \begin{prooftree}[template=\inserttext]
-  \hypo{$P_1,\dots,P_n$} \infer1{ $C$ }
-\end{prooftree} states that $C\in{}A$ if $P_1,\dots,P_n$ hold. Also,
-we say that $C$ is derivable, if $P_1,\dots,P_n$ are derivable.
-$P_1,\dots,P_n$ are the premises of the rule, and $C$ is the
-conclusion of the rule. The premises $P_1,\dots,P_n$ hold if there
-exists a \emph{finite} derivation tree for each one of them. A
-\emph{finite} derivation tree is obtained by applying the rule
-instances defining the set until all branches of the derivation reach
-axioms. For instance, the two following rules, named rules
-\textsc{Ev0} and \textsc{Ev2}, define the $IsEven$ unary relation that
-states that a given natural number is even:
+The left form of rule instance is called an axiom.  In the right form
+of rule instance, $P_1,\dots,P_n$ are the premises of the rule and $C$
+is the conclusion of the rule.
+
+\begin{definition}[Rule instances]
+  We define a set $R$ of rule instances as a set of pairs of the form
+  $(P/C)$ where $P$ is a finite (possibly empty) set of premises and
+  $C$ is an element called the conclusion. A pair $(P/C)$ is a rule
+  instance.
+\end{definition}
+
+Rule instances define a way to build \textit{derivation trees}. A
+derivation of $C$ takes either the form of an axiom,
+i.e. \begin{prooftree}[template=\inserttext] \infer0{ $C$ }
+\end{prooftree}, or of a tree with $C$ as a root and with branches
+composed of the derivation trees of the premises, i.e.
+
+\begin{center}
+  \begin{prooftree}[template=\inserttext]
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{$P_1$}
+
+    \hypo{$\dots$}
+
+    \hypo{}
+    \ellipsis{}{}
+    \infer1{$P_n$}
+    
+    \infer3{ $C$ }
+  \end{prooftree}
+\end{center}
+
+Given a set $R$ of rule instances, we define the set $A$ such that if
+$(\emptyset/C)\in{}R$ then $C\in{}A$, and if
+$(\{P_1,\dots,P_n\}/C)\in{}R$, then if there exists a derivation for
+all premises $P_1,\dots,P_n$ then $C\in{}A$. In fact, the set $R$ of
+rule instances define the properties that must be verified by the
+elements of set $A$. There exists an infinity of sets $A$ that verify
+the properties outlined by the rule instances $R$. Thus, we define the
+set of elements defined by the rule instances $R$ as the least set
+verifying the properties outlined by the rules.  For instance, the two
+following rules, named rules \textsc{Ev0} and \textsc{Ev2}, define the
+set of even natural numbers:
 
 \begin{table}[H]
   \centering
@@ -437,14 +497,14 @@ following rules:
 Here, the evaluation relation is a subset of the set of triplets
 $(\mathtt{string}\nrightarrow\mathbb{N})\times{}e\times\mathbb{N}$. In
 the rule instances defining the evaluation relation, the $\vdash$
-symbol (pronounced \emph{thesis}) stresses that the left part implies
-the right part, or it is involved in the evaluation of the right part.
+symbol (pronounced \emph{thesis}) means that the left part implies the
+right part, or it is involved in the evaluation of the right part.
 For instance, the second rule can be read: in the context of state
 $s$, $id$ evaluates to $s(id)$ if $id\in{}\mathtt{dom}(s)$. When the
 \emph{context} is not involved in the evaluation of the syntactic
-constructs at the right side of the $\vdash$ symbol, we permit
-ourselves to remove the context and the $\vdash$ from the rule
-instances. For example, we can define to the \textsc{Nat} rule by
+constructs on the right side of the $\vdash$ symbol, we remove the
+context and the $\vdash$ from the rule instances. For example, we can
+define to the \textsc{Nat} rule by:
 
 \begin{table}[H]
   \centering
@@ -490,6 +550,26 @@ axioms, and thus\\ $\{(x,1),(y,2)\}\vdash{}x+(y+1)\rightarrow{}4$ is a
 member of the evaluation relation of arithmetic expressions. It states
 that the expression $x+(y+1)$ evaluates to $4$ in the state
 $\{(x,1),(y,2)\}$.
+
+The evaluation relation can also include rule instances defining error
+cases. For instance, we can add an extra rule to the definition of the
+evaluation relation for arithmetic expressions; the following rule
+states that an arithmetic expression that is an unreferenced variable
+in state $\sigma$ results in an error:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{10}{13}\selectfont\textsc{UnrefVar}} \\
+    {\begin{prooftree}[template=\inserttext]
+        \infer0[$id\notin{}\mathtt{dom}(s)$]{ $s\vdash{}id\rightarrow{}\mathtt{err}$ }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+The special value \texttt{err} is defined to represent error
+cases. Thus, the evaluation relation defines a subset of triplets
+$(\mathtt{string}\nrightarrow\mathbb{N})\times{}e\times(\mathbb{N}\sqcup{}\{\mathtt{err\}})$.
 
 %%% Local Variables:
 %%% mode: latex

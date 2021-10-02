@@ -6,27 +6,28 @@ give an overview of the different concepts underlying the \coq{} proof
 assistant. The aim is to give to the reader the tools to understand
 the different listings presenting \coq{} code in the following
 chapters. For a thorough presentation of the \coq{} proof assistant,
-the reader can refer to the \coq{} reference
-manual\footnote{\url{https://coq.inria.fr/distrib/current/refman/}},
-or to \cite{Chlipala2013,Paulin-Mohring2012,Bertot2004}.
+the reader can refer to
+\cite{Chlipala2013,Paulin-Mohring2012,Bertot2004}.
 
 \subsection{The Calculus of Inductive Constructions (CIC)}
 \label{sec:cic}
 
 The kernel of the \coq{} proof assistant implements the Calculus of
 Inductive Constructions (CIC) \cite{CoquandPaulin1990}. The CIC is a
-typed lambda-calculus extended with the possibility to define
-inductive types. Thus, the CIC permits to define programs and types in
-a similar way; both are \textit{terms} of the language. A program is a
+typed lambda-calculus that includes polymorphism, dependent and
+inductive types. Thus, the CIC permits us to define programs and types
+similarly; both are \textit{terms} of the language. A program is a
 term with a certain type, and a type is also a term with a certain
-type. The type of a type is called a \textit{sort}. We can mention two
-basic sorts built in the \coq{} proof assistant: the \texttt{Prop}
-sort which is the type of logical formulas, and the \texttt{Set} sort
-which is the type of \textit{small} sets.
+type. The type of a type is called a \textit{sort}. We can mention
+three basic sorts built in the \coq{} proof assistant: the
+\texttt{Prop} sort which is the type of logical formulas, the
+\texttt{Set} sort which is the type of \textit{small} sets, and the
+\texttt{Type} sort which encompasses the \texttt{Prop} and
+\texttt{Set} sorts.
 
-The \coq{} proof assistant permits to express logic formulas and to
+The \coq{} proof assistant allows us to express logic formulas and to
 interactively build proofs of these formulas by using a high-level
-tactic language. The sequence of tactics that builds a proof for a
+tactic language.  The sequence of tactics that builds a proof for a
 given formula is called a \emph{proof script}. The execution of a
 proof script builds a proof term. In the CIC, a logic formula can be
 seen as a \textit{type} and a proof of this formula is an
@@ -62,11 +63,20 @@ fact, \coqeb{A -> B} is a notation for the product type
 $\Pi{}x:\mathtt{A}.\mathtt{B}$ where $x$ is not referenced in
 $\mathtt{B}$. According to the Curry-Howard correspondence
 \cite{Howard1980}, there is an equivalence between a proof term and a
-program. Thus, a proof term of the logical implication
-$\mathtt{A}\Rightarrow\mathtt{B}$ is equivalent to a program, or a
-function, of type \coqeb{A -> B}, i.e. a program that takes an element
-of type $\mathtt{A}$ and yields an element of type $\mathtt{B}$. Thus,
-the type \coqeb{A -> (A -> B) -> A} is a valid encoding of the formula
+program. This correspondence is a consequence of the
+Brouwer-Heyting-Kolmogorov (BHK) interpretation of the
+\textit{intuitionistic} logic \cite{Moschovakis2018}. Intuitionistic
+logic is the underlying logic built-in the \coq{} proof
+assistant. Intuitionistic logic denies the use of the law of excluded
+middle to perform proofs. Thus, intuitionistic logic as a
+\textit{constructivist} approach of proofs. In the intuitionistic
+setting, one has to provide a explicitly built proof to demonstrate a
+theorem; one can not rely on pure proof by contradiction by appealing
+to the law of excluded middle. Thus, a proof term of the logical
+implication $\mathtt{A}\Rightarrow\mathtt{B}$ is equivalent to an
+explicitly built program, or a function, of type \coqeb{A -> B},
+i.e. a program that takes an element of type $\mathtt{A}$ and yields
+an element of type $\mathtt{B}$. Thus, the type \coqeb{A -> (A -> B)  -> A} is a valid encoding of the formula
 $\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
 
 The \texttt{Theorem} keyword triggers the interactive proof mode
@@ -203,6 +213,21 @@ Then, we can close the interactive proof mode and store the proof of
 the modus ponens theorem in the global environment by using the
 \texttt{Qed} keyword.
 
+Another way to prove the modus ponens theorem is to directly pass the
+proof term with the \coqe|exact| tactic.
+
+\begin{flushleft}
+\coqeb{Coq <  exact (fun (x : A) => fun (f : A -> B) => f x).}\\
+\coqeb{No more subgoals.}\\
+\medskip
+\coqeb{Coq <  Qed.}\\
+\end{flushleft}
+
+Here the term \coqeb{fun (x : A) => fun (f : A -> B) => f x} represents
+the lambda-term
+$\lambda{}(x:\mathtt{A}).\lambda{}(f:\mathtt{A}\rightarrow\mathtt{B}).(f~x)$
+(i.e. the proof term) in the \coq{} syntax.
+
 \subsection{Inductive types}
 \label{sec:ind-types}
 
@@ -229,20 +254,18 @@ setting, the number 2 is represented by \coqeb{(S (S O))}, the number
 inductive type, declared through the \texttt{Inductive} keyword, is
 the addition of this type and each of its constructors to the global
 environment accesible by the \coq{} kernel. Also, a corresponding
-induction principle is generated at the evaluation of an inductive
-type definition. For instance, the \coqeb{nat_ind} induction principle
-is generated at the evaluation of the \coqeb{nat} type. The
-\coqeb{nat_ind} induction principle is equivalent to the so-called
-mathematical induction presented in Section~\ref{sec:math-ind}. It is
-a proof term of the logical formula denoting the mathematical
-induction, i.e.:
+structural induction principle is generated at the evaluation of an
+inductive type definition. For instance, the \coqeb{nat_ind} induction
+principle is generated at the evaluation of the \coqeb{nat} type. It
+is a proof term of the logical formula denoting the structural
+induction principle over the \coqe|nat| type, i.e.:
 
 \begin{lstlisting}[language=CoqBare]
   forall P : nat -> Prop, P 0 -> (forall n : nat, P n -> P (S n)) -> forall n : nat, P n
 \end{lstlisting}
 
 Then, the induction principle \coqeb{nat_ind} can be used to perform
-mathematical induction in a proof involving natural numbers. For
+structural induction in a proof involving natural numbers. For
 instance, say that we want to prove the following theorem stating that
 a natural number elevated at the power 2 is always greater than or
 equal to itself. We can write as follows:
@@ -254,7 +277,6 @@ equal to itself. We can write as follows:
   \texttt{============================}\\
   \coqeb{forall n : nat, n <= n * n}\\
 \end{flushleft}
-
 
 Then, we can use the \coqeb{nat_ind} induction principle to prove such
 a theorem. Most conveniently, the built-in \coqeb{induction} tactic
@@ -278,7 +300,7 @@ branching in the proof tree. Thus, the system indicates that two
 subgoals must be prove to complete the proof of the \coqeb{gt_pow2}
 theorem. These two subgoals corresponds to the proof of $P(0)$ and the
 proof that assuming $P(n)$ we can show $P(n+1)$, as agreed with
-mathematical induction. Here, the property $P$ is defined by
+structural induction. Here, the property $P$ is defined by
 $P(n)\equiv{}n\le{}n\times{}n$. We can use the built-in \coqeb{lia}
 tactic, defined in the \coqeb{Lia} module of the \coq{} standard
 library, to solve the two remaining subgoals.  The \coqeb{lia} tactic
@@ -295,13 +317,19 @@ numbers.  We can combine the \coqeb{induction} tactic with the
 \coqeb{Coq < Qed.}\\
 \end{flushleft}
 
-The \coq{} proof assistant permits to define complex proof tactics, as
-for example the \coqeb{lia} tactic, in order to automatize some proof
-tasks. The \coqeb{Ltac} and \coqeb{Ltac2} languages are the supports
-for the definition of these kind of tactics. These languages permit to
-compose sequences of tactics, to perform pattern matching over the
-local environemnt and the current goal in interactive proof mode, to
-define loops or recursive tactics, etc. \\
+The \coq{} proof assistant permits us to define proof tactics, or
+procedures, in order to automatize some proof tasks. At the top-level
+of the \coq{} proof assistant, the \coqeb{Ltac} and \coqeb{Ltac2}
+languages are the supports for the definition of this kind of
+tactics. These languages allow us to compose sequences of tactics, to
+perform pattern matching over the local environment and the current
+goal in interactive proof mode, to define loops or recursive tactics,
+etc. Even though the \coqeb{Ltac} and \coqeb{Ltac2} languages offer a
+lot of possibilities, the user willing to implement complex proof
+tactics must turn to the \ocaml{} language which the implementation,
+and thus meta-language, of the \coq{} proof assistant. For instance,
+the \texttt{lia} tactic is implemented partly with the \texttt{Ltac}
+language and as a \ocaml{} program. \\
 
 Leveraging the definition of inductive types, the syntactic constructs
 of programming languages are also easily implemented. Here is the
@@ -391,7 +419,7 @@ In the body of the \coqeb{pow} function, the \coqeb{match} construct
 performs pattern-matching over the structure of the input \coqeb{n}.
 The input \coqeb{n} is an element of the \coqeb{nat} type, and thus it
 could either have been built with the \coqeb{O} constructor or as the
-succesor of another element of the \coqeb{nat} type, i.e. with the
+successor of another element of the \coqeb{nat} type, i.e. with the
 \coqeb{S} constructor. The \coqeb{match} construct enumerates all the
 possible construction cases for the given input. Each construction
 case leads to a pipe-separated entry; for each entry, the structure of
@@ -399,7 +427,7 @@ the input appears at the left of the arrow, and the result returned
 appears at the right the arrow. In the above example, \coqeb{1} is
 returned if \coqeb{n} equals \coqeb{O}, and the result of the
 multiplication of \coqeb{a} with the recursive call \coqeb{pow a m} is
-returned if \coqeb{n} is the succesor of a certain \coqeb{m}. In that
+returned if \coqeb{n} is the successor of a certain \coqeb{m}. In that
 case, we have \coqeb{m = n $-$ 1}, and then the recursive call
 \coqeb{pow a m} can be read as \coqeb{pow a (n $-$ 1)}.
 
@@ -409,7 +437,46 @@ call. This is performed through \coqeb|{struct $id$}| annotation,
 where $id$ denotes one parameter of the declared function. This
 information permits to the \coq{} kernel to generate the fixpoint
 equation for the function, thus proving that the function is always
-terminating.
+terminating. For consistency reasons, all \coq{} functions must
+terminate and must be total. A user willing to implement a
+non-terminating function equivalently define the function as an
+inductive type where termination limitations do not apply. For
+instance, let us say that we want to implement this following
+\textit{ill-formed} version of the \coqe|pow| function:
+
+\begin{lstlisting}[language=CoqBare]
+Fixpoint pow (a n : nat) {struct n} : nat :=
+  match n with 
+  | O => 1
+  | _ => a * pow a n
+  end.
+\end{lstlisting}
+
+Clearly, this function diverges for all \coqe|n| strictly superior to
+0. The \coq{} kernel will not allow such a definition; thus, we can
+implement the \coqeb{pow} function as the following relation
+\coqe{Pow} $\subseteq{}(\mathbb{N}\times\mathbb{N}\times\mathbb{N})$:
+
+\begin{lstlisting}[language=CoqBare]
+Inductive Pow (a : nat) : nat -> nat -> Prop :=
+| Pow0 : Pow a 0 1
+| Pown : forall n res, Pow a n res -> Pow a n (a * res).
+\end{lstlisting}
+
+The \coqe|Pow| relation takes three parameters of the \coqe|nat| type
+and projects a value in the \texttt{Prop} type (meaning that the
+\coqe|Pow| relation is a predicate). The third \coqe|nat| parameter
+corresponds to the result of the computation of $a^n$ given that the
+two first parameters are $a$ and $n$. Determining the result of the
+computation of $a^n$ is equivalent to finding a natural number $m$
+that verifies that \coqeb|Pow a n m| holds. In intuitionistic logic,
+finding a proof of the existence of a $m$ such that \coqeb|Pow a n m|
+holds amounts to explicitly building such a $m$.  Here, one can notice
+that when the second parameter passed to the \coqeb|Pow| relation is
+greater than zero, the formation rules of the \coqe|Pow| relation will
+not permit us to find a result for the computation. Thus, a tactic
+implementing a proof search for a $m$ such that \coqe|Pow a n m| holds
+when $n>0$ will never terminate.
 
 \subsection{Dependent types}
 \label{sec:dep-types}
@@ -417,7 +484,7 @@ terminating.
 In the listings that the reader will find in the following chapters,
 and also in the code repository associated with this thesis, some data
 structures are \textit{dependently-typed} structures. Thus, we
-introduce here the notion of dependent type and how it is expressible
+introduce here the notion of dependent type and how it is expressed
 with the \coq{} proof assistant.
 
 A type is said to be dependent when its expression depends on one or
@@ -474,9 +541,11 @@ cost of having to prove much more properties afterwards.
 
 To conclude the subject of dependent types, we often use
 \textit{sigma} types to define a type of elements that meet a given
-property. A sigma type expresses the dependence between a parameter
-and a proof of a given property that possibly depends on another
-parameter. As so, sigma types are useful to express intentional sets
+property. Sigma types are \textit{constructivist} versions, coming
+from the intuitionistic logic, of existential logic formulas.  A sigma
+type expresses the dependence between a parameter and a proof of a
+given property that possibly depends on another parameter. As so,
+sigma types are useful to express intentional sets
 (cf. Section~\ref{sec:set-theory}). In the \coq{} standard library,
 the definition of the sigma type is as follows:
 

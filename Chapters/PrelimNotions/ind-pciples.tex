@@ -1,35 +1,85 @@
-In the proceedings of proofs laid out in this thesis, we often perform
-proofs by induction. Here are some reminders on some induction
-principles to help the reader understand the proofs of
-Chapter~\ref{chap:proof} and Appendix~\ref{app:sem-preserv-proof}.
+In the proofs presented in this thesis, we often rely on
+\textit{induction}. Here are some reminders on induction principles to
+help the reader understand the proofs of Chapter~\ref{chap:proof} and
+Appendix~\ref{app:sem-preserv-proof}.
 
-\subsection{Mathematical induction}
-\label{sec:math-ind}
+\subsection{Well-founded induction}
+\label{sec:well-founded-ind}
 
-The principle of mathematical induction is tied to the set of natural
-numbers. It states that, in order to prove that a property $P$ holds
-for all natural numbers, it is sufficient to prove that:
+The most general principle of induction is called
+\textit{well-founded} induction. From well-founded induction derives
+all induction principles presented afterwards.
+
+To introduce well-founded induction, let us define a well-founded
+relation.
+
+\begin{definition}[Well-founded relation]
+  A binary relation $\prec$ over a set $A$ is well-founded if there
+  exist no infinite descending chain,
+  i.e. $\dots\prec{}a_i\prec\dots\prec{}a_1\prec{}a_0$.
+\end{definition}
+
+For instance, the \textit{strictly less than} relation $<$ over the
+set of natural numbers is a well-founded relation.
+
+Let $\prec$ be a well-founded binary relation on a set $A$.  The
+principle of well-founded induction on the relation $\prec$ says that
+in order to prove that a property $P$ holds for all elements of $A$,
+it suffices to prove that $P$ holds of any $a\in{}A$ whenever $P$
+holds for all $b\in{}A$ such that $b\prec{}a$, formally:
+
+\begin{center}
+  $\big(\forall{}a\in{}A,([\forall{}b\in{}A,b\prec{}a\Rightarrow{}P(b)]\Rightarrow{}P(a))\big)\Rightarrow\forall{}a\in{}A,P(a)$
+\end{center}
+
+\subsection{Structural induction}
+\label{sec:struct-ind}
+
+Sometimes, reasoning by induction requires to follow the structure of
+a given set, i.e. the formation rules of a given set. This kind of
+reasoning is called structural induction.
+
+Let us consider the formation rules of the set of natural numbers:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l}
+    {\fontsize{10}{12}\selectfont\textsc{Zero}} \\
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \infer0[]{
+          $0\in\mathbb{N}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+  \begin{tabular}{l}
+    {\fontsize{10}{12}\selectfont\textsc{Succ}} \\
+    {\begin{prooftree}[template=\fontsize{11}{13}\selectfont\inserttext]
+        \hypo{$n\in\mathbb{N}$}
+        \infer1[]{
+          $n+1\in\mathbb{N}$
+        }
+      \end{prooftree}} \\
+  \end{tabular}
+\end{table}
+
+These rules state that zero is a natural number and that for every
+natural number, its direct successor is also a natural number.
+Structural induction describes a way to deduce that a property holds
+for the set of natural numbers, first by stating that the property
+holds for zero, i.e. the minimal element of the set, then by stating
+that if the property holds for a given number then it holds for its
+successor. Thus, knowing that $P(0)$ holds, we can deduce that $P(1)$
+holds, $P(2)$ holds, $P(3)$ holds, etc. Following the structural
+induction scheme, given a property $P$, to prove that $P$ holds for
+all natural numbers, it is sufficient to prove that:
 
 \begin{itemize}
 \item $P$ holds for $0$
 \item if $P$ holds for a given $n$ then it holds at $n+1$
 \end{itemize}
 
-Mathematical induction describes a way to deduce that a property holds
-for the set of natural numbers, first by stating that the property
-holds for zero, i.e. the minimal element of the set, then by stating
-that if the property holds for a given number then it holds for its
-successor. Thus, knowing that $P(0)$ holds, we can deduce that $P(1)$
-holds, $P(2)$ holds, $P(3)$ holds, etc.
-
-
-\subsection{Structural induction}
-\label{sec:struct-ind}
-
-Sometimes, reasoning by induction necesitates to follow the structure
-of a given set, i.e. the formation rules of a given set. For instance,
-if we want to prove that a given property $P$ holds for the set of
-arithmetic expressions given as an example in
+To take another example, if we want to prove that a given property $P$
+holds for the set of arithmetic expressions described in
 Section~\ref{sec:rule-based-def}, we must prove that:
 
 \begin{itemize}
@@ -40,9 +90,9 @@ Section~\ref{sec:rule-based-def}, we must prove that:
 \end{itemize}
 
 A proof that leverages structural induction follows the structure of
-the elements we are reasoning upon. Many times in this thesis, we are
-using structural induction to prove that a sum expression verifies a
-certain property. Thus, the structural induction follows the recursive
+the elements we are reasoning upon.  In this thesis, we are using
+structural induction to prove that a sum expression verifies a certain
+property. Thus, the structural induction follows the recursive
 definition of the sum term, which is, for any set $A$, function
 $f\in{}A\rightarrow\mathbb{N}$ and $X\subseteq{}A$ and :
 
@@ -113,9 +163,9 @@ illustrate the use of structural induction over a sum term:
 \subsection{Rule induction}
 \label{sec:rule-ind}
 
-A specific kind of induction, called \textit{rule} induction, is
-applied to prove properties over sets that are defined by rule
-instances. Let us take the evaluation relation for arithmetic
+A specific kind of structural induction, called \textit{rule}
+induction, is applied to prove properties over sets that are defined
+by rule instances. Let us take the evaluation relation for arithmetic
 expressions used in Section~\ref{sec:rule-based-def} to illustrate the
 principle of rule induction. To prove that a property $P$ holds for
 the evaluation relation of arithmetic expressions, which is a subset
@@ -146,7 +196,7 @@ property holds for all the elements of the set.
 Let us give an application of rule induction to prove a property over
 the evaluation relation of arithmetic expressions.  First, we define,
 through the three following rules, the relation $\in_r$ stating that a
-given identiifer $id$ is referenced in an arithmetic expression $e$,
+given identifier $id$ is referenced in an arithmetic expression $e$,
 written $id\in_r{}e$:
 
 \begin{table}[H]
@@ -218,8 +268,8 @@ are not part of the current state's domain can not be evaluated.
   Rule~\textsc{InRAddL} has been applied, then we know $id\in_r{}e_0$;
   thus, from $P(s,e_0,n)$, we can deduce
   $\lnot{}s\vdash{}e_0\rightarrow{}n$, which contradicts
-  $s\vdash{}e_0\rightarrow{}n$. We can perform the proof in a similar
-  way if Rule~\textsc{InRAddR} has been applied.
+  $s\vdash{}e_0\rightarrow{}n$. We can perform the proof similarly if
+  Rule~\textsc{InRAddR} has been applied.
 \end{niproof}
 
 %%% Local Variables:
