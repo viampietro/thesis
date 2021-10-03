@@ -1,15 +1,16 @@
 In this section, we present our mechanization of the SITPN structure
 and semantics with the \coq{} proof assistant. The source code is
 available to the reader at the address
-\url{https://github.com/viampietro/ver-hilecop}. More precisey, the
+\url{https://github.com/viampietro/ver-hilecop}. More precisely, the
 implementation of the SITPN structure and semantics is to be found
 under the \texttt{sitpn/dp} directory. We have made a first
 implementation of SITPNs without the use of dependent types. For this
-first version, we have also implemented a SITPN interpret (a so-called
-\emph{token player}) and proved that the interpret was sound and
-complete w.r.t the SITPN semantics. This first implementation of the
-SITPNs and the formal proof of soundness and completeness are
-available at \url{https://github.com/viampietro/sitpns}.
+first version, we have also implemented a SITPN interpreter (a
+so-called \emph{token player}) and proved that the interpreter was
+sound and complete w.r.t the SITPN semantics. This first
+implementation of the SITPNs and the formal proof of soundness and
+completeness are available at
+\url{https://github.com/viampietro/sitpns}.
 
 \subsection{Implementation of the SITPN and the SITPN state structure}
 \label{sec:sitpn-struct-impl}
@@ -53,7 +54,7 @@ define the finite sets of places (Line~\ref{line:pls}), transitions
 (Line~\ref{line:trs}), actions (Line~\ref{line:acts}), conditions
 (Line~\ref{line:conds}) and functions (Line~\ref{line:funs}) in the
 \texttt{Sitpn} record. We want to use these finite sets in the
-signature of functions appearing in the structure (e.g use the finite
+signature of functions appearing in the structure (e.g. use the finite
 set of places $P$ in the signature of the initial marking
 $M_0\in{}P\rightarrow\mathbb{N}$). To do so, we leverage the \coq{}
 \texttt{sig} type to define subsets of elements verifying a certain
@@ -207,7 +208,7 @@ of Rule~\ref{it:exec-fun} at Line~\ref{line:exec-fun} leverages the
 \texttt{BSum} predicate to compute the Boolean sum
 $\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)$. The term
 \texttt{IsFiredList s fired} states that the \texttt{fired} list
-implements the set of fired transitions at state \texttt{s} so we can
+implements the set of fired transitions at state \texttt{s}, so we can
 use the \texttt{fired} list to compute the above sum.
 
 %%% Local Variables:

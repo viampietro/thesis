@@ -8,7 +8,7 @@ $\delta$-delay signal assignments. Leaving apart the synchronous side,
 we only need a simulation algorithm that performs \textit{delta
   cycles} (see Section~\ref{sec:vhdl-informal-sem}) to simulate such
 synthesizable designs. However, \hvhdl{} designs are also synchronous
-designs. As such, an \hvhdl{} design is equipped with a clock input
+designs. As such, a \hvhdl{} design is equipped with a clock input
 port. The value of the clock input port changes from 0 to 1 and
 inversely at a constant rate, i.e. the clock rate. One can see the
 changing of the value of the clock input port as the result of the
@@ -75,7 +75,7 @@ simulation algorithm in a pseudo-code language. This simulation
 algorithm is formalized in a small-step semantics style in the
 following sections. Here, we say small-step semantics because the
 different intermediary states of the design under simulation are
-detailled and registered in a simulation trace $\theta$. This
+detailed and registered in a simulation trace $\theta$. This
 simulation trace is built incrementally through the execution of
 simulation cycles, and is returned at the end of
 Algorithm~\ref{alg:simulation}. However, the execution of sequential
@@ -159,7 +159,7 @@ is the elaboration phase that builds an elaborated version of a
 elaboration phase, the top-level design receives a value for each of
 its generic constant; we refer to it as the \emph{dimensioning} of the
 top-level design. The second step is the simulation phase that
-executes the behavioral part of the top-level design, and yields an
+executes the behavioral part of the top-level design, and yields a
 simulation/execution trace; this step has been presented through the
 Algorithm~\ref{alg:simulation}.
 % The initial state is built by a specific initialization
@@ -207,7 +207,7 @@ of the initialization and simulation relations. % The states in
   \begin{itemize}[label=-]
   \item $\mathcal{M}_g\in{}Gens(\Delta)\nrightarrow{}value$, the
     function yielding the values of generic constants for a given
-    top-level design, refered to as the \emph{dimensioning}
+    top-level design, referred to as the \emph{dimensioning}
     function. Here, $Gens(\Delta)$ is a shorthand notation for the
     domain of $Gens(\Delta)$, normally written
     $\mathtt{dom}(Gens(\Delta))$, i.e. the set of generic constant
@@ -617,7 +617,7 @@ embedding design.
 Rule~\textsc{ParRunInit} describes the evaluation of the parallel
 composition of two concurrent statements cs and cs'. The two
 concurrent statements are evaluated starting from the same state
-$\sigma$ and they generate two different state $\sigma'$ and
+$\sigma$, and they generate two different state $\sigma'$ and
 $\sigma''$. The state resulting from the concurrent execution of cs
 and cs' is the result of a merging between the starting state
 $\sigma$, and the two states $\sigma'$ and $\sigma''$.
@@ -712,10 +712,11 @@ state similar to the starting state.
 
 The following rules express the evaluation of concurrent statements at
 clock phases, i.e. the rising edge ($\uparrow$) and the falling edge
-($\downarrow$) phases. The clock signal, trigerring the evaluation of
-synchronous process statements, is represented by the reserved signal
-identifier \texttt{clk}. Thus, synchronous processes are processes
-containing the \texttt{clk} signal in their sensitivity list.
+($\downarrow$) phases. The clock signal, which triggers the evaluation
+of synchronous process statements, is represented by the reserved
+signal identifier \texttt{clk}. Thus, synchronous processes are
+processes containing the \texttt{clk} signal in their sensitivity
+list.
 
 \subsubsection{Evaluation of a process statement}
 

@@ -134,7 +134,7 @@ environment is represented by square brackets. The global environment
 is represented at the left of the local environment. At the root of
 the derivation tree, the global environment contains our two
 previously declared logical propositions \texttt{A} and \texttt{B},
-whereas the the local environment is empty. The application of the
+whereas the local environment is empty. The application of the
 \textsc{Lam} rule adds new entry to the local environment; the
 \textsc{App} triggers the type-checking of the left and the right part
 of an application; the \textsc{Var} rule checks that a term is
@@ -179,7 +179,7 @@ invoke the \textsc{Lam} rule; this is done by appealing to the
 \end{flushleft}
 
 Here, the user passes to the system the name of the variable that will
-be introduce in the local environment by the \textsc{Lam} rule, i.e
+be introduced in the local environment by the \textsc{Lam} rule, i.e.
 the variable \texttt{x}. Then, we repeat the operation, applying the
 \textsc{Lam} rule a second time to introduce an element of type
 \coqeb{A -> B} in the environment.
@@ -247,13 +247,13 @@ type of a type is called a sort). The \coqeb{nat} type is defined
 through two constructors, represented by the pipe-separated entries.
 The \coqeb{O} constructor states that zero is a natural number. The
 \coqeb{S} constructor takes a natural number as input and yields the
-succesor to this natural number. This corresponds to the structural
+successor to this natural number. This corresponds to the structural
 definition of natural numbers in Peano's arithmetic. Thus, in this
 setting, the number 2 is represented by \coqeb{(S (S O))}, the number
 3 by \coqeb{(S (S (S O))}, etc. The result of the evaluation of an
 inductive type, declared through the \texttt{Inductive} keyword, is
 the addition of this type and each of its constructors to the global
-environment accesible by the \coq{} kernel. Also, a corresponding
+environment accessible by the \coq{} kernel. Also, a corresponding
 structural induction principle is generated at the evaluation of an
 inductive type definition. For instance, the \coqeb{nat_ind} induction
 principle is generated at the evaluation of the \coqeb{nat} type. It
@@ -297,8 +297,8 @@ induction principle over the universally quantified variable
 
 The result of the invocation of the \coqeb{induction} tactic is a
 branching in the proof tree. Thus, the system indicates that two
-subgoals must be prove to complete the proof of the \coqeb{gt_pow2}
-theorem. These two subgoals corresponds to the proof of $P(0)$ and the
+subgoals must be proved to complete the proof of the \coqeb{gt_pow2}
+theorem. These two subgoals correspond to the proof of $P(0)$ and the
 proof that assuming $P(n)$ we can show $P(n+1)$, as agreed with
 structural induction. Here, the property $P$ is defined by
 $P(n)\equiv{}n\le{}n\times{}n$. We can use the built-in \coqeb{lia}
@@ -357,8 +357,8 @@ induction principle is a proof term of the following logical formula:
        forall e : e, P e
 \end{lstlisting}
 
-The evaluation relation for arithmetic expressions is defined in a
-similar way:
+The evaluation relation for arithmetic expressions is defined
+similarly:
 
 \begin{lstlisting}[language=CoqBare]
 Inductive evale (s : string -> option nat) : e -> nat -> Prop :=
@@ -378,13 +378,13 @@ present in an arithmetic expression is a named parameter of the
 are not varying from one construction case to another can be passed as
 named parameters while defining an inductive type. The state \coqeb{s}
 takes a string identifier as input and yields an \coqeb{option} to a
-natural number.  As so, the \coqeb{option} type permits to represent
-partial functions.  The identifiers that belong to the domain of state
-\coqeb{s} will be associated with \coqeb{Some} natural number, whereas
-the unreferenced identifiers will be associated with the \coqeb{None}
-value of the \coqeb{option} type. The \coqe{Some} and the \coqeb{None}
-constructors are the two constructors of the \coqeb{option} type which
-is defined in \coq{} as follows:
+natural number.  As so, the \coqeb{option} type permits the definition
+of partial functions.  The identifiers that belong to the domain of
+state \coqeb{s} will be associated with \coqeb{Some} natural number,
+whereas the unreferenced identifiers will be associated with the
+\coqeb{None} value of the \coqeb{option} type. The \coqe{Some} and the
+\coqeb{None} constructors are the two constructors of the
+\coqeb{option} type which is defined in \coq{} as follows:
 
 \begin{lstlisting}[language=CoqBare]
 Inductive option (A : Type) : Type :=
@@ -527,9 +527,9 @@ Definition my_sub (n m : nat) (pf : m <= n) : nat := n $-$ m.
 \end{lstlisting}
 
 Even though, in its definition body, the \coqeb{my_sub} function
-simply appeals to the \coq{} built-in substraction function, passing a
+simply appeals to the \coq{} built-in subtraction function, passing a
 proof that $m$ is less than or equal to $n$ adds a constraint to the
-computation of the substraction. One can see how dependent types can
+computation of the subtraction. One can see how dependent types can
 help check that the parameters of programs meet some properties at
 definition time.  Constraining the type of parameters during the
 definition of programs reduces the proof efforts afterwards, but adds
@@ -583,7 +583,7 @@ parameter carries the proof that $m$ is less than or equal to $n$:
 Definition my_sub2 (n : nat) (m : { x : nat | x <= n }) : nat := n $-$ (proj1_sig m).
 \end{lstlisting}
 
-Here, we can no longer directly substract $n$ with $m$ as the type of
+Here, we can no longer directly subtract $n$ with $m$ as the type of
 $m$ is no longer \coqeb{nat} but \coqeb{ $\{$ x : nat | x <= n $\}$ }.
 We have to extract the first part of the $m$ parameter with the help
 of the \coqeb{proj1_sig} function. The first part of an element of the

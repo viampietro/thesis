@@ -120,7 +120,7 @@ we must show that:
 \end{itemize}
 
 The induction follows the structure of the function. In this specific
-case, structural induction is often refered to as \textit{functional}
+case, structural induction is often referred to as \textit{functional}
 induction. Let us prove Proposition~\ref{prop:sum-expr-pf} to
 illustrate the use of structural induction over a sum term:
 
@@ -146,9 +146,10 @@ illustrate the use of structural induction over a sum term:
   First, let us show $P(\emptyset,0)$, i.e.  $\exists{}k\in\mathbb{N}$
   s.t. $0=2k$. Let us take $k=0$ to build a tautology.\\
 
-  Then, given a $X'\subset{}X$ and a $x\in{}X$ s.t. $X=\{x\}\cup{}X'$,
-  and assuming that $P(X',\sum\limits_{x'\in{}X'}2x')$ holds (i.e. the
-  induction \textit{hypothesis}), let us show
+  Then, given an $X'\subset{}X$ and an $x\in{}X$
+  s.t. $X=\{x\}\cup{}X'$, and assuming that
+  $P(X',\sum\limits_{x'\in{}X'}2x')$ holds (i.e. the induction
+  \textit{hypothesis}), let us show
   $P(\{x\}\cup{}X',2x+\sum\limits_{x'\in{}X'}2x')$. Appealing to the
   induction hypothesis, let us take a $j$ such that
   $\sum\limits_{x'\in{}X'}2x'=2j$. Rewriting

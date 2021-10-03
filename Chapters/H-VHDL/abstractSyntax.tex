@@ -78,7 +78,7 @@ A process statement declares a sensitivity list, i.e. the sl entry,
 which is a possibly empty set of signal identifiers. In order to be
 well-formed, the signals composing a sensitivity list must be either
 internal signals or input ports of the design. As a good practice, all
-signals which value is read in the sequuential statement body of the
+signals which value is read in the sequential statement body of the
 process must appear in the sensitivity list. The process possibly
 declares a set of internal variables, i.e. the vars entry. A variable
 declaration entry is a couple composed of a variable identifier and a
@@ -167,7 +167,7 @@ if #\texttt{falling\_edge}#(clk) then ss end if;
 
 In the above listing, the \texttt{rising\_edge}
 (resp. \texttt{falling\_edge}) primitive yields \texttt{true} if a
-rsign edge event (resp. falling edge event) occurred in the
+rising edge event (resp. falling edge event) occurred in the
 \texttt{clk} signal passed as input. More details are given, in
 Section~\ref{sec:clk-phases-rules}, regarding the semantics of the
 above statements in relation to the \textit{clock} phases happening
@@ -194,7 +194,7 @@ The expression entry, i.e. e, declares a set of operators over Boolean
 expressions, and natural numbers expressions.  The natural
 non-terminal represents the set of natural numbers ($\mathbb{N}$). The
 id non-terminal represents the set of identifiers, comparable to the
-set of non-empty strings, or any infinitly enumerable set. In the
+set of non-empty strings, or any infinitely enumerable set. In the
 following sections, concrete identifiers will be written in
 \texttt{typewriter} font, e.g. the \texttt{place} and
 \texttt{transition} design identifiers.

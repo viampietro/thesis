@@ -467,7 +467,7 @@ output ports are \texttt{open} by default.
   $Outs_c(\mathrm{id}_f)=T$ and
   $Sigs(\mathrm{id}_a)=\mathtt{array(}T,n,m\mathtt{)}$ checks that the
   type of $\mathrm{id}_f$ and the type of the elements of
-  $\mathrm{id}_a$ are the same. Note that $\mathrm{id}_a$ be an signal
+  $\mathrm{id}_a$ are the same. Note that $\mathrm{id}_a$ be a signal
   identifier of the \texttt{array} type as $\mathrm{id}_f$ is mapped
   to one subelement of $\mathrm{id}_a$.
 \end{sideconds}
@@ -533,7 +533,7 @@ output ports are \texttt{open} by default.
 
 \begin{remark}[Unconnected output port.]
   We forbid the case where an indexed formal part corresponding to the
-  subelement of a composite output port is unconnected, i.e
+  subelement of a composite output port is unconnected, i.e.
   $(\mathrm{id}_f(e_i),\mathtt{open})$, as it could lead to the case
   where some subelements of a composite output port are connected
   while others are not (error case in \cite[p.7]{VHDL2000}).

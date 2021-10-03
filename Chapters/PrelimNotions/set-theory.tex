@@ -16,9 +16,9 @@ each element of a set to a unique element of another set.
 To define the syntax of the first-order logic, let us first define:
 
 \begin{itemize}
-\item the set $\mathcal{V}$ of variables x, y, etc.
-\item the set $\mathcal{S}_\mathcal{F}$ of function symbols f, g, etc.
-\item the set $\mathcal{S}_\mathcal{P}$ of predicate symbols P, Q,
+\item The set $\mathcal{V}$ of variables x, y, etc.
+\item The set $\mathcal{S}_\mathcal{F}$ of function symbols f, g, etc.
+\item The set $\mathcal{S}_\mathcal{P}$ of predicate symbols P, Q,
   etc.
 \end{itemize}
 
@@ -57,19 +57,19 @@ This entry states that a formula is either:
 
 \begin{itemize}
 \item $\bot$ (bottom), the always \textit{false} formula, or $\top$
-  (top), the always \textit{true} formula
-\item a predicate $P(t_1,\dots,t_n)$ (i.e. an atomic formula) of arity
+  (top), the always \textit{true} formula.
+\item A predicate $P(t_1,\dots,t_n)$ (i.e. an atomic formula) of arity
   $n$, where $P\in\mathcal{S}_\mathcal{P}$ with terms $t_1,\dots,t_n$
   as inputs.
-\item the composition of two subformulas with one of the following
+\item The composition of two subformulas with one of the following
   binary operators: the conjunction $\land$, the disjunction $\lor$,
   the implication $\Rightarrow$, the double implication
-  $\Leftrightarrow$
+  $\Leftrightarrow$.
   
-\item the composition of one subformula with the negation operator
-  $\neg$
+\item The composition of one subformula with the negation operator
+  $\neg$.
   
-\item a subformula prefixed by the universal quantifier $\forall$ or
+\item A subformula prefixed by the universal quantifier $\forall$ or
   the existential quantifier $\exists$. For instance, the formula
   $(\forall{}x,P(x))$ denotes the atomic formula $P(x)$ where the
   parameter $x$ is a universally quantified variable of the
@@ -217,8 +217,8 @@ sets then their corresponding pair $C$ is also a set.
 \end{axiom}
 
 \begin{definition}[Intersection]
-  Given a set $A$ and $B$, th set $A\cap{}B$ denotes the set formed by
-  the intersection of set $A$ and $B$, i.e.
+  Given a set $A$ and $B$, the set $A\cap{}B$ denotes the set formed
+  by the intersection of set $A$ and $B$, i.e.
   $\forall{}x,x\in{}A\cap{}B\Leftrightarrow{}~x\in{}A\land{}x\in{}B$.
 \end{definition}
 
@@ -256,7 +256,7 @@ Given two sets $A$ and $B$, the following sets are formed:
 \end{definition}
 
 \begin{definition}[Cartesian product]
-  $A\times{}B$ denotes the cartesian product between the elements
+  $A\times{}B$ denotes the Cartesian product between the elements
   of set $A$ and set $B$, i.e. the set of all ordered pairs defined by
   $\{(x,y)~\vert~x\in{}A\land{}y\in{}B\}$. We generalize the
   definition to build the set of $n$-tuples

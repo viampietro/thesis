@@ -10,7 +10,7 @@ set. The $type$ and $value$ semantic types are defined as follows:
 
   \begin{tabular}{lcl}
     $type$ & ::= & $bool$ | $nat(n$, $n)$ | $array(type$, $n$, $n)$ \\
-           & & \\a
+           & & \\
     $value$ & ::= & $b$ | $n$ | $arr$ \\
     $b$ & ::= & '$\mathbf{\top}$' | '$\mathbf{\bot}$' \\
     $n$ & ::= & \texttt{0} | \texttt{1} | \dots | \texttt{NATMAX} \\
@@ -76,14 +76,14 @@ design is defined as follows:
     yielding the type of output ports.
   \item
     $Sigs\in{}declared\mhyphen{}signal\mhyphen{}id\rightarrow{}type$
-    is the function yelding the type of declared signals.
+    is the function yielding the type of declared signals.
   \item
     $Ps\in{}process\mhyphen{}id\rightarrow(variable\mhyphen{}id\rightarrow{}(type\times{}value))$
     is the function associating process identifiers to their local
     environment.
   \item $Comps\in{}component\mhyphen{}id{}\rightarrow{}ElDesign$ is
     the function mapping component instance identifiers to their own
-    elaborated design version
+    elaborated design version.
   \end{itemize}
 \end{definition}
 
@@ -128,17 +128,17 @@ state of $\sigma\in{}\Sigma$ is defined as follows:
 The $signal\mhyphen{}id$ subset is the disjoint union of
 $input\mhyphen{}id$, $output\mhyphen{}id$ and
 $declared\mhyphen{}signal\mhyphen{}id$. When there is no ambiguity
-regarding to which store a given identifier belongs, we use
-$\sigma(id)$ to denote the value associated to an identifier in the
-signal store $\mathcal{S}$ or in the component store $\mathcal{C}$
-fields.  We write $id\in\sigma$ to state that an identifier is defined
-in either the signal store $\mathcal{S}$ or the component store
-$\mathcal{C}$ fields. Also, when there is no ambiguity, we rely on
-indices or exponents to qualify the signal store, the component
-instance store and the set of events of a given design state. For
-instance, $\mathcal{C}_0$ denotes the component instance store of
-design state $\sigma_0$, and $\mathcal{E}'$ denotes the set of events
-of design state $\sigma'$, etc.
+regarding which store a given identifier belongs, we use $\sigma(id)$
+to denote the value associated to an identifier in the signal store
+$\mathcal{S}$ or in the component store $\mathcal{C}$ fields.  We
+write $id\in\sigma$ to state that an identifier is defined in either
+the signal store $\mathcal{S}$ or the component store $\mathcal{C}$
+fields. Also, when there is no ambiguity, we rely on indices or
+exponents to qualify the signal store, the component instance store
+and the set of events of a given design state. For instance,
+$\mathcal{C}_0$ denotes the component instance store of design state
+$\sigma_0$, and $\mathcal{E}'$ denotes the set of events of design
+state $\sigma'$, etc.
 
 \begin{notation}[No events design state]
   \label{notation:noev}

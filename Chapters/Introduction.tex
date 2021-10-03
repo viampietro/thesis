@@ -63,7 +63,7 @@ criticality of the considered systems; for instance, in the medical
 field, the regulation text 2017/145 of the EU, pertaining to the
 marketing of medical devices, sets a different requirement level
 whether we are considering the production of dressings (level 0), or
-of neuroprotheses (highest-level, level 4). The IEC defines a SIL
+of neuroprostheses (highest-level, level 4). The IEC defines a SIL
 (Safety Integrity Level) measure that qualifies the criticality level
 of a system. The CC defines a level of Evaluation Assurance Level
 (EAL), from 1 to 7, that must be met by the evaluated systems
@@ -317,8 +317,8 @@ generated proof must be is such a format that can be verified by a
 Even though it is not considered as a formal method, compiler testing
 is also a way to validate the semantic preservation property for a
 given compiler program. Considering the essential part that plays
-compiler programs regarding the production of softwares, a lot of
-efforts has been dedicated for the generation of test suites
+compiler programs regarding the production of software products, a lot
+of efforts has been dedicated for the generation of test suites
 \cite{Chen2020}.
 
 In the thesis, we will follow the \textit{compiler verification}
@@ -350,7 +350,7 @@ systems.  % In Section~\ref{sec:design-crit-digit-systms}, we
 According to Moore's law \cite{Moore2006}, the complexity of digital
 integrated circuits is always increasing. To give an example, the
 cut-of-the-edge \emph{AMD Epyc Rome} microprocessor (2019) is made out
-of 50 billions of transistors. Composing billions of transistors on a
+of 50 billion of transistors. Composing billions of transistors on a
 wired circuit is no more a task for humans but is very suited to
 computers. However, engineers need to think about the design of
 digital circuits in a way that is understandable for
@@ -407,16 +407,16 @@ concrete program is generated in the Ada or C language.
 \subsection{Introducing the \hilecop{} methodology}
 \label{sec:intro-hilecop}
 
-The INRIA CAMIN team has developed a new technology of neuroprotheses
-\cite{Guiraud2006}. Neuroprotheses are medical devices which purpose
+The INRIA CAMIN team has developed a new technology of neuroprostheses
+\cite{Guiraud2006}. Neuroprostheses are medical devices which purpose
 is to electro-stimulate the nerves of patients suffering from moving
-disabilities. The nerves are responding to the stimulation, i.e an
+disabilities. The nerves are responding to the stimulation, i.e. an
 electric influx, in order to activate the muscles and so that the
 patient can recover some movements. Thus, controlling stimulation
 applied to the patient's nerve is a critical point of the device
 overall functioning. This stimulation is generated and controlled by
 an implanted mixed circuit (resp. analogous and digital parts),
-embedded in the neuroprothesis. Therefore, the design of such digital
+embedded in the neuroprosthesis. Therefore, the design of such digital
 systems becomes utterly critical as a faulty circuit could result in
 the injury of patients. To assist the engineers in the design and the
 implementation of these safety-critical digital systems, the CAMIN
@@ -460,7 +460,7 @@ As shown in Figure~\ref{fig:components-and-pn}, a component of the
 an internal behavior and an interface that allows the connection to
 other components. The internal behavior of a component is defined with
 a specific kind of Petri Net (PN) model. These PNs and their
-distiguishing features will be thoroughly presented in
+distinguishing features will be thoroughly presented in
 Chapter~\ref{chap:hilecop-models}. The component interface exposes
 references to the places, transitions, and signals of the internal
 behavior to the outside so that multiple components can be
@@ -691,20 +691,20 @@ circuits. % Although previous work has been conducted toward the
 % needs to be designed.
 
 To further motivate the necessity of the verification task, the
-development of neuroprotheses by the INRIA CAMIN team is at the base
+development of neuroprostheses by the INRIA CAMIN team is at the base
 of the creation of the Neurrinov
 company\footnote{\url{http://neurinnov.com/}}. The Neurrinov company
 is now looking towards the industrial development of such
-neuroprotheses. We hope that once the verification performed on the
+neuroprostheses. We hope that once the verification performed on the
 \hilecop{} methodology, it will help to obtain the CE certification,
 related to the EU 2017/745 regulation text, necessary to qualify the
-neuroprotheses as eligible for the medical market.
+neuroprostheses as eligible for the medical market.
 
 Moreover, the \hilecop{} methodology comes with a working
 implementation based on the Eclipse framework. This software is
 currently used by the engineers of the Neurinnov company to design the
 digital systems having a part in the
-neuroprotheses. Figure~\ref{fig:hilecop-soft} gives a view of the
+neuroprostheses. Figure~\ref{fig:hilecop-soft} gives a view of the
 existing \hilecop{} software.
 
 \begin{landscape}

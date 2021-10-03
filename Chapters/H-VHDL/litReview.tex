@@ -8,12 +8,12 @@ the generated \vhdl{} programs, and moreover to be able to compare their
 behaviors with the behaviors of the source SITPN models. Keeping that
 in mind, which formal semantics should we consider for \vhdl{}?
 
-The same holds for any task: there is a tradeoff between finding a
+The same holds for any task: there is a trade off between finding a
 tool designed by others that will fit our needs, and creating our own
 tool that will mitigate the gaps between our needs and what is
 available in the literature. In the present case, the tool is a formal
 semantics for \vhdl{}. Adopting a fully-set semantics found in the
-literature as a baseground for the implementation of a formal
+literature as a base ground for the implementation of a formal
 semantics for \vhdl{} has multiple perks. First, it reduces the
 formalization effort, which is not a lesser point considering that the
 proof ahead might be long and must still be completed within the time
@@ -22,15 +22,15 @@ in \coq{}, if no implementation exists (or not written in
 \coq{}). Second, the formal semantics of programming languages found
 in the literature are often general in their approach, this to provide
 a generic framework to reason about programs. However, we must not
-loose sight of our goal which is to prove behavior preservation; a
+lose sight of our goal which is to prove behavior preservation; a
 generic formal semantics could turn out to be too complex, or
-necesitate too much tweaking and thus hinder the fullfillment of our
+necessitate too much tweaking and thus hinder the fulfillment of our
 task. On the other side, creating our own formal semantics for
 \vhdl{}, based on the work of others, is the best way to fit our needs
 in compliance with our final aim. However, the pitfalls are that the
 resulting semantics might prove to be very specific, therefore
 preventing others from using it. Also, a work of formalization would
-be necessary which, as we already stated, would be time consuming. In
+be necessary which, as we already stated, would be time-consuming. In
 order to determine whether we ought to use an existing semantics or
 design a new one, we must first clearly specify our needs regarding
 the \vhdl{} language.
@@ -62,7 +62,7 @@ formal semantics must be able to deal with a certain subset of the
 \hilecop{}'s \vhdl{} programs only deal with 0-delay signal
 assignments because they are the only kind of signal assignments that
 can be synthesized. As a matter of fact, the industrial
-compiler/synthetizer used in the \hilecop{} methodology only accepts
+compiler/synthesizer used in the \hilecop{} methodology only accepts
 \vhdl{} programs with no timing constructs (i.e, no delayed signal
 assignments) as inputs. % However, 0-delay signal assignments do not
 % specify a delay after which the assignment of a value to a signal must
@@ -90,7 +90,7 @@ concurrent statements of \vhdl{} programs.
 
 The types of signals and variables used in \hilecop{} \vhdl{} designs
 must have finite ranges of values. For instance, a \vhdl{} signal that
-ranges over $\mathbb{N}$ cannot be synthetized on a physical circuit.
+ranges over $\mathbb{N}$ cannot be synthesized on a physical circuit.
 Indeed, $\mathbb{N}$ has an infinite number of values, and would
 therefore require an infinite number of latches to be physically
 implemented. Moreover, as the number of latches used to implement a
@@ -114,12 +114,12 @@ execution. The digital circuits designed with the \hilecop{}
 methodology are all synchronously executed on physical target. The
 generated \vhdl{} designs declare a clock signal as an input port of
 their entity port interface. Thus, the behavioral part of the designs
-contains two kinds of processes: \emph{synchronous} processes, i.e
+contains two kinds of processes: \emph{synchronous} processes, i.e.
 processes that are sensitive to the clock signal, and
-\emph{combinational} processes, i.e processes that are not sensitive
+\emph{combinational} processes, i.e. processes that are not sensitive
 to the clock signal, and that are permanently running until the
 stabilization of the signal values. Synchronous processes react to the
-events of the clock signal, i.e the rising and the falling edge, and
+events of the clock signal, i.e. the rising and the falling edge, and
 possess blocks of sequential statements that are only executed at the
 precise moment of the clock event\footnote{These blocks are guarded by
   the expressions \texttt{rising\_edge(clk)} and
@@ -243,11 +243,11 @@ processes) are denoted in the semantics by a relation that binds an
 input couple, composed of a time point and a worldline, to an output
 couple of the same type. Multiple input and output couples possibly
 satisfy the relation denoting a particular statement; thus, the
-semantics is undeterministic.  The semantics tries to abstract from
+semantics is nondeterministic.  The semantics tries to abstract from
 the formalization of the simulation cycle as it is done in the
 LRM. The authors want to establish a semantics that is abstract enough
 to be able to compare all other works of formalization with the
-authors semantics. The authors also give an axiomatic semantics (i.e,
+authors' semantics. The authors also give an axiomatic semantics (i.e,
 in the Hoare logic style) which is proved to be sound and complete
 with the first denotational semantics. A \textsf{Prolog}
 \cite{Colmerauer1990} implementation of the axiomatic semantics is
@@ -348,8 +348,8 @@ with.  A synchronous execution is expressible within the semantics,
 although it would be hidden in the inference rule formalizing the
 generic simulation loop.  Also, the semantics does not provide its
 simulation loop with a simulation horizon (a maximum number of
-simulation cycle to be computed). The simulation ends when signal
-values evolve no more.  % The question of the influence of the
+simulation cycles). The simulation ends when signal values evolve no
+more.  % The question of the influence of the
 % environment, measured through the values of the primary inputs of a
 % design, is not discussed.
 
@@ -357,30 +357,30 @@ In \cite{Goossens1995}, the author presents an operational semantics
 for \vhdl{} in the small-step style. The semantics follows closely the
 simulation cycle described in the LRM; however it is very concise and
 clear. The covered \vhdl{} subset comprises both unit and delta-delay
-signal assignments. There is a interesting discussion about the
+signal assignments. There is an interesting discussion about the
 non-determinism of \vhdl{}, since it is a concurrent programming
 language: it entails that non-determinism is only existent at the
 processes level, that is, internal sequential statement of processes
-can be executed in an undeterministic manner (refered to by the author
-as A actions, that is, \emph{internal} actions).  But at every delta
-or time step (refered to as $\delta$ and T actions) of the execution,
+can be executed in a nondeterministic manner (referred to as A
+actions, that is, \emph{internal} actions).  But at every delta or
+time step (referred to as $\delta$ and T actions) of the execution,
 the design state can be computed in a deterministic manner, since all
 processes have reached a suspension point at the end of their inner
-body. The author is interested in comparing the behaviors of two \vhdl{}
-designs by proving that some relation of equivalence holds between the
-two. He describes two strategies to compare \vhdl{} programs. The first
-one is bisimulation; it is based on the comparison of the sequence of
-actions (either A, $\delta$ or T actions) performed by the two
-programs. The second one is observational equivalence; it is based on
-the observation of the value of the output signals of two \vhdl{}
-programs (the observees), that receive values in their input signals
-from another \vhdl{} program (the observer). The observer stimulates the
-entries of the observees and reaches a success state based on its
-observations of the value of the outputs. Regarding our needs, this
-semantics permits the description of our synchronous simulation
-cycle. However, like most of the semantics presented here, the
-component instantiation statement is not supported as it stands, but
-it is rather transformed into the equivalent processes
+body. The author is interested in comparing the behaviors of two
+\vhdl{} designs by proving that some relation of equivalence holds
+between the two. He describes two strategies to compare \vhdl{}
+programs. The first one is bisimulation; it is based on the comparison
+of the sequence of actions (either A, $\delta$ or T actions) performed
+by the two programs. The second one is observational equivalence; it
+is based on the observation of the value of the output signals of two
+\vhdl{} programs (the observees), that receive values in their input
+signals from another \vhdl{} program (the observer). The observer
+stimulates the entries of the observees and reaches a success state
+based on its observations of the value of the outputs. Regarding our
+needs, this semantics permits the description of our synchronous
+simulation cycle. However, like most of the semantics presented here,
+the component instantiation statement is not supported as it stands,
+but it is rather transformed into the equivalent processes
 statements. Small-step semantics is not needed in our case because we
 are only interested in the values of signals at the delta and time
 steps (for us, time steps correspond to clock events). We are not
@@ -395,13 +395,13 @@ performed by a \vhdl{} design.
 In \cite{Thirunarayan2001}, the authors extend the work of
 \cite{Goossens1995}, especially by handling shared variables, in the
 presence of which a \vhdl{} program can have a concrete
-underterministic behavior. The authors are also interested in the
+nonderterministic behavior. The authors are also interested in the
 equivalence between two \vhdl{} programs, and they are interested in
 determining a unique meaning property for \vhdl{} programs. The unique
 meaning property states that the execution of a \vhdl{} design in the
 presence of shared variables is unique. This work is interesting as it
 points out the fact that the \vhdl{} language is not only subject to
-``\textit{benign} undeterminism''. By benign underterminism, the
+``\textit{benign} nondeterminism''. By benign nonderterminism, the
 authors of \cite{Thirunarayan2001} mean that the only moment where the
 state of a \vhdl{} design can not be decided in a deterministic way is
 when the processes are in the middle of the execution of their
@@ -410,7 +410,7 @@ is of no interest; it corresponds to nothing regarding the concrete
 functioning of a hardware circuit. Also, two different processes can
 never be writing to the same signal at the same time. If such a design
 happens, this is a case of \textit{multiply-driven} signal, which is
-utterly forbidden. So, there can be no undeterminism, regarding the
+utterly forbidden. So, there can be no nondeterminism, regarding the
 value of a signal, coming from the concurrent execution of two
 processes (at least when shared variables are not involved).
 
@@ -470,7 +470,7 @@ of other processes.  Signals are not represented in the subnets,
 instead, three shared variables depict the signal states: one variable
 for the driving, one for the effective and one for the current value
 of a given signal (see \cite[p.167]{VHDL2000} for the details on the
-values associated with signals during the simulation).  Colour domains
+values associated with signals during the simulation).  Color domains
 of places in the subnets represent the different types of \vhdl{}
 domains.  Variables are represented by tokens.  Values in drivers are
 represented by sequences of transactions (equivalent to waveforms);
@@ -486,16 +486,17 @@ process is a broad CPN having some of its places interfaced with the
 process subnets.  The decoloration of the Petri net enables the
 analysis of the model and the detection of dead-locks.
 
-In \cite{Deharbe1995}, the author gives a formal semantics to \vhdl{} by
-transforming a \vhdl{} design into an abstract machine, i.e defined by a
-set of inputs, outputs, states and transition function over states and
-outputs. The author is interested in the verification of properties
-over \vhdl{} designs (temporal properties) or to prove equivalence
-between designs (bisimulation).  To operate this transformation, only
-a subset of \vhdl{} is considered, otherwise a finite-state
-representation is not reachable.  The covered \vhdl{} subset consists of
-objects with finite types, and no quantitative timing constructs (no
-after clause in signal assignments).  % The author claims that a \vhdl{}
+In \cite{Deharbe1995}, the author gives a formal semantics to \vhdl{}
+by transforming a \vhdl{} design into an abstract machine,
+i.e. defined by a set of inputs, outputs, states and transition
+function over states and outputs. The author is interested in the
+verification of properties over \vhdl{} designs (temporal properties)
+or to prove equivalence between designs (bisimulation).  To operate
+this transformation, only a subset of \vhdl{} is considered, otherwise
+a finite-state representation is not reachable.  The covered \vhdl{}
+subset consists of objects with finite types, and no quantitative
+timing constructs (no after clause in signal
+assignments).  % The author claims that a \vhdl{}
 % design is implemented by an abstract machine if they have the same
 % observational behavior, i.e. given the same inputs they yield the
 % same outputs.
@@ -515,9 +516,9 @@ design into an abstract machine.
 Although the translational semantics described above meet most of the
 qualifying criterions in relation to our needs, we are not especially
 interested in implementing one of these. The main reason being that it
-would necesitate the implementation of the tranformation from the
-abstract \vhdl{} syntax to the target model in addition to the
-implementation of the semantics of the target model.
+would require to implement the transformation from the abstract
+\vhdl{} syntax to the target model, in addition to the implementation
+of the semantics of the target model.
 
 Table~\ref{tab:sum-vhdl-sem} summarizes the analysis of the \vhdl{}
 semantics encountered during our literature
@@ -655,12 +656,12 @@ In Table~\ref{tab:sum-vhdl-sem}, cells are colored in green when the
 cell's content foster the adoption of the semantics, in yellow when
 the content does not go towards the adoption of the semantics but is
 not disqualifying, and red when the content is a disqualifying
-criterion. With regards to the semantics adoption, cells are labelled
-in light grey when their content is neutral. Now comparing the entries
-of Table~\ref{tab:sum-vhdl-sem} with the expression of our needs, we
-can discard the semantics with a cell labelled in red, that is, most
-of the denotational semantics; moreover, all translational semantics
-are disqualified for the previously mentioned reasons. The candidate
+criterion. Regarding the semantics adoption, cells are labelled in
+light grey when their content is neutral. Now comparing the entries of
+Table~\ref{tab:sum-vhdl-sem} with the expression of our needs, we can
+discard the semantics with a cell labelled in red, that is, most of
+the denotational semantics; moreover, all translational semantics are
+disqualified for the previously mentioned reasons. The candidate
 semantics are the operational semantics, plus the denotational
 semantics by Borrione and Salem \cite{Borrione1995}, the only
 semantics that formalizes an explicitly synchronous simulation
@@ -677,7 +678,7 @@ have decided to formalize our own \vhdl{} semantics inspired from the
 semantics of Borrione and Salem's \cite{Borrione1995} and Van Tassel's
 \cite{VanTassel1995}. The following sections are dedicated to the
 presentation of the syntax and semantics of a subset of \vhdl{} that
-we baptise \hvhdl{}. \hvhdl{} embeds the subset of \vhdl{} that we are
+we baptize \hvhdl{}. \hvhdl{} embeds the subset of \vhdl{} that we are
 interested in when considering the \vhdl{} designs generated by the
 \hilecop{} transformation.
 

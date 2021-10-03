@@ -433,23 +433,23 @@ transition $t_0$ gathers all the necessary conditions to trigger the
 firing process, namely:
 
 \begin{itemize}[label=--]
-\item $t_0$ is enabled by the current marking
-\item condition $c_0$ is \texttt{true} (appears in
-  \textcolor{Green}{green})
+\item $t_0$ is enabled by the current marking.
+\item Condition $c_0$ is \texttt{true} (appears in
+  \textcolor{Green}{green}).
   
-\item the value of $t_0$'s time counter is within the associated time
+\item The value of $t_0$'s time counter is within the associated time
   interval ($2\in[2,4]$).
 \end{itemize}
 
 As a consequence, one token is consumed in place $p_0$ and one token
 is produced in place $p_1$. Also, function $f_0$ is executed at the
 occurrence of the rising edge of the clock signal, and thus, $f_0$
-appears in in \textcolor{Green}{green} at Step~2. Due to the firing of
+appears in \textcolor{Green}{green} at Step~2. Due to the firing of
 $t_0$ at the rising edge, a reset order is sent to the time counter of
-$t_0$ and it appears in \textcolor{blue}{blue} at Step~2. From Step~2
+$t_0$, and it appears in \textcolor{blue}{blue} at Step~2. From Step~2
 to Step~3, the falling edge updates the action activation status:
 $a_0$ stays activated as place $p_0$ is still marked; $a_1$ becomes
-newly activated as $p_1$ is marked. The value of time counters are
+newly activated as $p_1$ is marked. The value of time counters is
 updated: $t_0$'s time counter is set to zero as the transition
 previously received a reset order. However, as $t_0$ is still enabled
 by the new marking, its time counter is incremented. Thus, the

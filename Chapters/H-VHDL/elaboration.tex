@@ -25,7 +25,8 @@ the component instantiation statements into block statements. We
 prefer to preserve the hierarchical structure of the design (i.e. its
 composite structure) during its elaboration. We argue that dealing
 with component instantiation statements instead of block statements
-does not complexify the semantics of the \hvhdl{} simulation rules.
+does not add complexity to the semantics of the \hvhdl{} simulation
+rules.
 
 In the following sections, the green frames give additional
 explanations about the premises of the rule instances; the red frames
@@ -49,7 +50,7 @@ store is defined as follows:
   a function mapping design identifiers (i.e. the entity identifier of
   designs) to their corresponding representation in abstract
   syntax. As a prerequisite to the elaboration of \hilecop{}-generated
-  designs (i.e, resulting from the transformation of a SITPN into an
+  designs (i.e, resulting from the transformation of a SITPN into a
   \hvhdl{} design), a particular design store
   $\mathcal{D}_\mathcal{H}$ is defined.  Design store
   $\mathcal{D}_\mathcal{H}$ binds the \texttt{transition} and
@@ -71,11 +72,11 @@ store is defined as follows:
 At the beginning of the elaboration phase, a function
 $\mathcal{M}_g\in{}generic\mhyphen{}id\nrightarrow{}value$ mapping the
 top-level design's generic constants to values is passed as an element
-of the environment. The $\mathcal{M}_g$ function is refered to as the
+of the environment. The $\mathcal{M}_g$ function is referred to as the
 \emph{dimensioning} function. \\
 
 Rule~\textsc{DesignElab} defines the design elaboration relation. It
-relates an \hvhdl{} design to its resulting elaborated version and
+relates a \hvhdl{} design to its resulting elaborated version and
 default design state that were built in the context of the design
 store $\mathcal{D}$ and the dimensioning function $\mathcal{M}_g$.
 
@@ -112,7 +113,7 @@ same manner, $\sigma_\emptyset$ denotes an empty design state.  The
 effect of the $egens$, $eports$, $esigs$ and $ebeh$ relations that
 respectively deal with the elaboration of the generic constants, the
 ports, the architecture declarative part and the behavioral part of
-the design, are explicited in the following sections.
+the design, are made explicit in the following sections.
 
 \subsection{Generic clause elaboration}
 \label{subsubsec:gen-clause-elab}
@@ -537,9 +538,9 @@ evaluates the constraint bounds.  A constraint is well-formed in the
 context $\Delta$ if:
 
 \begin{itemize}[label=-]
-\item its bounds are globally static expressions \cite[p.36]{VHDL2000}
+\item Its bounds are globally static expressions \cite[p.36]{VHDL2000}
   conforming to the $nat(0,\mathtt{NATMAX})$ type after evaluation.
-\item its lower bound value is inferior or equal to its upper bound
+\item Its lower bound value is inferior or equal to its upper bound
   value.
 \end{itemize}
 
@@ -652,9 +653,9 @@ constant declaration) is well-formed and evaluates the constraint
 bounds.  A \emph{generic} constraint is well-formed if:
 
 \begin{itemize}[label=-]
-\item its bounds are locally static expressions \cite[p.36]{VHDL2000}
+\item Its bounds are locally static expressions \cite[p.36]{VHDL2000}
   conforming to the $nat(0,\mathtt{NATMAX})$ type after evaluation.
-\item its lower bound value is inferior or equal to its upper bound
+\item Its lower bound value is inferior or equal to its upper bound
   value.
 \end{itemize}
 
@@ -704,7 +705,7 @@ behavioral part of a design.
 \label{subsubsec:conc-elab}
 
 The elaboration of the composition of concurrent statements is
-performed in a sequential manner.
+performed sequentially.
 
 \begin{table}[H]
   \begin{tabular}{@{}l}
@@ -885,7 +886,7 @@ relations is mutually recursive.
     $\mathcal{M}\in{}generic\mhyphen{}id\nrightarrow{}value$ out of a
     generic map (see the definition below).
   \item \texttt{valid}$_{ipm}$ (resp. \texttt{valid}$_{opm}$) states
-    that an input port map (resp. output port map) is valid, i.e
+    that an input port map (resp. output port map) is valid, i.e.
     well-formed and well-typed (see Section~\ref{subsec:valid-pm}).
   \end{itemize}
 \end{premises}
@@ -936,7 +937,7 @@ relations is mutually recursive.
 
 A port map is a mapping between expressions and signals coming from an
 embedding design ($\Delta$) and the ports of an internal component
-instance ($\Delta_c$). The formal part of an port map entry (i.e, the
+instance ($\Delta_c$). The formal part of a port map entry (i.e, the
 left part) belongs to the internal component, whereas the actual part
 (i.e, the right part) refers to the embedding design. Therefore, we
 need both $\Delta$ and $\Delta_c$ to verify if a port map is

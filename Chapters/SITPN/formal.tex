@@ -320,7 +320,7 @@ status of actions. Note that in Rule~\ref{it:activate-actions} (and
 also in Rule~\ref{it:exec-fun}), the sum expression corresponds to the
 Boolean sum expression, i.e. the application of the \texttt{or}
 operator over the elements of the iterated
-set.Rules~\ref{it:reset-counters}, \ref{it:inc-counters},
+set. Rules~\ref{it:reset-counters}, \ref{it:inc-counters},
 \ref{it:locked-counters} and \ref{it:reset-not-sens} focus on the
 update of time counter values.  In Rule~\ref{it:inc-counters} of the
 SITPN semantics, the \emph{active} time counters refer to the time
@@ -654,13 +654,13 @@ is associated to $t_1$ and the complementary condition is associated
 to $t_0$ thus creating the mutual exclusion. In situation \circled{2},
 the arcs $(p_0,t_0)$ and $(p_0,t_1)$ ensure the mutual exclusion
 between transitions $t_0$ and $t_1$. Note that in the structure of
-mutual exlcusion with an inhibitor arc, the weight of the inhibitor
+mutual exclusion with an inhibitor arc, the weight of the inhibitor
 arc and of the basic or test arc must be the same; otherwise, the
 mutual exclusion is not effective.
 
 A given $sitpn\in{}SITPN$ is well-defined if it enforces some
 properties needed on the \hilecop{} source models before the
-transformation into \vhdl{}. If the properties, layed out in
+transformation into \vhdl{}. If the properties, laid out in
 Definition~\ref{def:wd-sitpn}, are not ensured, they will lead to
 compile-time errors during the transformation of the SITPN into a
 \vhdl{} design.
