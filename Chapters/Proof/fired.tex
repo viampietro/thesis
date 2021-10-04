@@ -194,15 +194,15 @@ of the transition design architecture describing how the
 
 In Figure~\ref{fig:fired-port}, the labels underneath the \emph{and}
 logic ports and inside the block denote the names of the processes
-defined in the transition design architecture as VHDL code. As a
+defined in the transition design architecture as \vhdl{} code. As a
 matter of fact, Figure~\ref{fig:fired-port} is a graphic transcription
 of the code defining the transition design architecture. Therefore, by
-looking at the VHDL code, we are able to determine the combinational
-equation associated to the \texttt{fired} port. Given a TCI $id_t$ in
-a top-level design and a state $\sigma$ denoting a current stable
-state of the design (remember that a combinational equation holds when
-all signal values are stable), the \texttt{fired} port equation at
-$\sigma$ is:
+looking at the \vhdl{} code, we are able to determine the
+combinational equation associated to the \texttt{fired} port. Given a
+TCI $id_t$ in a top-level design and a state $\sigma$ denoting a
+current stable state of the design (remember that a combinational
+equation holds when all signal values are stable), the \texttt{fired}
+port equation at $\sigma$ is:
 
 \begin{equation}
   \label{eq:fired-port-comb-eq}

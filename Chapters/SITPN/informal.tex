@@ -18,7 +18,13 @@ transition nodes (\emph{squares} or \emph{lines}). As shown in
 Figure~\ref{fig:pn-example}, place nodes usually represent a part of
 the state of the modelled system, here, the states of two computer
 processes and a semaphore; transition nodes usually refer to events
-triggering the system evolution (or state changing). We will see later
+triggering the system evolution (or state changing). In
+Figure~\ref{fig:pn-example}, places $p_0$, $p_3$ and $sem$ are marked
+with tokens, represented by filled black circles.  This means that
+places $p_0$, $p_3$ and $sem$ are currently active.  The distribution
+of tokens over places is called the \textit{marking} of the net. The
+marking of a Petri net reflects the overall state of the modelled
+system at a certain moment in its activity cycle.  We will see later
 that there exists a lot of different classes of
 PNs. Figure~\ref{fig:pn-example} presents an example of the most
 simple form of PN, namely, the \emph{place-transition} PN. In this
@@ -54,14 +60,6 @@ to the edges of a Petri net. If no label appears on the edge then one
 is the default weight. Petri nets are said to be \textit{generalized}
 when the weight of the edges are possibly greater than one.
 
-\paragraph{Marking}
-In Figure~\ref{fig:pn-example}, places $p_0$, $p_3$ and $sem$ are
-marked with tokens, represented by little black circles.  This means
-that places $p_0$, $p_3$ and $sem$ are currently active.  The
-distribution of tokens over places is called the \textit{marking} of
-the net. The marking of a Petri net reflects the overall state of the
-modelled system at a certain moment in its activity cycle.
-
 \paragraph{Transition firing}
 
 In a Petri net, the marking evolves based on a token
@@ -73,18 +71,17 @@ process is called \textit{transition firing}. In order to be
 input places must be equal or greater than the weight of the
 associated incoming edges. For instance, in
 Figure~\ref{fig:pn-example}, the transition $t_0$ is sensitized
-because the weight of the arc ($p_0$, $t_0$) is of one (default
-value), and place $p_0$ is marked with one token, and the same stands
-for the number of tokens in place $sem$ and the weight of the arc
-($sem$, $t_0$). As a counter example, transition $t_3$ is not
-sensitized because its input place $p_2$ holds no token, where at
-least one token is expected for $t_3$ to be sensitized.  Depending on
-the class of PNs that is considered, other parameters affect the
-\textit{firability} of transitions (see interpreted Petri nets, time
-Petri nets and Section~\ref{subsec:hpn-particularities}). When a
-sensitized transition is fired, tokens are retrieved from its input
-places (as many tokens as the weight of the arcs) and produced in its
-output places (as many tokens as the weight of the arcs).  This
+because the weight of the arcs ($p_0$, $t_0$) and ($sem$, $t_0$) is of
+one (default value), and place $p_0$ and $sem$ are marked with one
+token. As a counter example, transition $t_3$ is not sensitized
+because its input place $p_2$ holds no token, where at least one token
+is expected for $t_3$ to be sensitized.  Depending on the class of PNs
+that is considered, other parameters affect the \textit{firability} of
+transitions (see interpreted Petri nets, time Petri nets and
+Section~\ref{subsec:hpn-particularities}). When a sensitized
+transition is fired, tokens are retrieved from its input places (as
+many tokens as the weight of the input arcs) and produced in its
+output places (as many tokens as the weight of the output arcs).  This
 process represents the occurrence of an event (denoted by the
 transition) triggering the evolution of the system from one state to
 another. Figure~\ref{fig:firing-example} shows the state of the PN of
@@ -119,9 +116,9 @@ the transition firing process can be triggered.
 \paragraph{Extended Petri nets}
 The class of \textit{extended} Petri nets introduces the inhibitor and
 test edges. As shown in Figure~\ref{fig:inhib-test-arcs}, test arcs
-are represented with a black-circle tip and inhibitor arcs with a
-white-circle tip. Inhibitor and test edges are incoming edges, always
-coming from a place toward a transition.
+are represented with a black-filled circle head and inhibitor arcs
+with a white-filled circle head. Inhibitor and test edges are incoming
+edges, always coming from a place toward a transition.
 %
 \begin{figure}[H]
   \centering
@@ -136,11 +133,11 @@ coming from a place toward a transition.
 
 The particularity of the inhibitor and test edges is that they are not
 consuming tokens in input places after the firing of a transition.
-Indeed, they are just testing the number of tokens in incoming places
-to determine if the transition is enabled. Inhibitor arcs ensure that
-the number of tokens in input places is strictly lower than their
-weights; test arcs ensure that the number of tokens in incoming places
-is equal or greater than their weights. Therefore, on the left side of
+They are just testing the number of tokens in incoming places to
+determine if the transition is enabled. Inhibitor arcs ensure that the
+number of tokens in input places is strictly lower than their weights;
+test arcs ensure that the number of tokens in incoming places is equal
+or greater than their weights. Therefore, on the left side of
 Figure~\ref{fig:inhib-test-arcs}, transition $t_0$ is sensitized
 because there is strictly less than one token in place $p_0$ and
 strictly less than two tokens in place $p_1$. On the right side of
@@ -161,8 +158,8 @@ Conditions are associated with transitions and become involved in the
 firing process. Thus, in an IPN, a transition is firable if:
 
 \begin{itemize}[label=--]
-\item it is enabled
-\item all its associated conditions are \texttt{true}.
+\item It is enabled.
+\item All its associated conditions are \texttt{true}.
 \end{itemize}
 
 Among other applications, IPNs are handy to model the behavior of
@@ -318,13 +315,11 @@ increment of time counters is the clock cycle.
 
 When a transition associated with a time interval is fired or
 disabled, a reset order is sent to the transition to set its time
-counter to zero. The value of reset orders (Boolean values) is also a
-part of the TPN state.  In time Petri nets, a transition is firable
-if:
+counter to zero. In time Petri nets, a transition is firable if:
 
 \begin{itemize}[label=--]
-\item it is enabled
-\item its time counter value is within its time interval.
+\item It is enabled.
+\item Its time counter value is within its time interval.
 \end{itemize}
 
 For instance, in Figure~\ref{fig:tpn}, only transition $t_0$ is
@@ -338,13 +333,14 @@ firability conditions are verified.
 
 Two transitions are in structural conflict if they have a common input
 place connected through a \textit{basic} arc (i.e. neither inhibitor
-nor test). When two transitions in structural conflict are firable at
-the same time and if the firing of one of the transitions disables the
-other, then, the conflict becomes \textit{effective}. In a Petri net
-with priorities, it is possible to specify a firing priority in the
-case where the conflict between two transitions becomes effective. In
-that case, the transition with the highest firing priority will always
-be fired first. Figure~\ref{fig:structural-conflict} illustrates the
+nor test arc). When two transitions in structural conflict are firable
+at the same time and if the firing of one of the transitions disables
+the other, then, the conflict becomes \textit{effective}. In a Petri
+net with priorities, it is possible to specify a firing priority in
+the case where the conflict between two transitions becomes
+effective. In that case, the transition with the highest firing
+priority will always be fired
+first. Figure~\ref{fig:structural-conflict} illustrates the
 application of a priority relation to solve the effective conflict
 between two transitions.
 
@@ -403,10 +399,12 @@ marking update, which is the consequence of transition firing; all
 transitions that have been fired or disabled by the firing process
 receive reset orders; all functions associated with fired transitions
 are executed. Then, on the falling edge of the clock signal, the
-environment provides a new value to each condition. Also, the falling
-edge triggers the evolution of the time counter values; values are
-incremented, reset, or stalling (see the following remark on locked
-time counters). Finally, all actions associated with marked places are
+environment provides a new value to each condition. The falling edge
+triggers the evolution of the time counter values; values are
+incremented, reset, or stalling in the case where a time counter has
+reached the upper bound of its associated time interval (see the
+following remark on locked time counters). Finally, all actions
+associated with marked places are
 activated. Figure~\ref{fig:sitpn-state-exec} gives an example of the
 evolution of the state of a given SITPN through one clock cycle. The
 aim of this figure and the explanation that follows is to give some
@@ -469,7 +467,7 @@ the firing of $t_1$.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio=true, width=.8\textwidth]{Figures/SITPN/double-consum}
+  \includegraphics[keepaspectratio=true, width=.6\textwidth]{Figures/SITPN/double-consum}
   \caption[Double consumption of token in a SITPN.]{Double consumption
     of one token in a SITPN. On the left side, the current marking
     before the firing of $t_0$ and $t_1$; on the right side, the
@@ -500,10 +498,10 @@ order. For each transition of the group $t_0$, $t_1$ and $t_2$, the
 residual marking represents the remaining tokens in $p_0$ after the
 firing of transitions with a higher firing priority. Thus, in the
 semantics of SITPNs, we add an extra condition to the firing of a
-transition: to be fired, a transition must be
+transition: to be fired, a transition must be:
 
 \begin{itemize}[label=--]
-\item enabled by the current marking  
+\item enabled by the current marking
 \item must have all its conditions valuated to \texttt{true}
 \item must have its time counter within its time interval
 \item \emph{and} must be enabled by the residual marking.
@@ -519,10 +517,10 @@ none are generated.
   \caption[Computation of the residual marking of a group of
   conflicting transitions.]{Computation of the residual marking for a
     group of conflicting transitions. At \circled{1}
-    (resp. \circled{2} and \circled{3}), the residual marking for
-    transition $t_0$ (resp. $t_1$ and $t_2$). Condition $c_0$ is in
-    \textcolor{red}{red} to indicate that its current value is
-    \texttt{false}.}
+    (resp. \circled{2} and \circled{3}), place $p_0$ holds the
+    residual marking for transition $t_0$ (resp. $t_1$ and
+    $t_2$). Condition $c_0$ is in \textcolor{red}{red} to indicate
+    that its current value is \texttt{false}.}
   \label{fig:resid-marking}
 \end{figure}
 
@@ -561,7 +559,7 @@ to be \emph{locked} and its value will no more evolve.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[keepaspectratio=true, width=.5\textwidth]{Figures/SITPN/locked-tc}
+  \includegraphics[keepaspectratio=true, width=.45\textwidth]{Figures/SITPN/locked-tc}
   \caption[An example of locked time counter.]{An example of locked
     time counter. Condition $c$ is equal to \texttt{false} and thus
     appears in \textcolor{red}{red}.}

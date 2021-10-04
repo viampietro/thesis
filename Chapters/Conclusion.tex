@@ -39,52 +39,49 @@
 
 In this thesis, we were interested in the formal verification of a
 part of the \hilecop{} methodology. The \hilecop{} methodology has
-been devised to help the design and the production critical digital
-systems. To summarize, the \hilecop{} methodology proposes a
-high-level graphical modelling formalism; the aim of the formalism is
-to provide the engineers with a framework to model critical digital
-systems in a way that foster the communication around the design
-models (hence the graphical aspect of the formalism). The formalism is
-based on component diagrams and the internal behavior of components
-are described with a particular kind of Petri nets. Therefore, the
-mathematical foundations of the Petri net formalism provides the
-possibility to formally analyze the \hilecop{} high-level models, and
-thereby to bring the proof that the models verify certain safety
-properties.  The high-level formalism of \hilecop{} has been devised
-to be handy for the humans; however, the ultimate goal of the
-methodology is to obtain a physical version of the critical digital
-system designed by the engineers on a FPGA card. Thus, from the state
-of high-level model to its concrete implementation on a FPGA card, the
-designed critical digital system goes through multiple transformations
-in the \hilecop{} methodology.  In this thesis, we tackled the formal
-verification of one of these transformations: the
-\textit{model-to-text} transformation from a flattened Petri net
-version of the high-level model of the critical digital system
-(i.e. an SITPN) to its implementation into a \vhdl{} design. This
-transformation is performed by a computer program. It was our purpose
-to formally verify that this transformation is \textit{semantic
-  preserving}; that is, for any input model of the transformation the
-corresponding output model behaves in the same way as the input
-model. Pragmatically, the research question that we formalized in the
-introduction of this thesis was:
+been devised to assist the design and the production of
+safety-critical digital systems. To summarize, the \hilecop{}
+methodology proposes a high-level graphical modelling formalism; the
+aim of the formalism is to provide the engineers with a framework to
+model safety-critical digital systems in a way that foster the
+communication around the design models (hence the graphical aspect of
+the formalism). The formalism is based on component diagrams and the
+internal behavior of components are described with a particular kind
+of Petri nets. The mathematical foundations of the Petri net formalism
+provides the possibility to formally analyze the \hilecop{} high-level
+models, and thereby to bring the proof that the models verify certain
+\textit{soundness} properties.  The high-level formalism of \hilecop{}
+has been devised to be handy for the humans; however, the ultimate
+goal of the methodology is to obtain a physical version of the
+safety-critical digital system on an FPGA or ASIC. Thus, from the
+state of high-level model to its concrete implementation as a hardware
+circuit, the designed digital system goes through multiple
+transformations.  In this thesis, we tackled the formal verification
+of one of these transformations: the \textit{model-to-text}
+transformation from a flattened Petri net version of the high-level
+model of the safety-critical digital system (i.e. an SITPN) to its
+implementation into a \vhdl{} design. This transformation is performed
+by a computer program. It was our purpose to formally verify that this
+transformation is \textit{semantic preserving}; that is, for any input
+model of the transformation the corresponding output model behaves in
+the same way as the input model. Pragmatically, the research question
+that we formalized in the introduction of this thesis was:
 
 \begin{center}
   \textsc{Can we prove that the model-to-text transformation described
     in the \hilecop{} methodology is semantic preserving?}
 \end{center}
 
-From this question, which accepts yes or no as an answer, arises a lot
-more of interesting questions. As pointed out in the literature
-reviews at the beginning of Chapters~\ref{chap:transformation} and
-\ref{chap:proof}, the task of formally verifying that a transformation
-from a source representation to a target one is semantic preserving
-has been thoroughly studied, and in many different application
-contexts of computer sciences (generic compilers, domain-specific
-compilers, model transformations\dots). From this fact arises the will
-to compare the \hilecop{} model-to-text transformation to the other
-kinds of transformation found in the literature. In a research point
-of view, the complementary questions that gravited around our main
-research question were:
+As pointed out in the literature reviews at the beginning of
+Chapters~\ref{chap:transformation} and \ref{chap:proof}, the task of
+formally verifying that a transformation from a source representation
+to a target one is semantic preserving has been thoroughly studied,
+and in different application contexts (generic compilers,
+domain-specific compilers, model transformations\dots). From this fact
+arises the will to compare the \hilecop{} model-to-text transformation
+to the other kinds of transformation found in the literature. In a
+research point of view, the complementary questions that gravitated
+around our main research question were:
 
 \begin{itemize}
 \item What are the similarities and the differences between the
@@ -103,11 +100,11 @@ In this thesis, the verification of the \hilecop{} transformation has
 been conducted with the help of the \coq{} proof assistant; thus, the
 relation between our formalization choices and the engineering
 difficulties that they brought was one topic of interest.  Especially
-in the world of formal verification, and more trully in the domain of
-deductive methods and interactive proving, the mechanization of proofs
-with the help of a proof assistant can take a very long time. We
-believe that it is a part of the research task to evaluate the
-doability of the mechanization of proofs within a reasonible
+in the world of formal verification, and more truly in the domain of
+deductive verification and interactive proving, the mechanization of
+proofs with the help of a proof assistant can take a very long
+time. We believe that it is a part of the research task to evaluate
+the feasibility of the mechanization of proofs within a reasonable
 time-span, and also, to try to bring an understanding regarding the
 formalization choices and their impacts on the mechanization.\\
 
@@ -144,7 +141,7 @@ rely on the well-definition condition of the input SITPN
 model. Through the formalization of a well-defined SITPN, we precisely
 characterized the way to handle a conflict between the transitions of
 an SITPN. This aspect of the SITPN semantics is complex and has been
-one particularily subtle point of the proof of semantic preservation.
+one particularly subtle point of the proof of semantic preservation.
 
 The reflection around the formal semantics of the \vhdl{} language and
 how it could fit and help to ease the reasoning around the
@@ -162,8 +159,8 @@ About the expression of the \hilecop{} model-to-text transformation
 itself, the contribution of this thesis was the devising of the
 algorithm of the transformation, which had never been expressed
 before, and its implementation within the \coq{} proof assistant.  For
-the implementation of the transformation, we tried as much as much to
-draw our inspirations from the technics used by others in the
+the implementation of the transformation, we tried as much as possible
+to draw our inspirations from the technics found in the
 literature. Especially, we endeavored to produce clear, maintainable
 code, through the use of functional design patterns, while
 anticipating the additions of new elements in the input models. We
@@ -182,18 +179,18 @@ the utter importance.  The major contribution of the thesis to this
 part of the work is, of course, to have brought the proof of the
 semantic preservation theorem, more especially the proof of
 Theorem~\ref{thm:full-bisim}. Although the mechanization of the proof
-is far from being completed, estbalishing the informal proof that the
+is far from being completed, establishing the informal proof that the
 \hilecop{} model-to-text transformation is semantic preserving has
 revealed a bug in the \vhdl{} implementation of the \texttt{place} and
 \texttt{transition} design (cf. Section~\ref{sec:bug-detection}).
 
 % Answers to additional research questions
 
-We stated above that from our very pragmatic research question arised
-a lot of additional questions. These questions pertain to the position
+We stated above that from our very pragmatic research question arose a
+lot of additional questions. These questions pertain to the position
 of the \hilecop{} model-to-text transformation with respect to the
 other examples of transformation for which a work of formal
-verification has been undertook. In other words, what makes this
+verification has been undertaken. In other words, what makes this
 transformation specific? What aspects of this transformation and of
 its formal verification motivate a research interest? The very context
 of the design and production of critical digital systems, in which the
@@ -204,37 +201,41 @@ time-related execution and their interactions with an outside
 environment. Considering the works done on the formal verification of
 compilers for GPLs, where programs are \textit{transformational}
 systems (i.e. there is a one-time end-to-end execution of the
-program), this already constitutes an originality. This reactiveness
-of systems must be taken into account in the expression of the theorem
-of semantic preservation. However, some works have already been
-conducted on the formal verification of hardware description language
+program), this already constitutes an originality. The reactivity of
+systems must be taken into account in the expression of the theorem of
+semantic preservation. However, some works have already been conducted
+on the formal verification of hardware description language (HDL)
 compilers. In that case, the source language and its semantics permit
-to describe reactive systems. As there exist a lot of works pertaining
-to the formal verification of transformations relating a source
-programming \textit{language} to a target one, the first originality
-of the \hilecop{} transformation is that the source representation is
-graphic formalism. This graphic formalism is a particular brand of
-Petri nets with a synchronous semantics, which is also an original
-point as most of the Petri net classes have an asynchronous
-semantics. These SITPNs have been devised to give as much power of
-expression as possible to the engineers that are designing critical
-digital systems. Blending these considerations with the context of
-formal methods, and the necessity to produce \textit{safe} models of
-critical digital systems, the result is that the semantics of SITPNs
-is rather complex in certain aspects; especially the handling of
-conflicts between transitions. The second point of originality of the
-\hilecop{} transformation comes from the distance between the SITPN
-models, which are yet abstract mathematical objects, and their target
-representation as \vhdl{} designs, which already deeply tied to the
-functioning of hardware systems. Moreover, two designs are at the base
-of the representation of SITPN models into \vhdl{} programs: the
-\texttt{place} and \texttt{transition} designs. These two designs
-represent more or less of a hundred lines of \vhdl{} code each. The
-\vhdl{} code describing the behavior of the \texttt{place} and
-\texttt{transition} designs comes with a lot of implementation-related
-particularities that are sometimes hard to relate to the semantics of
-SITPNs (and sometimes impossible to relate at all, hence the bug
-detection). The \hilecop{} transformation function is itself rather
+us to describe reactive systems. As there exist a lot of works
+pertaining to the formal verification of transformations relating a
+source programming \textit{language} to a target one, the first
+originality of the \hilecop{} transformation is that the source
+representation is \textit{graphic formalism}. This graphic formalism
+is a particular brand of Petri nets with a synchronous semantics,
+which is also an original point as most of the Petri net classes have
+an asynchronous semantics. These SITPNs have been devised to give as
+much power of expression as possible to the engineers that are
+designing safety-critical digital systems. Blending these
+considerations with the context of formal methods, and the necessity
+to produce \textit{safe} models of critical digital systems, the
+result is that the semantics of SITPNs is rather complex; especially
+the handling of conflicts between transitions.
+
+Another point of originality of the \hilecop{} transformation comes
+from the distance between the SITPN models, which are yet abstract
+mathematical objects, and their target representation as \vhdl{}
+designs, which already deeply tied to the functioning of hardware
+systems. Moreover, two designs are at the base of the representation
+of SITPN models into \vhdl{} programs: the \texttt{place} and
+\texttt{transition} designs. These two designs represent more or less
+of a hundred lines of \vhdl{} code each. The \vhdl{} code describing
+the behavior of the \texttt{place} and \texttt{transition} designs
+comes with a lot of implementation-related particularities that are
+sometimes hard to relate to the semantics of SITPNs (and sometimes
+impossible to relate at all, hence the bug detection,
+cf. Section~\ref{sec:bug-detection}).
+
+Finally, the \hilecop{} transformation function is itself rather
 complex. It can not be expressed by rules following the inductive
 structure of the abstract syntax of a source programming language, as
 it is usually done in compilers. Specifically because of the nature of
@@ -251,14 +252,14 @@ Although the proof of semantic preservation has been established as a
 it within the \coq{} proof assistant; at least not in the time span of
 the thesis. This has brought a lot of thinking about the reasons
 surrounding the difficulties of the mechanization, and also about the
-solutions that would permit to go over these
+solutions that would permit us to go over these
 difficulties. Specifically, we were wondering if the mechanization
-couldn't be brought out entirely because of the lack of engineering
+couldn't be brought out entirely because of a lack of engineering
 skills or because of other considerations. These considerations
 included:
 
 \begin{itemize}
-\item the inadequateness of the \hvhdl{} semantics: during the
+\item The complexity of the \hvhdl{} semantics: during the
   mechanization of the proof, we realized that the \hvhdl{} semantics,
   and especially the rules pertaining to the simulation loop, although
   much more simplified than the complete simulation loop of the
@@ -271,12 +272,12 @@ included:
   haven't yet measure the impact of these changes on the mechanization
   of the proof.
 
-\item the complexity of the source models: one solution to be able to
+\item The complexity of the source models: one solution to be able to
   complete the mechanization could have been to consider an even
   smaller subset for the source PNs models. For instance, we could
   have let aside the time and interpretation aspects in SITPNs.
   
-\item the implementation of the transformation function: the actual
+\item The implementation of the transformation function: the actual
   implementation of the transformation function corresponds to a
   former version of the transformation algorithm. A final and simpler
   version of the transformation algorithm has been presented in
@@ -288,7 +289,7 @@ included:
   final \hvhdl{} design, that might not be necessary and add further
   complexities at the time of proofs.
   
-\item the bootstrap cost of the mechanization task: at the beginning
+\item The bootstrap cost of the mechanization task: at the beginning
   of the mechanization, a lot of accessory lemmas must be proved that
   will later be extensively used in other proofs. The consequence is
   that the overall completion of the mechanization advances very
@@ -317,14 +318,26 @@ In the immediate future, the first work to complete is of course the
 mechanization of the proof of Theorem~\ref{thm:full-bisim}. Then, the
 proofs of Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and
 \ref{thm:sim-ex}, which are actually considered as axioms, must be
-tackled down.
+tackled down. Finally, we must take into account all the aspects of
+the \hilecop{} high-level models, which actually have a richer
+structure than the one presented in Chapter~\ref{chap:hilecop-models}.
 
-Finally, we must take into account all the aspects of the \hilecop{}
-high-level models, which are actually richer than SITPN models. The
-two mains aspects still to be integrated are \textit{macro\-places} and
-\textit{multi-clock domains}.
+The first aspect to reconsider in the definition of the SITPN
+structure is \textit{interpretation}. The interpretation aspect has
+been over simplified in the actual version of SITPNs. We could at
+least consider the set of \vhdl{} signals, i.e. the variables of the
+interpretation, as being a part of the SITPN structure. Depending on
+the precision level we want to achieve, we can relate the conditions
+to concrete Boolean expressions, and the actions/functions to concrete
+operations. Moreover, we can equip the SITPN semantics with an
+operational semantics to evaluate the expressions and operations
+performed over \vhdl{} signals. In that case, the SITPN state would
+include a mapping between the set of \vhdl{} signals and their current
+value.
 
-The macroplace mechanism, illustrated in Figure~\ref{fig:macroplace},
+The two other main aspects still to be integrated are
+\textit{macro\-places} and \textit{multi-clock domains}.  The
+macroplace mechanism, illustrated in Figure~\ref{fig:macroplace},
 enables the encapsulation of an SITPN subnet, called a refinement,
 into an environment that handles exceptions.
 
@@ -342,7 +355,7 @@ into an environment that handles exceptions.
 The formal definition of the SITPN structure with macroplaces and its
 formal semantics have been devised in \cite{Leroux2014}. Adding
 macroplaces to the actual SITPN structure will impact the
-transformation function, and all the proofs around it. It will also
+transformation function, and all the surrounding proofs. It will also
 bring a new \hvhdl{} design (i.e. the one defining macroplace
 components) in the loop, and will modify the code of the
 \texttt{place} and \texttt{transition} designs.
@@ -371,6 +384,14 @@ integrate the existing \textsf{Java} implementation of the \hilecop{}
 methodology. Such a program must be able to deal with all the
 complexity and the richness of the \hilecop{} high-level models to
 fully accompany the users of the \hilecop{} methodology.
+
+All the programming tasks of this thesis have been performed within
+the framework of the \coq{} proof assistant. The produced code is
+fully accessible under the following \textsf{Git} repository:
+
+\begin{center}
+  \url{https://github.com/viampietro/ver-hilecop}
+\end{center}
 
 %%% Local Variables:
 %%% mode: latex

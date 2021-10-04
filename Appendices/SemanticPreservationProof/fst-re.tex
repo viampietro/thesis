@@ -1,6 +1,6 @@
 \begin{definition}[First rising edge hypotheses]
   \label{def:fst-re-hyps}
-  Given a $sitpn\in{}SITPN,$ $b\in{}P\rightarrow\mathbb{N}$, $d\in{}design,$\\
+  Given a $sitpn\in{}SITPN,$ $b\in{}P\rightarrow\mathbb{N}$, $d\in{}design,$
   $\gamma\in{}WM(sitpn,d),$ $\Delta\in{}ElDesign,$
   $\sigma_{e},\sigma_0,\sigma_i,\sigma_{\uparrow},\sigma\in{}\Sigma$,
   $E_c\in{}\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,\\
@@ -47,10 +47,10 @@
       \label{item:fst-re-marking-eq}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\big(upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
+      $\big(u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
+      $\land\big(u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
       \label{item:fst-re-tc-eq}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -149,20 +149,20 @@
   \label{lem:fst-re-equal-tc}
   \fstrehyps{} then\\
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\land{}$\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$.
+  $u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\land{}$\\
+  $u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\land{}$\\
+  $u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\land{}$\\
+  $u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show that:
   \begin{enumerate}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$}
+  \item \framebox{$u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$}
+  \item \framebox{$u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=l(I_s(t))$}
+  \item \framebox{$u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=u(I_s(t))$}
+  \item \framebox{$u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})$}
   \end{enumerate}
 
   \exT{}
@@ -170,8 +170,8 @@
   Then, let us show the 4 previous points:
   
   \begin{enumerate}
-  \item Assuming that $upper(I_s(t))=\infty$ and
-    $s_0.I(t)\le{}lower(I_s(t))$, let us show\\
+  \item Assuming that $u(I_s(t))=\infty$ and
+    $s_0.I(t)\le{}l(I_s(t))$, let us show\\
     \framebox{${}s_0.I(t)=\sigma(id_t)(\texttt{stc})$.}
     
     By property of the $\mathtt{Inject}$ relation, the
@@ -184,23 +184,23 @@
     Appealing to Lemma~\ref{lem:init-states-eq-tc},
     \qedbox{${}s_0.I(t)=\sigma_0(id_t)(\texttt{stc})$.}
   
-  \item Assuming that $upper(I_s(t))=\infty$ and
-    ${}s_0.I(t)>{}lower(I_s(t))$, let us show\\
-    \framebox{$\sigma(id_t)(\texttt{stc})=lower(I_s(t))$.}
+  \item Assuming that $u(I_s(t))=\infty$ and
+    ${}s_0.I(t)>{}l(I_s(t))$, let us show\\
+    \framebox{$\sigma(id_t)(\texttt{stc})=l(I_s(t))$.}
 
-    By definition, $lower(I_s(t))\in\mathbb{N}^{*}$ and
-    $s_0.I(t)=0$. Then, \qedbox{$lower(I_s(t)){}<0$ is a
+    By definition, $l(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \qedbox{$l(I_s(t)){}<0$ is a
       contradiction.}
-  \item Assuming that $upper(I_s(t))\neq\infty$ and
-    $s_0.I(t)>{}upper(I_s(t))$, let us show\\
-    \framebox{$\sigma(id_t)(\texttt{stc})=upper(I_s(t))$}.
+  \item Assuming that $u(I_s(t))\neq\infty$ and
+    $s_0.I(t)>{}u(I_s(t))$, let us show\\
+    \framebox{$\sigma(id_t)(\texttt{stc})=u(I_s(t))$}.
 
-    By definition, $upper(I_s(t))\in\mathbb{N}^{*}$ and
-    $s_0.I(t)=0$. Then, \qedbox{$upper(I_s(t)){}<0$ is a
+    By definition, $u(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \qedbox{$u(I_s(t)){}<0$ is a
       contradiction.}
     
-  \item Assuming that $upper(I_s(t))\neq\infty$ and
-    $s_0.I(t)\le{}upper(I_s(t))$, let us show\\
+  \item Assuming that $u(I_s(t))\neq\infty$ and
+    $s_0.I(t)\le{}u(I_s(t))$, let us show\\
     \framebox{$s_0.I(t)=\sigma(id_t)(\texttt{stc})$.}
 
     By property of the $\mathtt{Inject}$ relation, the
@@ -417,7 +417,7 @@
   $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$.
   
   Let $trs(f)$ be the set of transitions associated to function $f$,
-  i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=true\}$.
+  i.e. $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=true\}$.
 
   Let us perform case analysis on $trs(f)$; there are two cases:
   
@@ -440,7 +440,7 @@
     where $ss_\uparrow$ is the part of the \texttt{``function''}
     process body executed during the rising edge phase, and
     $n=\vert{}trs(f)\vert-1$, and for all $i\in[0,n-1]$, $id_{ft_i}$
-    is a internal signal of design $d$.
+    is an internal signal of design $d$.
 
     By property of the $\mathtt{Inject}$, the \hvhdl{} rising
     edge and stabilize relations, we can deduce

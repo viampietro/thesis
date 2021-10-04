@@ -1,29 +1,29 @@
-Before detailling the algorithm underlying the \hilecop{}
-model-to-text transformation, we want to point out the necessity of
-automatizing the transformation. Judging by the appearance of the
-\hvhdl{} design generated from the input SITPN model, the reader could
-rightly ask why the designers of hardware circuits that are using the
-\hilecop{} methodology do not start directly by writing down the
-\vhdl{} code. The reasons are many. First, handling the
-interconnections between PCIs and TCIs is simple enough when the
-number of places and transitions of the input SITPN is few, however,
-it becomes a lot more tedious with the increase of the size of
-models. To give an example, the \textsf{Neurrinov}
-company\footnote{\url{https://neurinnov.com/}}, which applies the
-\hilecop{} methodology to the design of critical digital circuits, has
-developed a digital circuit model for the control of the
-electro-stimulation in neuroprotheses. Once flattened down, the model
-is composed of 1097 places and 1666 transitions. The top-level \vhdl{}
-design generated from this model represents up to 140000 lines of
-code. Obviously, the hand-coding of this input model into a \vhdl{}
-design would be too error-prone. Moreover, the PN models offer a lot
-of opportunities in terms of analysis and model-checking compared to
-the ones that exist for \vhdl{} code. Finally, the graphical aspect of
-PNs appears to be more fit for the task of digital architecture design
-in comparison to plain source code, as it facilitates the discussions
-between designers. For these reasons, we choose to preserve SITPNs as
-the input models of the \hilecop{} methodology, and to automatize the
-transformation into top-level \hvhdl{} designs.
+Before detailing the algorithm underlying the \hilecop{} model-to-text
+transformation, we want to point out the necessity to automate the
+transformation. Judging by the appearance of the \hvhdl{} design
+generated from the input SITPN model, the reader could rightly ask why
+the designers of hardware circuits that are using the \hilecop{}
+methodology do not start directly by writing down the \vhdl{}
+code. The reasons are many. First, handling the interconnections
+between PCIs and TCIs is simple enough when the number of places and
+transitions of the input SITPN is few, however, it becomes a lot more
+tedious with the increase of the size of models. To give an example,
+the \textsf{Neurrinov} company\footnote{\url{https://neurinnov.com/}},
+which applies the \hilecop{} methodology to the design of critical
+digital circuits, has developed a digital circuit model for the
+control of the electro-stimulation in neuroprostheses. Once flattened
+down, the model is composed of 1097 places and 1666 transitions. The
+top-level \vhdl{} design generated from this model represents up to
+140000 lines of code. Obviously, the hand-coding of this input model
+into a \vhdl{} design would be too error-prone. Moreover, the PN
+models offer a lot of opportunities in terms of analysis and
+model-checking compared to the ones that exist for \vhdl{}
+code. Finally, the graphical aspect of PNs appears to be more fit for
+the task of digital architecture design in comparison to plain source
+code, as it facilitates the discussions between designers. For these
+reasons, we choose to preserve SITPNs as the input models of the
+\hilecop{} methodology, and to automatize the transformation into
+top-level \hvhdl{} designs.
 
 In this section, we give the algorithm underlying the \hilecop{}
 model-to-text transformation. This algorithm is the base of the \coq{}
@@ -143,10 +143,10 @@ binder with empty sub-environments. From Lines~\ref{line:genarch} to
 binder structures. Each part of the sequence corresponds to one step
 of the transformation, which were outlined in
 Section~\ref{sec:informal-transf}. The content of the
-\texttt{generate\_architecture} function is detailled in
+\texttt{generate\_architecture} function is detailed in
 Algorithms~\ref{alg:genarch}, \ref{alg:genpcis} and \ref{alg:gentcis}.
 The content of the \texttt{generate\_interconnections} function is
-detailled in Algorithm~\ref{alg:geninter}. The content of the
+detailed in Algorithm~\ref{alg:geninter}. The content of the
 \texttt{generate\_ports} function is detailled in
 Algorithms~\ref{alg:genports}, \ref{alg:genconds}, \ref{alg:genacts}
 and \ref{alg:genfuns}.
@@ -209,18 +209,18 @@ use in the description of the following algorithms.
   \texttt{output}$_c$ function takes a place $p$ as input and yields
   an ordered set of transitions computed as follows:
   \begin{enumerate}
-  \item if all conflicts between the output transitions of $p$ are
+  \item If all conflicts between the output transitions of $p$ are
     solved by mutual exclusion, or if the set of conflicting
     transitions of $p$ is a singleton, then \texttt{output}$_c$
     returns an empty set.
-  \item otherwise, the function tries to establish a total ordering
+  \item Otherwise, the function tries to establish a total ordering
     over the set of conflicting transitions of $p$ w.r.t the firing
     priority relation:
     \begin{itemize}
-    \item if no such ordering can be established (in that case, the
+    \item If no such ordering can be established (in that case, the
       firing priority relation is ill-formed, and the input SITPN is
       not well-defined), \texttt{output}$_c$ raises an error.
-    \item otherwise, the function returns the ordered set, with the
+    \item Otherwise, the function returns the ordered set, with the
       top-level priority transition at the head.
     \end{itemize}
   \end{enumerate}
@@ -232,7 +232,7 @@ use in the description of the following algorithms.
   \item If all conflicts between the output transitions of $p$ are
     solved by mutual exclusion, or if the set of conflicting
     transitions of $p$ is a singleton, then, the function returns the
-    set of output transitions of $p$, i.e \texttt{output}$(p)$ as
+    set of output transitions of $p$, i.e. \texttt{output}$(p)$ as
     defined above.
   
   \item Otherwise, the function returns the set of output transitions
@@ -243,7 +243,7 @@ use in the description of the following algorithms.
 
 \item \texttt{cassoc}$(map,id,x)$ where $map$ is either a generic map,
   an input port map or an output port map, $id$ is an identifier, $x$
-  is an expression, a name (i.e. an simple or indexed identifier) or
+  is an expression, a name (i.e. a simple or indexed identifier) or
   the \texttt{open} keyword. The \texttt{cassoc} procedure adds an
   association of the form $(id(i),x)$ to the $map$ structure. The
   index $i$ is computed as follows based on the content of $map$:
@@ -601,11 +601,11 @@ transition $t$ to identifier $id_t$.
     $i_t\leftarrow\{(\mathtt{A},
     \begin{cases}
       0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
-      lower(I_s(t))~otherwise\\
+      l(I_s(t))~otherwise\\
     \end{cases}), (\mathtt{B},
     \begin{cases}
-      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}upper(I_s(t))=\infty \\
-      upper(I_s(t))~otherwise\\
+      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}u(I_s(t))=\infty \\
+      u(I_s(t))~otherwise\\
     \end{cases})\}$\;\label{line:init-it}
 
     $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
@@ -748,10 +748,9 @@ internal signal $id_s$ in the output port map $o_t$. Thus, the
 \texttt{rt} input port with index $0$ through the $id_s$ signal.  This
 connection is mandatory to reset the value of the
 \texttt{s\_time\_counter} signal (which is an internal signal of the
-\texttt{transition} design) in the abscence of input places. If the
-set of input places of $t$ is not empty, then the \texttt{ian}
-constant is associated with the size of the set in the generic map
-$g_t$.
+\texttt{transition} design) in the absence of input places. If the set
+of input places of $t$ is not empty, then the \texttt{ian} constant is
+associated with the size of the set in the generic map $g_t$.
 
 Line~\ref{line:gentcis-conds-empty} checks if the set of conditions
 attached to $t$ is empty. If the test succeeds, the \texttt{cn}
@@ -878,7 +877,7 @@ modified one in the behavior of design $d$.
 
 From Line~\ref{geninter-start} to Line~\ref{line:geninter-end-input},
 the procedure iterates over the input transitions of place $p$. Note
-that the iteration is performed in the same order than the iteration
+that the iteration is performed in the same order as the iteration
 performed by the \textbf{foreach} loop at Line~\ref{line:foreach-iaw}
 of the \texttt{generate_PCIs} procedure; this is mandatory to preserve
 a consistency between the index $i$ and the connection to a given
@@ -901,7 +900,7 @@ and an internal signal in the output port map of all TCIs. Thus, the
   Appendix~\ref{app:place-design}) increments a local variable $i$ in
   range $0$ to $\mathtt{input\_arcs\_number}-1$ in a for loop. The
   process tests the value of the \texttt{itf} port's subelement with
-  index $i$. If the test suceeds, the process adds the value of the
+  index $i$. If the test succeeds, the process adds the value of the
   \texttt{iaw} port's subelement with index $i$ to the local variable
   \texttt{v\_internal\_input\_token\_sum}. Thus, the subelement with
   index $i$ of the \texttt{itf} and \texttt{iaw} ports must refer to
@@ -1028,7 +1027,7 @@ actions, and for the generation of the \texttt{action} process; the
 \texttt{generate\_function\_ports} procedure, responsible for the
 generation of output ports implementing functions, and for the
 generation of the \texttt{function} process. These three procedures
-are detailled in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
+are detailed in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
 \ref{alg:genfuns}.
 
 \begin{algorithm}[H]
@@ -1164,7 +1163,7 @@ variable, corresponds to the first part of the \texttt{rst} block
 one, hold in the $fss$ variable, corresponds to the second part of the
 \texttt{rst} block, i.e. a falling edge block. The first two lines of
 the procedure initialize the $rstss$ and $fss$ with the \texttt{null}
-sequential statement. Then, in the abscence of actions defined in the
+sequential statement. Then, in the absence of actions defined in the
 input SITPN, the statement body of the \texttt{action} process is
 composed of \texttt{null} statements; the execution of \texttt{null}
 statements has no effect on the state of design during a simulation.
@@ -1273,7 +1272,7 @@ declaration entry is added to the port declaration list of design $d$,
 the binding between function $f$ and identifier $id_f$ joins the
 $\gamma$ binder.
 
-An function is executed at given state if one of its attached
+A function is executed at given state if one of its attached
 transition is fired. An output port identifier that implements the
 execution status of a given function is assigned in the rising block
 of the \texttt{function} process. The expression assigned to the

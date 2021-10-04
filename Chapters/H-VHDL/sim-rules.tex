@@ -462,8 +462,8 @@ of the execution.
 
 The $runinit$ relation is defined by the Rules~\textsc{PsRunInit},
 \textsc{CompRunInit}, \textsc{ParRunInit} and \textsc{NullRunInit}
-which are detailled right below. The $stabilize$ relation is defined
-in Section~\ref{sec:stab-rules}.
+which are detailed right below. The $stabilize$ relation is defined in
+Section~\ref{sec:stab-rules}.
 
 \subsubsection{Evaluation of a process statement}
 \label{subsubsec:ps-stmt-init}
@@ -1299,8 +1299,8 @@ the $mapip$ relation.
 Here, we define the $mapop$ relation that evaluates the output port
 map of a component instance. For each association of the output port
 map, the formal part is evaluated and the result is assigned to the
-actual part of the association. There can be five kind of associations
-in an output port map:
+actual part of the association. There can be five kinds of
+associations in an output port map:
 
 \begin{itemize}
 \item an output port identifier (of the component instance) is
@@ -1589,10 +1589,10 @@ execution of reset blocks, the $\uparrow$ (resp. $\downarrow$) flag to
 enable the execution of rising (resp. falling) blocks.  Writing the
 $ss$ relation with no flag indicates that the evaluation of a given
 sequential statement is the same for every phase of the simulation
-cycle. A flag is passed from the conclusion to the premises when an
+cycle. A flag is passed from the conclusion to the premises when a
 sequential statement is composed of inner sequential blocks.
 
-\subsubsection{Signal assigment statement} A signal assignment
+\subsubsection{Signal assignment statement} A signal assignment
 generates a new design state with a modified signal store and a new
 set of events. Note that there are two states on the left side of the
 thesis symbol. State $\sigma$ represents the state holding the current
@@ -2078,7 +2078,7 @@ reset blocks is only evaluated during the initialization phase of a
 simulation, i.e. when the $i$ flag is raised
 (Rule~\textsc{RstExec}). Otherwise, it is the second part of the reset
 block that is evaluated (Rule~\textsc{RstDefault}). Remember that a
-reset block is the transcription of a if-else statement specifically
+reset block is the transcription of an if-else statement specifically
 devised for the \hvhdl{} abstract syntax.
 
 \begin{table}[H]
@@ -2367,7 +2367,7 @@ comparison is a Boolean value. Rules~\textsc{BoolBinOp} and
 Rules~\textsc{EqOp} and \textsc{DiffOp} define the evaluation of the
 equality and difference between two expressions of the same type; the
 result is a Boolean value. Rule~\textsc{Parenth} describes the
-evaluation of a parenthesised expression.
+evaluation of a parenthesized expression.
 
 % Natural operators.
 

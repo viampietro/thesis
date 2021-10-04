@@ -353,17 +353,17 @@ LLVM-labelled Petri nets to LLVM programs, where LLVM is low-level
 assembly language. Precisely, the generated LLVM program implements
 the state space of the source Petri net (i.e, the graph of reachable
 markings). The authors want to verify if an LLVM program truly
-implements the PN state space, i.e if each marking present in the PN
+implements the PN state space, i.e. if each marking present in the PN
 state space can be reached by running a specific $fire_t$ function on
 the generated LLVM program. The state of an LLVM program is defined by
 a memory model composed of a heap and a stack. The marking of an
 LLVM-labelled PN is defined in such a manner that the correspondence
 with the LLVM program memory model is straightforward. The PN model
-has classical firing semantics, and LLVM programs follow a
-small-step operational semantics. The semantic preservation theorem
-states that for all transition $t$ being fired, leading from marking
-$M$ to marking $M'$, then applying running the $fire_t$ function over
-the generated LLVM program at state $LM$ (such that $LM$ implements
+has classical firing semantics, and LLVM programs follow a small-step
+operational semantics. The semantic preservation theorem states that
+for all transition $t$ being fired, leading from marking $M$ to
+marking $M'$, then applying running the $fire_t$ function over the
+generated LLVM program at state $LM$ (such that $LM$ implements
 marking $M$) leads to a new state $LM'$, such that $LM'$ implements
 marking $M'$. To prove this theorem, the authors proceed by induction
 on the number of places of the input Petri net.
@@ -378,7 +378,7 @@ in the three cases of transformation presented above (i.e, GPL
 compilation, HDL compilation, and model transformations). Even though
 the source and target languages or models are different from one case
 of transformation to the other, however, semantic preservation
-theorems carry the same structure, i.e the one presented in
+theorems carry the same structure, i.e. the one presented in
 Definition~\ref{def:gen-beh-pres-thm}. The state comparison relation
 and the choice of the commuting diagram (i.e. how much computational
 steps of the target representation correspond to one computational

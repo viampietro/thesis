@@ -43,10 +43,10 @@
       $~s_0.M(p)=\sigma_0(id_p)(\texttt{s\_marking})$.
     \item\label{item:init-sim-tc}
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\big(upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$.
+      $\big(u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$\\
+      $\land\big(u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\big)$.
     \item\label{item:init-sim-reset}
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
       $s_0.reset_t(t)=\sigma_0(id_t)(\texttt{s\_reinit\_time\_counter})$.
@@ -253,20 +253,20 @@
   \label{lem:init-states-eq-tc}
   \inithyps{} then
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$,\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\land{}$\\
-  $upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\land{}$\\
-  $upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$.
+  $u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})\land{}$\\
+  $u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\land{}$\\
+  $u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\land{}$\\
+  $u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$
   s.t. $\gamma(t)=id_t$, let us show that:
   \begin{enumerate}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
-  \item \framebox{$upper(I_s(t))=\infty\land{}s_0.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$}
-  \item \framebox{$upper(I_s(t))\neq\infty\land{}s_0.I(t)\le{}upper(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
+  \item \framebox{$u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
+  \item \framebox{$u(I_s(t))=\infty\land{}s_0.I(t)>{}l(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=l(I_s(t))$}
+  \item \framebox{$u(I_s(t))\neq\infty\land{}s_0.I(t)>{}u(I_s(t))\Rightarrow{}\sigma_0(id_t)(\texttt{s\_time\_counter})=u(I_s(t))$}
+  \item \framebox{$u(I_s(t))\neq\infty\land{}s_0.I(t)\le{}u(I_s(t))\Rightarrow{}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}
   \end{enumerate}
 
   \exP
@@ -274,7 +274,7 @@
   Then, let us show the 4 previous points.
   
   \begin{enumerate}
-  \item Assuming that $upper(I_s(t))=\infty\land{}s_0.I(t)\le{}lower(I_s(t))$, then let us show\\
+  \item Assuming that $u(I_s(t))=\infty\land{}s_0.I(t)\le{}l(I_s(t))$, then let us show\\
     \framebox{${}s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$.}
     
     Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,
@@ -286,24 +286,24 @@
     architecture, we can deduce
     \qedbox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=0$.}
     
-  \item Assuming that $upper(I_s(t))=\infty$ and
-    $s_0.I(t)>{}lower(I_s(t))$, let us show\\
-    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$}.
+  \item Assuming that $u(I_s(t))=\infty$ and
+    $s_0.I(t)>{}l(I_s(t))$, let us show\\
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=l(I_s(t))$}.
 
-    By definition, $lower(I_s(t))\in\mathbb{N}^{*}$ and
-    $s_0.I(t)=0$. Then, \qedbox{$lower(I_s(t)){}<0$ is a
+    By definition, $l(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \qedbox{$l(I_s(t)){}<0$ is a
       contradiction.}
     
-  \item Assuming that $upper(I_s(t))\neq\infty$ and
-    $s_0.I(t)>{}upper(I_s(t))$, let us show\\
-    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$}.
+  \item Assuming that $u(I_s(t))\neq\infty$ and
+    $s_0.I(t)>{}u(I_s(t))$, let us show\\
+    \framebox{$\sigma_0(id_t)(\texttt{s\_time\_counter})=u(I_s(t))$}.
 
-    By definition, $upper(I_s(t))\in\mathbb{N}^{*}$ and
-    $s_0.I(t)=0$. Then, \qedbox{$upper(I_s(t)){}<0$ is a
+    By definition, $u(I_s(t))\in\mathbb{N}^{*}$ and
+    $s_0.I(t)=0$. Then, \qedbox{$u(I_s(t)){}<0$ is a
       contradiction.}
     
-  \item Assuming that $upper(I_s(t))\neq\infty$ and
-    $s_0.I(t)\le{}upper(I_s(t))$, let us
+  \item Assuming that $u(I_s(t))\neq\infty$ and
+    $s_0.I(t)\le{}u(I_s(t))$, let us
     show\\ \framebox{$s_0.I(t)=\sigma_0(id_t)(\texttt{s\_time\_counter})$}.
  
     Rewriting $s_0.I(t)$ as $0$, by definition of $s_0$,

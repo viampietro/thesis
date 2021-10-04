@@ -26,7 +26,7 @@ the concept of a \emph{well-defined} SITPN at the end of the section.
     function associating a weight and a type to transition-place
     edges.
   \item $M_0\in{}P\rightarrow\mathbb{N}$, the initial marking of the SITPN.
-  \item $\succ\subseteq{}(T\times{}T)$, the priority relation which is
+  \item $\succ\subseteq{}(T\times{}T)$, the priority relation, which is
     a partial order over the set of transitions.
   \item $\mathcal{A}=\{a_0,\ldots,a_i\}$, a finite set of continuous actions.
   \item $\mathcal{F}=\{f_0,\ldots,f_k\}$, a finite set of functions
@@ -52,10 +52,22 @@ the concept of a \emph{well-defined} SITPN at the end of the section.
   \item $I_s\in{}T\nrightarrow\mathbb{I}^{+}$, the partial function
     associating static time intervals to transitions, where
     $\mathbb{I}^{+}\subseteq(\mathbb{N}^{*}\times(\mathbb{N^{*}}\sqcup\{\infty\}))$.
-    $T_i$ denotes the definition domain of $I_s$, i.e. the set of time
-    transitions.
   \end{enumerate}
 \end{definition}
+
+In Definition~\ref{def:sitpn}, the structure holds the \textit{static}
+elements of a SITPN model, i.e. all the elements which value does not
+evolve with the execution of the model. Therefore, the value of time
+counters associated with transitions does not appear in the SITPN
+structure. As the value of time counters is \textit{dynamic}, i.e. it
+evolves with the execution of an SITPN model, it is a part of the
+SITPN state.
+
+\begin{notation}[Time transitions]
+  For a given $sitpn\in{}SITPN$, $T_i$ denotes the definition domain
+  of $I_s$, i.e. the set of transitions associated with a time
+  interval, referred to as \textit{time transitions}.
+\end{notation}
 
 In the current formal definition of the SITPN structure, and as
 discussed in Section~\ref{subsec:pn-formalism}, we do not consider the
@@ -97,10 +109,27 @@ SITPN state structure:
   \end{enumerate}
 \end{definition}
 
-In Items~\ref{item:sitpn-state-tc} and \ref{item:sitpn-state-rst} of
-Definition~\ref{def:sitpnstate}, \emph{time} transitions refer to
-transitions with a time interval, i.e. the transitions belonging to
-the domain of $I_s$.
+\begin{notation}[SITPN state and fields]
+  In the rest of memoir, we refer to a specific field of a SITPN state
+  $s$ with the infix pointed notation, e.g. $s.M$ refers to the
+  marking of state $s$, and $s.M(p)$ denotes the marking of a given
+  place $p$ at state $s$; $s.I$ refers the function yielding the value
+  of time counters at state $s$, and $s.I(t)$ denotes the value of the
+  time counter associated with the transtion $t$ at state $s$.
+\end{notation}
+
+At the beginning of its execution, a SITPN model is associated with an
+initial state defined as follows:
+
+\begin{definition}[Initial state]
+  \label{def:sitpn-init-state}
+  For a given $sitpn\in{}SITPN$, $s_0\in{}S(sitpn)$ is the initial
+  state of $sitpn$, such that
+  $s_0=<M_0,O_\mathbb{N},O_\mathbb{B},O_\mathbb{B},O_\mathbb{B}>$,
+  where $M_0$ is the initial marking of the SITPN, $O_\mathbb{N}$ is a
+  function that always returns 0, $O_\mathbb{B}$ is a function that
+  always returns \texttt{false}.
+\end{definition}
 
 \subsection{Preliminary definitions and fired transitions}
 \label{sec:fired-trans}
@@ -115,15 +144,15 @@ notations to simplify the formalization of the SITPN semantics.
   For all relation $\mathcal{R}$ existing between two marking
   functions $M$ and $M'$, the expression $\mathcal{R}(M,M')$ is a
   notation for $\forall{}p\in{}P,~\mathcal{R}(M(p),M'(p))$. For
-  instance, $M'=M-\sum\limits_{t_i\in{}Pr(t)}pre(t_i)$ is a notation
-  for
-  $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t_i\in{}Pr(t)}pre(p,t_i)$.
+  instance, $M'=M-\sum\limits_{t_i\in{}T'}pre(t_i)$ is a notation for
+  $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t_i\in{}T'}pre(p,t_i)$
+  where $T'\subseteq{}T$.
 \end{notation}
 
 \begin{notation}[Sum expressions and arc types]
   \label{not:sum-exprs}
   Many times in this document, we need to express the number of tokens
-  coming in or out of places, after the firing of a certain subset of
+  coming to or from places, after the firing of a certain subset of
   transitions. To do so, we use two kinds of sum expression:
   \begin{enumerate}
   \item The first kind of expression computes a number of output
@@ -153,14 +182,13 @@ notations to simplify the formalization of the SITPN semantics.
     Here, we add the weight of the arc from $t$ to $p$ only if there
     exists such an arc; we add 0 to the sum otherwise.
   \end{enumerate}
-  Therefore, in the remainder of the document, we will use the
-  conciser notation $\sum\limits_{t\in{}T'}pre(p,t)$ to denote an
-  output token sum, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote an
-  input token sum.
+  Therefore, in the rest of the document, we will use the conciser
+  notations $\sum\limits_{t\in{}T'}pre(p,t)$ to denote an output token
+  sum, and $\sum\limits_{t\in{}T'}post(t,p)$ to denote an input token
+  sum.
 \end{notation}
 
-\noindent{}We give the formal definition of the sensitization (see
-Section~\ref{subsec:pn-formalism} for an informal definition) of a
+\noindent{}We give the formal definition of the sensitization of a
 transition by a given marking as follows:
 
 \begin{definition}[Sensitization]
@@ -199,11 +227,14 @@ formal definition of a fired transition at a given SITPN state:
 \end{definition}
 
 One can notice that the definition of the set of fired transitions is
-recursive. Indeed, to compute the residual marking necessary to the
-definition of a fired transition, the $Pr$ set must be defined. For a
-given transition $t$, the $Pr$ set represents all the transitions with
-a higher firing priority than $t$ that are also fired transitions;
-hence the recursive definition.
+recursive. To compute the residual marking necessary to the definition
+of a fired transition, the $Pr$ set must be defined. For a given
+transition $t$, the $Pr$ set represents all the transitions with a
+higher firing priority than $t$ that are also fired transitions; hence
+the recursive definition. As the priority relation is a partial order
+over the finite set of transitions, all transitions have a finite set
+of transitions with a higher firing priority. Thus, the computation of
+the set of fired transitions always terminates.
 
 In Definition~\ref{def:fired}, the marking
 $M-\sum\limits_{t_i\in{}Pr(t)}pre(t_i)$ formally qualifies the
@@ -215,7 +246,7 @@ $s$.
 
 We formalize the semantics of a given SITPN as a transition
 system. The SITPN state transition relation defined in the SITPN
-semantics as two cases of definition, one for each clock event.  The
+semantics has two cases of definition, one for each clock event.  The
 SITPN state transition relation describes the evolution of the state
 of a SITPN.
 
@@ -224,12 +255,6 @@ of a SITPN.
   The semantics of a given $sitpn\in{}SITPN$ is the transition system
   ${<}L,E_c,\rightarrow{>}$ where:
   \begin{itemize}[label=-]
-  \item $s_0\in{}S(sitpn)$ is the initial state of the SITPN, such
-    that
-    $s_0=<M_0,O_\mathbb{N},O_\mathbb{B},O_\mathbb{B},O_\mathbb{B}>$,
-    where $M_0$ is the initial marking of the SITPN, $O_\mathbb{N}$ is
-    a function that always returns 0, $O_\mathbb{B}$ is a function
-    that always returns \texttt{false}.
   \item $L\subseteq{}\{\uparrow,\downarrow\}\times{}\mathbb{N}$ is the
     set of transition labels. A label is a couple $(clk,\tau)$
     composed of a clock event $clk\in\{\uparrow,\downarrow\}$, and a
@@ -245,7 +270,7 @@ of a SITPN.
     $E_c,\tau\vdash{}s\xrightarrow{clk}s'$ where
     $s,s'\in{}S(sitpn)$ and $(clk,\tau)\in{}L$, and which is defined
     as follows:
-    \begin{itemize}[label=$\square$]
+    \begin{itemize}[label=$\ast$]
     \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$, we
       have $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$, where
       $s=<M,I,reset_t,ex,cond>$ and $s'=<M,I',reset_t,ex',cond'>$, if:
@@ -253,42 +278,62 @@ of a SITPN.
       \item\label{it:cond-env} $cond'$ is the function giving the
         (Boolean) values of conditions that are extracted from the
         environment $E_c$ at the clock count
-        $\tau$, i.e.:\\
-        $\forall{}c\in{}\mathcal{C},~cond'(c)=E_c(\tau,c)$.
+        $\tau$, i.e.:
+        \begin{equation*}
+          \forall{}c\in{}\mathcal{C},~cond'(c)=E_c(\tau,c).
+        \end{equation*}
+        
       \item\label{it:activate-actions} All the actions associated
         with at least one
-        marked place in the marking $M$ are activated, i.e.:\\
-        $\forall{}a\in{}\mathcal{A},~ex'(a)=\sum\limits_{p\in{}marked(M)}\mathbb{A}(p,a)$
-        where $marked(M)=\{p'\in{}P~\vert~M(p')>0\}$.
+        marked place in the marking $M$ are activated, i.e.:
+        \begin{equation*}
+          \forall{}a\in{}\mathcal{A},~ex'(a)=\sum\limits_{p\in{}marked(M)}\mathbb{A}(p,a)
+          ~where~marked(M)=\{p'\in{}P~\vert~M(p')>0\}.
+        \end{equation*}
       \item\label{it:reset-counters} All the time transitions that are
         sensitized by the marking $M$ and received the order to reset
         their time intervals, have their time counter reset and
-        incremented, i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{true}
-        \Rightarrow{}I'(t)=1$.
+        incremented, i.e.:
+        \begin{equation*}
+          \forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{true}
+          \Rightarrow{}I'(t)=1.
+        \end{equation*}
+        
       \item\label{it:inc-counters} All the time transitions that are
         sensitized by the marking $M$, and
-        did not receive a reset order, increment their time counters if time counters are still active, i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
-        \land{}(I(t)\le{}upper(I_s(t))\lor{}upper(I_s(t))=\infty)\Rightarrow{}$
-        $I'(t)=I(t)+1$.
+        did not receive a reset order, increment their time counters if time counters are still active, i.e.:
+        \begin{equation*}
+          \begin{split}
+            \forall{}t\in{}T_i,~&t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}\land{}[I(t)\le{}u(I_s(t))\lor{}u(I_s(t))=\infty]\\
+            & \Rightarrow{}I'(t)=I(t)+1. \\
+          \end{split}
+        \end{equation*}
       \item\label{it:locked-counters} All the time transitions
         verifying the same
-        conditions as above, but with locked counters, keep having locked counters (values are stalling), i.e.:\\
-        $\forall{}t\in{}T_i,~t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}
-        \land{}I(t)>{}upper(I_s(t))\land{}upper(I_s(t))\neq\infty\Rightarrow{}$
-        $I'(t)=I(t)$.
-      \item\label{it:reset-not-sens} All the time transitions disabled by the marking $M$ have their time counters set to zero, i.e.:\\
-        $\forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0$.
+        conditions as above, but with locked counters, keep having locked counters (values are stalling), i.e.:        
+        \begin{equation*}
+          \begin{split}
+            \forall{}t\in{}T_i,~&t\in{}Sens(M)\land{}reset_t(t)=\mathtt{false}\land{}I(t)>{}u(I_s(t))\land{}u(I_s(t))\neq\infty\\
+            & \Rightarrow{}I'(t)=I(t).\\
+          \end{split}
+        \end{equation*}
+        
+      \item\label{it:reset-not-sens} All the time transitions disabled by the marking $M$ have their time counters set to zero, i.e.:
+        \begin{equation*}
+          \forall{}t\in{}T_i,~t\notin{}Sens(M)\Rightarrow{}I'(t)=0.
+        \end{equation*}
       \end{enumerate}
+      
     \item $\forall\tau\in\mathbb{N}$, $\forall{}s,s'\in{}S(sitpn)$, we
       have $E_c,\tau\vdash{}s\xrightarrow{\uparrow}s'$, where
       $s=<M,I,reset_t,ex,cond>$ and $s'=<M',I,reset_t',ex',cond>$, if:
       \begin{enumerate}[label=(\arabic*),resume]
       \item\label{it:new-marking} $M'$ is the new marking resulting
         from
-        the firing of all the transitions contained in $Fired(s)$, i.e.:\\
-        $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p)$.
+        the firing of all the transitions contained in $Fired(s)$, i.e.:
+        \begin{equation*}
+          \forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t\in{}Fired(s)}pre(p,t)+\sum\limits_{t\in{}Fired(s)}post(t,p).
+        \end{equation*}
         
       \item\label{it:reset-order} A time transition receives a reset
         order if it is fired at state $s$, or, if there exists a place
@@ -298,49 +343,92 @@ of a SITPN.
         otherwise:
         \begin{equation*}
           \begin{split}
-            \forall{}t\in{}T_i,~& t\in{}Fired(s) \\
-            & \lor\big(\exists{}p\in{}P,\omega\in\mathbb{N}^{*},~pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test}) \\
-            & \quad\quad\land\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0 \\
-            & \quad\quad\land{}M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega\big)\Rightarrow{}reset'_t(t)=\mathtt{true}, \\
-            & and~reset'_t(t)=\mathtt{false}~otherwise. \\
+            \forall{}t\in{}T_i,&~t\in{}Fired(s) \\
+            &\lor\big(\exists{}p\in{}P,\omega\in\mathbb{N}^{*}, \\
+            &\quad\quad{}[pre(p,t)=(\omega,\mathtt{basic})\lor{}pre(p,t)=(\omega,\mathtt{test})] \\
+            &\quad\quad\land\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0 \\
+            &\quad\quad\land{}M(p)-\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)<\omega\big)\\
+            & \Rightarrow{}reset'_t(t)=\mathtt{true}~and~reset'_t(t)=\mathtt{false}~otherwise.  \\
           \end{split}
         \end{equation*}
-      \item\label{it:exec-fun} All functions associated with at least one fired transition are executed, i.e:\\
-        $\forall{}f\in{}\mathcal{F},~ex'(f)=\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)$.
+        
+      \item\label{it:exec-fun} All functions associated with at least one fired transition are executed, i.e:
+        \begin{equation*}
+          \forall{}f\in{}\mathcal{F},~ex'(f)=\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f).
+        \end{equation*}
       \end{enumerate}
     \end{itemize}
   \end{itemize}
 \end{definition}
 
-Rules~\ref{it:cond-env} to \ref{it:reset-not-sens} describe the SITPN
-state evolution at the falling edge of the clock
-signal. Rules~\ref{it:cond-env} and \ref{it:activate-actions} pertain
-to the update of condition values and to the update of the activation
-status of actions. Note that in Rule~\ref{it:activate-actions} (and
-also in Rule~\ref{it:exec-fun}), the sum expression corresponds to the
+We inherit from \cite{Leroux2014} and \cite{Merzoug2018}, the form of
+Definition~\ref{def:semantics}. In this thesis, we prefer to use rule
+instances to define execution relations, or relations that are
+involved in an operational semantics. Thus,
+Definition~\ref{def:semantics} can be equivalently represented with
+the following rule instances, where the premises of the rules refer to
+the items of Definition~\ref{def:semantics}:
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{.49\linewidth}
+    \begin{tabular}{@{}l}
+      {\fontsize{10}{12}\selectfont
+      \textsc{FallingEdge}} \\
+      {\begin{prooftree}
+          \hypo{~\ref{it:cond-env}}
+          \hypo{\ref{it:activate-actions}}
+          \hypo{\ref{it:reset-counters}}
+          \hypo{\ref{it:inc-counters}}
+          \hypo{\ref{it:locked-counters}}
+          \hypo{\ref{it:reset-not-sens}}
+          \infer6 {E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'}
+        \end{prooftree}} \\
+    \end{tabular}
+  \end{minipage}
+  \begin{minipage}{.39\linewidth}
+    \begin{tabular}{@{}l}
+      {\fontsize{10}{12}\selectfont
+      \textsc{RisingEdge}} \\    
+      {\begin{prooftree}
+          \hypo{\ref{it:new-marking}}
+          \hypo{\ref{it:reset-order}}
+          \hypo{\ref{it:exec-fun}}
+          \infer3{E_c,\tau\vdash{}s\xrightarrow{\uparrow}s'}
+        \end{prooftree}} \\
+    \end{tabular}
+  \end{minipage}
+\end{figure}
+
+Premises~\ref{it:cond-env} to \ref{it:reset-not-sens} describe the
+SITPN state evolution at the falling edge of the clock
+signal. Premises~\ref{it:cond-env} and \ref{it:activate-actions} deal
+with the update of condition values and the activation status of
+actions. Note that in Premise~\ref{it:activate-actions} (and also in
+Premise~\ref{it:exec-fun}), the sum expression corresponds to the
 Boolean sum expression, i.e. the application of the \texttt{or}
 operator over the elements of the iterated
-set. Rules~\ref{it:reset-counters}, \ref{it:inc-counters},
+set. Premises~\ref{it:reset-counters}, \ref{it:inc-counters},
 \ref{it:locked-counters} and \ref{it:reset-not-sens} focus on the
-update of time counter values.  In Rule~\ref{it:inc-counters} of the
-SITPN semantics, the \emph{active} time counters refer to the time
+update of time counter values.  In Premise~\ref{it:inc-counters} of
+the SITPN semantics, the \emph{active} time counters refer to the time
 counters that have not yet overreached the upper bound of their
 associated time interval. Of course, a time counter is always active
-when the upper bound is infinite. In Rule~\ref{it:locked-counters},
+when the upper bound is infinite. In Premise~\ref{it:locked-counters},
 the \emph{locked} time counters refer to the time counters that have
 overreached the upper bound of their associated time interval. Of
 course, time counters can never be locked in the presence of an
-infinite upper bound. In Rules~\ref{it:inc-counters} and
-\ref{it:locked-counters}, for a given time interval $i$, $upper(i)$
-denotes the upper bound of the time interval, and $lower(i)$ denotes
-the lower bound of the time interval.
+infinite upper bound. In Premises~\ref{it:inc-counters} and
+\ref{it:locked-counters}, for a given time interval $i$, $u(i)$
+denotes the upper bound of the time interval, and $l(i)$ denotes the
+lower bound of the time interval.
 
-Rules~\ref{it:new-marking} to \ref{it:exec-fun} describe the SITPN
+Premises~\ref{it:new-marking} to \ref{it:exec-fun} describe the SITPN
 state evolution at the rising edge of the clock signal.
-Rule~\ref{it:new-marking} corresponds to the marking update. The
+Premise~\ref{it:new-marking} corresponds to the marking update. The
 computation of the new marking uses the set of fired transitions at
-state $s$, i.e. $Fired(s)$. Rule~\ref{it:exec-fun} pertains to the
-update of the function execution status. Rule~\ref{it:reset-order}
+state $s$, i.e. $Fired(s)$. Premise~\ref{it:exec-fun} deals with the
+update of the function execution status. Premise~\ref{it:reset-order}
 computes the reset orders for time transitions. There are two cases
 where a time transition receives the order to reset its time
 counter. First, if the transition is one of the fired transitions at
@@ -364,7 +452,7 @@ obtained after the token consumption phase of the firing process.
 \end{figure}
 
 In Figure~\ref{fig:trans-marking}, the situation at \circled{1}
-describes the state of the SITPN before a rising edge. Based on the
+describes the state of the SITPN before a rising edge. Given the
 current SITPN state at \circled{1}, transition $t_0$ and $t_2$ will be
 fired on the next rising edge event. % Situation~\circled{2} precedes
 % Situation~\circled{3}, but both happen at the occurrence of the rising
@@ -381,15 +469,41 @@ counter).  This reset order will be taken into account at the next
 falling edge event, and the time counter associated with transition
 $t_1$ will then be reset.
 
+\paragraph{Contributions to the SITPN semantics}
+We brought the following changes to the SITPN semantics that was
+defined in \cite{Leroux2014} and \cite{Merzoug2018}:
+
+\begin{itemize}
+\item We clarified the definition of the set of fired transitions. In
+  the former SITPN semantics, four premises were dedicated to the
+  computation of the set of fired transitions in the definition of the
+  SITPN state transition relation on falling edge. We removed these
+  premises from the definition, and made a \textit{standalone}
+  definition of the set of fired transitions that only depends on a
+  given SITPN state (cf. Definition~\ref{def:fired}). 
+  
+\item We completed Premise~\ref{it:reset-order} with the condition
+  $\sum\limits_{t_i\in{}Fired(s)}pre(p,t_i)>0$. This condition is
+  mandatory to perform the proof of semantic preservation.
+  
+\item We added Premise~\ref{it:reset-not-sens} to the definition of
+  the SITPN state relation on falling edge. This premise is also
+  mandatory to perform the proof of semantic preservation.
+  
+\end{itemize}
+
 \subsection{SITPN Execution}
 \label{sec:sitpn-exec}
 
 As a part of the SITPN semantics, we define here the SITPN execution
 and SITPN full execution relations. These relations bind a given SITPN
-to the execution trace, i.e. a time-ordered list of states, that it
-produces when executed over a given number of clock cycles. These
-definitions are additional elements corresponding to our own
-contribution to the formalization of the SITPN semantics.
+to an execution trace, i.e. a time-ordered list of states.  This
+execution trace represents the successive states of the SITPN during
+its execution for a given number of clock cycles. These definitions
+are additional elements corresponding to our own contribution to the
+formalization of the SITPN semantics. These two relations provide a
+small-step semantics to the SITPNs, given that we are interested in
+keeping the intermediary states in an execution trace. 
 
 % \begin{definition}[SITPN Execution Cycle]
 %   For a given $sitpn\in{}SITPN$, two states $s,s''\in{}S(sitpn)$, a
@@ -464,7 +578,7 @@ executed during $\tau-1$ cycles starting from state $s''$.
   $E_c\in\mathbb{N}\rightarrow{}\mathcal{C}\rightarrow{}\mathbb{B}$,
   $sitpn$ yields the execution trace $\theta$ starting from its
   initial state $s_0\in{}S(sitpn)$ (as defined in
-  Definition~\ref{def:semantics}), written
+  Definition~\ref{def:sitpn-init-state}), written
   $E_c,\tau\vdash{}sitpn\rightarrow{}\theta$, by following the two
   rules below:
   
@@ -477,17 +591,13 @@ executed during $\tau-1$ cycles starting from state $s''$.
           \infer0{$E_c,0\vdash{}sitpn\xrightarrow{full}[s_0]$}
         \end{prooftree}} 
     \end{tabular}
-  \end{table}
-
-  \begin{table}[H]
-    \begin{tabular}{@{}l}
+    \begin{tabular}{l}
       {\fontsize{10}{12}\selectfont\textsc{FullExecCons}} \\
       
       {\begin{prooftree}[template={\inserttext}]
-          \hypo{$E_c,\tau\vdash{}s_0\srarrow{\uparrow_0}{\fontsize{6}{8}\selectfont}s_0$}
           \hypo{$E_c,\tau\vdash{}s_0\srarrow{\downarrow}{\fontsize{6}{8}\selectfont}s$}
           \hypo{$E_c,\tau-1\vdash{}sitpn,s\rightarrow\theta_s$}
-          \infer3[$\tau>0$]{$E_c,\tau\vdash{}sitpn\xrightarrow{full}(s_0 :: s_0 :: s :: \theta_s)$}
+          \infer2[$\tau>0$]{$E_c,\tau\vdash{}sitpn\xrightarrow{full}(s_0 :: s_0 :: s :: \theta_s)$}
         \end{prooftree}} 
     \end{tabular}
   \end{table}
@@ -498,11 +608,11 @@ The \textsc{FullExecCons} rule of the SITPN full execution relation
 relation (Definition~\ref{def:sitpn-exec}). However, the definition of
 the SITPN full execution relation is necessary because the first cycle
 of execution, starting from the initial state $s_0$, is particular. As
-shown in the premises of Rule~\textsc{FullExecCons}, the first rising
-edge is idle. We consider that no transitions are fired during the
-first rising edge. Thus, the first rising edge does not change the
-initial state $s_0$, and we denote the particular first rising edge
-with the sign $\uparrow_0$ over the SITPN transition relation.
+a matter of fact, no transitions are fired during the first rising
+edge. Thus, the first rising edge does not change the initial state
+$s_0$. This is why the execution trace of Rule~\textsc{FullExecCons}
+begins with two states $s_0$, thus representing the idle first rising
+edge.
 
 \subsection{Well-definition of a SITPN}
 \label{sec:sitpn-wd}
@@ -546,8 +656,7 @@ a SITPN. In a well-defined SITPN, a conflict resolution strategy must
 be applied to every group of transitions in structural conflict.  We
 must be able to decide which transition in a conflicting pair will be
 fired when the conflict becomes effective. Thus, we give the formal
-definition of a conflicting pair of transitions and of a conflict
-group.
+definitions of a conflicting pair of transitions and a conflict group.
 
 \begin{definition}[Conflict]
   \label{def:conflict}
@@ -576,17 +685,21 @@ consider the notion of conflict as being transitive. To illustrate
 this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
 $\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
 Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
-dealt with, i.e. for all pair of transitions in the group the conflict
+considered, i.e. for all pair of transitions in the group the conflict
 must be solved. However, we no more consider transitions $t_0$ and
-$t_2$ as in conflict. We argue that even when no conflict resolution
-technique is applied between transitions in the same situation as
-$t_0$ and $t_2$, the execution of the $SITPN$ can neither result in
-the double-consumption of a token, nor in the case where a transition
-is not elected to be fired even though it ought to be. Therefore, we
-no more consider the construction of merged conflict group (i.e,
-conflict groups must be merged into one if their intersection is not
-empty; e.g, $\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans})
-as being necessary.
+$t_2$ as in conflict. It was believed by the author of
+\cite{Leroux2014} that, if no conflict resolution technique was
+applied between transitions in the same situation as $t_0$ and $t_2$,
+then this could result in the double-consumption of a token, or in the
+case where a transition is not elected to be fired even though it
+ought to be. However, the author does not provide an example where
+such a situation arises. We argue that such a situation can never
+arise and contrive to prove it later.  Therefore, we no more consider
+the construction of merged conflict group (i.e, conflict groups must
+be merged into one if their intersection is not empty; e.g,
+$\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans}) as being
+necessary. As a consequence, the definition of a conflict group is
+simpler than in \cite{Leroux2014}.
 
 \begin{figure}[H]
   \centering
@@ -602,11 +715,10 @@ there are two ways to be sure that only one transition will be
 fired. The first way is to define a firing order through a priority
 relation. The second way is to use a mean of mutual exclusion. A mean
 of mutual exclusion ensures that the two transitions of a conflicting
-pair will never be firable at the same time. For now, we only consider
-two ways of mutual exclusion, namely: mutual exclusion with
-complementary conditions and mutual exclusion with inhibitor
-arcs. Here, we give the formal definition of these two means of mutual
-exclusion.
+pair will never be firable at the same time. We only consider two ways
+of mutual exclusion, namely: mutual exclusion with complementary
+conditions and mutual exclusion with inhibitor arcs. Here, we give the
+formal definition of these two means of mutual exclusion.
 
 % \begin{definition}[Mutual exclusion with disjoint time intervals]
 %   \label{def:mutex-ti}
@@ -655,12 +767,12 @@ to $t_0$ thus creating the mutual exclusion. In situation \circled{2},
 the arcs $(p_0,t_0)$ and $(p_0,t_1)$ ensure the mutual exclusion
 between transitions $t_0$ and $t_1$. Note that in the structure of
 mutual exclusion with an inhibitor arc, the weight of the inhibitor
-arc and of the basic or test arc must be the same; otherwise, the
-mutual exclusion is not effective.
+arc and of the one of the basic or test arc must be the same;
+otherwise, the mutual exclusion is not effective.
 
 A given $sitpn\in{}SITPN$ is well-defined if it enforces some
 properties needed on the \hilecop{} source models before the
-transformation into \vhdl{}. If the properties, laid out in
+transformation into \vhdl{}. If the properties, given in
 Definition~\ref{def:wd-sitpn}, are not ensured, they will lead to
 compile-time errors during the transformation of the SITPN into a
 \vhdl{} design.

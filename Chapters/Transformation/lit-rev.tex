@@ -79,13 +79,13 @@ the pattern matching possibilities offered by languages like \coq{},
 and concise implementation of compilers.
 
 The cases of optimizing compilers like \cite{Leroy2009} and \cite{Tan}
-show that, to avoid to write too complex functions when passing from a
+show that, to avoid writing too complex functions when passing from a
 source to a target program, the compilation is decomposed into many
 passes. No more than 12 passes for the CakeML compiler, and up to 7
-passes for \ccert{}. This is a way to keep the translation
-functions simple enough in order to ease reasoning afterwards. Indeed,
-the more the gap is important between the source representation and
-the target one, the more the translation function will be complex.
+passes for \ccert{}. This is a way to keep the translation functions
+simple enough in order to ease reasoning afterwards. Indeed, the more
+the gap is important between the source representation and the target
+one, the more the translation function will be complex.
 
 Another point that is noticeable while expressing a translation
 function is the necessity to keep a binding between the source and the
@@ -111,7 +111,7 @@ Section~\ref{sec:trans-alg}, we present the \hilecop{} transformation
 in the form of an imperative pseudo-code algorithm. The
 state-and-error monad is well-suited to the implementation of this
 kind of algorithm with a functional language like \coq{}; thus, we
-chose to apply this monad to our implementation of the tranformation
+chose to apply this monad to our implementation of the transformation
 algorithm (see Section~\ref{sec:trans-coq-impl}).
 
 \paragraph{Compilers for hardware description languages}
@@ -120,30 +120,32 @@ The other category of compilers that we are interested in are
 compilers for hardware description languages (HDL). The \hilecop{}
 methodology's goal is the design of hardware circuits. For that
 reason, we are interested in studying the case of compilers for
-HDLs. However, one should notice that compiling a HDL program into a
+HDLs. However, one can notice that compiling an HDL program into a
 lower level representation is one level of abstraction down compared
 to the transformation we propose to verify. Indeed, it corresponds to
-Step~3 in the \hilecop{} methodology, i.e. the transformation of VHDL
-source code into a RTL representation.
+Step~3 in the \hilecop{} methodology
+(cf. Figure~\ref{fig:hilecop-wf}), i.e. the transformation of VHDL
+source code into an RTL representation.
 
 In the context of formal verification applied to HDLs compilers, only
 a few works describe the specificities of their translation function.
 
 In \cite{Braibant2013}, the authors define the FeSi language (a
 refinement of the BlueSpec language, a specification language for
-hardware circuit behaviors), and its embedding in \coq{}.  The authors
-present the syntax and semantics of the FeSi language and of the RTL
-language which is the target language of the compiler.  FeSi programs
-are composed of simple expressions, and actions permitting to read or
-write from different types of memory (registers). Therefore, the
-abstract syntax is divided into the definition of expressions and the
-definition of actions, i.e: control flow instructions and operations
-on memory. The RTL language is composed of expressions and write
-operations to registers. The authors are more interested in proving
-that a FeSi specification is well-implemented by a given \coq{}
-program, than giving the details of the translation from FeSi to
-RTL. However, the translation seems straight-forward, and proceeds as
-usual by descending through the AST of FeSi programs.
+hardware circuit behaviors), and its implementation within the \coq{}
+proof assistant.  The authors present the syntax and semantics of the
+FeSi language and of the RTL language which is the target language of
+the compiler.  FeSi programs are composed of simple expressions, and
+actions permitting to read or write from different types of memory
+(registers). Therefore, the abstract syntax is divided into the
+definition of expressions and the definition of actions, i.e: control
+flow instructions and operations on memory. The RTL language is
+composed of expressions and write operations to registers. The authors
+are more interested in proving that a FeSi specification is
+well-implemented by a given \coq{} program, than giving the details of
+the translation from FeSi to RTL. However, the translation seems
+straight-forward, and proceeds as usual by descending through the AST
+of FeSi programs.
 
 In \cite{Bourgeat2020}, the authors present a compiler for the
 language Koîka, which is also a simpler version of the BlueSpec
@@ -175,7 +177,7 @@ initialization of the streams, and the step method, for the update of
 values resulting of a synchronous step.
 
 In \cite{Loow2021}, the authors describe a compiler that transforms
-Verilog programs into netlists targetting given FPGA models. Verilog
+Verilog programs into netlists targeting given FPGA models. Verilog
 programs are a lot like VHDL programs; they describe a hardware
 circuit behavior in terms of processes. A netlist is composed of
 registers, variables and a list of cells corresponding to
@@ -250,12 +252,12 @@ LLVM (Low Level Virtual Machine) programs representing the state space
 (the graph of reachable markings) of these PNs. LLVM is a low-level
 assembly language. The aim is to enable an efficient model-checking of
 the CPNs.  LLVM-labelled PNs are CPNs whose places, transitions and
-arcs have LLVM constructs for colour domains. Places are labelled with
+arcs have LLVM constructs for color domains. Places are labelled with
 data types.  Transitions are labelled with boolean expressions that
 correspond to the guard of the transition. Arcs are labelled by
 multisets of expressions. A marking is a function that maps each place
 to a multiset of values belonging to the place's type.  The authors
-define data structures (multisets, sets, markings,...)  with
+define data structures (multisets, sets, markings\dots) with
 interfaces, i.e. sets of operations over structures, to represent the
 Petri nets in LLVM.  They define interpretation functions that draw
 equivalences between Petri nets objects and LLVM data structures.  The
@@ -290,8 +292,8 @@ straight-forward the easier the comparison will be when proving that
 the transformation is semantic preserving. Thus, in
 \cite{Leroy2009,Tan,Chlipala2010} where complex case of optimizing
 compilers are presented, the compilation is split into many simple
-pass to ease the verification effort coming afterwards. In the case of
-the \hilecop{} transformation, we are not yet concerned with the
+passes to ease the verification effort coming afterwards. In the case
+of the \hilecop{} transformation, we are not yet concerned with the
 optimization of the generated \vhdl{} code. Thus, our transformation
 algorithm performs the generation of the target \hvhdl{} design in a
 single pass. We do not need to use intermediary representations
@@ -312,7 +314,7 @@ transformation function as it really depends on the form of the input
 and the output representations. Compilers for programming languages
 tend to be a lot more compositional than model transformations. Here,
 the word \textit{compositional} means that the translation rules can
-be split into simple and independent cases of translation, e.g
+be split into simple and independent cases of translation, e.g.
 translation of expressions, then translation of statements, then
 translation of function bodies,\dots This is a huge advantage to
 perform the proof of semantic preservation. Indeed, this decomposition

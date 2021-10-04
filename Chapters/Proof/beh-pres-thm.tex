@@ -413,7 +413,7 @@ transformation of a well-defined SITPN.
 Here, we present the bisimulation theorem. The bisimulation theorem
 states that if an SITPN and its corresponding \hvhdl{} design are
 executed/simulated over $\tau$ execution/simulation cycles, then the
-produced traces are semantically similar, i.e they verify the full
+produced traces are semantically similar, i.e. they verify the full
 execution trace similarity relation of
 Definition~\ref{def:full-exec-trace-sim}. In this thesis, we have
 proved this particular theorem. The proofs of
@@ -439,9 +439,9 @@ relation, no transitions are fired during the first rising
 edge. Therefore, after the first rising edge, the SITPN state is still
 equal to its initial state $s_0$. We prove that the post rising edge
 similarity relation is verified after the first rising edge by
-appealing to Lemma~\ref{lem:fst-re}. The detailled proofs for
-Lemmas~\ref{lem:sim-init-states} and \ref{lem:fst-re} are
-given in Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
+appealing to Lemma~\ref{lem:fst-re}. The detailed proofs for
+Lemmas~\ref{lem:sim-init-states} and \ref{lem:fst-re} are given in
+Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
 
 \begin{thm}[Full bisimulation]
   \label{thm:full-bisim}
@@ -838,13 +838,13 @@ Section~\ref{sec:detailled-proof}.
       $~s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.\label{it:marking-eq-re}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
-      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+      $\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.\label{it:time-count-eq-re}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -932,10 +932,10 @@ Section~\ref{sec:detailled-proof}.
       $~s'.M(p)=\sigma'(id_p)(\texttt{s\_marking})$.\label{item:fe-equal-marking}
     \item
       $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-      $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
+      $\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
+      $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
       \label{item:fe-equal-tc}
     \item
       $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s'.cond(c)=\sigma'(id_c)$.\label{item:fe-equal-cond-values}

@@ -194,8 +194,8 @@
         \end{tabular}}
     }\\
 
-    As $t\in{}output(p)$, there exist an weight
-    $\omega\in\mathbb{N}$ and an arc type
+    As $t\in{}output(p)$, there exist a weight $\omega\in\mathbb{N}$
+    and an arc type
     $a\in\{\mathtt{basic},\mathtt{test},\mathtt{inhib}\}$ such that
     $pre(p,t)=(\omega,a)$.
 
@@ -534,21 +534,21 @@
 \begin{lemma}[Falling edge equal time counters]
   \label{lem:fe-equal-tc}
   \fehyps{} then $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
+  $\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
+  $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+  $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow{}\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+  $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
-  \fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+  \fbox{\parbox{\lwidth}{$\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$}}\\
 
   \exT{}
@@ -598,10 +598,10 @@
 
   \begin{enumerate}
   \item\label{it:fe-eq-tc-fst}
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
+    \fbox{$u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
     
-    Assuming $upper(I_s(t))=\infty$ and
-    $s'.I(t)\le{}lower(I_s(t))$, let us show\\
+    Assuming $u(I_s(t))=\infty$ and
+    $s'.I(t)\le{}l(I_s(t))$, let us show\\
     \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
     Let us perform case analysis on $t\in{}Sens(s.M)$; there are two
@@ -627,7 +627,7 @@
       By definition of \upSim, we can deduce
       $\sigma(id_t)(\texttt{se})=\mathtt{true}$.
 
-      By construction, and as $upper(I_s(t))=\infty$, we have
+      By construction, and as $u(I_s(t))=\infty$, we have
       ${<}\mathtt{tt\Rightarrow{}TEMP\_A\_INF}{>}\in{}g_t$. By
       property of the elaboration relation, we have
       $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$.
@@ -656,7 +656,7 @@
         By definition of \upSim, we have
         $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
-        As $upper(I_s(t))=\infty$, there exists an
+        As $u(I_s(t))=\infty$, there exists an
         $a\in\mathbb{N}^{*}$ s.t. $I_s(t)=[a,\infty]$. Let us take
         such an $a\in\mathbb{N}^{*}$. By construction,
         ${<}\mathtt{maximal\_time\_counter\Rightarrow}~a{>}\in{}g_t$,
@@ -665,20 +665,20 @@
 
         By definition of \dwSitpn (Rule~\ref{it:inc-counters}), and
         knowing that $t\in{}Sens(s.M)$, $s.reset_t(t)=\mathtt{false}$
-        and $upper(I_s(t))=\infty$, we can deduce $s'.I(t)=s.I(t)+1$.
+        and $u(I_s(t))=\infty$, we can deduce $s'.I(t)=s.I(t)+1$.
 
         Rewriting the goal with $s'.I(t)=s.I(t)+1$:
         \fbox{$s.I(t)+1=\sigma'(id_t)(\texttt{stc})$.}
         
-        We assumed that $s'.I(t)\le{}lower(I_s(t))$, and as
-        $s'.I(t)=s.I(t)+1$, then $s.I(t)+1\le{}lower(I_s(t))$, then
-        $s.I(t)<lower(I_s(t))$, then $s.I(t)<a$ since
-        $a=lower(I_s(t))$.
+        We assumed that $s'.I(t)\le{}l(I_s(t))$, and as
+        $s'.I(t)=s.I(t)+1$, then $s.I(t)+1\le{}l(I_s(t))$, then
+        $s.I(t)<l(I_s(t))$, then $s.I(t)<a$ since
+        $a=l(I_s(t))$.
 
         \noindent{}By definition of
         $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-        and knowing that $s.I(t)<lower(I_s(t))$ and\\
-        $upper(I_s(t))=\infty$, we can deduce
+        and knowing that $s.I(t)<l(I_s(t))$ and\\
+        $u(I_s(t))=\infty$, we can deduce
         $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
         Appealing to $\Delta(id_t)(\texttt{mtc})=a$,
@@ -698,14 +698,14 @@
     \end{enumerate}
     
   \item
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t)$.}
+    \fbox{$u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t)$.}
 
-    Assuming that $upper(I_s(t))=\infty$ and
-    $s'.I(t)>{}lower(I_s(t))$, let us show\\
-    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))$.}
+    Assuming that $u(I_s(t))=\infty$ and
+    $s'.I(t)>{}l(I_s(t))$, let us show\\
+    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))$.}
 
-    As $upper(I_s(t))=\infty$, there exists an $a\in\mathbb{N}^{*}$
+    As $u(I_s(t))=\infty$, there exists an $a\in\mathbb{N}^{*}$
     s.t. $I_s(t)=[a,\infty]$. Let us take such an
     $a\in\mathbb{N}^{*}$.
 
@@ -724,9 +724,9 @@
       By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
       (Rule~\ref{it:reset-not-sens}), and knowing that
       $t\in{}Sens(s.M)$, we can deduce $s'.I(t)=0$. Since
-      $lower(I_s(t))\in\mathbb{N}^{*}$, then $lower(I_s(t))>0$.
+      $l(I_s(t))\in\mathbb{N}^{*}$, then $l(I_s(t))>0$.
       
-      \qedbox{Contradicts $s'.I(t)>lower(I_s(t))$.}
+      \qedbox{Contradicts $s'.I(t)>l(I_s(t))$.}
       
     \item \textbf{CASE} $t\in{}Sens(s.M)$:
       
@@ -743,10 +743,10 @@
         By definition of
         $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$: $s'.I(t)=1$.
 
-        We assumed that $s'.I(t)>lower(I_s(t))$, then
-        $1>lower(I_s(t))$.
+        We assumed that $s'.I(t)>l(I_s(t))$, then
+        $1>l(I_s(t))$.
 
-        \qedbox{Contradicts $lower(I_s(t))>0$.}
+        \qedbox{Contradicts $l(I_s(t))>0$.}
 
       \item \textbf{CASE} $s.reset_t(t)=\mathtt{false}$:
         
@@ -757,29 +757,29 @@
 
         By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
         (Rule~\ref{it:inc-counters}), and knowing that
-        $s'.I(t)>lower(I_s(t))$, we can deduce
+        $s'.I(t)>l(I_s(t))$, we can deduce
         \begin{equation*}
           \begin{split}
-            s'.I(t)=s.I(t)+1&\Rightarrow{}s.I(t)+1>lower(I_s(t))\\
-            & \Rightarrow{}s.I(t)\ge{}lower(I_s(t))\\
+            s'.I(t)=s.I(t)+1&\Rightarrow{}s.I(t)+1>l(I_s(t))\\
+            & \Rightarrow{}s.I(t)\ge{}l(I_s(t))\\
           \end{split}
         \end{equation*}
 
-        Let us perform case analysis on $s.I(t)\ge{}lower(I_s(t))$:
+        Let us perform case analysis on $s.I(t)\ge{}l(I_s(t))$:
         \begin{enumerate}
-        \item \textbf{CASE} $s.I(t)>lower(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=lower(I_s(t))$.}\\
+        \item \textbf{CASE} $s.I(t)>l(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=l(I_s(t))$.}\\
           By definition of
           $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-          we can deduce $\sigma(id_t)(\texttt{stc})=lower(I_s(t))$.
+          we can deduce $\sigma(id_t)(\texttt{stc})=l(I_s(t))$.
 
           Appealing to \eqref{eq:etnrge}, we can deduce
           $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
           Rewriting the goal with
           $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$ and
-          $\sigma(id_t)(\texttt{stc})=lower(I_s(t))$: \qedbox{tautology.}
+          $\sigma(id_t)(\texttt{stc})=l(I_s(t))$: \qedbox{tautology.}
           
-        \item \textbf{CASE} $s.I(t)=lower(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=lower(I_s(t))$.}\\
+        \item \textbf{CASE} $s.I(t)=l(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=l(I_s(t))$.}\\
           By definition of
           $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
           we can deduce $s.I(t)=\sigma(id_t)(\texttt{stc})$.
@@ -789,20 +789,20 @@
 
           Rewriting the goal with
           $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$,
-          $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=lower(I_s(t))$:
+          $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=l(I_s(t))$:
           \qedbox{tautology.}
         \end{enumerate}
       \end{enumerate}
     \end{enumerate}
   \item
-    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$.}
+    \fbox{$u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))$.}
 
-    Assuming that $upper(I_s(t))\neq\infty$ and
-    $s'.I(t)>{}upper(I_s(t))$, let us show \\
-    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))$.}
+    Assuming that $u(I_s(t))\neq\infty$ and
+    $s'.I(t)>{}u(I_s(t))$, let us show \\
+    \fbox{$\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))$.}
 
-    As $upper(I_s(t))\neq\infty$, there exists an
+    As $u(I_s(t))\neq\infty$, there exists an
     $a\in\mathbb{N}^{*}$, and a $b\in\mathbb{N}^{*}$
     s.t. $I_s(t)=[a,b]$. Let us take such an $a$ and $b$.
 
@@ -812,7 +812,7 @@
     ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$.
 
     By property of the elaboration relation and \InCsCompT, we can
-    deduce $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$ and
+    deduce $\Delta(id_t)(\texttt{mtc})=b=u(I_s(t))$ and
     $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$.
 
     Let us perform case analysis on $t\in{}Sens(s.M)$:
@@ -821,9 +821,9 @@
         By definition of $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
         (Rule~\ref{it:reset-not-sens}), and knowing that
         $t\in{}Sens(s.M)$, then $s'.I(t)=0$. Since
-        $upper(I_s(t))\in\mathbb{N}^{*}$, then $upper(I_s(t))>0$.
+        $u(I_s(t))\in\mathbb{N}^{*}$, then $u(I_s(t))>0$.
         
-        \qedbox{Contradicts $s'.I(t)>upper(I_s(t))$.}
+        \qedbox{Contradicts $s'.I(t)>u(I_s(t))$.}
         
       \item \textbf{CASE} $t\in{}Sens(s.M)$:\\
         By definition of
@@ -839,10 +839,10 @@
           $E_c,\tau\vdash{}s\xrightarrow{\downarrow}s'$
           (Rule~\ref{it:reset-counters}), we can deduce $s'.I(t)=1$.
 
-          \noindent{}We assumed that $s'.I(t)>upper(I_s(t))$, then we
-          can deduce $1>upper(I_s(t))$.
+          \noindent{}We assumed that $s'.I(t)>u(I_s(t))$, then we
+          can deduce $1>u(I_s(t))$.
 
-          \qedbox{Contradicts $upper(I_s(t))>0$.}
+          \qedbox{Contradicts $u(I_s(t))>0$.}
 
         \item \textbf{CASE} $s.reset_t(t)=\mathtt{false}$:\\
           By property of
@@ -850,36 +850,36 @@
           and $s.reset_t(t)=\mathtt{false}$, we can deduce
           $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
           
-          Let us perform case analysis on $s.I(t)>{}upper(I_s(t))$ or
-          $s.I(t)\le{}upper(I_s(t))$:
+          Let us perform case analysis on $s.I(t)>{}u(I_s(t))$ or
+          $s.I(t)\le{}u(I_s(t))$:
           \begin{enumerate}
-          \item \textbf{CASE} $s.I(t)>upper(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=upper(I_s(t))$.}\\
+          \item \textbf{CASE} $s.I(t)>u(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=u(I_s(t))$.}\\
             By definition of \dwSitpn (Rule~\ref{it:locked-counters}),
             we can deduce $s'.I(t)=s.I(t)$.
             
             By definition of
             $\gamma,E_c,\tau\vdash{}s\stackrel{\uparrow}{\approx}\sigma$,
-            we can deduce $\sigma(id_t)(\texttt{stc})=upper(I_s(t))$.
+            we can deduce $\sigma(id_t)(\texttt{stc})=u(I_s(t))$.
 
             Appealing to \eqref{eq:etnrge}, we have
             $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$.
 
             Rewriting the goal with
             $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$ and
-            $\sigma(id_t)(\texttt{stc})=upper(I_s(t))$: \qedbox{tautology.}
+            $\sigma(id_t)(\texttt{stc})=u(I_s(t))$: \qedbox{tautology.}
             
-          \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=upper(I_s(t))$.}\\
+          \item \textbf{CASE} $s.I(t)\le{}u(I_s(t))$: \fbox{$\sigma'(id_t)(\texttt{stc})=u(I_s(t))$.}\\
 
             By definition of \upSim, we can deduce
             $s.I(t)=\sigma(id_t)(\texttt{stc})$.
             
             Let us perform case analysis on
-            $s.I(t)\le{}upper(I_s(t))$; there are two cases:
+            $s.I(t)\le{}u(I_s(t))$; there are two cases:
             \begin{itemize}
-            \item \textbf{CASE} $s.I(t)=upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)=u(I_s(t))$:\\
 
-              Appealing to $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$,
-              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=upper(I_s(t))$,
+              Appealing to $\Delta(id_t)(\texttt{mtc})=b=u(I_s(t))$,
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=u(I_s(t))$,
               we can deduce
               $\Delta(id_t)(\texttt{mtc})\le\sigma(id_t)(\texttt{stc})$.
 
@@ -889,31 +889,31 @@
 
               Rewriting the goal with
               $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})$,
-              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=upper(I_s(t))$:
+              $s.I(t)=\sigma(id_t)(\texttt{stc})$ and $s.I(t)=u(I_s(t))$:
               \qedbox{tautology.}
               
-            \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)<u(I_s(t))$:\\
               
               By definition of \dwSitpn (Rule~\ref{it:inc-counters}),
               we can deduce $s'.I(t)=s.I(t)+1$.
 
-              From $s'.I(t)=s.I(t)+1$ and $s.I(t)<upper(I_s(t))$, we
-              can deduce $s'.I(t)\le{}upper(I_s(t))$;
-              \qedbox{contradicts $s'.I(t)>upper(I_s(t))$.}
+              From $s'.I(t)=s.I(t)+1$ and $s.I(t)<u(I_s(t))$, we
+              can deduce $s'.I(t)\le{}u(I_s(t))$;
+              \qedbox{contradicts $s'.I(t)>u(I_s(t))$.}
             \end{itemize}
           \end{enumerate}
         \end{enumerate}
       \end{enumerate}
       
     \item
-      \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      \fbox{$u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
         $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
-      Assuming that $upper(I_s(t))\neq\infty$ and
-      $s'.I(t)\le{}upper(I_s(t))$, let us show\\
+      Assuming that $u(I_s(t))\neq\infty$ and
+      $s'.I(t)\le{}u(I_s(t))$, let us show\\
       \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
-      As $upper(I_s(t))\neq\infty$, there exists an
+      As $u(I_s(t))\neq\infty$, there exists an
       $a\in\mathbb{N}^{*}$, and a $b\in\mathbb{N}^{*}$
       s.t. $I_s(t)=[a,b]$. Let us take such an $a$ and $b$.
 
@@ -922,7 +922,7 @@
       there exists $tt\in\{$\texttt{TEMP\_A\_A,TEMP\_A\_B}$\}$ s.t.
       ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$; by
       property of the elaboration relation, we can deduce
-      $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$ and
+      $\Delta(id_t)(\texttt{mtc})=b=u(I_s(t))$ and
       $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$.
       
       Let us perform case analysis on $t\in{}Sens(s.M)$:
@@ -971,25 +971,25 @@
           By definition of \upSim, we have
           $\sigma(id_t)(\texttt{srtc})=\mathtt{false}$.
 
-          Let us perform case analysis on $s.I(t)>upper(I_s(t))$ or
-          $s.I(t)\le{}upper(I_s(t))$:
+          Let us perform case analysis on $s.I(t)>u(I_s(t))$ or
+          $s.I(t)\le{}u(I_s(t))$:
           \begin{enumerate}
-          \item \textbf{CASE} $s.I(t)>upper(I_s(t))$:\\
+          \item \textbf{CASE} $s.I(t)>u(I_s(t))$:\\
             
             By definition of \dwSitpn, we have $s.I(t)=s'.I(t)$, and
-            thus, $s'.I(t)>upper(I_s(t))$. \qedbox{Contradicts
-              $s'.I(t)\le{}upper(I_s(t))$.}
+            thus, $s'.I(t)>u(I_s(t))$. \qedbox{Contradicts
+              $s'.I(t)\le{}u(I_s(t))$.}
             
-          \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:\\
+          \item \textbf{CASE} $s.I(t)\le{}u(I_s(t))$:\\
             
             By definition of \upSim, we have
             $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
             \begin{itemize}
-            \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
-              From $s.I(t)<upper(I_s(t))$,
+            \item \textbf{CASE} $s.I(t)<u(I_s(t))$:\\
+              From $s.I(t)<u(I_s(t))$,
               $s.I(t)=\sigma(id_t)(\texttt{stc})$ and\\
-              $\Delta(id_t)(\texttt{mtc})=b=upper(I_s(t))$, we can deduce
+              $\Delta(id_t)(\texttt{mtc})=b=u(I_s(t))$, we can deduce
               $\sigma(id_t)(\texttt{stc})<\Delta(id_t)(\texttt{mtc})$.
 
               From \eqref{eq:etnrlt},
@@ -1006,13 +1006,13 @@
               $\sigma'(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{stc})+1$ and
               $s'.I(t)=s.I(t)+1$, \qedbox{tautology.}
               
-            \item \textbf{CASE} $s.I(t)=upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)=u(I_s(t))$:\\
               By definition of \dwSitpn (Rule~\ref{it:inc-counters}),
               we know that $s'.I(t)=s.I(t)+1$. We assumed that
-              $s'.I(t)\le{}upper(I_s(t))$; thus,
-              $s.I(t)+1\le{}upper(I_s(t))$.
+              $s'.I(t)\le{}u(I_s(t))$; thus,
+              $s.I(t)+1\le{}u(I_s(t))$.
 
-              \qedbox{Contradicts $s.I(t)=upper(I_s(t))$.}
+              \qedbox{Contradicts $s.I(t)=u(I_s(t))$.}
               
             \end{itemize}
             
@@ -1073,7 +1073,7 @@
   \end{equation}
   
   By construction, the generated \texttt{action} process is a part of
-  design $d$'s behavior, i.e there exist an
+  design $d$'s behavior, i.e. there exist an
   $sl\subseteq{}Sigs(\Delta)$ and an $ss_a\in{}ss$ s.t.
   $\mathtt{ps}(\texttt{action}, \emptyset, sl, ss)\in{}d.cs$.
   
@@ -1081,7 +1081,7 @@
   \texttt{action} process during the initialization or a falling edge
   phase.
 
-  Let $pls(a)$ be the set of actions associated to action $a$, i.e
+  Let $pls(a)$ be the set of actions associated to action $a$, i.e.
   $pls(a)=\{p\in{}P~\vert~\mathbb{A}(p,a)=true\}$. Then, depending on
   $pls(a)$, there are two cases of assignment of output port $id_a$:
   
@@ -1172,7 +1172,7 @@
       
       \noindent{}From $s.M(p)=\sigma(id_{p})(\texttt{sm})$ and
       $(\sigma(id_{p})(\texttt{sm})>0)=\mathtt{true}$, we can deduce
-      $p\in{}marked(s.M)$, i.e $s.M(p)>0$.
+      $p\in{}marked(s.M)$, i.e. $s.M(p)>0$.
 
       Let us use $p$ to prove the goal:
       \fbox{$\mathbb{A}(p,a)=\mathtt{true}$.}
@@ -1256,7 +1256,7 @@
   $s.ex(f)=s'.ex(f)$.
   
   \noindent{}By construction, $id_f$ is an output port identifier of
-  boolean type in the \hvhdl{} design $d$ assigned by the
+  Boolean type in the \hvhdl{} design $d$ assigned by the
   \texttt{function} process only during the initialization or during a
   rising edge phase.
 
@@ -1457,9 +1457,9 @@
       s.t. ${<}\mathtt{transition\_type\Rightarrow}tt{>}\in{}g_t$. By
       property of the elaboration relation, we have
       $\Delta(id_t)(\texttt{tt})=tt$, and thus, we know
-      $\Delta(id_t)(\texttt{tt})\neq{}\mathtt{NOT\_TEMP}$. Therefore, we can
-      simplfy the term $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$
-      as follows:
+      $\Delta(id_t)(\texttt{tt})\neq{}\mathtt{NOT\_TEMP}$. Therefore,
+      we can simplify the term
+      $\mathtt{checktc}(\Delta(id_t),\sigma(id_t))$ as follows:
       \begin{equation}        
         \label{eq:eq-checktc-minus-not-temp}
         \begin{array}{@{}c@{}}
@@ -1572,10 +1572,10 @@
             
             From $s'.I(t)\in[a,a]$, we can deduce that
             $s'.I(t)=a$. Let us perform case analysis on
-            $s.I(t)<upper(I_s(t))$ or $s.I(t)\ge{}upper(I_s(t))$:
+            $s.I(t)<u(I_s(t))$ or $s.I(t)\ge{}u(I_s(t))$:
             
             \begin{itemize}
-            \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)<u(I_s(t))$:\\
               By definition of \upSim, we have
               $s.I(t)=\sigma(id_t)(\texttt{stc})$. By definition of
               \dwSitpn{} (Rule~\ref{it:inc-counters}), we have
@@ -1591,14 +1591,14 @@
               $s.I(t)=\sigma(id_t)(\texttt{stc})$, and $a-1=s.I(t)$:
               \qedbox{tautology.}
               
-            \item \textbf{CASE} $s.I(t)\ge{}upper(I_s(t))$:\\
-              In the case where $s.I(t)>upper(I_s(t))$, then
+            \item \textbf{CASE} $s.I(t)\ge{}u(I_s(t))$:\\
+              In the case where $s.I(t)>u(I_s(t))$, then
               $s.I(t)>a$.  By definition of \dwSitpn{}
               (Rule~\ref{it:locked-counters}), we have
               $s.I(t)=s'.I(t)=a$. Then, \qedbox{$a>a$ is a
                 contradiction.}\\
 
-              In the case where $s.I(t)=upper(I_s(t))$, then
+              In the case where $s.I(t)=u(I_s(t))$, then
               $s.I(t)=a$. By definition of \dwSitpn{}
               (Rule~\ref{it:inc-counters}), we have
               $s'.I(t)=s.I(t)+1$. Then, we have $s'.I(t)=a$ and
@@ -1626,10 +1626,10 @@
             and simplifying the goal:\\
             \fbox{$(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)\land(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)$.}\\
             
-            Let us perform case analysis on $s.I(t)<upper(I_s(t))$ or
-            $s.I(t)\ge{}upper(I_s(t))$:
+            Let us perform case analysis on $s.I(t)<u(I_s(t))$ or
+            $s.I(t)\ge{}u(I_s(t))$:
             \begin{itemize}
-            \item \textbf{CASE} $s.I(t)<upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)<u(I_s(t))$:\\
               By definition of \upSim, we have
               $s.I(t)=\sigma(id_t)(\texttt{stc})$. By definition of \dwSitpn
               (Rule~\ref{it:inc-counters}), we have
@@ -1656,15 +1656,15 @@
               $s.I(t)=\sigma(id_t)(\texttt{stc})$:
               \qedbox{$a-1\le{}s.I(t)\land{}s.I(t)\le{}b-1$.}
               
-            \item \textbf{CASE} $s.I(t)\ge{}upper(I_s(t))$:\\
+            \item \textbf{CASE} $s.I(t)\ge{}u(I_s(t))$:\\
               
-              In the case where $s.I(t)>upper(I_s(t))$, then
+              In the case where $s.I(t)>u(I_s(t))$, then
               $s.I(t)>b$. By definition of \dwSitpn{}
               (Rule~\ref{it:locked-counters}), we have
               $s.I(t)=s'.I(t)=b$. Then, \qedbox{$b>b$ is a
                 contradiction.}\\
 
-              In the case where $s.I(t)=upper(I_s(t))$, then
+              In the case where $s.I(t)=u(I_s(t))$, then
               $s.I(t)=b$. By definition of \dwSitpn{}
               (Rule~\ref{it:inc-counters}), we have
               $s'.I(t)=s.I(t)+1$.
@@ -1697,9 +1697,9 @@
 
           From $s'.I(t)\in[a,\infty]$, we can deduce
           $a\le{}s'.I(t)$. Then, let us perform case analysis on
-          $s.I(t)\le{}lower(I_s(t))$ or $s.I(t)>lower(I_s(t))$:
+          $s.I(t)\le{}l(I_s(t))$ or $s.I(t)>l(I_s(t))$:
           \begin{itemize}
-          \item \textbf{CASE} $s.I(t)\le{}lower(I_s(t))$:
+          \item \textbf{CASE} $s.I(t)\le{}l(I_s(t))$:
 
             By definition of \upSim, we have
             $s.I(t)=\sigma(id_t)(\texttt{stc})$.
@@ -1721,10 +1721,10 @@
             Rewriting the goal with $\sigma(id_t)(\texttt{A})=a$ and
             $s.I(t)=\sigma(id_t)(\texttt{stc})$:\\ \qedbox{$s.I(t)\ge{}a-1$.}
             
-          \item \textbf{CASE} $s.I(t)>lower(I_s(t))$:
+          \item \textbf{CASE} $s.I(t)>l(I_s(t))$:
 
             By definition of \upSim, we have
-            $\sigma(id_t)(\texttt{stc})=lower(I_s(t))=a$.
+            $\sigma(id_t)(\texttt{stc})=l(I_s(t))=a$.
 
             By construction,
             ${<}\mathtt{time\_A\_value\Rightarrow}{}a{>}\in{}i_t$,
@@ -1924,7 +1924,7 @@
       \item \textbf{CASE}
         $\big(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}~.~(\sigma(id_t)(\texttt{stc})\ge{}\sigma(id_t)(\texttt{A})-1)~.~(\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1)\big)=\mathtt{true}$:
 
-        Then, converting boolean equalities into intuitionistic
+        Then, converting Boolean equalities into intuitionistic
         predicates, we have:
         \begin{itemize}
         \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_B}$
@@ -1950,9 +1950,9 @@
         \fbox{$\sigma(id_t)(\texttt{A})\le{}s'.I(t)\le{}\sigma(id_t)(\texttt{B})$.}
 
         Now, let us perform case analysis on
-        $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
+        $s.I(t)\le{}u(I_s(t))$ or $s.I(t)>u(I_s(t))$:
         \begin{itemize}
-        \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)\le{}u(I_s(t))$:
           
           By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
@@ -1978,13 +1978,13 @@
           $\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$, and thus we can deduce:
           \qedbox{$\sigma(id_t)(\texttt{A})-1\le{}\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$}
           
-        \item \textbf{CASE} $s.I(t)>upper(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)>u(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=b$.
+          $\sigma(id_t)(\texttt{stc})=u(I_s(t))=b$.
 
           Then, from $\sigma(id_t)(\texttt{stc})\le{}\sigma(id_t)(\texttt{B})-1$,
-          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=b$ and
+          $\sigma(id_t)(\texttt{stc})=u(I_s(t))=b$ and
           $\sigma(id_t)(\texttt{B})=b$, we can deduce the following
           contradiction:\\
           \qedbox{$\sigma(id_t)(\texttt{B})\le{}\sigma(id_t)(\texttt{B})-1$.}
@@ -1992,8 +1992,8 @@
       \item
         $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}~.~(\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$:
 
-        Then, converting boolean equalities into intuitionistic
-        predicates, we have:
+        Then, converting Boolean equalities into logic predicates, we
+        have:
         \begin{itemize}
         \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_A}$
         \item $\sigma(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{A})-1$
@@ -2016,9 +2016,9 @@
         \fbox{$s'.I(t)=\sigma(id_t)(\texttt{A})$.}
 
         Now, let us perform case analysis on
-        $s.I(t)\le{}upper(I_s(t))$ or $s.I(t)>upper(I_s(t))$:
+        $s.I(t)\le{}u(I_s(t))$ or $s.I(t)>u(I_s(t))$:
         \begin{itemize}
-        \item \textbf{CASE} $s.I(t)\le{}upper(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)\le{}u(I_s(t))$:
           
           By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
@@ -2039,13 +2039,13 @@
           $\Rightarrow{}$
           \qedbox{$\sigma(id_t)(\texttt{stc})=\sigma(id_t)(\texttt{A})-1$} (assumption)
           
-        \item \textbf{CASE} $s.I(t)>upper(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)>u(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=a$.
+          $\sigma(id_t)(\texttt{stc})=u(I_s(t))=a$.
 
           Then, from $\sigma(id_t)(\texttt{stc})={}\sigma(id_t)(\texttt{A})-1$,
-          $\sigma(id_t)(\texttt{stc})=upper(I_s(t))=a$,
+          $\sigma(id_t)(\texttt{stc})=u(I_s(t))=a$,
           $\sigma(id_t)(\texttt{A})=a$, and $a\in\mathbb{N}^{*}$, we can
           derive the following
           contradiction:\\
@@ -2055,8 +2055,8 @@
       \item
         $(\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}~.~(\sigma(id_t)(\texttt{stc})\ge\sigma(id_t)(\texttt{A})-1))=\mathtt{true}$:
 
-        Then, converting boolean equalities into intuitionistic
-        predicates, we have:
+        Then, converting Boolean equalities into logic predicates, we
+        have:
         \begin{itemize}
         \item $\Delta(id_t)(\texttt{tt})=\mathtt{TEMP\_A\_INF}$
         \item $\sigma(id_t)(\texttt{stc})\ge\sigma(id_t)(\texttt{A})-1$
@@ -2079,9 +2079,9 @@
         \fbox{$\sigma(id_t)(\texttt{A})\le{}s'.I(t)$.}
 
         Now, let us perform case analysis on
-        $s.I(t)\le{}lower(I_s(t))$ or $s.I(t)>lower(I_s(t))$:
+        $s.I(t)\le{}l(I_s(t))$ or $s.I(t)>l(I_s(t))$:
         \begin{itemize}
-        \item \textbf{CASE} $s.I(t)\le{}lower(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)\le{}l(I_s(t))$:
           
           By definition of \upSim, we have $s.I(t)=\sigma(id_t)(\texttt{stc})$.
 
@@ -2103,10 +2103,10 @@
           \qedbox{$\sigma(id_t)(\texttt{A})-1\le\sigma(id_t)(\texttt{stc})$}
           (assumption)
           
-        \item \textbf{CASE} $s.I(t)>lower(I_s(t))$:
+        \item \textbf{CASE} $s.I(t)>l(I_s(t))$:
 
           By definition of \upSim, we have
-          $\sigma(id_t)(\texttt{stc})=lower(I_s(t))=a$.
+          $\sigma(id_t)(\texttt{stc})=l(I_s(t))=a$.
 
           From $\sigma(id_t)(\texttt{se})=\mathtt{true}$, we can deduce
           $t\in{}Sens(s.M)$, and from
@@ -2123,14 +2123,15 @@
           
           $\Rightarrow{}$ \fbox{$a<s.I(t)$}
 
-          $\Rightarrow{}$ \qedbox{$lower(I_s(t))<s.I(t)$} (assumption)
+          $\Rightarrow{}$ \qedbox{$l(I_s(t))<s.I(t)$} (assumption)
         \end{itemize}
       \end{enumerate}
 
     \item
       $\big(\sigma(id_t)(\texttt{srtc})~.~\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}~.~\sigma(id_t)(\texttt{A})=1\big)=\mathtt{true}$
 
-      Then, converting boolean equalities into intuitionistic predicates, we have:
+      Then, converting Boolean equalities into logic predicates, we
+      have:
       \begin{itemize}
       \item $\sigma(id_t)(\texttt{srtc})=\mathtt{true}$
       \item $\Delta(id_t)(\texttt{tt})\neq\mathtt{NOT\_TEMP}$

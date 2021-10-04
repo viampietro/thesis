@@ -1,11 +1,11 @@
 Before presenting our behavior preservation theorem, we must clarify
-the meaning of semantic preservation between an SITPN and a \hvhdl{}
+the meaning of semantic preservation between an SITPN and an \hvhdl{}
 design. To do so, we must define:
 
 \begin{enumerate}
 \item What does semantic similarity mean between an SITPN state and a
   \hvhdl{} state?
-\item When, in the course of the execution of an SITPN and a \hvhdl{}
+\item When, in the course of the execution of an SITPN and an \hvhdl{}
   design, does this semantic similarity must hold?
 \end{enumerate}
 
@@ -14,33 +14,33 @@ SITPN to the elements that constitute the execution state of a
 \hvhdl{} design. An SITPN state is an abstract structure relating the
 places, transitions, actions, functions and conditions of a given
 SITPN to the values of certain domains (see
-Section~\ref{sec:sitpn-state}). A \hvhdl{} design state is composed a
+Section~\ref{sec:sitpn-state}). An \hvhdl{} design state is composed a
 signal store mapping signals to values, and of a component store
 mapping component instances to their own internal states (which are
 themselves design states). Thanks to the binder function $\gamma$
-generated alongside the transformation from an SITPN to a \hvhdl{}
+generated alongside the transformation from an SITPN to an \hvhdl{}
 design, we are able to relate the elements of the SITPN state
 structure to the component instance states and signal values of the
 \hvhdl{} design state. Thus, the state similarity relation, depending
 on a $\gamma$ binder and expressing a semantic match between an SITPN
-state and a \hvhdl{} design, is defined as follows:
+state and an \hvhdl{} design, is defined as follows:
 
 \begin{definition}[General state similarity]
   \label{def:state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  For a given $sitpn\in{}SITPN$, an \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
   design state $\sigma\in\Sigma$ are similar, written
-  $\gamma\vdash{}s\sim\sigma$ iff
+  $\gamma\vdash{}s\sim\sigma$ if
   \begin{enumerate}
   \item\label{item:sim-mark} $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,$
     $~s.M(p)=\sigma(id_p)($\texttt{s\_marking}$)$.
   \item\label{item:sim-tc}
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$.
+    $\big(u(I_s(t))=\infty\land{}s.I(t)\le{}l(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$\\
+    $\land\big(u(I_s(t))=\infty\land{}s.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=l(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)($\texttt{s\_time\_counter}$)=u(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)\le{}u(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)($\texttt{s\_time\_counter}$)\big)$.
   \item\label{item:sim-reset}
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $s.reset_t(t)=\sigma(id_t)($\texttt{s\_reinit\_time\_counter}$)$.
@@ -97,7 +97,7 @@ bound of the time interval. The two last points of
 Item~\ref{item:sim-tc} are necessary to cover the case where a time
 counter has overreached the upper bound of its time interval. In that
 case, the time counter becomes \textit{locked}. The
-$\texttt{s\_time\_counter}$ signal can not overreached the upper bound
+$\texttt{s\_time\_counter}$ signal can not overreach the upper bound
 of the time interval without causing an overflow. Thus, the value of
 the $\texttt{s\_time\_counter}$ signal diverges from the value of its
 corresponding time counter when the time counter overreaches the upper
@@ -140,7 +140,7 @@ as follows:
 
 \begin{definition}[Post rising edge state similarity]
   \label{def:post-re-state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  For a given $sitpn\in{}SITPN$, an \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
   design state $\sigma\in\Sigma$ are similar after a rising edge,
@@ -150,10 +150,10 @@ as follows:
     $\forall{}p\in{}P,id_p\in{}Comps(\Delta)~s.t.~\gamma(p)=id_p,~s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
+    $\big(u(I_s(t))=\infty\land{}s.I(t)\le{}l(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
+    $\land\big(u(I_s(t))=\infty\land{}s.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)\le{}u(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
     $s.reset_t(t)=\sigma(id_t)(\texttt{s\_reinit\_time\_counter})$.
@@ -188,7 +188,7 @@ falling of the clock signal.
 
 The state similarity relation draws out a correspondence between the
 values hold by an SITPN state and the values of the signals declared
-in a \hvhdl{} design state. However, to complete the proof of semantic
+in an \hvhdl{} design state. However, to complete the proof of semantic
 preservation, we sometimes have to relate the value of signals to the
 value of expressions or predicates involved in the SITPN
 semantics. For instance, consider a given SITPN state $s$ and a given
@@ -206,7 +206,7 @@ post rising edge state similarity relation is defined as follows:
 
 \begin{definition}[Full post rising edge state similarity]
   \label{def:full-post-re-state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  For a given $sitpn\in{}SITPN$, an \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, a clock cycle count $\tau\in\mathbb{N}$,
   and an SITPN execution environment
@@ -257,12 +257,12 @@ value between the input port identifiers and their corresponding
 conditions at the occurrence of the next falling edge.
 
 Now, let us define the state similarity relation describing how things
-must be compared between an SITPN state and a \hvhdl{} design state
+must be compared between an SITPN state and an \hvhdl{} design state
 after the falling edge of a clock signal:
 
 \begin{definition}[Post falling edge state similarity]
   \label{def:post-fe-state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  For a given $sitpn\in{}SITPN$, an \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
   design state $\sigma\in\Sigma$ are similar after a falling edge,
@@ -272,10 +272,10 @@ after the falling edge of a clock signal:
     $~s.M(p)=\sigma(id_p)(\texttt{s\_marking})$.
   \item
     $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
-    $\big(upper(I_s(t))=\infty\land{}s.I(t)\le{}lower(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
-    $\land\big(upper(I_s(t))=\infty\land{}s.I(t)>{}lower(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)>{}upper(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-    $\land\big(upper(I_s(t))\neq\infty\land{}s.I(t)\le{}upper(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
+    $\big(u(I_s(t))=\infty\land{}s.I(t)\le{}l(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$\\
+    $\land\big(u(I_s(t))=\infty\land{}s.I(t)>{}l(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)>{}u(I_s(t))\Rightarrow{}\sigma(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+    $\land\big(u(I_s(t))\neq\infty\land{}s.I(t)\le{}u(I_s(t))\Rightarrow{}s.I(t)=\sigma(id_t)(\texttt{s\_time\_counter})\big)$.
   \item
     $\forall{}c\in\mathcal{C},id_c\in{}Ins(\Delta)~s.t.~\gamma(c)=id_c,~s.cond(c)=\sigma(id_c)$.
   \item
@@ -293,7 +293,7 @@ similarity relation is defined as follows:
 
 \begin{definition}[Full post falling edge state similarity]
   \label{def:full-post-fe-state-sim}
-  For a given $sitpn\in{}SITPN$, a \hvhdl{} design $d\in{}design$, an
+  For a given $sitpn\in{}SITPN$, an \hvhdl{} design $d\in{}design$, an
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, an SITPN state $s\in{}S(sitpn)$ and a
   design state $\sigma\in\Sigma$ are fully similar after a falling

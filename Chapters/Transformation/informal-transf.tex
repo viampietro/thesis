@@ -33,12 +33,13 @@ SITPN. As a first step, the transformation generates, for each place
 of the input SITPN, a component instance of the \texttt{place} design,
 and, for each transition of the input SITPN, a component instance of
 the \texttt{transition} design. These subcomponents constitute the
-main part of the \hvhdl{} top-level design's
-behavior. Figure~\ref{fig:itfaces} shows a graphical representation of
-the input and output port interfaces of the \texttt{place} and
-\texttt{transition} designs. All PCIs and TCIs generated during the
-first step of the \hilecop{} transformation inherit the interfaces
-presented in Figure~\ref{fig:itfaces}.
+main part of the \hvhdl{} top-level design's architecture (i.e. its
+internal behavior). Figure~\ref{fig:itfaces} shows a graphical
+representation of the input and output port interfaces of the
+\texttt{place} and \texttt{transition} designs. All PCIs (Place
+Component Instances) and TCIs (Transition Component Instances)
+generated during the first step of the \hilecop{} transformation
+inherit the interface presented in Figure~\ref{fig:itfaces}.
 
 \begin{figure}[H]
   \centering
@@ -75,7 +76,7 @@ Figure~\ref{fig:itfaces}. The generic constants have an impact of the
 structure of the interface of each component instance. For example,
 Figure~\ref{fig:itfaces} shows the dependency between the size
 (i.e. the number of pins) of composite ports and the value of generic
-constants, e.g the size of \texttt{iaw} input port of the
+constants, e.g. the size of \texttt{iaw} input port of the
 \texttt{place} design depends on the \texttt{ian} generic constant.
 Thus, the generation of generic maps during this first generation step
 corresponds to the \textit{dimensioning} of the PCIs and TCIs; this is
@@ -157,23 +158,22 @@ of the input SITPN model.
 To reduce the size of circuits after the synthesis on an FPGA or ASIC,
 PCIs and TCIs only communicate with Boolean signals through their
 interfaces. To restrict the interconnections to Boolean signals, the
-\texttt{place} design, which is the mould of all PCIs, carries the
-arcs information (i.e. the weight and type of its input and output
-arcs) in its interface; this approach of encoding the arcs information
-is called the \textit{place-pivot}
-approach. Figure~\ref{fig:arc-infos} points out where the arcs
-information are encoded in the interface of the \texttt{place}
-design. Thus, a PCI has all the needed information to compute the
-sensitization of its output TCIs by comparing the weight of its output
-arcs to its current marking value.  A PCI can simply communicate
-through a Boolean signal that it is currently enabling its output
-TCIs. In the other approach, the \textit{transition-pivot} approach,
-the \texttt{transition} design carries the arcs information. In that
-case, the TCIs compute their own sensitization status. To be able to
-do so, the PCIs must communicate their current marking value to the
-TCIs. As a marking value is a natural number, the number of
-interconnecting signals between PCIs and TCIs greatly increases in the
-\textit{transition-pivot} approach.  Eventually, the
+\texttt{place} design, which is the mold of all PCIs, carries the arc
+information (i.e. the weight and type of its input and output arcs) in
+its interface; this approach of encoding the arc information is called
+the \textit{place-pivot} approach. Figure~\ref{fig:arc-infos} points
+out where the arc information are encoded in the interface of the
+\texttt{place} design. Thus, a PCI has all the needed information to
+compute the sensitization of its output TCIs by comparing the weight
+of its output arcs to its current marking value.  A PCI can simply
+communicate through a Boolean signal that it is currently enabling its
+output TCIs. In the other approach, the \textit{transition-pivot}
+approach, the \texttt{transition} design carries the arc
+information. In that case, the TCIs compute their own sensitization
+status. To be able to do so, the PCIs must communicate their current
+marking value to the TCIs. As a marking value is a natural number, the
+number of interconnecting signals between PCIs and TCIs greatly
+increases in the \textit{transition-pivot} approach.  Eventually, the
 \textit{place-pivot} approach has been retained in the current version
 of \hilecop{}.
 
@@ -181,7 +181,7 @@ of \hilecop{}.
   \centering
   \includegraphics[keepaspectratio,width=.4\textwidth]{Figures/Transformation/arcs-infos}
   \caption[The arcs information in the interface of the \texttt{place}
-  design.]{Inside the \textcolor{red}{red} frame, the arcs information
+  design.]{Inside the \textcolor{red}{red} frame, the arc information
     encoded through the \texttt{iaw}, \texttt{oat} and \texttt{oaw}
     input ports in the interface of the \texttt{place} design.}
   \label{fig:arc-infos}

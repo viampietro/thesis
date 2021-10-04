@@ -29,7 +29,7 @@ function has five parameters: \texttt{sitpn}, the input SITPN model;
 \texttt{decpr}, a proof that the \texttt{pr} relation (i.e. the
 implementation of the firing priority relation) is decidable over the
 set of transitions of \texttt{sitpn} (i.e. \texttt{T sitpn}); $id_e$
-and $id_a$, the entity and architecture idenfifiers for the generated
+and $id_a$, the entity and architecture identifiers for the generated
 \hvhdl{} design; the \texttt{b} function that maps the places of the
 \texttt{sitpn} parameter to a maximal marking value, i.e. a natural
 number. The \texttt{sitpn\_to\_hvhdl} function returns a couple
@@ -47,7 +47,7 @@ that implements a part of the transformation function takes a
 and a new compile-time state, or an error message. The \texttt{bind}
 construct of the state-and-error monad permits to pipeline multiple
 function calls, and, combined with the \texttt{do} notation, it
-permits to write functional programs in the style of imperative
+permits us to write functional programs in the style of imperative
 languages. The sequence defined in the body of the
 \texttt{sitpn\_to\_hvhdl} function gives an example of what can be
 achieved with the combination of the state-and-error monad and the
@@ -105,7 +105,7 @@ transitions, conditions, actions and functions of the \texttt{sitpn}
 parameter. These fields are filled at the very beginning of the
 transformation by the \texttt{generate\_sitpn\_infos} function, and
 are convenient to write functions in the context of dependent
-types. The \texttt{nextid} field (Line~\ref{line:nextid}) permits to
+types. The \texttt{nextid} field (Line~\ref{line:nextid}) permits us to
 generate fresh and unique identifiers all along the
 transformation. The \texttt{sitpinfos} field
 (Line~\ref{line:sitpninfos}) is an instance of the \texttt{SitpnInfos}
@@ -130,7 +130,7 @@ the transformation.
 
 At the beginning of the transformation, an initial compile-time state
 is built with the \texttt{Init\-S2HState} function. The
-\texttt{InitS2HState} function gives a initial value to the fields of
+\texttt{InitS2HState} function gives an initial value to the fields of
 the state structure; mostly, the fields are initialized with empty
 lists, and the \texttt{beh} field is initialized with the
 \texttt{null} statement. The \texttt{InitS2HState} function takes an
@@ -140,7 +140,7 @@ field. In Listing~\ref{lst:sitpn2hvhdl}, the second parameter of the
 \texttt{InitS2HState} function is \texttt{Petri.ffid}. It corresponds
 to the \emph{first fresh} identifier that the transformation can use
 to produce a \hvhdl{} design that respects the uniqueness of
-identifiers. 
+identifiers.
 
 Let us now present the functions composing the \texttt{do} sequence of
 the \texttt{sitpn\_to\_hvhdl} function, and how they modify the
@@ -217,7 +217,7 @@ represent the input transitions, \texttt{tinputs}, the conflicting
 output transitions, \texttt{tconflict}, and the non-conflicting output
 transitions, \texttt{toutputs}, of a place. In the \texttt{SitpnInfos}
 structure, the \texttt{pinfos} field maps the places of the
-\texttt{sitpn} parameter to their respective informations, i.e. an
+\texttt{sitpn} parameter to their respective information, i.e. an
 instance of the \texttt{PlaceInfo} type. This mapping is built by the
 \texttt{generate\_place\_infos} function called in the body of
 \texttt{generate\_sitpn\_infos} function. While building an instance
@@ -242,7 +242,7 @@ The \texttt{TransInfo} record type is composed of two lists that
 represent the input places, \texttt{pinputs}, and the output places,
 \texttt{poutputs}, of a transition. In the \texttt{SitpnInfos}
 structure, the \texttt{tinfos} field maps the transitions of the
-\texttt{sitpn} parameter to their respective informations, i.e. an
+\texttt{sitpn} parameter to their respective information, i.e. an
 instance of the \texttt{TransInfo} type. This mapping is built by the
 \texttt{generate\_trans\_infos} function called in the body of
 \texttt{generate\_sitpn\_infos} function.
@@ -277,7 +277,7 @@ Listing~\ref{lst:gen-arch} presents the
 \texttt{generate\_architecture} function. The
 \texttt{generate\_architecture} function implements the
 \texttt{generate\_architecture} and the
-\texttt{generate\_interconnections} procedures detailled in
+\texttt{generate\_interconnections} procedures detailed in
 Algorithms~\ref{alg:genarch} and \ref{alg:geninter}.  The composition
 of the \texttt{generate\_place\_map} and the
 \texttt{generate\_trans\_map} functions implements
@@ -309,8 +309,11 @@ type. Listing~\ref{lst:infos-types} presents the definition of the
 \texttt{InputMap}, \texttt{OutputMap} and \texttt{HComponent} type
 aliases.
 
-\begin{lstlisting}[language=coq,label={lst:arch-types},
-caption={[The \texttt{Architecture} record type.]The \texttt{Architecture} record type, and the \texttt{InputMap}, \texttt{OutputMap} and \texttt{HComponent} subsidiary types. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
+\begin{lstlisting}[language=coq,label={lst:arch-types}, caption={[The
+\texttt{Architecture} record type.]The \texttt{Architecture} record
+type, and the \texttt{InputMap}, \texttt{OutputMap} and
+\texttt{HComponent} subsidiary
+types. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
 numberstyle=\tiny\ttfamily]
 Definition InputMap := list (ident * (expr + list expr)).
 Definition OutputMap := list (ident * ((option name) + list name)).
@@ -331,7 +334,7 @@ port and output port maps all along the transformation.  The
 \texttt{HComponent} type is a triplet composed of a generic map as
 defined in the \hvhdl{} abstract syntax, an instance of the
 \texttt{InputMap} type, and an instance of the \texttt{OutputMap}
-type.  The \texttt{InputMap} type maps an input port identifier to a
+type.  The \texttt{InputMap} type maps an input port identifier to
 either a simple expression or to a list of expressions, where the
 \texttt{expr} type is the type of expressions defined in the \hvhdl{}
 abstract syntax. In an \texttt{InputMap} instance, an input port
@@ -353,7 +356,7 @@ design's architecture.  The \texttt{sigs} field of the
 \texttt{Architecture} type represents the internal signal declaration
 list constituting the declarative part of an \hvhdl{} design's
 architecture. The transformation adds a new signal declaration entry
-to the \texttt{sigs} field every time a internal signal must be
+to the \texttt{sigs} field every time an internal signal must be
 generated, for example, during the generation of interconnections
 between PCIs and TCIs.  The \texttt{plmap} (resp. the \texttt{trmap})
 field maps the places (resp. transitions) of the \texttt{sitpn}
@@ -544,8 +547,8 @@ declaration list of the \hvhdl{} design is built by concatenating the
 content of the \texttt{iports} and \texttt{oports} fields defined in
 state \texttt{s}. The internal signal declaration list is filled by
 the \texttt{sigs} field, defined under the \texttt{arch} field of
-state \texttt{s}. Finally, the \texttt{beh} field fills the behavior
-of the \hvhdl{} design.
+state \texttt{s}. Finally, the \texttt{beh} field receives the
+behavior of the \hvhdl{} design.
 
 
 

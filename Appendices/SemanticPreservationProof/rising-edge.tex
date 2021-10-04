@@ -302,25 +302,25 @@
   \label{lem:re-equal-tc}
   \rehyps{} then\\
   $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t$,\\
-  $\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+  $\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow$
   $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-  $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-  $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-  $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-  $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+  $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow$
+  $\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+  $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow$
+  $\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+  $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
   $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.
 \end{lemma}
 
 \begin{niproof}
   Given a $t\in{}T_i$ and an $id_t\in{}Comps(\Delta)$ s.t. $\gamma(t)=id_t$, let us show\\
-  \noindent\fbox{\parbox{\lwidth}{$\big(upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow$
+  \noindent\fbox{\parbox{\lwidth}{$\big(u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$\\
-      $\land\big(upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow$
-      $\sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t))\big)$\\
-      $\land\big(upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow$
+      $\land\big(u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow$
+      $\sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t))\big)$\\
+      $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$}}\\
 
   \exT{}
@@ -329,10 +329,10 @@
 
   \begin{enumerate}
   \item\label{it:re-eq-tc-fst}
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)\le{}lower(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
+    \fbox{$u(I_s(t))=\infty\land{}s'.I(t)\le{}l(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}\\
     
-    Assuming that $upper(I_s(t))=\infty$ and
-    $s'.I(t)\le{}lower(I_s(t))$, let us show\\
+    Assuming that $u(I_s(t))=\infty$ and
+    $s'.I(t)\le{}l(I_s(t))$, let us show\\
     \fbox{$s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$.}
 
     By property of the $\mathtt{Inject}$, \hvhdl{} rising edge and
@@ -349,18 +349,18 @@
     and $s.I(t)=\sigma(id_t)(\texttt{stc})$, \qedbox{tautology.}
     
   \item
-    \fbox{$upper(I_s(t))=\infty\land{}s'.I(t)>{}lower(I_s(t))\Rightarrow
-      \sigma'(id_t)(\texttt{s\_time\_counter})=lower(I_s(t)$.}
+    \fbox{$u(I_s(t))=\infty\land{}s'.I(t)>{}l(I_s(t))\Rightarrow
+      \sigma'(id_t)(\texttt{s\_time\_counter})=l(I_s(t)$.}
 
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
   \item
-    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)>{}upper(I_s(t))\Rightarrow
-      \sigma'(id_t)(\texttt{s\_time\_counter})=upper(I_s(t)$.}
+    \fbox{$u(I_s(t))\neq\infty\land{}s'.I(t)>{}u(I_s(t))\Rightarrow
+      \sigma'(id_t)(\texttt{s\_time\_counter})=u(I_s(t)$.}
 
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
     
   \item
-    \fbox{$upper(I_s(t))\neq\infty\land{}s'.I(t)\le{}upper(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}
+    \fbox{$u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow{}s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})$}
     
     \noindent{}Proved in the same fashion as \ref{it:re-eq-tc-fst}.
   \end{enumerate}
@@ -1001,7 +1001,7 @@
   $\mathtt{ps}(\texttt{function}, \emptyset, sl, ss)\in{}d.cs$.
   
   Let $trs(f)$ be the set of transitions associated to function $f$,
-  i.e $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=\mathtt{true}\}$.
+  i.e. $trs(f)=\{t\in{}T~\vert~\mathbb{F}(t,f)=\mathtt{true}\}$.
 
   Let us perform case analysis on $trs(f)$; there are two cases:
   

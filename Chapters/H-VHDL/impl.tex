@@ -50,7 +50,7 @@ type. The \texttt{IdMap} type ensures that an identifier is only
 mapped once. Thus, the implementation of the elaborated design
 structure verifies that there are no intersection between the domains
 of sub-environments. For instance, a generic constant identifier can
-not be a input port identifier, and, as it is implemented, an
+not be an input port identifier, and, as it is implemented, an
 identifier \texttt{id} can not be mapped to a \texttt{Generic} object
 and to an \texttt{Input} object in the same instance of
 \texttt{ElDesign}.
@@ -78,8 +78,8 @@ three fields: \texttt{sigstore}, implementing the signal store
 $\mathcal{S}$ of the design state, \texttt{compstore}, implementing
 the component store $C$, and \texttt{events}, implementing the set of
 events $\mathcal{E}$ of the design state. The \texttt{sigstore} field
-is a map from idenfifiers to values. The \texttt{compstore} field is a
-map from idenfifiers to design states, justifying the inductive
+is a map from identifiers to values. The \texttt{compstore} field is a
+map from identifiers to design states, justifying the inductive
 definition of the \texttt{DState} type. The \texttt{events} field is
 an instance of the \texttt{IdSet} type. The \texttt{IdSet} is the type
 of sets of identifiers (i.e. sets of natural numbers). The
