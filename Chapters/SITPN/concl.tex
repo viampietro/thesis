@@ -5,13 +5,14 @@ model compared to the standard PNs semantics.  In this chapter, we
 gave an informal and formal presentation of SITPNs and their execution
 semantics. Two previous Ph.D. theses contributed, for the most part,
 to the formalization of the SITPN structure and semantics. However, we
-helped to simplify the semantics of SITPNs. We passed from 14 rules in
+helped simplify the semantics of SITPNs. We passed from 14 rules in
 the definition of the SITPN semantics given in \cite{Leroux2014} to 9
-rules in our current definition of semantics. Also, we completed some
-rules when they happened to be insufficient to prove the theorem of
-behavior preservation.  Finally, we defined the execution relations
-for the SITPN semantics and formalized the well-definition property
-for the SITPN structure.
+rules in our current definition of semantics. Also, as presented in at
+the end of Section~\ref{sec:sitpn-sem}, we completed some rules when
+they happened to be insufficient to prove the theorem of behavior
+preservation.  Finally, we defined the execution relations for the
+SITPN semantics and formalized the well-definition property for the
+SITPN structure.
 
 Our other contribution was to implement the SITPN structure and
 semantics with the \coq{} proof assistant. There are two
@@ -20,11 +21,12 @@ version without dependent types, we implemented a SITPN interpreter or
 token player. We also proved a soundness and completeness theorem
 between the interpreter and the formalized SITPN semantics. The first
 implementation of the SITPNs in \coq{} represents 5000 lines of
-specification and 7000 lines of proof. The second implementation
-leverages dependent types. This implementation is more concise and
-closer to the formal definition given within the set theory. We chose
-this implementation to mechanize the proof of the behavior
-preservation theorem (see Chapter~\ref{chap:proof}).
+specification and 7000 lines of proof. The second implementation,
+which was presented in Section~\ref{sec:sitpn-impl}, leverages
+dependent types. This implementation is closer to the formal
+definition given in Definition~\ref{def:sitpn}. We chose this
+implementation to mechanize the proof of the behavior preservation
+theorem (see Chapter~\ref{chap:proof}).
 
 %%% Local Variables:
 %%% mode: latex

@@ -9,9 +9,9 @@
 * TODO The HILECOP methodology [100%]
 ** DONE review DA
 ** DONE review DD
-* TODO Implementation of the HILECOP high-level models [50%]
+* TODO Implementation of the HILECOP high-level models [100%]
 ** DONE review DA
-** TODO review DD
+** DONE review DD
 * TODO H-VHDL: a target hardware description language [50%]
 ** DONE review DA
 ** TODO review DD

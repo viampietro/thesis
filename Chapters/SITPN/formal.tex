@@ -669,7 +669,7 @@ definitions of a conflicting pair of transitions and a conflict group.
 
 A conflict group qualifies a finite set of transitions that are all in
 conflict with each other through at least a common input place. In
-Figure~\ref{fig:conflict-not-trans}, the set $\{t_0,t_1\}$ is a
+Figure~\ref{fig:conflict-not-trans}, the set $\{t_0,t_3,t_1\}$ is a
 conflict group.  The formal definition of a conflict group is as
 follows:
 
@@ -683,29 +683,31 @@ follows:
 Contrary to the statement made in \cite[p. 67]{Leroux2014}, we no more
 consider the notion of conflict as being transitive. To illustrate
 this, Figure~\ref{fig:conflict-not-trans} shows two conflict groups:
-$\{t_0,t_1\}$ and $\{t_1,t_2\}$. In a well-defined $SITPN$ (see
+$\{t_0,t_3,t_1\}$ and $\{t_1,t_2\}$. In a well-defined SITPN (see
 Section~\ref{sec:sitpn-wd}), all conflicts in a conflict group must be
 considered, i.e. for all pair of transitions in the group the conflict
 must be solved. However, we no more consider transitions $t_0$ and
-$t_2$ as in conflict. It was believed by the author of
-\cite{Leroux2014} that, if no conflict resolution technique was
-applied between transitions in the same situation as $t_0$ and $t_2$,
-then this could result in the double-consumption of a token, or in the
-case where a transition is not elected to be fired even though it
-ought to be. However, the author does not provide an example where
-such a situation arises. We argue that such a situation can never
-arise and contrive to prove it later.  Therefore, we no more consider
-the construction of merged conflict group (i.e, conflict groups must
-be merged into one if their intersection is not empty; e.g,
-$\{t_0,t_1,t_2\}$ in Figure~\ref{fig:conflict-not-trans}) as being
-necessary. As a consequence, the definition of a conflict group is
-simpler than in \cite{Leroux2014}.
+$t_2$, and $t_3$ and $t_2$, as in conflict. It was believed by the
+author of \cite{Leroux2014} that, if no conflict resolution technique
+was applied between transitions in the same situation as $t_0$ and
+$t_2$, and $t_3$ and $t_2$, then this could result in the
+double-consumption of a token, or in the case where a transition is
+not elected to be fired even though it ought to be. However, the
+author does not provide an example where such a situation arises. We
+argue that such a situation can never arise and contrive to prove it
+later.  Therefore, we no more consider the construction of merged
+conflict group (i.e, conflict groups must be merged into one if their
+intersection is not empty; e.g, $\{t_0,t_1,t_2\}$ in
+Figure~\ref{fig:conflict-not-trans}) as being necessary. As a
+consequence, the definition of a conflict group is simpler than in
+\cite{Leroux2014} and does not impact the \hilecop{} model-to-text
+transformation.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/SITPN/conflict-not-trans}
   \caption[An example of two separate conflict groups.]{An example of
-    two separate conflict groups, namely: $\{t_0,t_1\}$ and
+    two separate conflict groups, namely: $\{t_0,t_3,t_1\}$ and
     $\{t_1,t_2\}$.}
   \label{fig:conflict-not-trans}
 \end{figure}
@@ -807,7 +809,7 @@ compile-time errors during the transformation of the SITPN into a
 We conclude the formalization of the SITPN structure and semantics by
 the expression of the boundedness of a SITPN model with respect to its
 execution trace. In the manner of the well-definition property, the
-boundedness of a SITPN model is a mandatory condition to apply the
+boundedness of a SITPN model is a mandatory condition to prove the
 semantic preservation theorem (cf. Remark~\ref{rem:bounded-sitpn} in
 Chapter~\ref{chap:proof}). A SITPN model is bounded if there exists a
 \textit{bound} for the number of tokens that the places can hold in

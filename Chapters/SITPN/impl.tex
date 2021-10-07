@@ -1,16 +1,17 @@
 In this section, we present our mechanization of the SITPN structure
-and semantics with the \coq{} proof assistant. The source code is
+and semantics using the \coq{} proof assistant. The source code is
 available to the reader at the address
 \url{https://github.com/viampietro/ver-hilecop}. More precisely, the
 implementation of the SITPN structure and semantics is to be found
-under the \texttt{sitpn/dp} directory. We have made a first
-implementation of SITPNs without the use of dependent types. For this
-first version, we have also implemented a SITPN interpreter (a
-so-called \emph{token player}) and proved that the interpreter was
-sound and complete w.r.t the SITPN semantics. This first
-implementation of the SITPNs and the formal proof of soundness and
-completeness are available at
-\url{https://github.com/viampietro/sitpns}.
+under the \texttt{sitpn/dp} directory. We made a first implementation
+of SITPNs without the use of dependent types. For this first version,
+we also implemented a SITPN interpreter (a so-called \emph{token
+  player}) and proved that the interpreter is sound and complete w.r.t
+the SITPN semantics. This first implementation of the SITPNs and the
+formal proof of soundness and completeness are available at
+\url{https://github.com/viampietro/sitpns}. Here, we are only
+presenting the second version of the implementation of the SITPN
+structure and semantics, i.e. an implementation with dependent types.
 
 \subsection{Implementation of the SITPN and the SITPN state structure}
 \label{sec:sitpn-struct-impl}
@@ -49,28 +50,32 @@ Record Sitpn := BuildSitpn {
 }.
 \end{lstlisting}
 
-We use lists of natural numbers, i.e. \texttt{list nat} in \coq{}, to
+We use lists of natural numbers, i.e. \coqeb{list nat} in \coq{}, to
 define the finite sets of places (Line~\ref{line:pls}), transitions
 (Line~\ref{line:trs}), actions (Line~\ref{line:acts}), conditions
 (Line~\ref{line:conds}) and functions (Line~\ref{line:funs}) in the
-\texttt{Sitpn} record. We want to use these finite sets in the
+\coqeb{Sitpn} record. We want to use these finite sets in the
 signature of functions appearing in the structure (e.g. use the finite
 set of places $P$ in the signature of the initial marking
-$M_0\in{}P\rightarrow\mathbb{N}$). To do so, we leverage the \coq{}
-\texttt{sig} type to define subsets of elements verifying a certain
-property. Thus, we define the finite set $P$ as the subset of natural
-numbers that are members of the \texttt{places} list
-(Line~\ref{line:P}). We use the \texttt{In} relation defined in the
+$M_0\in{}P\rightarrow\mathbb{N}$).
+
+However, we can not use the \coqeb{places} field to, for instance,
+give a type to the initial marking $M_0$. That is, we can not write
+\coqeb{$M_0$ : places -> nat}, because \coqeb{places} does not denote
+a set but an instance of lists of natural numbers.  Thus, leveraging
+the \coqeb{sig} type, we define the finite set $P$ as the subset of
+natural numbers that are members of the \coqeb{places} list
+(Line~\ref{line:P}). We use the \coqeb{In} relation defined in the
 \coq{} standard library to express the membership of a natural number
-regarding the elements of the \texttt{places} list. Also, the
-\texttt{ArcT} type (Line~\ref{line:pre}) implements the set
+regarding the elements of the \coqeb{places} list. Also, the
+\coqeb{ArcT} type (Line~\ref{line:pre}) implements the set
 $\{\mathtt{inhib},\mathtt{test},\mathtt{basic}\}$; the
-\texttt{TimeInterval} type (Line~\ref{line:Is}) implements the set
-$\mathbb{I}^{+}$ of time intervals, and the \texttt{MOneZeroOne} type
+\coqeb{TimeInterval} type (Line~\ref{line:Is}) implements the set
+$\mathbb{I}^{+}$ of time intervals, and the \coqeb{MOneZeroOne} type
 (Line~\ref{line:mone}) implements the set $\{0,1,-1\}$. The priority
-relation is implemented by the \texttt{pr} function
+relation is implemented by the \coqeb{pr} function
 (Line~\ref{line:pr}) taking two transitions in parameter and
-projecting to the type of logical propositions, i.e. the \texttt{Prop}
+projecting to the type of logical propositions, i.e. the \coqeb{Prop}
 type.
 
 Listing~\ref{lst:sitpn-state-impl} presents the implementation of the
@@ -88,16 +93,17 @@ Record SitpnState (sitpn : Sitpn) := BuildSitpnState {
 }.
 \end{lstlisting}
 
-The \texttt{SitpnState} type definition depends on a given SITPN
-passed as a parameter; it is an example of dependent type.  Projection
-functions are automatically generated to access the attributes of a
-record at the declaration of a type with the \texttt{Record} keyword.
-Thus, in Listing~\ref{lst:sitpn-state-impl}, we can refer to the set
-of places of \texttt{sitpn} with the term \texttt{P sitpn}. The term
-\texttt{$T_i$ sitpn} denotes the set of time transitions of
-\texttt{sitpn}. The set of time transitions for a given SITPN is
-declared as a \texttt{sig} type qualifying to the subset of transitions
-with an associated time interval.
+The \coqeb{SitpnState} type definition depends on a SITPN given as a
+parameter; it is an example of dependent type.  Projection functions
+are automatically generated to access the attributes of a record at
+the declaration of a type with the \coqeb{Record} keyword.  Thus, in
+Listing~\ref{lst:sitpn-state-impl}, we can refer to the set of places
+of \coqeb{sitpn} with the term \coqeb{P sitpn}. The term
+\coqeb{$T_i$ sitpn} denotes the set of time transitions of
+\coqeb{sitpn}. The set of time transitions, i.e. \coqeb{$T_i$ sitpn}
+in Listing~\ref{lst:sitpn-state-impl}, for a given SITPN
+\coqeb{sitpn} is declared as a \coqeb{sig} type qualifying to the
+subset of transitions with an associated time interval.
 
 \subsection{Implementation of the SITPN semantics}
 \label{sec:sitpn-sem-impl}
@@ -113,13 +119,13 @@ Inductive SitpnStateTransition
   Clk -> Prop :=
 | SitpnStateTransition_falling :
 
-    (* Rule #\ref{it:activate-actions}# *)
+    (* Premise #\ref{it:activate-actions}# *)
     (forall a marked sum, 
        Sig_in_List (P sitpn) (fun p => M s p > 0) marked -> #\label{line:sig-marked}#
        BSum (fun p => $\mathbb{A}$ p a) marked sum -> #\label{line:bsum-marked}#
        ex s' (inl a) = sum) ->
 
-    (* Rules #\ref{it:reset-counters}, \ref{it:inc-counters}, \ref{it:locked-counters} and \ref{it:reset-not-sens}# *)
+    (* Premises #\ref{it:reset-counters}, \ref{it:inc-counters}, \ref{it:locked-counters} and \ref{it:reset-not-sens}# *)
     (forall (t : Ti sitpn), ~Sens (M s) t -> I s' t = 0) ->
     (forall (t : Ti sitpn), Sens (M s) t -> reset s t = true -> I s' t = 1) ->
     (forall (t : Ti sitpn),
@@ -136,10 +142,10 @@ Inductive SitpnStateTransition
 
 | SitpnStateTransition_rising:
 
-    (** Rule #\ref{it:new-marking}# *)  
+    (** Premise #\ref{it:new-marking}# *)  
     (forall fired, IsNewMarking s fired (M s')) ->
 
-    (* Rule #\ref{it:exec-fun}# *)
+    (* Premise #\ref{it:exec-fun}# *)
     (forall f fired sum, #\label{line:exec-fun}#
        IsFiredList s fired -> 
        BSum (fun t => $\mathbb{F}$ t f) fired sum -> 
@@ -154,62 +160,63 @@ inductive type with two constructors, i.e. one for each clock
 event. The relation has 6 parameters: an SITPN, an environment $E_c$,
 a clock count $\tau$, two SITPN states \coqe|s| and \coqe|s'| and a
 clock event. Note that the two states \coqe|s| and \coqe|s'| are bound
-to the SITPN parameter through their type, i.e. \texttt{SitpnState
-  sitpn}.
+to the SITPN parameter through their type, i.e. \coqeb{SitpnState sitpn}.
 
-In the construction case \texttt{SitpnStateTransition_falling}, we
-give the implementation of Rules~\ref{it:activate-actions},
+In the construction case \coqeb{SitpnStateTransition_falling}, we
+give the implementation of Pre\-mises~\ref{it:activate-actions},
 \ref{it:reset-counters}, \ref{it:inc-counters},
 \ref{it:locked-counters} and \ref{it:reset-not-sens} defined in the
-SITPN semantics.  The sum term of Rule~\ref{it:activate-actions},
+SITPN semantics.  The sum term of Premise~\ref{it:activate-actions},
 i.e. $\sum\limits_{p\in{}marked(M)}\mathbb{A}(p,a)$, is implemented by
 Lines~\ref{line:sig-marked} and \ref{line:bsum-marked}. At
-Line~\ref{line:sig-marked}, the \texttt{Sig_in_List} predicate states
-that all the inhabitant of the \texttt{P sitpn} type (i.e. the places
-of \texttt{sitpn}) that verifies the property \texttt{(fun p => M s p
-  > 0)} (i.e. the marking of a place is greater than zero at state
-\texttt{s}) are members of the \texttt{marked} list. Because we can
-not iterate over the elements of a given \texttt{sig} type, we use the
-\texttt{Sig_in_List} relation to convert a \texttt{sig} type into a
+Line~\ref{line:sig-marked}, the \coqeb{Sig_in_List} predicate states
+that all the inhabitant of the \coqeb{P sitpn} type (i.e. the places
+of \coqeb{sitpn}) that verify the property \coqeb{(fun p => M s p > 0)}
+(i.e. the marking of a place is greater than zero at state
+\coqeb{s}) are members of the \coqeb{marked} list. Because we cannot
+iterate over the elements of a given \coqeb{sig} type, we use the
+\coqeb{Sig_in_List} relation to convert a \coqeb{sig} type into a
 list. Lists are iterable by definition. At
-Line~\ref{line:bsum-marked}, the \texttt{BSum} relation states that
-\texttt{sum} is the Boolean sum obtained by applying the function
-\texttt{(fun p => $\mathbb{A}$ p a)} to the elements of the
-\texttt{marked} list. Rules~\ref{it:reset-counters},
+Line~\ref{line:bsum-marked}, the \coqeb{BSum} relation states that
+\coqeb{sum} is the Boolean sum obtained by applying the function
+\coqeb{(fun p => $\mathbb{A}$ p a)} to the elements of the
+\coqeb{marked} list. Premises~\ref{it:reset-counters},
 \ref{it:inc-counters}, \ref{it:locked-counters} and
 \ref{it:reset-not-sens} are almost similar in their implementation to
-the description of Definition~\ref{def:semantics}. The \coq{} term
-\texttt{Sens (M s) t} implements the term $t\in{}Sens(M)$. Due to the
+the description of Definition~\ref{def:semantics}.
+The \coq{} term
+\coqeb{Sens (M s) t} implements the term $t\in{}Sens(M)$. Due to the
 particular nature of the upper bound of a time interval, i.e. defined
 over the set $\mathbb{N}^{*}\sqcup{}\{\infty\}$, the test that the
 current time counter of a given transition $t$ is less than or equal
 to the upper bound is implemented by a separate predicate
-\texttt{TcLeUpper}. Similarly, the \texttt{TcGtUpper} predicate
+\coqeb{TcLeUpper}. Similarly, the \coqeb{TcGtUpper} predicate
 implements the inverse test.
 
-In the construction case \texttt{SitpnStateTransition_rising}, we give
-the implementation of Rules~\ref{it:new-marking} and \ref{it:exec-fun}
-defined in the SITPN semantics. In the implementation of
-Rule~\ref{it:new-marking}, the \texttt{IsNewMarking} predicate hides
-away the expression:
+In the construction case \coqeb{SitpnStateTransition_rising}, we give
+the implementation of Premi\-ses~\ref{it:new-marking} and
+\ref{it:exec-fun} defined in the SITPN semantics. In the
+implementation of Premise~\ref{it:new-marking}, the
+\coqeb{IsNewMarking} predicate represents the expression:
 
 $\forall{}p\in{}P,~M'(p)=M(p)-\sum\limits_{t\in{}Fired(s)}$ $pre(p,t)$
 $+\sum\limits_{t\in{}Fired(s)}post(t,p)$.
 
-In its definition, the \texttt{IsNewMarking} predicate first checks
-that the \texttt{fired} list implements the set of fired transitions
-at state \texttt{s}. Then, it builds the marking at state \texttt{s'}
-for each place $p$, i.e. \texttt{(M s')}, by consuming and producing a
+In its definition, the \coqeb{IsNewMarking} predicate first checks
+that the \coqeb{fired} list implements the set of fired transitions
+at state \coqeb{s}. Then, it builds the marking at state \coqeb{s'}
+for each place $p$, i.e. \coqeb{(M s')}, by consuming and producing a
 number of tokens starting from the marking of $p$ at state
-\texttt{s}. The \texttt{fired} list is helpful to qualify the input
+\coqeb{s}. The \coqeb{fired} list is helpful to qualify the input
 token sum and the output token sum for a given place. Similarly to the
-implementation of Rule~\ref{it:activate-actions}, the implementation
-of Rule~\ref{it:exec-fun} at Line~\ref{line:exec-fun} leverages the
-\texttt{BSum} predicate to compute the Boolean sum
+implementation of Premise~\ref{it:activate-actions}, the
+implementation of Premise~\ref{it:exec-fun} at
+Line~\ref{line:exec-fun} relies on the \coqeb{BSum} predicate to
+compute the Boolean sum
 $\sum\limits_{t\in{}Fired(s)}\mathbb{F}(t,f)$. The term
-\texttt{IsFiredList s fired} states that the \texttt{fired} list
-implements the set of fired transitions at state \texttt{s}, so we can
-use the \texttt{fired} list to compute the above sum.
+\coqeb{IsFiredList s fired} states that the \coqeb{fired} list
+implements the set of fired transitions at state \coqeb{s}, so we can
+use the \coqeb{fired} list to compute the above sum.
 
 %%% Local Variables:
 %%% mode: latex
