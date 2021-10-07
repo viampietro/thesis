@@ -1,6 +1,6 @@
-In this section, we lay out the major theorems and lemmas stating that
-the \hilecop{} transformation function is semantic preserving. We also
-present the informal proofs for these theorems and lemmas.
+In this section, we describe the major theorems and lemmas stating
+that the \hilecop{} transformation function is semantic preserving. We
+also present the informal proofs for these theorems and lemmas.
 
 \subsection{Proof notations}
 \label{sec:pf-notations}
@@ -30,9 +30,9 @@ aliases. Also, during a proof and when there is no ambiguity, $id_p$
 given place $p$ (resp. transition $t$) through $\gamma(p)=id_p$
 (resp. $\gamma(t)=id_t$), where $\gamma$ is the binder returned by the
 transformation function. Similarly, $id_c$ (resp. $id_a$ and $id_f$)
-denotes the input port (resp. output port) identifier associated to a
-given condition $c$ (resp. action $a$ and function $f$) through
-$\gamma(c)=id_c$.
+denotes the input port (resp. output port and output port) identifier
+associated to a given condition $c$ (resp. action $a$ and function
+$f$) through $\gamma(c)=id_c$.
 
 \subsection{Preliminary definitions}
 \label{sec:beh-pres-prelim-defs}
@@ -78,7 +78,7 @@ execution/simulation traces. As a reminder, an execution/simulation
 trace is a time-ordered list of states describing the evolution of a
 given SITPN or \hvhdl{} design through a certain number of clock
 cycles. The relation presented in Definition~\ref{def:exec-trace-sim}
-permits to compare such traces.
+allows us to compare such traces.
 
 \begin{definition}[Execution trace similarity]
   \label{def:exec-trace-sim}
@@ -86,9 +86,10 @@ permits to compare such traces.
   elaborated design $\Delta\in{}ElDesign$, and a binder
   $\gamma\in{}WM(sitpn,d)$, the execution trace
   $\theta_s\in{}\mathtt{list}(S(sitpn))$ and the simulation trace
-  $\theta_\sigma\in\mathtt{list}(\Sigma)$ are similar, written
-  $\gamma\vdash{}\theta_s\stackrel{clk}{\sim}\theta_\sigma$, where
-  $clk\in\{\uparrow,\downarrow\}$, according to the following rules:
+  $\theta_\sigma\in\mathtt{list}(\Sigma)$ are similar if
+  $\gamma\vdash{}\theta_s\stackrel{clk}{\sim}\theta_\sigma$ (where
+  $clk\in\{\uparrow,\downarrow\}$) is derivable according to the
+  following rules:
 
   \begin{tabular}{@{}l}
     {\fontsize{9}{11}\selectfont\textsc{SimTraceNil}} \\
@@ -179,20 +180,21 @@ Theorem~\ref{thm:beh-pres} expresses our behavior preservation
 theorem. Theorem~\ref{thm:beh-pres} states that the \hilecop{}
 transformation function is semantic preserving when the input model is
 a well-defined (see Definition~\ref{def:wd-sitpn}) and bounded (see
-Definition) SITPN. As a complementary task, we could show that if the
-transformation function returns a couple \hvhdl{} design and binder,
-and not an error, then the input SITPN is well-defined. To prove
-Theorem~\ref{thm:beh-pres}, we must first exhibit an elaborated
-version of the returned \hvhdl{} design (Theorem~\ref{thm:elab-ex}),
-an initial state (Theorem~\ref{thm:init-ex}), and a simulation trace
-over $\tau$ simulation cycles (Theorem~\ref{thm:sim-ex}). Finally, we
-can establish that the behaviors are similar by comparing the
-respective SITPN execution and \hvhdl{} design simulation traces
+Definition~\ref{def:bounded-sitpn}) SITPN. As a complementary task, we
+could show that if the transformation function returns a couple
+\hvhdl{} design and binder, and not an error, then the input SITPN is
+well-defined. To prove Theorem~\ref{thm:beh-pres}, we must first
+exhibit an elaborated version of the returned \hvhdl{} design
+(Theorem~\ref{thm:elab-ex}), an initial state
+(Theorem~\ref{thm:init-ex}), and a simulation trace over $\tau$
+simulation cycles (Theorem~\ref{thm:sim-ex}). Finally, we can
+establish that the behaviors are similar by comparing the respective
+SITPN execution and \hvhdl{} design simulation traces
 (Theorem~\ref{thm:full-bisim}). In this thesis, we are focusing on the
 proof that the execution/simulation traces are similar when they are
 produced by the SITPN execution relation and the \hvhdl{} simulation
 relation over $\tau$ clock cycles. This corresponds to the proof of
-Theorem~\ref{thm:full-bisim}. For now, we choose to consider
+Theorem~\ref{thm:full-bisim}. For the moment, we choose to consider
 Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex} as
 axioms.
 
@@ -241,8 +243,9 @@ axioms.
   \framebox{$\exists\Delta,\theta_\sigma,\forall{}E_p,~\gamma\vdash{}E_p\stackrel{env}{=}E_c\Rightarrow$
     $(\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma)\land\theta_s\sim\theta_\sigma$}\\
 
-  Appealing to Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and
-  \ref{thm:sim-ex}, let us take an elaborated design
+  Appealing to Theorems~\ref{thm:elab-ex} (p.~\pageref{thm:elab-ex}),
+  \ref{thm:init-ex} (p.~\pageref{thm:init-ex}) and \ref{thm:sim-ex}
+  (p.~\pageref{thm:sim-ex}), let us take an elaborated design
   $\Delta\in{}ElDesign$, two design states
   $\sigma_e,\sigma_0\in\Sigma$, and a simulation trace
   $\theta_\sigma\in\mathtt{list}(\Sigma)$ such that:
@@ -278,7 +281,7 @@ axioms.
   \label{eq:full-sim}
   \end{equation}
   
-  Rewriting the goal with \eqref{eq:full-sim}:
+  Thus, it is equivalent to prove:
   \begin{frameb}
     $\exists\sigma_e,\sigma_0$
     s.t.
@@ -325,8 +328,8 @@ program.
 
 Theorem~\ref{thm:init-ex} states that one can always build an initial
 state for every \hvhdl{} design returned by the \hilecop{}
-transformation function; that is, if the input SITPN model is
-well-defined and bounded.
+transformation function, if the input SITPN model is well-defined and
+bounded.
 
 \begin{thm}[Initialization]
   \label{thm:init-ex}
@@ -392,16 +395,21 @@ transformation of a well-defined SITPN.
   internal signal \texttt{s\_marking} represents the marking value of
   a place. The maximal value of the \texttt{s\_marking} signal is
   bounded by the generic constant \texttt{maximal\_marking}. Thus,
-  when generating, a PCI from a place in the course of the
-  transformation, we must be able to give a value to the
+  when generating a PCI from a place in the course of the
+  transformation, we must give a value to the
   \texttt{maximal\_marking} generic constant. However, even with a
   settled \texttt{maximal\_marking} value, the execution of a \hvhdl{}
   design, resulting from the transformation of an unbounded SITPN
   model, infallibly leads to the overflow of the value of the
-  \texttt{s\_marking} signals in the internal states of PCIs.  In that
-  case, there exist a clock cycle count where the next design state
-  can never be derived because of the overflow. Passed this clock
-  cycle count, the simulation of the \hvhdl{} design ends, the
+  \texttt{s\_marking} signals in the internal states of PCIs.
+  Consider an unbounded place $p$ and its corresponding PCI
+  $id_p$. There exist a clock cycle count $\tau$ for which the value
+  of the \texttt{s_marking} internal signal (which reflects the
+  marking of place $p$) of PCI $id_p$ overreaches the
+  \texttt{maximal_marking} value, thus causing an overflow. In that
+  case, because of the overflow, the next design state (i.e. at clock
+  count $\tau+1$) can never be derived. Thus, passed the clock cycle
+  count $\tau$, the simulation of the \hvhdl{} design ends, the
   execution of the corresponding unbounded SITPN model continues, and
   we are no more able to prove the equivalence between the two
   behaviors.
@@ -418,7 +426,7 @@ execution trace similarity relation of
 Definition~\ref{def:full-exec-trace-sim}. In this thesis, we have
 proved this particular theorem. The proofs of
 Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex}
-will be tackle down in future works. We chose to focus our work on the
+have been left for future work. We chose to focus our work on the
 bisimulation theorem, because it directly addresses the semantic
 preservation property of \hilecop{}'s transformation function.
 
@@ -429,19 +437,21 @@ preservation property of \hilecop{}'s transformation function.
 In the proof of Theorem~\ref{thm:full-bisim}, in the case where
 $\tau>0$, we must show that the state similarity relation holds
 between the states produced by the first execution cycle, and then use
-Lemma~\ref{lem:simulation} to complete the proof of similarity between
-the tail traces. First, we must show that the initial states of both
-SITPN and \hvhdl{} design verify the general state similarity relation
-(Definition \ref{def:state-sim}); this is done by appealing to
-Lemma~\ref{lem:sim-init-states}.  The first execution cycle is
+Lemma~\ref{lem:simulation} (p.~\pageref{lem:simulation}) to complete
+the proof of similarity between the tail traces. First, we must show
+that the initial states of both SITPN and \hvhdl{} design verify the
+general state similarity relation (Definition \ref{def:state-sim});
+this is done by appealing to Lemma~\ref{lem:sim-init-states}
+(p.~\pageref{lem:sim-init-states}).  The first execution cycle is
 particular because, by definition of the SITPN full execution
 relation, no transitions are fired during the first rising
 edge. Therefore, after the first rising edge, the SITPN state is still
 equal to its initial state $s_0$. We prove that the post rising edge
 similarity relation is verified after the first rising edge by
-appealing to Lemma~\ref{lem:fst-re}. The detailed proofs for
-Lemmas~\ref{lem:sim-init-states} and \ref{lem:fst-re} are given in
-Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
+appealing to Lemma~\ref{lem:fst-re} (p.~\pageref{lem:fst-re}). The
+detailed proofs for Lemmas~\ref{lem:sim-init-states} and
+\ref{lem:fst-re} are given in Sections~\ref{sec:init-states} and
+\ref{sec:fst-re}.
 
 \begin{thm}[Full bisimulation]
   \label{thm:full-bisim}
@@ -462,9 +472,10 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
 
 \begin{niproof}
   Assuming the above hypotheses, let us show
-  \framebox{$\gamma\vdash\theta_s\sim\theta_\sigma$}.
+  \framebox{$\gamma\vdash\theta_s\sim\theta_\sigma$} (1).
   
-  Let us perform case analysis on $\tau$; there are two cases:
+  Let us perform case analysis on the given clock count $\tau$; there
+  are two cases:
 
   \begin{itemize}
   \item \textbf{CASE} $\tau=0$. By definition of the SITPN full
@@ -483,15 +494,16 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
     
     
     Rewriting $\theta_s$ as $[s_0]$, and $\theta_\sigma$ as
-    $[\sigma_0]$, and by definition of the full execution trace
-    similarity relation, what is left to prove is:
+    $[\sigma_0]$ in goal (1), and by definition of the full execution
+    trace similarity relation, what is left to prove is:
     \framebox{$\gamma\vdash{}s_0\sim{}\sigma_0$}
 
-    Appealing to Lemma~\ref{lem:sim-init-states}, we can show
+    Appealing to Lemma~\ref{lem:sim-init-states}
+    (p.~\pageref{lem:sim-init-states}), we can show
     \qedbox{$\gamma\vdash{}s_0\sim{}\sigma_0$.}
     
   \item \textbf{CASE} $\tau>0$. By definition of the SITPN full
-    execution relation (i.e,
+    execution relation (i.e.
     $E_c,\tau\vdash{}sitpn\xrightarrow{full}\theta_s$) and the
     \hvhdl{} full simulation relation (i.e,
     $\mathcal{D}_\mathcal{H},\Delta,\emptyset,E_p,\tau\vdash{}\mathrm{d}\xrightarrow{full}\theta_\sigma$),
@@ -511,10 +523,12 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
       $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta'$
       and $\theta_\sigma=\sigma_0 :: \theta'$
     \end{itemize}
-    
-    Rewriting $\theta_s$ and $\theta_\sigma$, the new goal is:
+
+    Rewriting $\theta_s$ as $s_0 :: s_0 :: s :: \theta$ and
+    $\theta_\sigma$ as $\sigma_0 :: \theta'$ in goal (1), the new goal
+    is:\\
     \framebox{$\gamma\vdash{}(s_0 :: s_0 :: s ::
-      \theta)\sim{}(\sigma_0 :: \theta')$}
+      \theta)\sim{}(\sigma_0 :: \theta')$} (2)\\
     
     By definition of the \hvhdl{} simulation relation (i.e.
     $E_p,\Delta,\tau,\sigma_0\vdash{}\mathrm{d.cs}\rightarrow\theta'$),
@@ -523,11 +537,12 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
     $E_p,\Delta,\tau,\sigma_0\vdash{}d.cs\xrightarrow{\uparrow,\downarrow}\sigma,\sigma'$
     and
     $E_p,\Delta,\tau-1,\sigma'\vdash{}\mathrm{d.cs}\rightarrow\theta''$
-    and $\theta'=\sigma :: \sigma' :: \theta''$
+    and $\theta'=\sigma :: \sigma' :: \theta''$.\\
     
-    Rewriting $\theta'$, the new goal is:
+    Rewriting $\theta'$ as $\sigma :: \sigma' :: \theta''$ in goal
+    (2), the new goal is:\\
     \fbox{$\gamma\vdash{}(s_0 :: s_0 :: s :: \theta)\sim{}(\sigma_0 ::
-      \sigma :: \sigma' :: \theta'')$}
+      \sigma :: \sigma' :: \theta'')$} (3)\\
     
     By definition of the full execution trace similarity relation,
     there are four points to prove:
@@ -538,7 +553,8 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
       
     \item
       \fbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}\sigma$.}
-      Appealing to Lemma~\ref{lem:fst-re}, we have
+      Appealing to Lemma~\ref{lem:fst-re} (p.~\pageref{lem:fst-re}),
+      we have
       $\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\approx}\sigma$.
 
       By definition of
@@ -547,7 +563,8 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
       \qedbox{$\gamma,E_c,\tau\vdash{}s_0\stackrel{\uparrow}{\sim}\sigma$.}
       
     \item \fbox{$\gamma\vdash{}s\stackrel{\downarrow}{\sim}\sigma'$.}
-      Appealing to Lemma~\ref{lem:fst-re} and \ref{lem:fe}, we have
+      Appealing to Lemma~\ref{lem:fst-re} and \ref{lem:fe}
+      (p.~\pageref{lem:fe}), we have
       $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma'$.
 
       By definition of
@@ -573,12 +590,55 @@ Sections~\ref{sec:init-states} and \ref{sec:fst-re}.
 %%%%%%%%%% BISIMULATION LEMMA %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Lemma~\ref{lem:simulation} is similar to Theorem~\ref{thm:full-bisim}
-excepts that the execution/simulation traces are not produced starting
-from the initial states, but starting from two states verifying the
-full post falling edge state similarity relation (i.e,
-$\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$). The SITPN
-execution relation and the \hvhdl{} simulation relation execute one
+To prove the semantic preservation property, we want to prove that a
+given SITPN and its translated \hvhdl{} version follow the
+bisimulation diagram of Figure~\ref{fig:bisim-diagram}.  
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/Proof/beh-preser-details}
+  \caption[Bisimulation diagram over one clock cycle for a source
+  SITPN and a target \hvhdl{} design]{Bisimulation diagram over one
+    clock cycle for a source SITPN and a target \hvhdl{} design; the
+    left part of the diagram presents the execution of an SITPN over
+    one clock cycle, and the right part of the diagram presents the
+    simulation of an \hvhdl{} design over one clock cycle; the upper
+    part of the diagram corresponds to the rising edge phase of the
+    clock cycle, and the lower part illustrates the falling edge phase
+    of the clock cycle.}
+  \label{fig:bisim-diagram}
+\end{figure}
+
+The upper part of the diagram, corresponding to the rising edge phase
+of the clock cycle, is proved by Lemma~\ref{lem:re}
+(p.~\pageref{lem:re}). First, we assume that the starting SITPN state
+and the starting \hvhdl{} design state verify the full post falling
+edge state similarity relation at the beginning of the clock cycle
+(i.e, $s\stackrel{\downarrow}{\approx}\sigma$ in
+Figure~\ref{fig:bisim-diagram}).  Then, Lemma~\ref{lem:re} states that
+after the computation of a rising edge step on the SITPN part and on
+the \hvhdl{} part the resulting states verify the full post rising
+edge state similarity relation. The lower part of the diagram,
+corresponding to the falling edge phase of the clock cycle, is proved
+by Lemma~\ref{lem:fe} (p.~\pageref{lem:fe}). First, we assume that the
+starting SITPN state and the starting \hvhdl{} state verify the full
+post rising edge state similarity relation (i.e.
+$s'\stackrel{\uparrow}{\approx}\sigma'$ in
+Figure~\ref{fig:bisim-diagram}). Then, Lemma~\ref{lem:fe} states that
+after the computation of a falling edge step on the SITPN part and on
+the \hvhdl{} part the resulting states verify the full post falling
+edge state similarity relation.
+
+The proof of Lemma~\ref{lem:simulation} is based on the bisimulation
+diagram of Figure~\ref{fig:bisim-diagram}.  Lemma~\ref{lem:simulation}
+is similar to Theorem~\ref{thm:full-bisim} excepts that the
+execution/simulation traces are not produced starting from the initial
+states, but starting from two states verifying the full post falling
+edge state similarity relation (i.e,
+$\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, corresponding
+to the kind of similarity relation that must hold when considering two
+states at the beginning of a random clock cycle). The SITPN execution
+relation and the \hvhdl{} simulation relation execute one
 computational step at clock count $\tau$ and then decrement the clock
 count and call themselves recursively to produce the rest of the
 execution/simulation traces. Therefore, the proof of
@@ -590,7 +650,7 @@ clock count $\tau$.
   For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
   $d\in{}design$, $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
   $E_p\in\mathbb{N}\rightarrow{}Ins(\Delta)\rightarrow{}value$,
-  $E_c\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
+  $E_c\in\mathbb{N}\rightarrow\mathcal{C}\rightarrow\mathbb{B}$,
   $\tau\in\mathbb{N}$, $s\in{}S(sitpn)$, $\sigma_e,\sigma\in\Sigma$,
   $\theta_s,\theta_\sigma\in\mathtt{list}(\Sigma)$, such that
   \begin{itemize}
@@ -621,7 +681,7 @@ clock count $\tau$.
     $\gamma\vdash\theta_s\stackrel{\uparrow}{\approx}{}\theta_\sigma$.
   \end{frameb}
   
-  Let us reason by induction on $\tau$.
+  Let us reason by induction on the given clock cycle $\tau$.
   
   \begin{itemize}
   \item \textbf{BASE CASE}: $\tau=0$. Then,
@@ -683,14 +743,14 @@ clock count $\tau$.
     Then, the new goal is:
     \fbox{$\gamma\vdash{}(s' :: s'' ::
       \theta)\stackrel{\uparrow}{\sim}(\sigma' :: \sigma'' ::
-      \theta')$}.
+      \theta')$.}
     
     By definition of the execution trace similarity relation, there
     are three points to prove:
     \begin{enumerate}
     \item
       \framebox{$\gamma\vdash{}s'\stackrel{\uparrow}{\sim}\sigma'$.}
-      Appealing to Lemma~\ref{lem:fe}, we have
+      Appealing to Lemma~\ref{lem:fe} (p.~\pageref{lem:fe}), we have
       $\gamma\vdash{}s'\stackrel{\uparrow}{\approx}\sigma'$.
 
       By definition of
@@ -714,71 +774,36 @@ clock count $\tau$.
       We can apply the induction hypothesis with $s=s''$,
       $\sigma=\sigma''$, $\theta_s=\theta$ and
       $\theta_\sigma=\theta'$. Then, what is left to prove is:
-      \framebox{$\gamma\vdash{}s''\stackrel{\downarrow}{\approx}\sigma''$}
+      \framebox{$\gamma\vdash{}s''\stackrel{\downarrow}{\approx}\sigma''$.}
 
-      Appealing to Lemmas~\ref{lem:fe} and \ref{lem:re}, we
-      can show
+      Using Lemmas~\ref{lem:fe} and \ref{lem:re}, we can show
       \qedbox{$\gamma\vdash{}s''\stackrel{\downarrow}{\approx}\sigma''$.}
     \end{enumerate}
     
   \end{itemize}
 \end{niproof}
 
-To prove the semantic preservation property, we want to prove that a
-given SITPN and its translated \hvhdl{} version follow the
-bisimulation diagram of Figure~\ref{fig:bisim-diagram}.  
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/Proof/beh-preser-details}
-  \caption[Bisimulation diagram over one clock cycle for a source
-  SITPN and a target \hvhdl{} design]{Bisimulation diagram over one
-    clock cycle for a source SITPN and a target \hvhdl{} design; the
-    left part of the diagram presents the execution of an SITPN over
-    one clock cycle, and the right part of the diagram presents the
-    simulation of an \hvhdl{} design over one clock cycle; the upper
-    part of the diagram corresponds to the rising edge phase of the
-    clock cycle, and the lower part illustrates the falling edge phase
-    of the clock cycle.}
-  \label{fig:bisim-diagram}
-\end{figure}
 
-The upper part of the diagram is proved by Lemma~\ref{lem:re}. First,
-we assume that the starting SITPN state and the starting \hvhdl{}
-design state verify the full post falling edge state similarity
-relation at the beginning of the clock cycle (i.e,
-$s\stackrel{\downarrow}{\approx}\sigma$ in
-Figure~\ref{fig:bisim-diagram}).  Then, Lemma~\ref{lem:re} states that
-after the computation of a rising edge step on the SITPN part and on
-the \hvhdl{} part the resulting states verify the full post rising
-edge state similarity relation. The lower part of the diagram is
-proved by Lemma~\ref{lem:fe}. First, we assume that the starting SITPN
-state and the starting \hvhdl{} state verify the full post rising edge
-state similarity relation (i.e,
-$s'\stackrel{\downarrow}{\approx}\sigma'$ in
-Figure~\ref{fig:bisim-diagram}). Then, Lemma~\ref{lem:re} states that
-after the computation of a falling edge step on the SITPN part and on
-the \hvhdl{} part the resulting states verify the full post falling
-edge state similarity relation.
-
-Here, we present Lemma~\ref{lem:re} and Lemma~\ref{lem:fe}, along with
-their proofs. In the two lemmas, we added an extra hypothesis about
-the starting state of the \hvhdl{} design:
+Now, let us present Lemma~\ref{lem:re} and Lemma~\ref{lem:fe}, along
+with their proofs. In the two lemmas, we added an hypothesis, which
+can always be verified at the beginning of a clock cycle, about the
+starting state of the \hvhdl{} design:
 $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$. This
 hypothesis states that all signal values are stable at the beginning
 of the considered clock phase. This means that the execution of the
 combinational part of the \hvhdl{} design does not change the value of
-signals anymore. This hypothesis is mandatory to determine the
+signals anymore. This hypothesis is required to determine the
 expression associated to combinational signals, i.e. the
 \emph{combinational equations}, at the beginning of the clock phase
 (see Section~\ref{sec:detailled-proof} for more details about
 combinational equations).
 
-To prove Lemmas~\ref{lem:re} and \ref{lem:fe}, one must show that
+To prove Lemmas~\ref{lem:re} and \ref{lem:fe}, one must prove that
 every point of the state similarity relation in the conclusion holds.
 For each point, the proof is given as a separate lemma that the reader
 will find in Appendix~\ref{app:sem-preserv-proof}. The proof strategy
-to show the equalities or equivalences laid out in the state
+to show the equalities or equivalences involved in the state
 similarity relation follows the same two-fold pattern:
 
 \begin{itemize}
@@ -847,17 +872,17 @@ Section~\ref{sec:detailled-proof}.
       $\land\big(u(I_s(t))\neq\infty\land{}s'.I(t)\le{}u(I_s(t))\Rightarrow$
       $s'.I(t)=\sigma'(id_t)(\texttt{s\_time\_counter})\big)$.\label{it:time-count-eq-re}
     \item
-      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $\forall{}t\in{}T_i,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $s'.reset_t(t)=\sigma'(id_t)(\texttt{s\_reinit\_time\_counter})$.\label{it:reset-eq-re}
     \item
       $\forall{}a\in\mathcal{A},id_a\in{}Outs(\Delta)~s.t.~\gamma(a)=id_a,~s'.ex(a)=\sigma'(id_a)$.\label{it:action-eq-re}
     \item
       $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{it:fun-eq-re}
     \item
-      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $t\in{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{true}$.\label{it:sens-eq-re}
     \item
-      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $t\notin{}Sens(s'.M)\Leftrightarrow\sigma'(id_t)(\texttt{s\_enabled})=\mathtt{false}$.\label{it:not-sens-eq-re}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
@@ -877,24 +902,38 @@ Section~\ref{sec:detailled-proof}.
   
   Each point is proved by a separate lemma:
   \begin{itemize}[label=--]
-  \item Apply the \nameref{lem:re-equal-marking} lemma to solve
-    \ref{it:marking-eq-re}.
-  \item Apply the \nameref{lem:re-equal-tc} lemma to solve
-    \ref{it:time-count-eq-re}.
-  \item Apply the \nameref{lem:re-equal-reset-orders} lemma to solve
-    \ref{it:reset-eq-re}.
-  \item Apply the \nameref{lem:re-equal-action-exec} lemma to solve \ref{it:action-eq-re}.
-  \item Apply the \nameref{lem:re-equal-fun-exec} lemma to solve
-    \ref{it:fun-eq-re}.
-  \item Apply the \nameref{lem:re-equal-sens} lemma to solve
-    \ref{it:sens-eq-re}.
-  \item Apply the \nameref{lem:re-equal-not-sens} lemma to solve
-    \ref{it:not-sens-eq-re}.
-  \item Apply the \nameref{lem:re-equal-cond-comb} lemma to solve
-    \ref{it:cond-comb-eq-re}.
-  \item Apply the \nameref{lem:re-equal-cond} lemma to solve
-    \ref{it:cond-eq-re}.
+  \item Apply the \nameref{lem:re-equal-marking} lemma
+    (p.~\pageref{lem:re-equal-marking}) to solve
+    Point~\ref{it:marking-eq-re}.
+  \item Apply the \nameref{lem:re-equal-tc} lemma
+    (p.~\pageref{lem:re-equal-tc}) to solve
+    Point~\ref{it:time-count-eq-re}.
+  \item Apply the \nameref{lem:re-equal-reset-orders} lemma
+    (p.~\pageref{lem:re-equal-reset-orders}) to solve
+    Point~\ref{it:reset-eq-re}.
+  \item Apply the \nameref{lem:re-equal-action-exec} lemma
+    (p.~\pageref{lem:re-equal-action-exec}) to solve
+    Point~\ref{it:action-eq-re}.
+  \item Apply the \nameref{lem:re-equal-fun-exec} lemma
+    (p.~\pageref{lem:re-equal-fun-exec}) to solve
+    Point~\ref{it:fun-eq-re}.
+  \item Apply the \nameref{lem:re-equal-sens} lemma
+    (p.~\pageref{lem:re-equal-sens}) to solve
+    Point~\ref{it:sens-eq-re}.
+  \item Apply the \nameref{lem:re-equal-not-sens} lemma
+    (p.~\pageref{lem:re-equal-not-sens}) to solve
+    Point~\ref{it:not-sens-eq-re}.
+  \item Apply the \nameref{lem:re-equal-cond-comb} lemma
+    (p.~\pageref{lem:re-equal-cond-comb}) to solve
+    Point~\ref{it:cond-comb-eq-re}.
+  \item Apply the \nameref{lem:re-equal-cond} lemma
+    (p.~\pageref{lem:re-equal-cond}) to solve
+    Point~\ref{it:cond-eq-re}.
   \end{itemize}
+
+  All the lemmas used above, and their corresponding proofs, are to be
+  found in Appendix~\ref{app:sem-preserv-proof},
+  Section~\ref{sec:rising-edge}.
 \end{niproof}
 
 \begin{lemma}[Falling edge]
@@ -944,10 +983,10 @@ Section~\ref{sec:detailled-proof}.
     \item
       $\forall{}f\in\mathcal{F},id_f\in{}Outs(\Delta)~s.t.~\gamma(f)=id_f,~s'.ex(f)=\sigma'(id_f)$.\label{item:fe-equal-fun-exec}
     \item
-      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $t\in{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{true}$.\label{item:fe-equal-firable}
     \item
-      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
+      $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$\\
       $t\notin{}Firable(s')\Leftrightarrow\sigma'(id_t)(\texttt{s\_firable})=\mathtt{false}$.\label{item:fe-equal-not-firable}
     \item
       $\forall{}t\in{}T,id_t\in{}Comps(\Delta)~s.t.~\gamma(t)=id_t,$
@@ -967,29 +1006,44 @@ Section~\ref{sec:detailled-proof}.
 
   Each point is proved by a separate lemma:
   \begin{itemize}[label=--]
-  \item Apply the \nameref{lem:fe-equal-marking} lemma to solve
-    \ref{item:fe-equal-marking}.
-  \item Apply the \nameref{lem:fe-equal-tc} lemma to solve
-    \ref{item:fe-equal-tc}.
-  \item Apply the \nameref{lem:fe-equal-cond-values} lemma to solve
-    \ref{item:fe-equal-cond-values}.
-  \item Apply the \nameref{lem:fe-equal-act-exec} lemma to solve
-    \ref{item:fe-equal-act-exec}.
-  \item Apply the \nameref{lem:fe-equal-fun-exec} lemma to solve
-    \ref{item:fe-equal-fun-exec}.
-  \item Apply the \nameref{lem:fe-equal-firable} lemma to solve
-    \ref{item:fe-equal-firable}.
-  \item Apply the \nameref{lem:fe-equal-not-firable} lemma to solve
-    \ref{item:fe-equal-not-firable}.
-  \item Apply the \nameref{lem:fe-equal-fired} lemma to solve
-    \ref{item:fe-equal-fired}.
-  \item Apply the \nameref{lem:fe-equal-not-fired} lemma to solve
-    \ref{item:fe-equal-not-fired}.
-  \item Apply the \nameref{lem:fe-equal-ots} lemma to solve
-    \ref{item:fe-equal-ots}.
-  \item Apply the \nameref{lem:fe-equal-its} lemma to solve
-    \ref{item:fe-equal-its}.
+  \item Apply the \nameref{lem:fe-equal-marking} lemma
+    (p.~\pageref{lem:fe-equal-marking}) to solve
+    Point~\ref{item:fe-equal-marking}.
+  \item Apply the \nameref{lem:fe-equal-tc} lemma
+    (p.~\pageref{lem:fe-equal-tc}) to solve
+    Point~\ref{item:fe-equal-tc}.
+  \item Apply the \nameref{lem:fe-equal-cond-values} lemma
+    (p.~\pageref{lem:fe-equal-cond-values}) to solve
+    Point~\ref{item:fe-equal-cond-values}.
+  \item Apply the \nameref{lem:fe-equal-act-exec} lemma
+    (p.~\pageref{lem:fe-equal-act-exec}) to solve
+    Point~\ref{item:fe-equal-act-exec}.
+  \item Apply the \nameref{lem:fe-equal-fun-exec} lemma
+    (p.~\pageref{lem:fe-equal-fun-exec}) to solve
+    Point~\ref{item:fe-equal-fun-exec}.
+  \item Apply the \nameref{lem:fe-equal-firable} lemma
+    (p.~\pageref{lem:fe-equal-firable}) to solve
+    Point~\ref{item:fe-equal-firable}.
+  \item Apply the \nameref{lem:fe-equal-not-firable} lemma
+    (p.~\pageref{lem:fe-equal-not-firable}) to solve
+    Point~\ref{item:fe-equal-not-firable}.
+  \item Apply the \nameref{lem:fe-equal-fired} lemma
+    (p.~\pageref{lem:fe-equal-fired}) to solve
+    Point~\ref{item:fe-equal-fired}.
+  \item Apply the \nameref{lem:fe-equal-not-fired} lemma
+    (p.~\pageref{lem:fe-equal-not-fired}) to solve
+    Point~\ref{item:fe-equal-not-fired}.
+  \item Apply the \nameref{lem:fe-equal-ots} lemma
+    (p.~\pageref{lem:fe-equal-ots}) to solve
+    Point~\ref{item:fe-equal-ots}.
+  \item Apply the \nameref{lem:fe-equal-its} lemma
+    (p.~\pageref{lem:fe-equal-its}) to solve
+    Point~\ref{item:fe-equal-its}.
   \end{itemize}
+
+  All the lemmas used above, and their corresponding proofs, are to be
+  found in Appendix~\ref{app:sem-preserv-proof},
+  Section~\ref{sec:falling-edge}.
 \end{niproof}
 
 
