@@ -12,7 +12,7 @@ of the section.
 \subsection{An accompanied journey along the proof}
 \label{sec:informal-fired-proof}
 
-The proof of Lemma~\ref{lem:fe-equal-fired} pertains to the set of
+The proof of Lemma~\ref{lem:fe-equal-fired} is related to the set of
 fired transitions. In an SITPN, the firing process, based on the set
 of fired transitions, is responsible for the computation of the new
 marking, the reset orders, and the execution of functions during the
@@ -22,7 +22,7 @@ defined on the SITPN side and the set of fired transitions as defined
 on the \hvhdl{} side. The equivalence must hold at the beginning of
 the rising edge phase, i.e. when the set of fired transitions will be
 used to compute a new SITPN state. Thus, the falling edge phase
-prepares the field so that the equivalence between the set of fired
+prepares the ground so that the equivalence between the set of fired
 transitions holds at the beginning of the next rising edge phase. To
 express Lemma~\ref{lem:fe-equal-fired}, we must first define the
 hypotheses stating that a falling edge phase happened in the course of
@@ -73,10 +73,10 @@ the falling edge phase:
   Definition~\ref{def:fe-hyps},}
 
 The hypotheses of Definition~\ref{def:fe-hyps} are used in all the
-lemmas expressing some properties about the falling edge
-phase. Therefore, Definition~\ref{def:fe-hyps} enables the conciser
-expression of these lemmas. Then, we can express
-Lemma~\ref{lem:fe-equal-fired} as follows:
+lemmas expressing properties of the falling edge phase. Therefore,
+Definition~\ref{def:fe-hyps} enables the conciser expression of these
+lemmas. Then, we can express Lemma~\ref{lem:fe-equal-fired} as
+follows:
 
 \begin{lemma}[Falling edge equal fired]
   \label{lem:fe-equal-fired}
@@ -109,17 +109,17 @@ To prove the equivalence, we must first look at the definition of the
 set of fired transitions on the SITPN side and on the \hvhdl{} side,
 and then think of a way to relate the two definitions.
 
-On the SITPN side, the set of fired transitions receives an
-intentional and recursive definition (see Definition~\ref{def:fired})
-depending on a given SITPN state. In Lemma~\ref{lem:fe-equal-fired},
-we are interested in the definition of the set of fired transitions at
-state $s'$, i.e. the state at the end of the falling edge phase. A
+On the SITPN side, the set of fired transitions is an intentional and
+recursive definition (see Definition~\ref{def:fired}) depending on a
+given SITPN state. In Lemma~\ref{lem:fe-equal-fired}, we are
+interested in the definition of the set of fired transitions at state
+$s'$, i.e. the state at the end of the falling edge phase. A
 transition belongs to the set of fired transitions if it is
 \emph{firable} (see Definition~\ref{def:firable}) and sensitized by
 the \emph{residual} marking (see
 Sections~\ref{subsec:hpn-particularities} and \ref{sec:fired-trans})
 at the considered SITPN state.  Figure~\ref{fig:example-fired-trans}
-gives the set of fired transitions, i.e. $Fired(s)$, on an example
+gives the set of fired transitions, i.e. $Fired(s)$, on an example of
 SITPN at a given state $s$. Here, transitions $t_a$, $t_b$ and $t_c$
 are all firable at state $s$; however, only transition $t_c$ is
 sensitized by the residual marking.
@@ -147,20 +147,19 @@ top-priority (e.g, $t_c$ in Figure~\ref{fig:example-fired-trans}). The
 condition of the priority relation being a strict order over the set
 of transitions is part of the definition of a well-defined SITPN (see
 Definition~\ref{def:wd-sitpn}). By definition, top-priority
-transitions have an empty $Pr$ set. Indeed, there exist no transition
-with a higher firing priority than a top-priority transition. Thus, a
+transitions have an empty $Pr$ set. There exists no transition with a
+higher firing priority than a top-priority transition. Thus, a
 top-priority transition that is firable is also fired. Note that one
-can not determine the $Pr$ set of a transition before having
-determined the firing status of all the transitions with a higher
-firing priority. For instance, in
-Figure~\ref{fig:example-fired-trans}, it is impossible to know the
-content of $Pr(t_a,s)$ before having determined if transition $t_b$ is
-fired or not. To know if $t_b$ is fired or not, we must determine the
-content of $Pr(t_b,s)$. To do so, we must first determine the firing
-status of $t_c$. Even though the definition of the set of fired
-transitions is very declarative, this hints at a natural way to
-establish an algorithm to build the set of fired transitions at a
-given SITPN state.
+cannot determine the $Pr$ set of a transition before having determined
+the firing status of all the transitions with a higher firing
+priority. For instance, in Figure~\ref{fig:example-fired-trans}, it is
+impossible to know the content of $Pr(t_a,s)$ before having determined
+if transition $t_b$ is fired or not. To know if $t_b$ is fired or not,
+we must determine the content of $Pr(t_b,s)$. To do so, we must first
+determine the firing status of $t_c$. Even though the definition of
+the set of fired transitions is very declarative, this provides a
+natural way to establish an algorithm to build the set of fired
+transitions at a given SITPN state.
 
 On the \hvhdl{} side, the set of fired transitions is defined through
 the value of the \texttt{fired} port of TCIs. The transition design
@@ -171,12 +170,12 @@ phase (i.e. at state $\sigma'$), the value of the \texttt{fired} port
 of a TCI reflects the firing status of the corresponding
 transition. The \texttt{fired} port is a combinational signal. This
 means that its value depends on an equation that is verified when all
-signals are stable, i.e. at the end of the stabilization phases
-happening during the simulation. In the point of view of the circuit
-synthesis, this equation reflects the wiring of the port in the
-described hardware circuit. Figure~\ref{fig:fired-port} shows a part
-of the transition design architecture describing how the
-\texttt{fired} port is connected to the other internal signals.
+signals are stable, i.e. at the end of stabilization phases happening
+during the simulation. In the point of view of the circuit synthesis,
+this equation reflects the wiring of the port in the described
+hardware circuit. Figure~\ref{fig:fired-port} shows a part of the
+transition design architecture describing how the \texttt{fired} port
+is connected to the other internal signals.
 
 \begin{figure}[H]
   \centering
@@ -195,14 +194,14 @@ of the transition design architecture describing how the
 In Figure~\ref{fig:fired-port}, the labels underneath the \emph{and}
 logic ports and inside the block denote the names of the processes
 defined in the transition design architecture as \vhdl{} code. As a
-matter of fact, Figure~\ref{fig:fired-port} is a graphic transcription
-of the code defining the transition design architecture. Therefore, by
-looking at the \vhdl{} code, we are able to determine the
-combinational equation associated to the \texttt{fired} port. Given a
-TCI $id_t$ in a top-level design and a state $\sigma$ denoting a
-current stable state of the design (remember that a combinational
-equation holds when all signal values are stable), the \texttt{fired}
-port equation at $\sigma$ is:
+matter of fact, Figure~\ref{fig:fired-port} is a graphical
+transcription of the code defining the transition design
+architecture. Therefore, by looking at the \vhdl{} code, we are able
+to determine the combinational equation associated to the
+\texttt{fired} port. Given a TCI $id_t$ in a top-level design and a
+state $\sigma$ denoting a current stable state of the design (remember
+that a combinational equation holds when all signal values are
+stable), the \texttt{fired} port equation at $\sigma$ is:
 
 \begin{equation}
   \label{eq:fired-port-comb-eq}
@@ -364,7 +363,8 @@ shown in Figure~\ref{fig:fired-port}, the
 the element $i$-th element of the \texttt{priority\_authorizations}
 port at state $\sigma'(id_t)$, we must know how the
 \texttt{priority\_authorizations} port is connected in the top-level
-design. Basing ourselves on the transformation function, the
+design. Basing ourselves on the transformation function
+(cf. Algorithm~\ref{alg:geninter}, p.~\pageref{alg:geninter}), the
 connection of the \texttt{priority\_authorizations} port for the TCI
 $id_t$ depends on the set of input places of the transition $t$. If
 the set of input places of $t$ is empty, then, all elements of the
@@ -905,20 +905,21 @@ the \texttt{s\_reinit\_time\_counter} signal; the
 \texttt{s\_reinit\_time\_counter} signal value follows the value of
 the reset order assigned to a given transition. Thus, as the
 equivalence between reset orders and the value of the
-\texttt{s\_reinit\_time\_counter}signal holds at the beginning of the
+\texttt{s\_reinit\_time\_counter} signal holds at the beginning of the
 falling edge phase, the \texttt{time\_counter} process can rely on the
 value of the \texttt{s\_reinit\_time\_counter} signal to reset the
 value of the \texttt{s\_time\_counter} signal. As a consequence, the
-set of fired transitions is no longer involved in any the SITPN
-semantics rules happening during the falling edge phase. Therefore, we
-chose to withdraw the $Fired$ set from the definition of the SITPN
-state record. We opted for an intentional definition of the set of
-fired transitions at given SITPN state (i.e.,
-Definition~\ref{def:fired}). After these changes, we were able to
-prove that there were no more divergence between the time counters and
-the value of the \texttt{s\_time\_counter} signals in the course of
-the execution (see Lemmas~\ref{lem:re-equal-tc} and
-\ref{lem:fe-equal-tc} about the equivalence of time counters).
+set of fired transitions is no longer involved in the SITPN semantics
+premises of the falling edge phase. Therefore, we chose to withdraw
+the $Fired$ set from the definition of the SITPN state record. We
+opted for an intentional definition of the set of fired transitions at
+given SITPN state (i.e., Definition~\ref{def:fired}). After these
+changes, we were able to prove that there were no more divergence
+between the time counters and the value of the
+\texttt{s\_time\_counter} signals in the course of the execution (see
+Lemmas~\ref{lem:re-equal-tc}, p.~\pageref{lem:re-equal-tc}, and
+\ref{lem:fe-equal-tc}, p.~\pageref{lem:fe-equal-tc}, about the
+equivalence of time counters).
 
 %%% Local Variables:
 %%% mode: latex

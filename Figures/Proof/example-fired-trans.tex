@@ -71,8 +71,8 @@
       \node[transition] (ta) [below right=of p0, label={right:$t_a$}] {}
       edge[pre, bend right] (p0);
 
-      \draw (tc.south east) edge[<-,dotted, bend right=90] (tb.south west);
-      \draw (tb.south east) edge[<-,dotted, bend right=90] (ta.south west);
+      \draw (tc.south east) edge[->,dotted, bend right=90] (tb.south west);
+      \draw (tb.south east) edge[->,dotted, bend right=90] (ta.south west);
     \end{tikzpicture}
   };
   

@@ -14,8 +14,8 @@ SITPN to the elements that constitute the execution state of a
 \hvhdl{} design. An SITPN state is an abstract structure relating the
 places, transitions, actions, functions and conditions of a given
 SITPN to the values of certain domains (see
-Section~\ref{sec:sitpn-state}). An \hvhdl{} design state is composed a
-signal store mapping signals to values, and of a component store
+Section~\ref{sec:sitpn-state}). An \hvhdl{} design state is composed
+of a signal store mapping signals to values, and of a component store
 mapping component instances to their own internal states (which are
 themselves design states). Thanks to the binder function $\gamma$
 (cf. Definition~\ref{def:sitpn-to-hvhdl-binder}) generated alongside
@@ -60,7 +60,7 @@ the marking value of a place $p$ at state $s$ to the value of the
 \texttt{s\_marking} signal inside the internal state of the place
 component instance (PCI) $id_p$. The expression $\sigma(id_p)$ returns
 the internal state of PCI $id_p$ by looking up the component store of
-state $\sigma$. Propertys~\ref{item:sim-tc} and \ref{item:sim-reset}
+state $\sigma$. Properties~\ref{item:sim-tc} and \ref{item:sim-reset}
 similarly relate the value of time counters (resp. reset orders) of
 transitions to the value of the signals $\texttt{s\_time\_counter}$
 (resp. $\texttt{s\_reinit\_time\_counter}$) in the internal state of

@@ -63,11 +63,11 @@ structure. As the value of time counters is \textit{dynamic}, i.e. it
 evolves with the execution of an SITPN model, it is a part of the
 SITPN state.
 
-\begin{notation}[Time transitions]
+\begin{definition}[Time transitions]
   For a given $sitpn\in{}SITPN$, $T_i$ denotes the definition domain
   of $I_s$, i.e. the set of transitions associated with a time
   interval, referred to as \textit{time transitions}.
-\end{notation}
+\end{definition}
 
 In the current formal definition of the SITPN structure, and as
 discussed in Section~\ref{subsec:pn-formalism}, we do not consider the
@@ -115,7 +115,7 @@ SITPN state structure:
   marking of state $s$, and $s.M(p)$ denotes the marking of a given
   place $p$ at state $s$; $s.I$ refers the function yielding the value
   of time counters at state $s$, and $s.I(t)$ denotes the value of the
-  time counter associated with the transtion $t$ at state $s$.
+  time counter associated with the transition $t$ at state $s$.
 \end{notation}
 
 At the beginning of its execution, a SITPN model is associated with an
@@ -367,7 +367,7 @@ instances to define execution relations, or relations that are
 involved in an operational semantics. Thus,
 Definition~\ref{def:semantics} can be equivalently represented with
 the following rule instances, where the premises of the rules refer to
-the items of Definition~\ref{def:semantics}:
+the premises of Definition~\ref{def:semantics}:
 
 \begin{figure}[H]
   \centering

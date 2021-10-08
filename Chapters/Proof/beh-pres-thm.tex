@@ -1,6 +1,11 @@
 In this section, we describe the major theorems and lemmas stating
 that the \hilecop{} transformation function is semantic preserving. We
-also present the informal proofs for these theorems and lemmas.
+also present the informal proofs for these theorems and lemmas. In our
+proofs, we often refer to theorems and lemmas that are not yet
+presented at the moment of the reading. Therefore, we provide, in
+Appendix~\ref{app:tree-beh-pres-thm}, a graph of the dependencies
+between our high-level theorems and the other theorems and lemmas to
+which they appeal in their proof.
 
 \subsection{Proof notations}
 \label{sec:pf-notations}
@@ -786,8 +791,8 @@ clock count $\tau$.
 
 
 Now, let us present Lemma~\ref{lem:re} and Lemma~\ref{lem:fe}, along
-with their proofs. In the two lemmas, we added an hypothesis, which
-can always be verified at the beginning of a clock cycle, about the
+with their proofs. In the two lemmas, we added a hypothesis, which can
+always be verified at the beginning of a clock cycle, about the
 starting state of the \hvhdl{} design:
 $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$. This
 hypothesis states that all signal values are stable at the beginning

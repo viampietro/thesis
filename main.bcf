@@ -2397,7 +2397,15 @@
     <bcf:citekey order="198">Wiedijk2000</bcf:citekey>
     <bcf:citekey order="199">Leroux2014</bcf:citekey>
     <bcf:citekey order="199">Merzoug2018</bcf:citekey>
-    <bcf:citekey order="200">Leroux2014</bcf:citekey>
+    <bcf:citekey order="200">Bourke</bcf:citekey>
+    <bcf:citekey order="200">Habibi2006</bcf:citekey>
+    <bcf:citekey order="200">Braibant2013</bcf:citekey>
+    <bcf:citekey order="200">Yang2014</bcf:citekey>
+    <bcf:citekey order="200">Loow2021</bcf:citekey>
+    <bcf:citekey order="200">Hansen2007a</bcf:citekey>
+    <bcf:citekey order="200">Bourgeat2020</bcf:citekey>
+    <bcf:citekey order="200">Yang2016</bcf:citekey>
+    <bcf:citekey order="201">Leroux2014</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
