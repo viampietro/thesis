@@ -35,7 +35,7 @@ singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 %nohyperref, % Uncomment to not load the hyperref package
 headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
-%consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
+consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
 
@@ -191,6 +191,54 @@ natbib=true]{biblatex}
 %----------------------------------------------------------------------------------------
 
 % \dedicatory{For/Dedicated to/To my\ldots} 
+
+%----------------------------------------------------------------------------------------
+%	FRENCH ABSTRACT
+%----------------------------------------------------------------------------------------
+
+
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\begin{abstract}
+  The complexity of digital hardware circuits makes it difficult to
+  produce them without the help of computers.  In this thesis, we are
+  interested in the formal verification of the \hilecop{}
+  methodology. This methodology aims at the assistance of engineers in
+  the design and production of safety-critical digital systems. In
+  \hilecop{}, engineers rely on graphical formalisms, based on
+  component diagrams and a particular kind of Petri nets, to produce a
+  model of a digital circuit. Then, a computer program turns the model
+  into an intermediary description written in \vhdl{} (Very high speed
+  integrated circuit Hardware Description Language). Finally, an
+  industrial compiler/synthesizer transforms the \vhdl{} description
+  into a concrete physical circuit on a FPGA, or as an ASIC. In
+  \hilecop{}, the use of Petri nets permits the engineers to describe
+  a \textit{formal} model of a digital circuit. The mathematical
+  foundations of Petri nets enables the use of model-checking
+  techniques. Thus, in \hilecop{}, proofs can be brought that the
+  produced models verify certain \textit{soundness} properties. This
+  is all the more important when the designed circuit is involved in a
+  safety-critical system (e.g. neuroprostheses produced by the
+  Neurinnov company, which uses the \hilecop{} methodology). However,
+  even with a \textit{sound} model of a circuit, one transformation
+  step could alter the behavior of the initial model. The goal of this
+  thesis is to brought the formal proof that the model-to-text
+  transformation from a \hilecop{} high-level model to a \vhdl{}
+  description is \textit{semantic preserving}; i.e. for all high-level
+  model given as an input to the transformation, the resulting \vhdl{}
+  description behaves similarly. To perform this task, we draw our
+  inspiration from the many works pertaining the formal verification
+  of the semantic preservation property of compilers for programming
+  languages (and more specifically from the certified C compiler
+  \ccert{} \cite{Leroy2009}). Finally, we have brought the informal
+  \textit{paper} proof that the \hilecop{} transformation is semantic
+  preserving by demonstrating a related behavior preservation theorem.
+  The mechanization of the proof using the \coq{} proof assistant is
+  an on-going task.
+\end{abstract}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
