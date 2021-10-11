@@ -1,0 +1,126 @@
+\section{Un formalisme de haut-niveau : les réseaux de Petri}
+
+Du fait de leur statut de modèles formels et des possibilités
+d'analyse qui en résultent, les RdPs ont été retenus comme modèles de
+haut niveau de la méthodologie \hilecop{}. Le but de la méthodologie
+étant la conception et la production de circuits numériques
+\emph{critiques}, les modèles se doivent d'être validés par analyse
+formelle. Afin d'augmenter l'expressivité des modèles, les RdPs
+\hilecop{} combinent plusieurs classes connues de RdPs (présentées
+ci-après), mais leur particularité réside dans leur exécution
+synchrone. Les RdPs \hilecop{} sont nommés SITPNs pour Synchronously
+executed Interpreted Time Petri Nets with priorities.
+
+Les SITPNs sont des RdP interprétés; des actions peuvent être
+associées aux places d'un réseau, et des fonctions/conditions peuvent
+être associées aux transitions. % Actions, fonctions et conditions
+% décrivent l'interaction du système modélisé avec son environnement.
+% Une action est exécutée tant qu'au moins une place à laquelle elle
+% est associée possède un marquage non nul. Une fonction, liée à une
+% ou plusieurs transitions, est exécutée lors du tir d'une de ces
+% transitions.
+Actions et fonctions définissent des opérations sur une ensemble de
+variables, ici, des \textit{signaux} \vhdl{}.  Les conditions
+associées aux transitions sont des expressions Booléennes sûr la
+valeur des signaux. Dans un RdP interprété, une transition est
+franchissable si elle est sensibilisée et que toutes les conditions
+qui lui sont associées sont \emph{vraies}. La Figure~\ref{fig:ipn}
+donne un exemple de RdP interprété.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.6\textwidth]{Figures/SITPN/interpreted-pn}
+  \caption[Un exemple de réseau de Petri interprété.]{Un exemple de
+    réseau de Petri interprété; sur le côté gauche, le RdP; sur le
+    côté droit, les expressions Booléennes associées aux conditions et
+    les opérations associées aux actions et fonctions.}
+  \label{fig:ipn}
+\end{figure}%
+
+Les RdP utilisés dans \hilecop{} sont temporels; une fenêtre de tir,
+i.e un intervalle de temps, peut être associée à une transition. Un
+compteur de temps est lancé lorsqu'une transition devient
+sensibilisée; celle-ci devient franchissable lorsque son compteur de
+temps a atteint l'intervalle de tir. La Figure~\ref{fig:tpn} donne un
+exemple de RdP temporel. La valeur courante des compteurs de temps est
+représentée entre chevrons en dessous des intervalles temporels
+associés. En résumé, une transition d'un SITPN est franchissable si
+elle est sensibilisée, si toutes les conditions qui lui sont associées
+sont vraies et si son compteur de temps est dans l'intervalle défini.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=0.2\textwidth]{Figures/SITPN/time-pn}
+  \caption[Un exemple de RdP temporel.]{Un exemple de RdP temporel. La
+    valeur des compteurs de temps apparaît en rouge.}
+  \label{fig:tpn}
+\end{figure}
+
+Contrairement au cas général, les SITPNs ont une politique de tir
+(i.e, une sémantique) \emph{synchrone}. Fondamentalement, le tir des
+transitions d'un RdP est un phéno\-mène indéterministe (si deux
+transitions sont franchissables au même instant, tous les ordres de
+tirs sont possibles), et asynchrone (dès qu'une transition est
+franchissable, elle peut être tirée sans attente). A contrario,
+l'évolution d'un SITPN est rythmée par le front montant et le front
+descendant d'un signal d'horloge, comme montré dans la
+Figure~\ref{fig:sync-exec}. Sur le front descendant (\textcircled{1}
+de la Figure~\ref{fig:sync-exec}), toutes les transitions devant être
+tirées sont déterminées, ce après mise à jour des conditions et
+intervalles de temps; sur le front montant (\textcircled{2} de la
+Figure~\ref{fig:sync-exec}), les précédentes transitions sont tirées,
+entraînant la mis à jour du marquage du réseau et l'exécution de
+fonctions. La sémantique d'évolution d'un tel réseau est synchrone et
+déterministe.
+
+% \begin{figure}[!htbp]
+%   \centering
+%   \includegraphics[keepaspectratio,width=.75\linewidth]{pictures/sync-exec}
+%   \caption{Evolution synchrone d'un SITPN.}
+%   \label{fig:sync-exec}
+% \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/SITPN/sync-exec}
+  \caption{Evolution d'un SITPN synchronisée avec un signal
+    d'horloge.}
+  \label{fig:sync-exec}
+\end{figure}
+
+La structure et la sémantique des SITPNs ont été formalisées dans
+\cite{Leroux2014, Merzoug2018}. La sémantique est exprimée comme un
+système états-transitions où les transitions sont étiquetées par les
+évènements d'un signal d'horloge. Il y a deux évènements possibles :
+le front montant et le front descendant du signal. L'état d'un SITPN
+décrit, entre autres, le marquage courant du SITPN, la valeur des
+compteurs de temps et des conditions associés aux transitions, la
+liste des transitions à tirer\dots La sémantique des SITPNs fixe les
+règles de changement d'état en fonction des évènements d'horloge. Par
+exemple, sur le front descendant d'horloge, a lliste des transitions à
+tirer au prochain front montant est calculée; une règle stipule qu'une
+aucune transition non franchissable au front descendant n’appartient à
+l’ensemble des transitions à tirer.
+
+La première contribution de la thèse est l'implantation en \coq{} de
+la structure et de la sémantique des SITPNs.  La sémantique a été
+implantée comme une relation inductive paramétrée par un SITPN, deux
+états (i.e, avant et après transition), et un évènement d'horloge. La
+relation présente deux cas de construction, un pour chaque évènement
+d'horloge considéré.  Afin de tester notre implantation de la
+sémantique des SITPNs, un interprète a été conçu, i.e un programme qui
+simule les changements d'état d'un SITPN pour $n$ cycles d'horloge, en
+partant de l'état initial du réseau. Cet interprète est prouvé correct
+et complet vis à vis de la sémantique des SITPNs pour une évolution
+sur un cycle d'horloge. L'intégralité de la formalisation et de la
+mécanisation est mise à disposition du
+lecteur\footnote{\url{https://github.com/viampietro/sitpns}}. Cependant,
+nous avons utilisées une autre version de l'implémentation des SITPNs
+en \coq{} pour effectuer la preuve de préservation sémantique. La
+dernière version est plus élégante et utilisent les types
+dépendants\footnote{\url{https://github.com/viampietro/ver-hilecop/tree/master/sitpn/dp}}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

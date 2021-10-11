@@ -1,0 +1,81 @@
+\section{Introduction}
+
+Pour répondre aux contraintes liées à la conception de circuits
+numériques critiques, et à l'augmentation constante de la complexité
+des systèmes, le domaine de l'Ingénierie Système à Base de Modèles
+(ISBM) a été développé. L'intérêt est de travailler sur des modèles de
+haut niveau avec un pouvoir d'expression et des qualités de
+compréhension et de lisibilité qui facilitent les interactions entre
+les acteurs de la conception du circuit (i.e, les ingénieurs).
+Plusieurs formalismes existent~: le langage SysML
+\cite{Friedenthal2014}, des variantes du langage C \cite{Yankova2007},
+ou encore les réseaux de Petri (RdPs) \cite{Yakovlev2006}, pour citer
+les plus répandus.  Une fois la conception terminée, les modèles sont
+physiquement synthétisés en suivant un procédé manuel ou
+automatique. Il reste alors à prouver que la phase de transformation
+préserve le comportement du modèle de conception.
+% Dans le cadre de la production de circuits numériques critiques, les
+% méthodes formelles servent notamment à des fins d'analyse des
+% modèles de conception. L'analyse permet de vérifier certaines
+% propriétés comportementales des circuits modélisés.  Après analyse
+% et correction, les modèles sont physiquement synthétisés en suivant
+% un procédé manuel ou automatique. Dans le cas d'une approche
+% automatique de la synthèse, il reste à prouver que la phase de
+% transformation préserve le comportement du modèle de conception.
+La présente thèse s'intéresse à la vérification d'un processus d'aide
+à la modélisation et à la production de circuits numériques critiques
+: la méthodologie \hilecop{} (HIgh LEvel hardware COmponent
+Programming).  Cette méthodologie est mise en oeuvre dans le cadre de
+la création de micro-contrôleurs intégrés à des dispositifs médicaux
+de type neuroprothèses.  La Figure \ref{fig:hilecop-wf} en décrit les
+principales étapes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[keepaspectratio=true,width=\textwidth]{Figures/Hilecop/hilecop-wf}
+\caption[Principe de la méthodologie \hilecop{}.]{Principe de la
+  méthodologie \hilecop{}; les double flêches horizontales
+  représentent des phases de transformation; les simple flêches
+  indiquent les autres types d'opérations ayant cours à une étape
+  précise, ou entre étapes.}
+\label{fig:hilecop-wf}
+\end{figure}
+
+Le concepteur de systèmes électroniques esquisse premièrement un
+modèle graphique de haut niveau de son circuit (\textcircled{1}). Ce
+modèle s'appuie sur le formalisme des diagrammes à composants, avec
+l'addition des RdPs pour décrire le comportement interne des parties
+du circuit. Dans un deuxième temps, les parties du modèle sont
+assemblées et la structure des composants est effacée. Le résultat
+obtenu est un réseau de Petri global décrivant le système modélisé
+(\textcircled{2}).  Des outils d'analyse exploités par la méthodologie
+permettent alors de vérifier certaines propriétés du modèle (caractère
+borné, vivacité\dots) et présentent un compte-rendu au
+concepteur. Après plusieurs itérations du cycle analyse-correction, du
+code VHDL est généré à partir du modèle d'implémentation
+(\textcircled{3}). Dès lors, la dernière étape de la méthodologie, qui
+opère la synthèse du circuit électronique depuis le code source VHDL,
+est prise en charge par un compilateur/synthétiseur industriel
+propriétaire (\textcircled{4}).
+
+L'objectif de la thèse est de prouver que la transformation du modèle
+d'implémentation en code VHDL (i.e, de \textcircled{2} vers
+\textcircled{3} dans la Figure~\ref{fig:hilecop-wf}) n'introduit pas
+de divergences de comportement. % Pour ce faire, la sémantique des
+% modèles initiaux et des programmes cibles est considérée. 
+Dans cette optique, il sera nécessaire de formaliser la sémantique des
+modèles de haut niveau (RdP), du langage cible (VHDL), et de décrire
+la transformation. Ensuite, la preuve de similarité comportementale
+devra être établie. L'intégralité de la démarche sera mécanisée avec
+l'assistant à la preuve \coq{} \cite{Coq2021}. Même si cette démarche
+a été éprouvée pour la vérification de compilateurs, son application à
+la conception de circuits numériques est bien moins
+fréquente. L'intérêt scientifique provient de la distance qui existe
+entre le modèle d'exécution du formalisme source (SITPN) et celui du
+langage cible (VHDL). Cette distance devra être prise en compte lors
+de la preuve de préservation de comportement.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

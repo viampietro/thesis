@@ -196,7 +196,65 @@ natbib=true]{biblatex}
 %	FRENCH ABSTRACT
 %----------------------------------------------------------------------------------------
 
-
+\begin{frenchabstract}
+  La production de circuits numériques complexes est devenue
+  impossible sans l'aide des ordinateurs. La méthodologie \hilecop{}
+  (HIgh LEvel hardware COmponent Programming) assiste les ingénieurs
+  dans la conception et la production de circuits numériques dans le
+  contexte des systèmes critiques, i.e. systèmes dont le
+  malfonctionnement peut résulter en la perte de vies humaines, des
+  catastrophes naturelles, des désastres économiques, etc. A titre
+  d'exemple, la société
+  Neurinnov\footnote{\url{https://neurinnov.com/}} applique la
+  méthodologie \hilecop{} pour la production de neuroprothèses,
+  considérées comme des dispositifs médicaux hautement critiques par
+  la loi de régulation de
+  l'UE\footnote{\url{https://eur-lex.europa.eu/eli/reg/2017/745/2020-04-24}}. Dans
+  \hilecop{}, les ingénieurs produisent un modèle de circuit
+  numérique. Ils utilisent un formalisme graphique qui regroupe les
+  diagrammes à composant et un type particulier de réseaux de Petri
+  (RdP). Ensuite, le modèle est transformé en une représentation
+  textuelle intermédiaire décrite en langage \vhdl{} (Very high speed
+  integrated circuit Hardware Description Language). Finalement, un
+  compilateur/synthétiseur industriel génère un circuit numérique
+  physique, i.e. un ASIC ou sur carte FPGA, depuis la représentation
+  \vhdl{}. Ici, l'utilisation des
+  RdPs % comme structure sous-jacente aux
+  % modèles de circuits numériques
+  est liée au contexte des systèmes critiques. Les RdPs permettent la
+  vérification de propriétés sur les modèles de circuits numériques
+  grâce à l'application de techniques de \textit{model-checking}.
+  Cependant, une des transformations décrite dans la méthodologie
+  \hilecop{} pourrait altérer le \textit{comportement} (ou
+  \textit{sémantique}) des modèles initiaux, invalidant ainsi les
+  précédentes étapes de vérification. Le but de cette thèse est de
+  prouver que la transformation modèle-vers-texte de \hilecop{}, qui
+  génère une description \vhdl{} depuis un modèle de circuit
+  numérique, préserve le comportement des modèles d'entrée, i.e.: pour
+  tout modèle passé en entrée de la transformation, la description
+  \vhdl{} résultante se comporte de la même manière. Pour prouver
+  cette propriété, nous nous inspirons des travaux menés sur la
+  vérification formelle de compilateurs (notamment sur le compilateur
+  C certifié \ccert{} \cite{Leroy2009}). Notre approche est celle de
+  la vérification déductive interactive avec assistants de preuve.
+  % Spécifiquement, nous voulons prouver cette
+  % propriété dans le contexte de la vérification déductive interactive
+  % avec assistants de preuve.
+  Dans ce contexte, les étapes pour établir la propriété de
+  préservation de comportement de la transformation sont: (1)
+  formaliser la sémantique d'execution de la représentation source,
+  (2) de la représentation cible, (3) décrire la transformation, et
+  (4) prouver un théorème de préservation sémantique. Même en suivant
+  ce processus clairement détaillé, les spécificités de la
+  transformation modèle-vers-texte de \hilecop{} (comparaît notamment
+  aux compilateurs) apportent de nouvelles questions recherches et des
+  challenges à chaque étape. Dans cette thèse, nous utilisons
+  l'assistant à la preuve \coq{} pour nous accompagner tout au long du
+  processus. Finalement, nous avons prouvé que la transformation de
+  \hilecop{} préserve le comportement de tous modèles initiaux. La
+  mécanisation complète de la preuve avec \coq{} est un travail en
+  cours.
+\end{frenchabstract}
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
@@ -204,41 +262,61 @@ natbib=true]{biblatex}
 
 \begin{abstract}
   The complexity of digital hardware circuits makes it difficult to
-  produce them without the help of computers.  In this thesis, we are
-  interested in the formal verification of the \hilecop{}
-  methodology. This methodology aims at the assistance of engineers in
-  the design and production of safety-critical digital systems. In
-  \hilecop{}, engineers rely on graphical formalisms, based on
-  component diagrams and a particular kind of Petri nets, to produce a
-  model of a digital circuit. Then, a computer program turns the model
-  into an intermediary description written in \vhdl{} (Very high speed
-  integrated circuit Hardware Description Language). Finally, an
-  industrial compiler/synthesizer transforms the \vhdl{} description
-  into a concrete physical circuit on a FPGA, or as an ASIC. In
-  \hilecop{}, the use of Petri nets permits the engineers to describe
-  a \textit{formal} model of a digital circuit. The mathematical
-  foundations of Petri nets enables the use of model-checking
-  techniques. Thus, in \hilecop{}, proofs can be brought that the
-  produced models verify certain \textit{soundness} properties. This
-  is all the more important when the designed circuit is involved in a
-  safety-critical system (e.g. neuroprostheses produced by the
-  Neurinnov company, which uses the \hilecop{} methodology). However,
-  even with a \textit{sound} model of a circuit, one transformation
-  step could alter the behavior of the initial model. The goal of this
-  thesis is to brought the formal proof that the model-to-text
-  transformation from a \hilecop{} high-level model to a \vhdl{}
-  description is \textit{semantic preserving}; i.e. for all high-level
-  model given as an input to the transformation, the resulting \vhdl{}
-  description behaves similarly. To perform this task, we draw our
-  inspiration from the many works pertaining the formal verification
-  of the semantic preservation property of compilers for programming
-  languages (and more specifically from the certified C compiler
-  \ccert{} \cite{Leroy2009}). Finally, we have brought the informal
-  \textit{paper} proof that the \hilecop{} transformation is semantic
-  preserving by demonstrating a related behavior preservation theorem.
-  The mechanization of the proof using the \coq{} proof assistant is
-  an on-going task.
+  produce them without the help of computers.  The \hilecop{} (HIgh
+  LEvel hardware COmponent Programming) methodology aims at the
+  assistance of engineers in the design and production of such digital
+  circuits. The context of production is the one of
+  \textit{safety-critical} digital systems, i.e. systems which failure
+  could result in direct human losses, natural catastrophes, economic
+  disasters, etc. To give an example, the
+  Neurinnov\footnote{\url{https://neurinnov.com/}} company leverages
+  the \hilecop{} methodology to produce highly critical medical
+  devices known as neuroprostheses.  In \hilecop{}, engineers rely on
+  a graphical formalism, based on component diagrams and a particular
+  kind of Petri nets, to produce a model of a digital circuit. Then, a
+  computer program turns the model into an intermediary description
+  written in \vhdl{} (Very high speed integrated circuit Hardware
+  Description Language). Finally, an industrial compiler/synthesizer
+  transforms the \vhdl{} description into a concrete physical circuit
+  on an FPGA, or as an ASIC. The use of Petri nets permits the
+  engineers to describe a \textit{formal} model of a digital
+  circuit. The mathematical foundations of Petri nets enable the use
+  of model-checking techniques. Thus, proofs can be brought that the
+  produced models verify certain \textit{soundness} properties.
+  However, even with a \textit{sound} model of a circuit, one
+  transformation step could alter the behavior of the initial
+  model. The goal of this thesis is to bring the formal proof that the
+  model-to-text transformation from a \hilecop{} high-level model to a
+  \vhdl{} description is \textit{semantic preserving} (or
+  \textit{behavior preserving}); i.e. for all high-level model given
+  as an input to the transformation, the resulting \vhdl{} description
+  behaves similarly. To perform this task, we draw our inspiration
+  from the works pertaining to the formal verification of compilers
+  for programming languages (especially from the certified C compiler
+  \ccert{} \cite{Leroy2009}). Specifically, we are interested in
+  proving the property of semantic preservation in the context of
+  \textit{deductive} verification with proof assistants. In this
+  context, the steps to verify that a transformation is semantic
+  preserving include: (1) the formalization of the execution semantics
+  of the source representation, (2) of the target representation, (3)
+  the formal description of the transformation, and (4) the proof of a
+  corresponding semantic preservation theorem. In this thesis, these
+  steps have been carried within the framework of the \coq{} proof
+  assistant.  Even though these steps are clearly set, the
+  specificities of the \hilecop{} model-to-text transformation,
+  compared to compilers for programming languages, bring some
+  interesting research challenges.  Finally, we have brought the
+  informal \textit{paper} proof that the \hilecop{} transformation is
+  semantic preserving by demonstrating a related behavior preservation
+  theorem.  The full mechanization of the proof using the \coq{} proof
+  assistant is an ongoing task.
 \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	FRENCH EXTENDED ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\include{Chapters/FrenchExtendedAbstract}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
@@ -251,14 +329,13 @@ natbib=true]{biblatex}
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\include{Chapters/Introduction}
-\include{Chapters/PrelimNotions}
-% \include{Chapters/Hilecop}
-\include{Chapters/SITPN}
-\include{Chapters/H-VHDL}
-\include{Chapters/Transformation}
-\include{Chapters/Proof}
-\include{Chapters/Conclusion} 
+% \include{Chapters/Introduction}
+% \include{Chapters/PrelimNotions}
+% \include{Chapters/SITPN}
+% \include{Chapters/H-VHDL}
+% \include{Chapters/Transformation}
+% \include{Chapters/Proof}
+% \include{Chapters/Conclusion} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
@@ -269,10 +346,10 @@ natbib=true]{biblatex}
 % Include the appendices of the thesis as separate files from the Appendices folder
 % Uncomment the lines as you write the Appendices
 
-\include{Appendices/PlaceDesign}
-\include{Appendices/TransitionDesign}
-\include{Appendices/tree-beh-pres-thm}
-\include{Appendices/SemanticPreservationProof}
+% \include{Appendices/PlaceDesign}
+% \include{Appendices/TransitionDesign}
+% \include{Appendices/tree-beh-pres-thm}
+% \include{Appendices/SemanticPreservationProof}
 
 
 %----------------------------------------------------------------------------------------

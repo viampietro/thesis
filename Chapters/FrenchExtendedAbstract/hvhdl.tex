@@ -1,0 +1,134 @@
+\section{Un langage cible : VHDL}
+
+% \begin{wrapfigure}{H}{.5\textwidth}
+%   \centering 
+%   \includegraphics[keepaspectratio,width=.5\textwidth]{pictures/design}
+%   \caption{Exemple de design VHDL, un couple entité-architecture.}
+%   \label{fig:design}
+% \end{wrapfigure}
+
+Il existe plusieurs techniques permettant la synthèse physique d'un
+RdP. Cependant, la technique la plus étudiée est la transformation
+vers la langage VHDL. Cette technique a donc été retenue par la
+méthodologie \hilecop{}. Le langage VHDL permet les descriptions
+structurelle et comportementale de circuits électroniques, à des fins
+de simulation ou de synthèse physique. En VHDL, un \emph{design}
+décrit un composant électronique en termes d'interface entrée-sortie
+(l'\emph{entité}) et de comportement interne (l'\emph{architecture}).
+Le comportement d'un design s'exprime de deux manières : via
+l'interconnexion d'in\-stances d'autres designs (des sous-composants),
+ou à l'aide de \emph{processus}.  La spécificité du langage VHDL tient
+à l'exécution concurrente des processus et des sous-composants
+décrivant une architecture de design. Un processus définit un bloc
+d'instructions séquentielles; il observe un certain nombre de signaux
+qui composent sa liste de sensibilité. Le changement d'état d'un
+signal de cette liste entraîne l'exécution du bloc d'instructions du
+processus.  Conceptuellement, un signal VHDL représente une connexion
+physique sur un circuit électronique. Les signaux sont les principaux
+véhicules des valeurs dans les programmes
+VHDL. % Il est possible de les
+% confondre jusqu'à une certain point avec les variables de la
+% programmation impérative.
+
+La sémantique de VHDL est décrite dans une prose informelle dans le
+manuel de référence du langage (MRL). De fait, interpréter un
+programme VHDL, qui décrit un \emph{design} de circuit, revient à
+simuler le design décrit. Dans le MRL, la sémantique de VHDL est donc
+définie sous la forme d'une boucle de simulation. La boucle de
+simulation spécifie la dynamique d'exécution des blocs concurrents qui
+composent une architecture de design, ainsi que la propagation des
+valeurs au travers des signaux.
+
+La littérature propose de nombreuses formalisations de la sémantique
+de VHDL \cite{KB12}. Certaines formalisations expriment la boucle de
+simulation telle qu'exhibée dans le MRL; d'autres choisissent de
+s'abstraire de cette boucle, et optent pour une formalisation
+alternative basée sur des modèles permettant la gestion de la
+concurrence et du temps (automates temporels, réseaux de Petri,
+logique d'intervalles temporels\dots).
+
+La méthodologie \hilecop{} opère la génération d'un design VHDL dans
+l'optique de sa synthèse physique. Dès lors, nous ne considérons
+qu'une partie \emph{synthétisable} du langage que nous définissons et
+nommons $\mathcal{H}$-VHDL. De plus, les designs VHDL générés par la
+méthodologie \hilecop{} décrivent des circuits synchrones, i.e, dont
+l'exécution est rythmée par un signal d'horloge.  La prise en compte
+d'une sous-partie synthétisable et du synchronisme nous a permis
+d'exprimer la sémantique des programmes $\mathcal{H}$-VHDL en termes
+d'une boucle de simulation bien plus simple en comparaison de celle
+exprimée dans le MRL.  L'Algorithme~\ref{alg:sim-loop} décrit notre
+boucle spécifique de simulation pour un design $\mathcal{H}$-VHDL.
+
+\begin{figure}[t]
+\begin{algorithm}[H]
+  \DontPrintSemicolon
+  \SetAlFnt{\fontsize{8}{10}\selectfont}
+
+  \AlFnt % overriding the new font
+  
+  % Beginning of the algorithm.
+
+  \Begin{
+    
+    \BlankLine
+
+    \tcp{\textcolor{red}{Initialization phase.}}
+    $\sigma_1$ = \texttt{RunAllProcessesOnce($\Delta$,$\sigma_{init}$)}\;
+    $\sigma_2$ = \texttt{Stabilize($\Delta$,$\sigma_1$)}\;
+
+    \BlankLine
+    
+    \tcp{\textcolor{red}{Main loop.}}
+    $T_c\leftarrow{}0$\;
+
+    \BlankLine
+
+    \While{$T_c\le{}nbCycles$}{
+      $\sigma_3$ = \texttt{ExecuteFallingEdgePss($\Delta$,$\sigma_2$)}\;
+      $\sigma_4$ = \texttt{Stabilize($\Delta$,$\sigma_3$)}\;
+      $\sigma_5$ = \texttt{ExecuteRisingEdgePss($\Delta$,$\sigma_4$)}\;
+      $\sigma_2$ = \texttt{Stabilize($\Delta$,$\sigma_5$)}\;
+      $T_c\leftarrow{}T_c+1$\;
+      
+    }
+  }
+  \caption{SimulationLoop($\Delta$, $\sigma_{init}$, $nbCycles$)}
+  \label{alg:sim-loop}
+\end{algorithm}
+\end{figure}
+La boucle de simulation de l'Algorithme~\ref{alg:sim-loop} est
+paramétrée par un design VHDL ($\Delta$), l'état initial du design
+($\sigma_{init}$) qui contient les valeurs des signaux et les états
+courants des sous-composants du design $\Delta$, et le nombre de
+cycles de simulation à effectuer ($nbCycles$). Durant la phase
+d'initialisation, tous les processus décrivant le comportement du
+design sont exécutés une fois. Cette phase est suivie d'une phase de
+stabilisation de la valeur des signaux.  La phase de stabilisation
+correspond à la propagation des valeurs entre signaux interconnectés,
+ce jusqu'à ce que la propagation n'induisent plus aucun changement. La
+boucle principale de simulation décrit l'alternance entre l'exécution
+des processus dits \emph{séquentiels}, i.e qui sont sensibles aux
+évènements d'horloge, et des processus \emph{combinatoires}, qui
+s'exécutent de manière continue jusqu'à stabilisation des signaux.
+
+Au stade actuel des travaux, une formalisation de la sémantique de
+$\mathcal{H}$-VHDL a été effectuée sous la forme d'une sémantique
+opérationnelle à grands pas, et sa mécanisation en \coq{} a été
+réalisée. Cette sémantique s'inspire des travaux de formalisation
+esquissés dans \cite{VanTassel95, Borrione95}. La sémantique
+formalisée prend également en compte la phase d'élaboration du design,
+préliminaire à la simulation. L'élaboration génère l'environnement de
+simulation, i.e un couple $\Delta,\sigma_{init}$ qui se trouve en
+paramètre de la boucle de simulation (voir
+Algorithme~\ref{alg:sim-loop}). Durant la phase d'élaboration, une
+vérification de type est effectué sur le code VHDL. La vérification de
+type s'assure que la partie déclarative et la partie comportementale
+du design VHDL respectent certaines règles de typage définies par le
+MRL. Par exemple, pour une instruction d'affectation de valeur à un
+signal, l'expression affectée doit être du même type que le signal
+cible.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

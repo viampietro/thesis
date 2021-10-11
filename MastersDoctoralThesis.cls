@@ -379,6 +379,20 @@ KOMA-script documentation for details.}]{fancyhdr}
 	}
 }
 
+\newcommand{\frenchabstractname}{Résumé}
+\ifbool{consistentlayout}{
+	\DeclareDocumentEnvironment{frenchabstract}{ O{} }{%
+		\addchap{\frenchabstractname}%
+		% {\chapteralign\normalsize\abstractauthorfont \authorname \par}% Author name
+		% \vspace{\baselineskip}
+		% {\chapteralign\parbox{.7\linewidth}{\chapteralign\normalsize\itshape\abstracttitlefont\@title}\par}% Thesis title
+		\bigskip\noindent\ignorespaces
+	}%
+	{}%end alt-abstract
+}{%
+
+}
+
 \DeclareDocumentEnvironment{extraAbstract}{ O{\null\vfill} }{
 	\checktoopen
 	\tttypeout{\abstractname}

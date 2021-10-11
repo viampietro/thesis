@@ -1,0 +1,28 @@
+\section{Conclusion}
+\label{sec:concl}
+
+Le but de la thèse est de vérifier formellement une partie de la
+méthodologie \hilecop{}, usitée dans le cadre de la conception de
+circuits numériques critiques.  Spécifiquement, le travail de
+vérification porte sur la phase transformant un modèle de conception,
+à base de RdPs, en \emph{design} VHDL. La finalité de ce travail sera
+la spécification et la démonstration d’un théorème de préservation de
+comportement pour cette phase de transformation.
+
+Jusqu'ici, la sémantique des SITPNs, modèles de haut niveau de
+\hilecop{}, et la sémantique de $\mathcal{H}$-VHDL ont été implantées
+à l'aide du langage \coq{}. Concernant les SITPNs, deux éléments déjà
+existant dans ce formalisme restent à prendre en compte : les
+macroplaces, qui permettent d'exprimer la gestion d'exceptions dans
+les SITPNs, ainsi que la possibilité de spécifier des domaines
+d'horloge différents au sein d'un même modèle; c'est le cas des
+systèmes Globalement Asynchrones Localement Synchrones (GALS).
+
+La transformation d'un SITPN en un modèle VHDL est en cours de
+programmation avec le langage \coq{}. Enfin, la dernière étape de ce
+travail sera d'établir la preuve de préservation de comportement.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
