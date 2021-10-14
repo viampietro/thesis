@@ -1,0 +1,137 @@
+\section{La transformation modèle-vers-texte de \hilecop{}}
+
+Comparée à la compilation de programmes (qui est un type de
+transformation), l'originalité de la transformation modèle-vers-texte
+de \hilecop{} provient de plusieurs critères. Premièrement, la
+représentation source de la transformation \hilecop{} n'est pas un
+programme écrit dans un langage de programmation générique (ou
+spécifique). C'est un formalisme graphique, i.e. celui des RdPs. La
+structure des modèles d'entrée est alors bien différente de celle de
+l'arbre syntaxique des langages de programmation. Par conséquent,
+l'expression de la transformation ne peut pas suivre la définition
+récursive suivant l'arbre syntaxique, définition qui est usuelle pour
+les compilateurs de langage de programmation. Deuxièmement, le langage
+cible de la transformation \hilecop{} est une langage de description
+d'architecture de circuits, i.e. \vhdl{}. Même spécifique, ce langage
+reste un langage de programmation. Dans le cas des compilateurs pour
+langage de programmation, chaque instruction du langage source est
+traduite en une ou plusieurs instructions du langage cible ayant la
+même sémantique. Dans le cas de la transformation \hilecop{}, c'est
+mise en relation directe entre instructions ``source'' et instructions
+``cible'' n'est pas effective. Comme dit précédemment, il n'existe pas
+de notion d'instruction dans un RdP.  Même en considérant les éléments
+qui composent un RdP comme des entités atomiques qui pourraient se
+rapprocher d'instructions, par exemple, les places, les transitions,
+les actions, les intervalles de temps, etc; même en les considérant
+ainsi, la transformation \hilecop{} ne traduit pas un élément atomique
+d'un RdP en une ou plusieurs instructions du langage cible. Selon
+l'élément atomique traduit, le code généré est complexe car il rend à
+la fois compte de la structure du modèle d'entrée (i.e. comment
+l'élément atomique est connecté aux autres éléments du modèle
+d'entrée) et de sa sémantique (qui est aussi liée à la structure du
+modèle).
+
+Nous allons illustrer la transformation modèle-vers-texte \hilecop{}
+en prenant le SITPN présenté en
+Figure~\ref{fig:transf-toplevel-french} comme modèle d'entrée.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Transformation/transf-fun-toplevel}
+  \caption[Transformation d'un modèle d'entrée SITPN en un design de
+  top-niveau \hvhdl{}.]{ Transformation d'un modèle d'entrée SITPN en
+    un design de top-niveau \hvhdl{}. Le modèle d'entrée est composé
+    de deux places $p_0$ et $p_1$, deux transitions $t_0$ et $t_1$. La
+    transition $t_0$ est associée à l'intervalle de temps $[1,3]$ et à
+    la condition $c_0$. La transition $t_1$ est associée à la
+    condition $c_1$, et son tir déclenche l'exécution de la fonction
+    $f_0$. L'action $a_0$ est activé lorsque la place $p_0$ est
+    marqué, et de même pour l'action $a_1$ et la place $p_1$.  }
+  \label{fig:transf-toplevel-french}
+\end{figure}
+
+La transformation modèle-vers-texte \hilecop{} génère un design
+\hvhdl{} dit de \textit{top-niveau}, i.e. un circuit qui n'est pas
+lui-même embarqué dans un autre circuit, depuis un modèle d'entrée
+SITPN. La Figure~\ref{fig:transf-ports-french} présente la forme
+finale du design \hvhdl{} de top-niveau résultant de la
+transformation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio,width=.6\textwidth]{Figures/Transformation/transf-fun-ports}
+  \caption{Design \hvhdl{} de top-niveau résultant de la
+    transformation \hilecop{}.}
+  \label{fig:transf-ports-french}
+\end{figure}
+
+La première partie de la transformation \hilecop{} génère les
+composants qui vont constituer l'architecture interne du design de
+top-niveau. Pour chaque place du modèle d'entrée, un composant de
+\textit{type} place, qui correspond à une instance du design
+\texttt{place} défini au préalable, est généré. Il en va de même pour
+chaque transition du modèle d'entrée. Dans la
+Figure~\ref{fig:transf-ports-french}, la place $p_0$ donne lieu au
+composant \texttt{place} d'identifiant $\mathtt{id}_{p_0}$, la
+transition $t_0$ au composant \texttt{transition} d'identifiant
+$\mathtt{id}_{t_0}$, etc. Lors de cette première phase, les parties
+\textit{constantes} des composants sont générées (en bleue sur la
+Figure~\ref{fig:transf-ports-french}). Les parties constantes
+comprennent les constantes génériques, qui donne les dimensions aux
+interfaces des composants, et les informations liées aux arcs du SITPN
+d'entrée (i.e. poids et types) qui sont encodées dans l'interface des
+composants de type \texttt{place}.
+
+Lors de la deuxième phase de la transformation, les interconnexions
+entre composants de type \texttt{place} et composants de type
+\texttt{transition} sont générées. Les interconnexions apparaissent en
+rouge dans la Figure~\ref{fig:transf-ports-french}. C'est grâce à ces
+interconnexions et aux comportements internes de chaque composants que
+la même sémantique d'exécution du SITPN d'entrée sera obtenue dans sa
+version \vhdl{}. Du moins, sans considérer les éléments
+d'interprétation, i.e. les conditions, actions et fonctions.
+
+La dernière phase de la transformation concerne les éléments
+d'interprétation contenus dans le modèle d'entrée. Pour chaque
+condition du modèle d'entrée, un port d'entrée \textit{primaire}
+(i.e. un port d'entrée d'un design de top-niveau) est généré. Ce port
+d'entrée est connecté à l'interface de certains composants de type
+\texttt{transition} (fils verts dans la
+Figure~\ref{fig:transf-ports-french}). Cela représente l'association
+de la condition à certaines transitions du SITPN. Pour chaque action
+et fonction du modèle d'entrée, un port de sortie correspondant est
+généré dans l'interface de sortie du design de top-niveau. Ces ports
+de sortie représentent l'état d'activation/exécution des
+actions/fonctions associées.  Pour qu'une action soit activée, il faut
+qu'au moins une des places à laquelle l'action est associée soit
+marquée d'un jeton. Pour représenter ce mécanisme en \vhdl{}, les
+composants de type \texttt{place} possèdent un port de sortie
+\texttt{marked} qui indique leur état de marquage. Lors de la
+transformation, tous les ports de sortie \texttt{marked} des
+composants de type \texttt{place} sont branchés au processus
+\texttt{action}, qui est aussi généré par la transformation. Le
+processus \texttt{action} est alors chargé d'activer les ports de
+sortie représentant les actions du modèle d'entrée. Le même mécanisme
+est mis en place pour les fonctions. Chaque composant de type
+\texttt{transition} est armé d'un port de sortie \texttt{fired} qui
+indique leur état de tir. Rappelons que dans la sémantique des SITPNs,
+une fonction est exécutée lorsqu'une des transitions qui lui est
+associée est tirée. Lors de la transformation, chaque port
+\texttt{fired} est branché au processus \texttt{function}, qui est
+aussi généré par la transformation. Le processus \texttt{function} va
+se charger d'activer les ports de sortie représentant les fonctions du
+modèle d'entrée. Cette activation se fait en selon la valeur des ports
+\texttt{fired} des composants de type
+\texttt{transition}. L'interconnexion entre les ports \texttt{marked}
+et le processus \texttt{action}, et les ports \texttt{fired} et le
+processus \texttt{function} est représentée par les fils orange dans
+la Figure~\ref{fig:transf-ports-french}.
+
+Un algorithme complet de la transformation a été exprimé en
+pseudo-langage impérative. Ensuite, l'algorithme a été implémenté par
+une fonction écrite en langage \coq{}. 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:

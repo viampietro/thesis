@@ -15,17 +15,17 @@ structurelle et comportementale de circuits électroniques, à des fins
 de simulation ou de synthèse physique. En VHDL, un \emph{design}
 décrit un composant électronique en termes d'interface entrée-sortie
 (l'\emph{entité}) et de comportement interne (l'\emph{architecture}).
-Le comportement d'un design s'exprime de deux manières : via
-l'interconnexion d'in\-stances d'autres designs (des sous-composants),
-ou à l'aide de \emph{processus}.  La spécificité du langage VHDL tient
-à l'exécution concurrente des processus et des sous-composants
-décrivant une architecture de design. Un processus définit un bloc
-d'instructions séquentielles; il observe un certain nombre de signaux
-qui composent sa liste de sensibilité. Le changement d'état d'un
-signal de cette liste entraîne l'exécution du bloc d'instructions du
-processus.  Conceptuellement, un signal VHDL représente une connexion
-physique sur un circuit électronique. Les signaux sont les principaux
-véhicules des valeurs dans les programmes
+Le comportement d'un design s'ex\-prime de deux manières : via
+l'interconnexion d'in\-stances d'autres designs (des
+sous-compo\-sants), ou à l'aide de \emph{processus}.  La spécificité
+du langage VHDL tient à l'exécution concurrente des processus et des
+sous-composants décrivant une architecture de design. Un processus
+définit un bloc d'instructions séquentielles; il observe un certain
+nombre de signaux qui composent sa liste de sensibilité. Le changement
+d'état d'un signal de cette liste entraîne l'exécution du bloc
+d'instructions du processus.  Conceptuellement, un signal VHDL
+représente une connexion physique sur un circuit électronique. Les
+signaux sont les principaux véhicules des valeurs dans les programmes
 VHDL. % Il est possible de les
 % confondre jusqu'à une certain point avec les variables de la
 % programmation impérative.
@@ -40,8 +40,8 @@ composent une architecture de design, ainsi que la propagation des
 valeurs au travers des signaux.
 
 La littérature propose de nombreuses formalisations de la sémantique
-de VHDL \cite{KB12}. Certaines formalisations expriment la boucle de
-simulation telle qu'exhibée dans le MRL; d'autres choisissent de
+de VHDL \cite{Kloos2012}. Certaines formalisations expriment la boucle
+de simulation telle qu'exhibée dans le MRL; d'au\-tres choisissent de
 s'abstraire de cette boucle, et optent pour une formalisation
 alternative basée sur des modèles permettant la gestion de la
 concurrence et du temps (automates temporels, réseaux de Petri,
@@ -59,63 +59,85 @@ d'une boucle de simulation bien plus simple en comparaison de celle
 exprimée dans le MRL.  L'Algorithme~\ref{alg:sim-loop} décrit notre
 boucle spécifique de simulation pour un design $\mathcal{H}$-VHDL.
 
-\begin{figure}[t]
-\begin{algorithm}[H]
-  \DontPrintSemicolon
-  \SetAlFnt{\fontsize{8}{10}\selectfont}
+\begin{figure}[H]
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \AlFnt % overriding the new font
-  
-  % Beginning of the algorithm.
-
-  \Begin{
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
     
-    \BlankLine
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
+    \caption{Simulation($\Delta$, $\sigma_{e}$, $cs$, $E_p$, $T_c$)}
+    \label{alg:sim-loop}
+    
+    \AlFnt % overriding the new font
+    
     \tcp{\textcolor{red}{Initialization phase.}}
-    $\sigma_1$ = \texttt{RunAllProcessesOnce($\Delta$,$\sigma_{init}$)}\;
-    $\sigma_2$ = \texttt{Stabilize($\Delta$,$\sigma_1$)}\;
-
+    $\sigma_e'\leftarrow$ \texttt{RunAllOnce($\Delta$,$\sigma_{e}$,$cs$)}\;\label{line:run-once} 
+    $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_e'$,$cs$)}\;\label{line:stab-init}
     \BlankLine
     
     \tcp{\textcolor{red}{Main loop.}}
-    $T_c\leftarrow{}0$\;
-
+    % $T_c\leftarrow{}0$\; \label{line:init-tc}
+    $\theta\leftarrow[\sigma]$\; \label{line:init-trace}
+    
     \BlankLine
 
-    \While{$T_c\le{}nbCycles$}{
-      $\sigma_3$ = \texttt{ExecuteFallingEdgePss($\Delta$,$\sigma_2$)}\;
-      $\sigma_4$ = \texttt{Stabilize($\Delta$,$\sigma_3$)}\;
-      $\sigma_5$ = \texttt{ExecuteRisingEdgePss($\Delta$,$\sigma_4$)}\;
-      $\sigma_2$ = \texttt{Stabilize($\Delta$,$\sigma_5$)}\;
-      $T_c\leftarrow{}T_c+1$\;
-      
-    }
-  }
-  \caption{SimulationLoop($\Delta$, $\sigma_{init}$, $nbCycles$)}
-  \label{alg:sim-loop}
-\end{algorithm}
-\end{figure}
-La boucle de simulation de l'Algorithme~\ref{alg:sim-loop} est
-paramétrée par un design VHDL ($\Delta$), l'état initial du design
-($\sigma_{init}$) qui contient les valeurs des signaux et les états
-courants des sous-composants du design $\Delta$, et le nombre de
-cycles de simulation à effectuer ($nbCycles$). Durant la phase
-d'initialisation, tous les processus décrivant le comportement du
-design sont exécutés une fois. Cette phase est suivie d'une phase de
-stabilisation de la valeur des signaux.  La phase de stabilisation
-correspond à la propagation des valeurs entre signaux interconnectés,
-ce jusqu'à ce que la propagation n'induisent plus aucun changement. La
-boucle principale de simulation décrit l'alternance entre l'exécution
-des processus dits \emph{séquentiels}, i.e qui sont sensibles aux
-évènements d'horloge, et des processus \emph{combinatoires}, qui
-s'exécutent de manière continue jusqu'à stabilisation des signaux.
+    \While{$T_c>0$}{
+      $\sigma_i\leftarrow$ \texttt{Inject($\Delta$,$\sigma$,$E_p$,$T_c$)}\;
+      $\sigma_\uparrow\leftarrow$ \texttt{RisingEdge($\Delta$,$\sigma_i$,$cs$)}\;
+      $\sigma'\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_\uparrow$,$cs$)}\;
+      $\sigma_\downarrow\leftarrow$ \texttt{FallingEdge($\Delta$,$\sigma'$,$cs$)}\;
+      $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_\downarrow$,$cs$)}\;
 
-Au stade actuel des travaux, une formalisation de la sémantique de
-$\mathcal{H}$-VHDL a été effectuée sous la forme d'une sémantique
-opérationnelle à grands pas, et sa mécanisation en \coq{} a été
+      \BlankLine
+      $\theta\leftarrow\theta\mdoubleplus[\sigma',\sigma]$\; \label{line:append-states}
+      $T_c\leftarrow{}T_c-1$\;
+    }
+
+    \Return{$\theta$}\;
+  \end{algorithm}
+\end{figure}
+
+L'Algorithme~\ref{alg:sim-loop} est paramétré par un design élaboré
+$\Delta$ et un état de design $\sigma_e$. Ces deux paramètres sont le
+résultat de l'élaboration du design qui va être simulé. La paramètre
+$cs$ correspond au \textit{comportement}, ou, pour être précis, à la
+partie comportementale de l'architecture du design. C'est ce
+comportement qui sera exécuté au cours de la simulation. La paramètre
+$E_p$ est l'environnement de simulation. Il permet l'injection de
+nouvelle valeur sur les ports d'entrée du design à chaque nouveau
+cycle d'horloge. La paramètre $T_c$ correspond au nombre de cycles de
+simulation à effectuer, i.e. le \textit{front} de simulation.
+
+La première partie de l'Algorithme~\ref{alg:sim-loop} correspond à la
+phase d'initialisation. Chaque processus et sous-composants
+appartenant à $cs$ sont exécutés exactement une fois lors de cette
+phase (\texttt{RunAllOnce}$(\Delta,\sigma_e,cs)$). S'en suit une phase
+de stabilisation des signaux
+(\texttt{Stabilize}$(\Delta,\sigma_e,cs)$) où seules les parties
+combinatoires du design sont exécutées. Ensuite, vient l'exécution de
+la boucle principale de simulation. La boucle principale exécute $T_c$
+fois les phases d'un cycle d'horloge. Dans l'ordre, ces phases sont:
+(1) injection de nouvelles valeurs dans les ports d'entrée du design
+simulé, (2) exécution des processus séquentiels qui réagissent au
+front montant de l'horloge, (3) stabilisation des signaux, (4)
+exécution des processus séquentiels qui réagissent au front descendant
+de l'horloge, (5) stabilisation des signaux. Pour un cycle d'horloge,
+l'état stable obtenu au milieu du cycle et à la fin du cycle sont
+ajoutés à la trace de simulation $\theta$. Cette trace de simulation
+est retournée à la fin de l'Algorithme~\ref{alg:sim-loop}.
+
+Une formalisation de la sémantique de $\mathcal{H}$-VHDL a été
+effectuée sous la forme d'une sémantique opérationnelle à petit pas
+pour la partie simulation, i.e. chaque état intermédiaire est
+considéré dans la trace de simulation. Le corps des processus est lui
+interprété avec une sémantique à grands pas.  La mécanisation en
+\coq{} de la syntaxe et la sémantique de \hvhdl{} a été
 réalisée. Cette sémantique s'inspire des travaux de formalisation
-esquissés dans \cite{VanTassel95, Borrione95}. La sémantique
+esquissés dans \cite{VanTassel1995, Borrione1995}. La sémantique
 formalisée prend également en compte la phase d'élaboration du design,
 préliminaire à la simulation. L'élaboration génère l'environnement de
 simulation, i.e un couple $\Delta,\sigma_{init}$ qui se trouve en
@@ -128,7 +150,8 @@ MRL. Par exemple, pour une instruction d'affectation de valeur à un
 signal, l'expression affectée doit être du même type que le signal
 cible.
 
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "../../main"
 %%% End:

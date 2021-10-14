@@ -1,0 +1,56 @@
+\section{Preuve de préservation sémantique}
+
+Le but de cette thèse a été de prouver que la transformation
+modèle-vers-texte de \hilecop{} préserve le comportement de ses
+modèles d'entrée. Plus précisément, pour un modèle d'entrée de la
+transformation, nous voulons prouver que le design de top-niveau
+\hvhdl{} résultant se comporte de la même manière. Il est donc d'abord
+important de définir la relation nous permettant de comparer un état
+d'un SITPN avec un état d'un design de top-niveau \hvhdl{}. Nous avons
+défini une relation de similarité entre l'état d'un SITPN et l'état
+d'un design \hvhdl{}. C'est à travers cette relation de similarité que
+notre théorème de préservation de comportement pourra être exprimé. La
+relation de similarité relie les valeurs présentent dans l'état d'un
+SITPN aux valeurs de certains éléments, principalement les valeurs de
+signaux, présents dans l'état d'un design \hvhdl{}. Pour un état $s$
+de SITPN et un état $\sigma$ de design \hvhdl{}, $s$ et $\sigma$ sont
+similaires si:
+
+\begin{itemize}
+\item Pour toute place $p$, le marquage de $p$ est égal à la valeur du
+  signal interne \texttt{s\_marking} d'un composant de type
+  \texttt{place} d'identifiant $id_p$ (où $p$ et $id_p$ sont liés par
+  la transformation).
+\item Pour toute transition $t$, la valeur du compteur de temps
+  associé à $t$ est égale à la valeur du signal interne
+  \texttt{s_time_counter} d'un composant de type \texttt{transition}
+  d'identifiant $id_t$ (où $t$ et $id_t$ sont liés par la
+  transformation).
+\item Pour toute transition $t$, la valeur de l'ordre de reset associé
+  à une transition $t$ est égale à la valeur du signal interne
+  \texttt{s_reinit_time_counter} d'un composant de type
+  \texttt{transition} d'identifiant $id_t$ (où $t$ et $id_t$ sont liés
+  par la transformation).
+\item Pour toute condition $c$, la valeur d'une condition $c$ est
+  égale à la valeur du port d'entrée $id_c$ représentant la condition
+  dans le design de top-niveau \hvhdl{}.
+\item Pour toute action $a$, la valeur d'une action $a$ est égale à la
+  valeur du port de sortie $id_a$ représentant l'action dans le design
+  de top-niveau \hvhdl{}.
+\item Pour toute fonction $f$, la valeur d'une fonction $f$ est égale
+  à la valeur du port de sortie $id_f$ représentant la fonction dans
+  le design de top-niveau \hvhdl{}.
+\end{itemize}
+
+Notre théorème de préservation de comportement prend donc la forme
+suivante. Pour un modèle SITPN d'entrée et le design de top-niveau
+\hvhdl{} résultant de la transformation, si le SITPN renvoie la trace
+d'exécution $\theta$, et le design renvoie la trace de simulation
+$\theta'$ en s'exécutant pendant $\tau$ cycle d'horloges, alors chaque
+couple d'états, considéré dans les traces à un même instant temporel,
+vérifie la relation de similarité. 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../../main"
+%%% End:
