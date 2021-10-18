@@ -103,24 +103,24 @@ boucle spécifique de simulation pour un design $\mathcal{H}$-VHDL.
 
 L'Algorithme~\ref{alg:sim-loop} est paramétré par un design élaboré
 $\Delta$ et un état de design $\sigma_e$. Ces deux paramètres sont le
-résultat de l'élaboration du design qui va être simulé. La paramètre
+résultat de l'élaboration du design qui va être simulé. Le paramètre
 $cs$ correspond au \textit{comportement}, ou, pour être précis, à la
 partie comportementale de l'architecture du design. C'est ce
-comportement qui sera exécuté au cours de la simulation. La paramètre
+comportement qui sera exécuté au cours de la simulation. Le paramètre
 $E_p$ est l'environnement de simulation. Il permet l'injection de
-nouvelle valeur sur les ports d'entrée du design à chaque nouveau
-cycle d'horloge. La paramètre $T_c$ correspond au nombre de cycles de
-simulation à effectuer, i.e. le \textit{front} de simulation.
+nouvelles valeurs sur les ports d'entrée du design à chaque nouveau
+cycle d'horloge. Le paramètre $T_c$ correspond au nombre de cycles de
+simulation à effectuer, c'est à dire, le \textit{front} de simulation.
 
 La première partie de l'Algorithme~\ref{alg:sim-loop} correspond à la
 phase d'initialisation. Chaque processus et sous-composants
 appartenant à $cs$ sont exécutés exactement une fois lors de cette
-phase (\texttt{RunAllOnce}$(\Delta,\sigma_e,cs)$). S'en suit une phase
+phase (\texttt{RunAllOnce}$(\Delta,\sigma_e,cs)$). S'ensuit une phase
 de stabilisation des signaux
 (\texttt{Stabilize}$(\Delta,\sigma_e,cs)$) où seules les parties
 combinatoires du design sont exécutées. Ensuite, vient l'exécution de
 la boucle principale de simulation. La boucle principale exécute $T_c$
-fois les phases d'un cycle d'horloge. Dans l'ordre, ces phases sont:
+fois les phases d'un cycle d'horloge. Dans l'ordre, ces phases sont :
 (1) injection de nouvelles valeurs dans les ports d'entrée du design
 simulé, (2) exécution des processus séquentiels qui réagissent au
 front montant de l'horloge, (3) stabilisation des signaux, (4)
@@ -132,7 +132,7 @@ est retournée à la fin de l'Algorithme~\ref{alg:sim-loop}.
 
 Une formalisation de la sémantique de $\mathcal{H}$-VHDL a été
 effectuée sous la forme d'une sémantique opérationnelle à petit pas
-pour la partie simulation, i.e. chaque état intermédiaire est
+pour la partie simulation, c.-à-d., chaque état intermédiaire est
 considéré dans la trace de simulation. Le corps des processus est lui
 interprété avec une sémantique à grands pas.  La mécanisation en
 \coq{} de la syntaxe et la sémantique de \hvhdl{} a été

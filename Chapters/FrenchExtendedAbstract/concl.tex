@@ -1,26 +1,33 @@
 \section{Conclusion}
 \label{sec:concl}
 
-Le but de la thèse est de vérifier formellement une partie de la
+Le but de cette thèse a été de vérifier formellement une partie de la
 méthodologie \hilecop{}, usitée dans le cadre de la conception de
 circuits numériques critiques.  Spécifiquement, le travail de
 vérification porte sur la phase transformant un modèle de conception,
-à base de RdPs, en \emph{design} VHDL. La finalité de ce travail sera
-la spécification et la démonstration d’un théorème de préservation de
-comportement pour cette phase de transformation.
+à base de RdPs, en \emph{design} VHDL. Au final, nous avons fait la
+démonstration d’un théorème de préservation de comportement pour cette
+phase de transformation. La preuve a été effectuée informellement,
+mais représente tout de même un volume d'une centaine de pages. La
+mécanisation complète de cette preuve avec l'assistant de preuves
+\coq{} est en cours de réalisation.
 
-Jusqu'ici, la sémantique des SITPNs, modèles de haut niveau de
-\hilecop{}, et la sémantique de $\mathcal{H}$-VHDL ont été implantées
-à l'aide du langage \coq{}. Concernant les SITPNs, deux éléments déjà
-existant dans ce formalisme restent à prendre en compte : les
+Comme autres perspectives de travail, les modèles d'entrée de la
+transformation doivent inclure de nouveaux éléments.  Deux éléments
+déjà existant dans ce formalisme restent à prendre en compte : les
 macroplaces, qui permettent d'exprimer la gestion d'exceptions dans
 les SITPNs, ainsi que la possibilité de spécifier des domaines
 d'horloge différents au sein d'un même modèle; c'est le cas des
 systèmes Globalement Asynchrones Localement Synchrones (GALS).
 
-La transformation d'un SITPN en un modèle VHDL est en cours de
-programmation avec le langage \coq{}. Enfin, la dernière étape de ce
-travail sera d'établir la preuve de préservation de comportement.
+Le code \coq{} de la thèse, comprenant la formalisation des
+sémantiques des SITPNs et du langage \hvhdl{}, l'implémentation de la
+transformation, l'expression du théorème de préservation sémantique
+ainsi qu'une partie de la preuve formelle, est accessible à l'adresse:
+
+\begin{center}
+  \url{https://github.com/viampietro/ver-hilecop}
+\end{center}
 
 %%% Local Variables:
 %%% mode: latex

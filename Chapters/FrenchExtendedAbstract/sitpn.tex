@@ -12,7 +12,7 @@ synchrone. Les RdPs \hilecop{} sont nommés SITPNs pour Synchronously
 executed Interpreted Time Petri Nets with priorities.
 
 Les SITPNs sont des RdP interprétés; des actions peuvent être
-associées aux places d'un réseau, et des fonctions/conditions peuvent
+associées aux places d'un réseau et des fonctions/conditions peuvent
 être associées aux transitions. % Actions, fonctions et conditions
 % décrivent l'interaction du système modélisé avec son environnement.
 % Une action est exécutée tant qu'au moins une place à laquelle elle
@@ -21,10 +21,10 @@ associées aux places d'un réseau, et des fonctions/conditions peuvent
 % transitions.
 Actions et fonctions définissent des opérations sur une ensemble de
 variables, ici, des \textit{signaux} \vhdl{}.  Les conditions
-associées aux transitions sont des expressions Booléennes sûr la
+associées aux transitions sont des expressions Booléennes sur la
 valeur des signaux. Dans un RdP interprété, une transition est
 franchissable si elle est sensibilisée et que toutes les conditions
-qui lui sont associées sont \emph{vraies}. La Figure~\ref{fig:ipn}
+qui lui sont associées sont \emph{vraies}. La Figure~\ref{fig:ipn-french}
 donne un exemple de RdP interprété.
 
 \begin{figure}[H]
@@ -37,7 +37,7 @@ donne un exemple de RdP interprété.
   \label{fig:ipn}
 \end{figure}%
 
-Les RdP utilisés dans \hilecop{} sont temporels; une fenêtre de tir,
+Les RdP utilisés dans \hilecop{} sont temporels ; une fenêtre de tir,
 i.e un intervalle de temps, peut être associée à une transition. Un
 compteur de temps est lancé lorsqu'une transition devient
 sensibilisée; celle-ci devient franchissable lorsque son compteur de
@@ -67,7 +67,7 @@ descendant d'un signal d'horloge, comme montré dans la
 Figure~\ref{fig:sync-exec}. Sur le front descendant (\textcircled{1}
 de la Figure~\ref{fig:sync-exec}), toutes les transitions devant être
 tirées sont déterminées, ce après mise à jour des conditions et
-intervalles de temps; sur le front montant (\textcircled{2} de la
+intervalles de temps ; sur le front montant (\textcircled{2} de la
 Figure~\ref{fig:sync-exec}), les précédentes transitions sont tirées,
 entraînant la mis à jour du marquage du réseau et l'exécution de
 fonctions. La sémantique d'évolution d'un tel réseau est synchrone et
@@ -97,7 +97,7 @@ décrit, entre autres, le marquage courant du SITPN, la valeur des
 compteurs de temps et des conditions associés aux transitions, la
 liste des transitions à tirer\dots La sémantique des SITPNs fixe les
 règles de changement d'état en fonction des évènements d'horloge. Par
-exemple, sur le front descendant d'horloge, a lliste des transitions à
+exemple, sur le front descendant d'horloge, la liste des transitions à
 tirer au prochain front montant est calculée; une règle stipule qu'une
 aucune transition non franchissable au front descendant n’appartient à
 l’ensemble des transitions à tirer.
@@ -111,12 +111,12 @@ d'horloge considéré.  Afin de tester notre implantation de la
 sémantique des SITPNs, un interprète a été conçu, i.e un programme qui
 simule les changements d'état d'un SITPN pour $n$ cycles d'horloge, en
 partant de l'état initial du réseau. Cet interprète est prouvé correct
-et complet vis à vis de la sémantique des SITPNs pour une évolution
+et complet vis-à-vis de la sémantique des SITPNs pour une évolution
 sur un cycle d'horloge. L'intégralité de la formalisation et de la
 mécanisation est mise à disposition du
 lecteur\footnote{\url{https://github.com/viampietro/sitpns}}. Cependant,
-nous avons utilisées une autre version de l'implémentation des SITPNs
-en \coq{} pour effectuer la preuve de préservation sémantique. La
+nous avons utilisé une autre version de l'implantation des SITPNs en
+\coq{} pour effectuer la preuve de préservation sémantique. La
 dernière version est plus élégante et utilisent les types
 dépendants\footnote{\url{https://github.com/viampietro/ver-hilecop/tree/master/sitpn/dp}}.
 

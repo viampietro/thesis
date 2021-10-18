@@ -25,9 +25,9 @@ préserve le comportement du modèle de conception.
 La présente thèse s'intéresse à la vérification d'un processus d'aide
 à la modélisation et à la production de circuits numériques critiques
 : la méthodologie \hilecop{} (HIgh LEvel hardware COmponent
-Programming).  Cette méthodologie est mise en oeuvre dans le cadre de
+Programming).  Cette méthodologie est mise en œuvre dans le cadre de
 la création de micro-contrôleurs intégrés à des dispositifs médicaux
-de type neuroprothèses.  La Figure \ref{fig:hilecop-wf} en décrit les
+de type neuroprothèses.  La Figure \ref{fig:hilecop-wf-french} en décrit les
 principales étapes.
 
 \begin{figure}[H]
@@ -38,7 +38,7 @@ principales étapes.
   représentent des phases de transformation; les simple flêches
   indiquent les autres types d'opérations ayant cours à une étape
   précise, ou entre étapes.}
-\label{fig:hilecop-wf}
+\label{fig:hilecop-wf-french}
 \end{figure}
 
 Le concepteur de systèmes électroniques esquisse premièrement un
@@ -50,7 +50,7 @@ assemblées et la structure des composants est effacée. Le résultat
 obtenu est un réseau de Petri global décrivant le système modélisé
 (\textcircled{2}).  Des outils d'analyse exploités par la méthodologie
 permettent alors de vérifier certaines propriétés du modèle (caractère
-borné, vivacité\dots) et présentent un compte-rendu au
+borné, vivacité\dots) et présentent un compte rendu au
 concepteur. Après plusieurs itérations du cycle analyse-correction, du
 code VHDL est généré à partir du modèle d'implémentation
 (\textcircled{3}). Dès lors, la dernière étape de la méthodologie, qui
@@ -60,8 +60,9 @@ propriétaire (\textcircled{4}).
 
 L'objectif de la thèse est de prouver que la transformation du modèle
 d'implémentation en code VHDL (i.e, de \textcircled{2} vers
-\textcircled{3} dans la Figure~\ref{fig:hilecop-wf}) n'introduit pas
-de divergences de comportement. % Pour ce faire, la sémantique des
+\textcircled{3} dans la Figure~\ref{fig:hilecop-wf-french})
+n'introduit pas de divergences de
+comportement. % Pour ce faire, la sémantique des
 % modèles initiaux et des programmes cibles est considérée. 
 Dans cette optique, il sera nécessaire de formaliser la sémantique des
 modèles de haut niveau (RdP), du langage cible (VHDL), et de décrire

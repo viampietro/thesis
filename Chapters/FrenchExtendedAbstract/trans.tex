@@ -4,32 +4,16 @@ Comparée à la compilation de programmes (qui est un type de
 transformation), l'originalité de la transformation modèle-vers-texte
 de \hilecop{} provient de plusieurs critères. Premièrement, la
 représentation source de la transformation \hilecop{} n'est pas un
-programme écrit dans un langage de programmation générique (ou
-spécifique). C'est un formalisme graphique, i.e. celui des RdPs. La
-structure des modèles d'entrée est alors bien différente de celle de
-l'arbre syntaxique des langages de programmation. Par conséquent,
-l'expression de la transformation ne peut pas suivre la définition
-récursive suivant l'arbre syntaxique, définition qui est usuelle pour
-les compilateurs de langage de programmation. Deuxièmement, le langage
-cible de la transformation \hilecop{} est une langage de description
-d'architecture de circuits, i.e. \vhdl{}. Même spécifique, ce langage
-reste un langage de programmation. Dans le cas des compilateurs pour
-langage de programmation, chaque instruction du langage source est
-traduite en une ou plusieurs instructions du langage cible ayant la
-même sémantique. Dans le cas de la transformation \hilecop{}, c'est
-mise en relation directe entre instructions ``source'' et instructions
-``cible'' n'est pas effective. Comme dit précédemment, il n'existe pas
-de notion d'instruction dans un RdP.  Même en considérant les éléments
-qui composent un RdP comme des entités atomiques qui pourraient se
-rapprocher d'instructions, par exemple, les places, les transitions,
-les actions, les intervalles de temps, etc; même en les considérant
-ainsi, la transformation \hilecop{} ne traduit pas un élément atomique
-d'un RdP en une ou plusieurs instructions du langage cible. Selon
-l'élément atomique traduit, le code généré est complexe car il rend à
-la fois compte de la structure du modèle d'entrée (i.e. comment
-l'élément atomique est connecté aux autres éléments du modèle
-d'entrée) et de sa sémantique (qui est aussi liée à la structure du
-modèle).
+programme écrit dans un langage de programmation. C'est un formalisme
+graphique, c.-à-d., celui des RdPs. La structure des modèles d'entrée
+est alors bien différente de celle de l'arbre syntaxique d'un
+programme. Par conséquent, l'expression de la transformation ne peut
+pas suivre la définition récursive opérant une descente dans l'arbre
+syntaxique du programme d'entrée, définition qui est usuelle pour les
+compilateurs de langage de programmation. Deuxièmement, le langage
+cible de la transformation \hilecop{} est un langage de description
+d'architecture de circuits, c.-à-d., \vhdl{}. Même spécifique, ce
+langage reste un langage de programmation.
 
 Nous allons illustrer la transformation modèle-vers-texte \hilecop{}
 en prenant le SITPN présenté en
@@ -51,8 +35,8 @@ Figure~\ref{fig:transf-toplevel-french} comme modèle d'entrée.
 \end{figure}
 
 La transformation modèle-vers-texte \hilecop{} génère un design
-\hvhdl{} dit de \textit{top-niveau}, i.e. un circuit qui n'est pas
-lui-même embarqué dans un autre circuit, depuis un modèle d'entrée
+\hvhdl{} dit de \textit{top-niveau} (c.-à-d., un circuit qui n'est pas
+lui-même embarqué dans un autre circuit) depuis un modèle d'entrée
 SITPN. La Figure~\ref{fig:transf-ports-french} présente la forme
 finale du design \hvhdl{} de top-niveau résultant de la
 transformation.
@@ -79,24 +63,23 @@ $\mathtt{id}_{t_0}$, etc. Lors de cette première phase, les parties
 Figure~\ref{fig:transf-ports-french}). Les parties constantes
 comprennent les constantes génériques, qui donne les dimensions aux
 interfaces des composants, et les informations liées aux arcs du SITPN
-d'entrée (i.e. poids et types) qui sont encodées dans l'interface des
-composants de type \texttt{place}.
+d'entrée (c.-à-d., poids et types) qui sont encodées dans l'interface
+des composants de type \texttt{place}.
 
 Lors de la deuxième phase de la transformation, les interconnexions
 entre composants de type \texttt{place} et composants de type
 \texttt{transition} sont générées. Les interconnexions apparaissent en
 rouge dans la Figure~\ref{fig:transf-ports-french}. C'est grâce à ces
-interconnexions et aux comportements internes de chaque composants que
+interconnexions et aux comportements internes de chaque composant que
 la même sémantique d'exécution du SITPN d'entrée sera obtenue dans sa
-version \vhdl{}. Du moins, sans considérer les éléments
-d'interprétation, i.e. les conditions, actions et fonctions.
+version \vhdl{}.
 
 La dernière phase de la transformation concerne les éléments
 d'interprétation contenus dans le modèle d'entrée. Pour chaque
 condition du modèle d'entrée, un port d'entrée \textit{primaire}
-(i.e. un port d'entrée d'un design de top-niveau) est généré. Ce port
-d'entrée est connecté à l'interface de certains composants de type
-\texttt{transition} (fils verts dans la
+(c.-à-d., un port d'entrée d'un design de top-niveau) est généré. Ce
+port d'entrée est connecté à l'interface de certains composants de
+type \texttt{transition} (fils verts dans la
 Figure~\ref{fig:transf-ports-french}). Cela représente l'association
 de la condition à certaines transitions du SITPN. Pour chaque action
 et fonction du modèle d'entrée, un port de sortie correspondant est
@@ -120,7 +103,7 @@ associée est tirée. Lors de la transformation, chaque port
 \texttt{fired} est branché au processus \texttt{function}, qui est
 aussi généré par la transformation. Le processus \texttt{function} va
 se charger d'activer les ports de sortie représentant les fonctions du
-modèle d'entrée. Cette activation se fait en selon la valeur des ports
+modèle d'entrée. Cette activation se fait selon la valeur des ports
 \texttt{fired} des composants de type
 \texttt{transition}. L'interconnexion entre les ports \texttt{marked}
 et le processus \texttt{action}, et les ports \texttt{fired} et le
@@ -128,8 +111,8 @@ processus \texttt{function} est représentée par les fils orange dans
 la Figure~\ref{fig:transf-ports-french}.
 
 Un algorithme complet de la transformation a été exprimé en
-pseudo-langage impérative. Ensuite, l'algorithme a été implémenté par
-une fonction écrite en langage \coq{}. 
+pseudo-langage impératif. Ensuite, l'algorithme a été implanté par une
+fonction écrite en langage \coq{}.
 
 %%% Local Variables:
 %%% mode: latex

@@ -10,11 +10,11 @@ d'un SITPN avec un état d'un design de top-niveau \hvhdl{}. Nous avons
 défini une relation de similarité entre l'état d'un SITPN et l'état
 d'un design \hvhdl{}. C'est à travers cette relation de similarité que
 notre théorème de préservation de comportement pourra être exprimé. La
-relation de similarité relie les valeurs présentent dans l'état d'un
+relation de similarité relie les valeurs présentes dans l'état d'un
 SITPN aux valeurs de certains éléments, principalement les valeurs de
 signaux, présents dans l'état d'un design \hvhdl{}. Pour un état $s$
 de SITPN et un état $\sigma$ de design \hvhdl{}, $s$ et $\sigma$ sont
-similaires si:
+similaires si :
 
 \begin{itemize}
 \item Pour toute place $p$, le marquage de $p$ est égal à la valeur du
@@ -48,7 +48,42 @@ suivante. Pour un modèle SITPN d'entrée et le design de top-niveau
 d'exécution $\theta$, et le design renvoie la trace de simulation
 $\theta'$ en s'exécutant pendant $\tau$ cycle d'horloges, alors chaque
 couple d'états, considéré dans les traces à un même instant temporel,
-vérifie la relation de similarité. 
+vérifie la relation de similarité.
+
+Pour prouver ce théorème, nous avons raisonné par induction sur la
+structure des traces d'exécution. Le lemme fondamental pour la preuve
+déclare qu'à états de départ similaires, un SITPN et un design
+\hvhdl{} liés par la transformation, et qui s'exécutent pendant un
+cycle d'horloge, arrivent en fin de cycle à deux états similaires.  La
+Figure~\ref{fig:one-cc} exprime graphiquement ce lemme.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/Proof/one-cc}
+  \caption{Représentation graphique du lemme déclarant que la
+    transformation \hilecop{} préserve la sémantique des modèles
+    initiaux pour une exécution sur un cycle d'horloge.}
+  \label{fig:one-cc}
+\end{figure}
+
+La partie supérieure de la Figure~\ref{fig:one-cc} représente
+l'exécution d'un cycle d'horloge pour un modèle SITPN ; la partie
+inférieure représente l'exécution d'un cycle d'horloge pour le design
+de top-niveau \hvhdl{} résultant de la transformation \hilecop{}
+(i.e. $\mathtt{design}=\lfloor{}sitpn\rfloor$ où le symbole de
+plancher représente la transformation). Il y a deux types de relation
+de similarité entre états, représentés par deux symboles
+différents. Le premier symbole $\stackrel{\downarrow}{\approx}$
+représente la relation de similarité après front descendant ; le
+deuxième symbole $\stackrel{\uparrow}{\approx}$ représente la relation
+de similarité après front montant. Selon la phase du cycle d'horloge
+considérée, la relation de similarité varie quelque peu.
+
+Nous avons prouvé que la transformation modèle-vers-texte \hilecop{}
+vérifie bien la propriété de préservation sémantique. La preuve a été
+effectuée informellement sur papier. Elle s'étale sur une centaine de
+pages. La mécanisation de la preuve avec l'assistant de preuves \coq{}
+est en cours de réalisation.
 
 %%% Local Variables:
 %%% mode: latex
