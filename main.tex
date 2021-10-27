@@ -77,6 +77,13 @@ natbib=true]{biblatex}
 	%showframe, % Uncomment to show how the type block is set on the page
 }
 
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=1cm
+  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+}
+\makeatother
+
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------

@@ -104,31 +104,33 @@ design; $b\in{}P\rightarrow\mathbb{N}$ is the function associating a
 maximal marking value to each place of the input SITPN. This function
 is the result of the analysis of the input SITPN.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  \caption{\texttt{sitpn\_to\_hvhdl}($sitpn$, $id_e$, $id_a$, $b$)}
-  \label{alg:sitpn2hvhdl}
-  
-  \AlFnt % overriding the new font
+    \caption{\texttt{sitpn\_to\_hvhdl}($sitpn$, $id_e$, $id_a$, $b$)}
+    \label{alg:sitpn2hvhdl}
+    
+    \AlFnt % overriding the new font
 
-  $d\leftarrow\mathtt{design}$ $id_e$ $id_a$ $\emptyset$ $\emptyset$ $\emptyset$ $\mathtt{null}$\; \label{line:init-design}
-  $\gamma\leftarrow\emptyset$\; \label{line:init-binder}
-  \BlankLine
+    $d\leftarrow\mathtt{design}$ $id_e$ $id_a$ $\emptyset$ $\emptyset$ $\emptyset$ $\mathtt{null}$\; \label{line:init-design}
+    $\gamma\leftarrow\emptyset$\; \label{line:init-binder}
+    \BlankLine
 
-  \texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $b$)\; \label{line:genarch}
-  \texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)\; \label{line:geninter}
-  \texttt{generate\_ports}($sitpn$, $d$, $\gamma$)\; \label{line:genports}
-  \BlankLine  
+    \texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $b$)\; \label{line:genarch}
+    \texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)\; \label{line:geninter}
+    \texttt{generate\_ports}($sitpn$, $d$, $\gamma$)\; \label{line:genports}
+    \BlankLine  
 
-  \Return{($d$,$\gamma$)}\;
-\end{algorithm}
+    \Return{($d$,$\gamma$)}\;
+  \end{algorithm}
+\end{center}
 
 In Algorithm~\ref{alg:sitpn2hvhdl}, Line~\ref{line:init-design}
 creates the initial \hvhdl{} design structure and assigns it to the
@@ -241,12 +243,12 @@ use in the description of the following algorithms.
     $\{t~\vert~\exists\omega~s.t.~pre(p,t)=(\omega,\mathtt{test})\lor{}pre(p,t)=(\omega,\mathtt{inhib})\}$.
   \end{itemize}
 
-\item \texttt{cassoc}$(map,id,x)$ where $map$ is either a generic map,
-  an input port map or an output port map, $id$ is an identifier, $x$
-  is an expression, a name (i.e. a simple or indexed identifier) or
-  the \texttt{open} keyword. The \texttt{cassoc} procedure adds an
-  association of the form $(id(i),x)$ to the $map$ structure. The
-  index $i$ is computed as follows based on the content of $map$:
+\item \texttt{cassoc}$(map,id,x)$ where $map$ is either an input port
+  map or an output port map, $id$ is an identifier, $x$ is an
+  expression or a name (i.e. a simple or indexed identifier). The
+  \texttt{cassoc} procedure adds an association of the form
+  $(id(i),x)$ to the $map$ structure. The index $i$ is computed as
+  follows based on the content of $map$:
   \begin{enumerate}
   \item looks up $id(j)$ with $max(j)$ in the formal parts of $map$
   \item if no such $j$, adds $(id(0),x)$ in $map$
@@ -260,9 +262,9 @@ use in the description of the following algorithms.
     yields the resulting map \\
     $\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false}),(s(2),\mathtt{true})\}}$.
   \item
-    \texttt{cassoc}$(~\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false})\}},~\mathtt{a},~\mathtt{open})$
+    \texttt{cassoc}$(~\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false})\}},~\mathtt{a},~\mathtt{3})$
     yields the resulting map \\
-    $\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{open})\}}$.
+    $\mathtt{\{(s(0),\mathtt{true}),(s(1),\mathtt{false}),(a(0),\mathtt{3})\}}$.
   \end{itemize}
 
 \item \texttt{get\_comp}$(id_c, cstmt)$ where $id_c$ is an identifier,
@@ -314,22 +316,23 @@ signal denoted by $id$; otherwise, the output port map $o$ and the
 input port map $i$, will not be well-typed at the end of the execution
 of the \texttt{connect} procedure.
 
-\begin{algorithm}[H] \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H] \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont} % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont} % \NoCaptionOfAlgo
 
-  \caption{\texttt{connect}($o$, $i$, $n$, $id$, $d$)}
-  \label{alg:connect}
+    \caption{\texttt{connect}($o$, $i$, $n$, $id$, $d$)}
+    \label{alg:connect}
 
-  $id_s\leftarrow\mathtt{genid}()$\;
-  $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
-  $o\leftarrow{}o\cup\{(n,id_s)\}$\;
-  \texttt{cassoc}$(i,id,id_s)$\;
-\end{algorithm}
-
+    $id_s\leftarrow\mathtt{genid}()$\;
+    $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
+    $o\leftarrow{}o\cup\{(n,id_s)\}$\;
+    \texttt{cassoc}$(i,id,id_s)$\;
+  \end{algorithm}
+\end{center}
 
 \begin{notation}
   When there is no ambiguity, $id_p$ (resp. $id_t$) denotes the PCI
@@ -358,24 +361,26 @@ part of code generation. The \texttt{generate\_architecture} procedure
 is decomposed in two procedures: the \texttt{generate\_PCIs} and the
 \texttt{generate\_TCIs} procedures.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  \caption{\texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $b$)}
-  \label{alg:genarch}
-  
-  \AlFnt % overriding the new font
+    \caption{\texttt{generate\_architecture}($sitpn$, $d$, $\gamma$, $b$)}
+    \label{alg:genarch}
+    
+    \AlFnt % overriding the new font
 
-  \texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $b$)\; \label{line:genpcis}
-  \texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)\; \label{line:gentcis}
+    \texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $b$)\; \label{line:genpcis}
+    \texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)\; \label{line:gentcis}
 
-\end{algorithm}
+  \end{algorithm}
+\end{center}
 
 The \texttt{generate\_PCIs} procedure, presented in
 Algorithm~\ref{alg:genpcis}, has four parameters: $sitpn\in{}SITPN$,
@@ -394,76 +399,81 @@ $id_p$, is composed with the current behavior of design $d$. Finally,
 the $\gamma$ binder receives a new couple corresponding to binding of
 place $p$ to identifier $id_p$.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \caption{\texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $b$)}
-  \label{alg:genpcis}
-  
-  \AlFnt % overriding the new font
-
-  \ForEach{$p\in{}P$}{
-
-    \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{\label{line:p-isolated}
-      \texttt{err}$("p~is~an~isolated~place")$\label{line:p-isolated-err}
-    }
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
     
-    \BlankLine
-    $g_p\leftarrow\{(\mathtt{mm},b(p))\}$; 
-    $i_p\leftarrow\emptyset$; 
-    $o_p\leftarrow\emptyset$\; \label{line:init-pcomp}
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-    \BlankLine
-    \uIf{$\mathtt{input}(p)=\emptyset$}{ \label{line:genpcis-inp-p-empty}
-      $g_p\leftarrow{}g_p\cup\{(\mathtt{ian},1)\}$\; \label{line:ian-empty}
-      $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(0),0),(\mathtt{itf}(0),\mathtt{false})\}$\; \label{line:iaw-itf-empty}
-    }
-    \Else{
-      $g_p\leftarrow{}g_p\cup\{(\mathtt{ian},\vert\mathtt{input}(p)\vert)\}$\; \label{line:ian-not-empty}
-      $i\leftarrow{}0$\;
-      \ForEach{$t\in\mathtt{input}(p)$}{ \label{line:foreach-iaw}
-        $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(i),post(t,p))\}$\;
-        $i\leftarrow{}i+1$\;
-      }
-    }
-
-    \BlankLine
-    \uIf{$\mathtt{output}(p)=\emptyset$}{\label{line:genpcis-out-p-empty}
-      $g_p\leftarrow{}g_p\cup\{(\mathtt{oan},1)\}$\; \label{line:oan-empty}
-      $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(0),0),(\mathtt{oat}(0),\mathtt{basic}),(\mathtt{otf}(0),\mathtt{false})\}$\;
-      \label{line:genpcis-out-p-empty-ip}
-      $o_p\leftarrow{}o_p\cup\{(\mathtt{oav},\mathtt{open}),(\mathtt{pauths},\mathtt{open}),(\mathtt{rtt},\mathtt{open})\}$\;
-      \label{line:genpcis-out-p-empty-op}
-    }
-    \Else{
-      $i\leftarrow{}0$\;
-      \ForEach{$t\in\mathtt{output}_c(p)\cup\mathtt{output}_{nc}(p)$}{\label{line:begin-oaw}
-        $(\omega,a)\leftarrow{}pre(p,t)$\;
-        $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(i),\omega),(\mathtt{oat}(i),a)\}$\;
-        $i\leftarrow{}i+1$\;
-      }
-    }
-
-    \BlankLine
-    \lIf{$\mathtt{acts}(p)=\emptyset$}{$o_p\leftarrow{}o_p\cup\{(\mathtt{marked},\mathtt{open})\}$}\label{line:genpcis-acts-empty}
-    \Else{
-      $id_s\leftarrow{}\mathtt{genid}()$\;
-      $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
-      $o_p\leftarrow{}o_p\cup\{(\mathtt{marked},id_s)\}$\; \label{line:end-op}
-    }
+    \caption{\texttt{generate\_PCIs}($sitpn$, $d$, $\gamma$, $b$)}
+    \label{alg:genpcis}
     
-    \BlankLine
-    $id_p\leftarrow{}\mathtt{genid}()$\;\label{line:gen-pcomp-id}
-    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;\label{line:gen-pcomp}
-    $\gamma\leftarrow\gamma\cup\{(p,\mathtt{id}_p)\}$\;\label{line:gen-bind-p}
-  }
-\end{algorithm}
+    \AlFnt % overriding the new font
+
+    \ForEach{$p\in{}P$}{
+
+      \lIf{$\mathtt{input}(p)=\emptyset$ and $\mathtt{output}(p)=\emptyset$}{\label{line:p-isolated}
+        \texttt{err}$("p~is~an~isolated~place")$\label{line:p-isolated-err}
+      }
+      
+      \BlankLine
+      $g_p\leftarrow\{(\mathtt{mm},b(p)),(\mathtt{ian},\begin{cases}
+        1~\mathtt{if}~\mathtt{input}(t)=\emptyset \\
+        \vert\mathtt{input}(t)\vert~otherwise\\
+      \end{cases}),(\mathtt{oan},\begin{cases}
+        1~\mathtt{if}~\mathtt{output}(t)=\emptyset \\
+        \vert\mathtt{output}(t)\vert~otherwise\\
+      \end{cases})\}$; 
+      $i_p\leftarrow\emptyset$; 
+      $o_p\leftarrow\emptyset$\; \label{line:init-pcomp}
+
+      \BlankLine
+      \lIf{$\mathtt{input}(p)=\emptyset$}{ \label{line:genpcis-inp-p-empty}
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(0),0),(\mathtt{itf}(0),\mathtt{false})\}$\label{line:iaw-itf-empty}
+      }
+      \Else{
+        $i\leftarrow{}0$\;
+        \ForEach{$t\in\mathtt{input}(p)$}{ \label{line:foreach-iaw}
+          $i_p\leftarrow{}i_p\cup\{(\mathtt{iaw}(i),post(t,p))\}$\;
+          $i\leftarrow{}i+1$\;
+        }
+      }
+
+      \BlankLine
+      \uIf{$\mathtt{output}(p)=\emptyset$}{\label{line:genpcis-out-p-empty}
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(0),0),(\mathtt{oat}(0),\mathtt{basic}),(\mathtt{otf}(0),\mathtt{false})\}$\;
+        \label{line:genpcis-out-p-empty-ip}
+        $o_p\leftarrow{}o_p\cup\{(\mathtt{oav},\mathtt{open}),(\mathtt{pauths},\mathtt{open}),(\mathtt{rtt},\mathtt{open})\}$\;
+        \label{line:genpcis-out-p-empty-op}
+      }
+      \Else{
+        $i\leftarrow{}0$\;
+        \ForEach{$t\in\mathtt{output}_c(p)\cup\mathtt{output}_{nc}(p)$}{\label{line:begin-oaw}
+          $(\omega,a)\leftarrow{}pre(p,t)$\;
+          $i_p\leftarrow{}i_p\cup\{(\mathtt{oaw}(i),\omega),(\mathtt{oat}(i),a)\}$\;
+          $i\leftarrow{}i+1$\;
+        }
+      }
+
+      \BlankLine
+      \lIf{$\mathtt{acts}(p)=\emptyset$}{$o_p\leftarrow{}o_p\cup\{(\mathtt{marked},\mathtt{open})\}$}\label{line:genpcis-acts-empty}
+      \Else{
+        $id_s\leftarrow{}\mathtt{genid}()$\;
+        $d.sigs\leftarrow{}d.sigs\cup\{(id_s,\mathtt{boolean})\}$\;
+        $o_p\leftarrow{}o_p\cup\{(\mathtt{marked},id_s)\}$\; \label{line:end-op}
+      }
+      
+      \BlankLine
+      $id_p\leftarrow{}\mathtt{genid}()$\;\label{line:gen-pcomp-id}
+      $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_p,\mathtt{place},g_p,i_p,o_p)$\;\label{line:gen-pcomp}
+      $\gamma\leftarrow\gamma\cup\{(p,\mathtt{id}_p)\}$\;\label{line:gen-bind-p}
+    }
+  \end{algorithm}
+\end{center}
 
 From Line~\ref{line:p-isolated} to Line~\ref{line:end-op}, the
 procedure generates the generic map, the input port map, and the
@@ -475,59 +485,59 @@ raised with the \texttt{err} primitive if the test succeeds. The
 SITPN model that does not meet the well-definition property (see
 Definition~\ref{def:wd-sitpn}). One part of the well-definition
 property pertains to the absence of isolated place in the input
-model. Line~\ref{line:init-pcomp} initializes the variables $g_p$,
-$i_p$ and $o_p$, respectively holding the generic map, the input port
-map and the output port map of the PCI being generated. The generic
-map $g_p$ initially takes a single association that binds the
-\texttt{mm} constant to the maximal marking value returned by the $b$
-function for place $p$. The input port map $i_p$ and the output port
-map $o_p$ are initialized with empty sets.
+model. Line~\ref{line:init-pcomp} builds the variable $g_p$, and
+initializes the variables $i_p$ and $o_p$, respectively holding the
+generic map, the input port map and the output port map of the PCI
+being generated. The generic map $g_p$ holds three associations: the
+association between the \texttt{mm} constant to the maximal marking
+value returned by the $b$ function for place $p$, and the association
+between the \texttt{ian} (resp. the \texttt{oan} constant) and a
+natural number that depends on the size of the set of input
+transitions (resp. output transitions) of place $p$.
 
 Line~\ref{line:genpcis-inp-p-empty} tests if the set of input
-transitions of $p$ is empty. If the test succeeds, the \texttt{ian}
-constant is associated to $1$ in the generic map $g_p$. The size of
-the \texttt{iaw} and \texttt{itf} input ports, which are of the array
-type, is equal to the value of the \texttt{ian} constant minus
-one. Thus, in the case where the \texttt{ian} constant is associated
-to $1$ in the generic map $g_p$, the \texttt{iaw} and \texttt{itf}
-input ports are composed of one subelement with index $0$. At
-Line~\ref{line:iaw-itf-empty}, the sole subelement of the \texttt{iaw}
-port is associated with $0$, and the sole subelement of the
-\texttt{itf} port is associated with \texttt{false} in the input port
-map $i_p$. If the set of input transitions of $p$ is not empty, the
-\texttt{ian} constant is associated with the size of the set in the
-generic map $g_p$. Then, each subelement of the \texttt{iaw} port is
-associated with the weight of the arc between place $p$ and an input
-transition $t$.  Note that, in that case, the procedure does not deal
-with the connection of the \texttt{itf} port. As the set of input
-transitions of $p$ is not empty, the connection of the \texttt{itf}
-port will be performed by the \texttt{generate\_interconnections}
-described in Algorithm~\ref{alg:geninter}.
+transitions of $p$ is empty.  The size of the \texttt{iaw} and
+\texttt{itf} input ports, which are of the array type, is equal to the
+value of the \texttt{ian} constant. Thus, in the case where the
+\texttt{ian} constant is associated to $1$ in the generic map $g_p$
+(i.e. the set of input transitions of $p$ is empty), the \texttt{iaw}
+and \texttt{itf} input ports are composed of one subelement with index
+$0$. At Line~\ref{line:iaw-itf-empty}, the sole subelement of the
+\texttt{iaw} port is associated with $0$, and the sole subelement of
+the \texttt{itf} port is associated with \texttt{false} in the input
+port map $i_p$. In the set of input transitions of $p$ holds is not
+empty, each subelement of the \texttt{iaw} port is associated with the
+weight of the arc between place $p$ and a given input transition $t$.
+Note that, in that case, the procedure does not deal with the
+connection of the \texttt{itf} port. As the set of input transitions
+of $p$ is not empty, the connection of the \texttt{itf} port will be
+performed by the \texttt{generate\_interconnections} described in
+Algorithm~\ref{alg:geninter}.
 
 Line~\ref{line:genpcis-out-p-empty} tests if the set of output
-transitions of $p$ is empty. If the test succeeds, the \texttt{oan}
-constant is associated to $1$ in the generic map $g_p$. The size of
-the \texttt{oaw}, \texttt{oat} and \texttt{otf} input ports, which are
-of the array type, is equal to the value of the \texttt{oan} constant
-minus one. Thus, in the case where the \texttt{oan} constant is
-associated to $1$ in the generic map $g_p$, the \texttt{oaw},
-\texttt{oat} and \texttt{otf} input ports are composed of one
-subelement with index $0$. At Line~\ref{line:genpcis-out-p-empty-ip},
-the sole subelement of the \texttt{oaw} port is associated with $0$,
-the sole subelement of the \texttt{oat} port is associated with
-\texttt{basic}, and the sole subelement of the \texttt{otf} port is
-associated with \texttt{false} in the input port map $i_p$. Also, in
-the abscence of output transitions, the \texttt{oav}, \texttt{pauths}
-and \texttt{rtt} output ports are left unconnected, i.e. they are
-associated with the \texttt{open} keyword of output port map $o_p$.
+transitions of $p$ is empty.  The size of the \texttt{oaw},
+\texttt{oat} and \texttt{otf} input ports, which are of the array
+type, is equal to the value of the \texttt{oan} constant. Thus, in the
+case where the \texttt{oan} constant is associated to $1$ in the
+generic map $g_p$ (i.e. the set of output transitions of $p$ is
+empty), the \texttt{oaw}, \texttt{oat} and \texttt{otf} input ports
+are composed of one subelement with index $0$. At
+Line~\ref{line:genpcis-out-p-empty-ip}, the sole subelement of the
+\texttt{oaw} port is associated with $0$, the sole subelement of the
+\texttt{oat} port is associated with \texttt{basic}, and the sole
+subelement of the \texttt{otf} port is associated with \texttt{false}
+in the input port map $i_p$. Also, in the abscence of output
+transitions, the \texttt{oav}, \texttt{pauths} and \texttt{rtt} output
+ports are left unconnected, i.e. they are associated with the
+\texttt{open} keyword of output port map $o_p$.
 
 If the set of output transitions of $p$ is not empty, the \texttt{oan}
 constant is associated with the size of this set in the generic map
 $g_p$. Then, each subelement of the \texttt{oaw} (resp. the
 \texttt{oat}) port is associated with the weight (resp. the type) of
-the arc between place $p$ and an output transition $t$.  Note that, in
-that case, the procedure does not handle the connection of the
-\texttt{otf} input port, nor the connection of the \texttt{oav},
+the arc between place $p$ and a given output transition $t$.  Note
+that, in that case, the procedure does not handle the connection of
+the \texttt{otf} input port, nor the connection of the \texttt{oav},
 \texttt{pauths} and \texttt{rtt} output ports. As the set of output
 transitions of $p$ is not empty, these connections will be performed
 by the \texttt{generate\_interconnections} described in
@@ -576,142 +586,151 @@ $id_t$, is composed with the current behavior of design $d$. Finally,
 the $\gamma$ binder receives a new couple corresponding to binding of
 transition $t$ to identifier $id_t$.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \caption{\texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)}
-  \label{alg:gentcis}
-  
-  \AlFnt % overriding the new font
-
-  \ForEach{$t\in{}T$}{
-
-    \lIf{$\mathtt{input}(t)=\emptyset$ and $\mathtt{output}(t)=\emptyset$}{
-      \texttt{err}$("t~is~an~isolated~transition")$\label{line:t-isolated}
-    }
-
-    \BlankLine
-    $g_t\leftarrow\{(\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t))\}$\;\label{line:init-gt}
-    $i_t\leftarrow\{(\mathtt{A},
-    \begin{cases}
-      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
-      l(I_s(t))~otherwise\\
-    \end{cases}), (\mathtt{B},
-    \begin{cases}
-      0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}u(I_s(t))=\infty \\
-      u(I_s(t))~otherwise\\
-    \end{cases})\}$\;\label{line:init-it}
-
-    $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
-    $d.sigs\leftarrow{}d.sigs\cup\{(id_s,boolean)\}$\;\label{line:declid-fired}
-    $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
     
-    \BlankLine
-    \uIf{$\mathtt{input}(t)=\emptyset$}{\label{line:gentcis-input-empty}
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},1)\}$\;
-      $i_t\leftarrow{}i_t\cup\{(\mathtt{iav}(0),\mathtt{true}),(\mathtt{pauths}(0),\mathtt{true}),(\mathtt{rt}(0),id_s)\}$\;
-      \label{line:gentcis-in-empty-it}
-    }
-    \Else{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{ian},\vert{}\mathtt{input}(t)\vert)\}$\;
-    }
-    
-    \BlankLine
-    \uIf{$\mathtt{conds}(t)=\emptyset$}{ \label{line:gentcis-conds-empty}
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},1)\}$\;
-      $i_t\leftarrow{}i_t\cup\{(\mathtt{ic}(0),\mathtt{true})\}$\;
-    } 
-    \Else{
-      $g_t\leftarrow{}g_t\cup\{(\mathtt{cn},\vert{}\mathtt{conds}(t)\vert)\}$\;
-    }
-    
-    \BlankLine
-    $id_t\leftarrow{}\mathtt{genid}()$\;\label{line:gen-tcomp-id}
-    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_t,\mathtt{transition},g_t,i_t,o_t)$\;\label{line:gen-tcomp}
-    $\gamma\leftarrow\gamma\cup\{(t,\mathtt{id}_t)\}$\;\label{line:gen-bind-t}
-  }
-\end{algorithm}
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
+    \caption{\texttt{generate\_TCIs}($sitpn$, $d$, $\gamma$)}
+    \label{alg:gentcis}
+    
+    \AlFnt % overriding the new font
+
+    \ForEach{$t\in{}T$}{
+
+      \lIf{$\mathtt{input}(t)=\emptyset$ and $\mathtt{output}(t)=\emptyset$}{
+        \texttt{err}$("t~is~an~isolated~transition")$\label{line:t-isolated}
+      }
+
+      \BlankLine
+      $g_t\leftarrow\{(\mathtt{tt},\mathtt{get\_ttype}(t)),(\mathtt{mtc},\mathtt{get\_mtc}(t)),$\;
+      $(\mathtt{ian},\begin{cases}
+        1~\mathtt{if}~\mathtt{input}(t)=\emptyset \\
+        \vert\mathtt{input}(t)\vert~otherwise\\
+      \end{cases}),(\mathtt{cn},
+      \begin{cases}
+        1~\mathtt{if}~\mathtt{conds}(t)=\emptyset \\
+        \vert\mathtt{conds}(t)\vert~otherwise\\
+      \end{cases})\}$\;\label{line:init-gt}
+
+      \BlankLine
+      $i_t\leftarrow\{(\mathtt{A},
+      \begin{cases}
+        0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s) \\
+        l(I_s(t))~otherwise\\
+      \end{cases}), (\mathtt{B},
+      \begin{cases}
+        0~\mathtt{if}~t\notin{}\mathtt{dom}(I_s)\lor{}u(I_s(t))=\infty \\
+        u(I_s(t))~otherwise\\
+      \end{cases})\}$\;\label{line:init-it}
+
+      $id_s\leftarrow{}\mathtt{genid()}$\;\label{line:genid-fired}
+      $d.sigs\leftarrow{}d.sigs\cup\{(id_s,boolean)\}$\;\label{line:declid-fired}
+      $o_t\leftarrow{}\{(\mathtt{fired},id_s)\}$\;\label{line:connect-fired}
+      
+      \BlankLine
+      \lIf{$\mathtt{input}(t)=\emptyset$}{\label{line:gentcis-input-empty}
+        $i_t\leftarrow{}i_t\cup\{(\mathtt{iav}(0),\mathtt{true}),(\mathtt{pauths}(0),\mathtt{true}),(\mathtt{rt}(0),id_s)\}$
+        \label{line:gentcis-in-empty-it}
+      }
+      
+      \lIf{$\mathtt{conds}(t)=\emptyset$}{ \label{line:gentcis-conds-empty}
+        $i_t\leftarrow{}i_t\cup\{(\mathtt{ic}(0),\mathtt{true})\}$
+      } 
+      
+      \BlankLine
+      $id_t\leftarrow{}\mathtt{genid}()$\;\label{line:gen-tcomp-id}
+      $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{comp}(\mathtt{id}_t,\mathtt{transition},g_t,i_t,o_t)$\;\label{line:gen-tcomp}
+      $\gamma\leftarrow\gamma\cup\{(t,\mathtt{id}_t)\}$\;\label{line:gen-bind-t}
+    }
+  \end{algorithm}
+\end{center}
 
 At Line~\ref{line:t-isolated}, the procedure checks if transition $t$
 is isolated, and raises an error accordingly.
 Lines~\ref{line:init-gt} to \ref{line:connect-fired} initialize the
 variables $g_t$, $i_t$ and $o_t$, respectively holding the generic
 map, the input port map and the output port map of the TCI
-being-generated. The generic map $g_t$ initially takes two
-associations: the one between the \texttt{tt} constant and the result
-of the function call \texttt{get\_ttype}$(t)$, and the one between the
+being-generated. The generic map $g_t$ takes four associations: the
+association between the \texttt{tt} constant and the result of the
+function call \texttt{get\_ttype}$(t)$, the association between the
 \texttt{mtc} constant and the result of the function call
-\texttt{get\_mtc}$(t)$.  The \texttt{get\_ttype} function returns the
-type of transition $t$, i.e. either \texttt{NOT\_TEMPORAL},
-\texttt{TEMPORAL\_A\_A}, \texttt{TEMPORAL\_A\_B} or
-\texttt{TEMPORAL\_A\_INFINITE}, based on the form of the time interval
-associated with $t$. Algorithm~\ref{alg:getttype} describes the
-\texttt{get\_ttype} function. 
+\texttt{get\_mtc}$(t)$, the association between \texttt{ian} and the
+size of the set of input places of $t$, and the association between
+\texttt{cn} and the size of the set of conditions associated with $t$.
+The \texttt{get\_ttype} function returns the type of transition $t$,
+i.e. either \texttt{NOT\_TEMPORAL}, \texttt{TEMPORAL\_A\_A},
+\texttt{TEMPORAL\_A\_B} or \texttt{TEMPORAL\_A\_INFINITE}, based on
+the form of the time interval associated with
+$t$. Algorithm~\ref{alg:getttype} describes the \texttt{get\_ttype}
+function.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  \caption{\texttt{get\_ttype}($t$)}
-  \label{alg:getttype}
-  
-  \AlFnt % overriding the new font
+    \caption{\texttt{get\_ttype}($t$)}
+    \label{alg:getttype}
+    
+    \AlFnt % overriding the new font
 
-  \lIf{$t\notin{}\mathtt{dom}(I_s)$}{
-    \Return{\texttt{NOT\_TEMPORAL}}
-  }
-  \lElseIf{$I_s(t)=[a,a]$}{
-    \Return{\texttt{TEMPORAL\_A\_A}}
-  }
-  \lElseIf{$I_s(t)=[a,b]$}{
-    \Return{\texttt{TEMPORAL\_A\_B}}
-  }
-  \lElseIf{$I_s(t)=[a,\infty]$}{\Return{\texttt{TEMPORAL\_A\_INFINITE}}}
-  
-\end{algorithm}
+    \lIf{$t\notin{}\mathtt{dom}(I_s)$}{
+      \Return{\texttt{NOT\_TEMPORAL}}
+    }
+    \lElseIf{$I_s(t)=[a,a]$}{
+      \Return{\texttt{TEMPORAL\_A\_A}}
+    }
+    \lElseIf{$I_s(t)=[a,b]$}{
+      \Return{\texttt{TEMPORAL\_A\_B}}
+    }
+    \lElseIf{$I_s(t)=[a,\infty]$}{\Return{\texttt{TEMPORAL\_A\_INFINITE}}}
+    
+  \end{algorithm}
+\end{center}
 
 The \texttt{get\_mtc} function determines the maximal value for the
 time counter of $t$ based on the form of the time interval associated
 with transition $t$. Algorithm~\ref{alg:getmtc} describes the
 \texttt{get\_mtc} function.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  \caption{\texttt{get\_mtc}($t$)}
-  \label{alg:getmtc}
-  
-  \AlFnt % overriding the new font
+    \caption{\texttt{get\_mtc}($t$)}
+    \label{alg:getmtc}
+    
+    \AlFnt % overriding the new font
 
-  \lIf{$t\notin{}\mathtt{dom}(I_s)$}{
-    \Return{$1$}
-  }
-  \lElseIf{$I_s(t)=[a,b]$}{
-    \Return{$b$}
-  }
-  \lElseIf{$I_s(t)=[a,\infty]$}{
-    \Return{$a$}
-  }
-  
-\end{algorithm}
+    \lIf{$t\notin{}\mathtt{dom}(I_s)$}{
+      \Return{$1$}
+    }
+    \lElseIf{$I_s(t)=[a,b]$}{
+      \Return{$b$}
+    }
+    \lElseIf{$I_s(t)=[a,\infty]$}{
+      \Return{$a$}
+    }
+    
+  \end{algorithm}
+\end{center}
 
 In the \texttt{generate\_TCIs} procedure, Line~\ref{line:init-it} sets
 the value of the \texttt{A} and \texttt{B} input ports while
@@ -734,8 +753,8 @@ Line~\ref{line:gentcis-input-empty} checks if the set of input places
 of $t$ is empty. If the test succeeds, the \texttt{ian} constant is
 associated with $1$ in the generic map $g_t$. The size of the
 \texttt{iav}, \texttt{pauths} and \texttt{rt} input ports, which are
-of the array type, is equal to the value of the \texttt{ian} constant
-minus one. Thus, in the case where the set of input places of $t$ is
+of the array type, is equal to the value of the \texttt{ian}
+constant. Thus, in the case where the set of input places of $t$ is
 empty, the \texttt{iav}, \texttt{pauths} and \texttt{rt} input ports
 are composed of one subelement with index $0$. At
 Line~\ref{line:gentcis-in-empty-it}, the sole subelements of the
@@ -748,21 +767,16 @@ internal signal $id_s$ in the output port map $o_t$. Thus, the
 \texttt{rt} input port with index $0$ through the $id_s$ signal.  This
 connection is mandatory to reset the value of the
 \texttt{s\_time\_counter} signal (which is an internal signal of the
-\texttt{transition} design) in the absence of input places. If the set
-of input places of $t$ is not empty, then the \texttt{ian} constant is
-associated with the size of the set in the generic map $g_t$.
+\texttt{transition} design) in the absence of input places.
 
 Line~\ref{line:gentcis-conds-empty} checks if the set of conditions
-attached to $t$ is empty. If the test succeeds, the \texttt{cn}
-constant is associated with $1$ in the generic map $g_t$. The size of
-the \texttt{ic} input port, which is of the array type, is equal to
-the value of the \texttt{cn} constant minus one. Thus, in the case
-where the set of conditions attached to $t$ is empty, the \texttt{ic}
-input port is composed of one subelement with index $0$. Then, the
-sole subelement of the \texttt{ic} port is associated with
-\texttt{true} in the input port map $i_t$. If the set of conditions
-attached to $t$ is not empty, the \texttt{cn} constant is associated
-with the size of the set in the generic map $g_t$. In that case, the
+attached to $t$ is empty.  The size of the \texttt{ic} input port,
+which is of the array type, is equal to the value of the \texttt{cn}
+constant. Thus, in the case where the set of conditions attached to
+$t$ is empty, the \texttt{ic} input port is composed of one subelement
+with index $0$. Then, the sole subelement of the \texttt{ic} port is
+associated with \texttt{true} in the input port map $i_t$. If the set
+of conditions attached to $t$ is not empty, then the
 \texttt{generate\_conds} procedure, presented in
 Algorithm~\ref{alg:genconds}, will handle the connection of the
 subelements of the \texttt{ic} input port.
@@ -796,62 +810,64 @@ interfaces of PCIs and TCIs. The \texttt{generate\_interconnections}
 procedure, presented in Algorithm~\ref{alg:geninter}, produces these
 interconnections.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \caption{\texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)}
-  \label{alg:geninter}
-  
-  \AlFnt % overriding the new font
-
-  \ForEach{$p\in{}P$}{
-    \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;\label{line:geninter-getpcomp}
-
-    \BlankLine
-    $i\leftarrow{}0$\; \label{geninter-start}
-    \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
-      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-      $i_p\leftarrow{}i_p\cup\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
-      $i\leftarrow{}i+1$\;
-    }\label{line:geninter-end-input}
-
-    \BlankLine
-    $i\leftarrow{}0$\;
-    \ForEach{$t\in\mathtt{output}_c(p)$}{\label{line:foreach-outc}
-      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-      $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-1}
-      \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-1}
-      \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-1}
-      \texttt{connect}$(o_p,i_t,\mathtt{pauths}(i),\mathtt{pauths},d)$\; \label{line:pauths-pauths-1}
-      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\; \label{geninter-puttcomp}
-      $i\leftarrow{}i+1$\;
-    }\label{line:end-foreach-outc}
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
     
-    \ForEach{$t\in\mathtt{output}_{nc}(p)$}{
-      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;\label{line:foreach-outnc}
-      $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-2}
-      \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-2}
-      \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-2}
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-      $id_s\leftarrow\mathtt{genid}()$\;\label{line:genid-for-pauths}
-      $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
-      $o_p\leftarrow{}o_p\cup\{(\mathtt{pauths}(i),id_s)\}$\;\label{line:pauths-assoc}
-      \texttt{cassoc}$(i_t,\mathtt{pauths},\mathtt{true})$\; \label{line:pauths-true}
+    \caption{\texttt{generate\_interconnections}($sitpn$, $d$, $\gamma$)}
+    \label{alg:geninter}
+    
+    \AlFnt % overriding the new font
+
+    \ForEach{$p\in{}P$}{
+      \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;\label{line:geninter-getpcomp}
+
+      \BlankLine
+      $i\leftarrow{}0$\; \label{geninter-start}
+      \ForEach{$t\in\mathtt{input}(p)$}{\label{line:foreach-input-cit}
+        \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{itf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\;\label{line:connect-itf-fired}
+        $i\leftarrow{}i+1$\;
+      }\label{line:geninter-end-input}
+
+      \BlankLine
+      $i\leftarrow{}0$\;
+      \ForEach{$t\in\mathtt{output}_c(p)$}{\label{line:foreach-outc}
+        \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-1}
+        \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-1}
+        \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-1}
+        \texttt{connect}$(o_p,i_t,\mathtt{pauths}(i),\mathtt{pauths},d)$\; \label{line:pauths-pauths-1}
+        \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\; \label{geninter-puttcomp}
+        $i\leftarrow{}i+1$\;
+      }\label{line:end-foreach-outc}
       
-      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outnc}
-      $i\leftarrow{}i+1$\;
-    } \label{geninter-end}
-    
-    \BlankLine
-    \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;\label{line:putpcomp-cit}
-  }
-\end{algorithm}
+      \ForEach{$t\in\mathtt{output}_{nc}(p)$}{
+        \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;\label{line:foreach-outnc}
+        $i_p\leftarrow{}i_p\cup\{(\mathtt{otf}(i),\mathtt{actual}(\mathtt{fired},o_t))\}$\; \label{line:otf-fired-2}
+        \texttt{connect}$(o_p,i_t,\mathtt{oav}(i),\mathtt{iav},d)$\; \label{line:oav-iav-2}
+        \texttt{connect}$(o_p,i_t,\mathtt{rtt}(i),\mathtt{rt},d)$\; \label{line:rtt-rt-2}
+
+        $id_s\leftarrow\mathtt{genid}()$\;\label{line:genid-for-pauths}
+        $d.sigs\leftarrow{}d.sigs\cup(id_s,\mathtt{boolean})$\;
+        $o_p\leftarrow{}o_p\cup\{(\mathtt{pauths}(i),id_s)\}$\;\label{line:pauths-assoc}
+        \texttt{cassoc}$(i_t,\mathtt{pauths},\mathtt{true})$\; \label{line:pauths-true}
+        
+        \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;\label{line:end-foreach-outnc}
+        $i\leftarrow{}i+1$\;
+      } \label{geninter-end}
+      
+      \BlankLine
+      \texttt{put\_comp}$(id_p, \mathtt{comp}(id_p,\mathtt{place},g_p,i_p,o_p), d.cs)$\;\label{line:putpcomp-cit}
+    }
+  \end{algorithm}
+\end{center}
 
 The \texttt{generate\_interconnections} procedure iterates over the
 set of places of the $sitpn$ parameter. For each place $p$, the
@@ -1030,56 +1046,60 @@ generation of the \texttt{function} process. These three procedures
 are detailed in Algorithms~\ref{alg:genconds}, \ref{alg:genacts} and
 \ref{alg:genfuns}.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  \texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)\;
-  \texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)\;
-  \texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)\;
-  
-  \caption{\texttt{generate\_ports}($sitpn$, $d$, $\gamma$)}
-  \label{alg:genports}
-  
-  \AlFnt % overriding the new font
-\end{algorithm}
+    \texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)\;
+    \texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)\;
+    \texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)\;
+    
+    \caption{\texttt{generate\_ports}($sitpn$, $d$, $\gamma$)}
+    \label{alg:genports}
+    
+    \AlFnt % overriding the new font
+  \end{algorithm}
+\end{center}
 
 Algorithm~\ref{alg:genconds} describes the
 \texttt{generate\_condition\_ports} procedure.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
-
-  \ForEach{$c\in\mathcal{C}$}{
-    $id_c\leftarrow\mathtt{genid}()$\;
-    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{in},id_c,\mathtt{boolean})\}$\;
-    $\gamma\leftarrow\gamma\cup\{(c,id_c)\}$\;
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
     
-    \BlankLine
-    \ForEach{$t\in\mathtt{trs}(c)$}{\label{line:foreach-trans-of-c}
-      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-      \lIf{$\mathbf{C}(t,c)=1$}{\texttt{cassoc}$(i_t,\mathtt{ic},id_c)$}
-      \lElseIf{$\mathbf{C}(t,c)=-1$}{\texttt{cassoc}$(i_t,\mathtt{ic},\mathtt{not}~id_c)$}
-      \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
+
+    \ForEach{$c\in\mathcal{C}$}{
+      $id_c\leftarrow\mathtt{genid}()$\;
+      $d.ports\leftarrow{}d.ports\cup\{(\mathtt{in},id_c,\mathtt{boolean})\}$\;
+      $\gamma\leftarrow\gamma\cup\{(c,id_c)\}$\;
+      
+      \BlankLine
+      \ForEach{$t\in\mathtt{trs}(c)$}{\label{line:foreach-trans-of-c}
+        \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+        \lIf{$\mathbf{C}(t,c)=1$}{\texttt{cassoc}$(i_t,\mathtt{ic},id_c)$}
+        \lElseIf{$\mathbf{C}(t,c)=-1$}{\texttt{cassoc}$(i_t,\mathtt{ic},\mathtt{not}~id_c)$}
+        \texttt{put\_comp}$(id_t, \mathtt{comp}(id_t,\mathtt{transition},g_t,i_t,o_t), d.cs)$\;
+      }
     }
-  }
-  
-  \caption{\texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)}
-  \label{alg:genconds}
-  
-  \AlFnt % overriding the new font
-\end{algorithm}
+    
+    \caption{\texttt{generate\_condition\_ports}($sitpn$, $d$, $\gamma$)}
+    \label{alg:genconds}
+    
+    \AlFnt % overriding the new font
+  \end{algorithm}
+\end{center}
 
 The \texttt{generate\_condition\_ports} procedure iterates over the set of
 conditions of the $sitpn$ parameter. For each condition of the set,

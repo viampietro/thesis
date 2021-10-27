@@ -75,13 +75,13 @@ boucle spécifique de simulation pour un design $\mathcal{H}$-VHDL.
     \AlFnt % overriding the new font
     
     \tcp{\textcolor{red}{Initialization phase.}}
-    $\sigma_e'\leftarrow$ \texttt{RunAllOnce($\Delta$,$\sigma_{e}$,$cs$)}\;\label{line:run-once} 
-    $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_e'$,$cs$)}\;\label{line:stab-init}
+    $\sigma_e'\leftarrow$ \texttt{RunAllOnce($\Delta$,$\sigma_{e}$,$cs$)}\;\label{line:run-once-french} 
+    $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_e'$,$cs$)}\;\label{line:stab-init-french}
     \BlankLine
     
     \tcp{\textcolor{red}{Main loop.}}
     % $T_c\leftarrow{}0$\; \label{line:init-tc}
-    $\theta\leftarrow[\sigma]$\; \label{line:init-trace}
+    $\theta\leftarrow[\sigma]$\; \label{line:init-trace-french}
     
     \BlankLine
 
@@ -93,7 +93,7 @@ boucle spécifique de simulation pour un design $\mathcal{H}$-VHDL.
       $\sigma\leftarrow$ \texttt{Stabilize($\Delta$,$\sigma_\downarrow$,$cs$)}\;
 
       \BlankLine
-      $\theta\leftarrow\theta\mdoubleplus[\sigma',\sigma]$\; \label{line:append-states}
+      $\theta\leftarrow\theta\mdoubleplus[\sigma',\sigma]$\; \label{line:append-states-french}
       $T_c\leftarrow{}T_c-1$\;
     }
 

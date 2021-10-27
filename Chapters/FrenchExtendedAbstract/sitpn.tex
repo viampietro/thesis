@@ -24,8 +24,8 @@ variables, ici, des \textit{signaux} \vhdl{}.  Les conditions
 associées aux transitions sont des expressions Booléennes sur la
 valeur des signaux. Dans un RdP interprété, une transition est
 franchissable si elle est sensibilisée et que toutes les conditions
-qui lui sont associées sont \emph{vraies}. La Figure~\ref{fig:ipn-french}
-donne un exemple de RdP interprété.
+qui lui sont associées sont \emph{vraies}. La
+Figure~\ref{fig:ipn-french} donne un exemple de RdP interprété.
 
 \begin{figure}[H]
   \centering
@@ -34,26 +34,27 @@ donne un exemple de RdP interprété.
     réseau de Petri interprété; sur le côté gauche, le RdP; sur le
     côté droit, les expressions Booléennes associées aux conditions et
     les opérations associées aux actions et fonctions.}
-  \label{fig:ipn}
+  \label{fig:ipn-french}
 \end{figure}%
 
 Les RdP utilisés dans \hilecop{} sont temporels ; une fenêtre de tir,
 i.e un intervalle de temps, peut être associée à une transition. Un
 compteur de temps est lancé lorsqu'une transition devient
 sensibilisée; celle-ci devient franchissable lorsque son compteur de
-temps a atteint l'intervalle de tir. La Figure~\ref{fig:tpn} donne un
-exemple de RdP temporel. La valeur courante des compteurs de temps est
-représentée entre chevrons en dessous des intervalles temporels
-associés. En résumé, une transition d'un SITPN est franchissable si
-elle est sensibilisée, si toutes les conditions qui lui sont associées
-sont vraies et si son compteur de temps est dans l'intervalle défini.
+temps a atteint l'intervalle de tir. La Figure~\ref{fig:tpn-french}
+donne un exemple de RdP temporel. La valeur courante des compteurs de
+temps est représentée entre chevrons en dessous des intervalles
+temporels associés. En résumé, une transition d'un SITPN est
+franchissable si elle est sensibilisée, si toutes les conditions qui
+lui sont associées sont vraies et si son compteur de temps est dans
+l'intervalle défini.
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio=true, width=0.2\textwidth]{Figures/SITPN/time-pn}
   \caption[Un exemple de RdP temporel.]{Un exemple de RdP temporel. La
     valeur des compteurs de temps apparaît en rouge.}
-  \label{fig:tpn}
+  \label{fig:tpn-french}
 \end{figure}
 
 Contrairement au cas général, les SITPNs ont une politique de tir
@@ -64,11 +65,11 @@ tirs sont possibles), et asynchrone (dès qu'une transition est
 franchissable, elle peut être tirée sans attente). A contrario,
 l'évolution d'un SITPN est rythmée par le front montant et le front
 descendant d'un signal d'horloge, comme montré dans la
-Figure~\ref{fig:sync-exec}. Sur le front descendant (\textcircled{1}
-de la Figure~\ref{fig:sync-exec}), toutes les transitions devant être
+Figure~\ref{fig:sync-exec-french}. Sur le front descendant (\textcircled{1}
+de la Figure~\ref{fig:sync-exec-french}), toutes les transitions devant être
 tirées sont déterminées, ce après mise à jour des conditions et
 intervalles de temps ; sur le front montant (\textcircled{2} de la
-Figure~\ref{fig:sync-exec}), les précédentes transitions sont tirées,
+Figure~\ref{fig:sync-exec-french}), les précédentes transitions sont tirées,
 entraînant la mis à jour du marquage du réseau et l'exécution de
 fonctions. La sémantique d'évolution d'un tel réseau est synchrone et
 déterministe.
@@ -85,7 +86,7 @@ déterministe.
   \includegraphics[keepaspectratio=true, width=.9\textwidth]{Figures/SITPN/sync-exec}
   \caption{Evolution d'un SITPN synchronisée avec un signal
     d'horloge.}
-  \label{fig:sync-exec}
+  \label{fig:sync-exec-french}
 \end{figure}
 
 La structure et la sémantique des SITPNs ont été formalisées dans
