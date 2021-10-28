@@ -1126,44 +1126,46 @@ an updated input port map, in the behavior of design $d$.\\
 Algorithm~\ref{alg:genacts} describes the
 \texttt{generate\_action\_ports} procedure.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  $rstss\leftarrow{}\mathtt{null}$\;
-  $fss\leftarrow{}\mathtt{null}$\;
-
-  \BlankLine
-  \ForEach{$a\in\mathcal{A}$}{\label{line:foreach-acts}
-    $id_a\leftarrow\mathtt{genid}()$\;
-    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_a,\mathtt{boolean})\}$\;
-    $\gamma\leftarrow{}\gamma\cup\{(a,id_a)\}$\;
-    $e_{id_a}\leftarrow{}\mathtt{false}$\;\label{line:init-expr-a}
+    $rstss\leftarrow{}\mathtt{null}$\;
+    $fss\leftarrow{}\mathtt{null}$\;
 
     \BlankLine
-    \ForEach{$p\in{}\mathtt{pls}(a)$}{
-      \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;
-      $id_s\leftarrow{}\mathtt{actual}(\mathtt{marked},o_p)$\;
-      $e_{id_a}\leftarrow{}id_s~\mathtt{or}~e_{id_a}$\;
+    \ForEach{$a\in\mathcal{A}$}{\label{line:foreach-acts}
+      $id_a\leftarrow\mathtt{genid}()$\;
+      $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_a,\mathtt{boolean})\}$\;
+      $\gamma\leftarrow{}\gamma\cup\{(a,id_a)\}$\;
+      $e_{id_a}\leftarrow{}\mathtt{false}$\;\label{line:init-expr-a}
+
+      \BlankLine
+      \ForEach{$p\in{}\mathtt{pls}(a)$}{
+        \texttt{comp}$(id_p,\mathtt{place},g_p,i_p,o_p)\leftarrow\mathtt{get\_comp}(\gamma(p),d.cs)$\;
+        $id_s\leftarrow{}\mathtt{actual}(\mathtt{marked},o_p)$\;
+        $e_{id_a}\leftarrow{}id_s~\mathtt{or}~e_{id_a}$\;
+      }
+
+      \BlankLine
+      $rstss\leftarrow{}rstss;~id_a\Leftarrow{}\mathtt{false}$\;
+      $fss\leftarrow{}fss;~id_a\Leftarrow{}e_{id_a}$\;\label{line:add-assign-fss}
     }
 
-    \BlankLine
-    $rstss\leftarrow{}rstss;~id_a\Leftarrow{}\mathtt{false}$\;
-    $fss\leftarrow{}fss;~id_a\Leftarrow{}e_{id_a}$\;\label{line:add-assign-fss}
-  }
-
-  $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{action},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{falling}~fss))$\;
-  
-  \caption{\texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)}
-  \label{alg:genacts}
-  
-  \AlFnt % overriding the new font
-\end{algorithm}
+    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{action},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{falling}~fss))$\;
+    
+    \caption{\texttt{generate\_action\_ports}($sitpn$, $d$, $\gamma$)}
+    \label{alg:genacts}
+    
+    \AlFnt % overriding the new font
+  \end{algorithm}
+\end{center}
 
 The \texttt{generate\_action\_ports} procedure does two things. First,
 it generates an output port for each action of the input SITPN;
@@ -1229,44 +1231,46 @@ block.
 Algorithm~\ref{alg:genfuns} describes the
 \texttt{generate\_function\_ports} procedure.
 
-\begin{algorithm}[H]
-  \DontPrintSemicolon
+\begin{center}
+  \begin{algorithm}[H]
+    \DontPrintSemicolon
 
-  \SetAlFnt{\fontsize{11}{13}\selectfont}
-  
-  \SetAlCapFnt{\fontsize{11}{13}\selectfont}
-  \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
-  % \NoCaptionOfAlgo
+    \SetAlFnt{\fontsize{11}{13}\selectfont}
+    
+    \SetAlCapFnt{\fontsize{11}{13}\selectfont}
+    \SetAlCapNameFnt{\fontsize{11}{13}\selectfont}
+    % \NoCaptionOfAlgo
 
-  $rstss\leftarrow{}\mathtt{null}$\;
-  $rss\leftarrow{}\mathtt{null}$\;
-
-  \BlankLine
-  \ForEach{$f\in\mathcal{F}$}{\label{line:foreach-funs}
-    $id_f\leftarrow\mathtt{genid}()$\;
-    $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_f,\mathtt{boolean})\}$\;
-    $\gamma\leftarrow{}\gamma\cup\{(f,id_f)\}$\;
-    $e_{id_f}\leftarrow{}\mathtt{false}$\; \label{line:init-expr-f}
+    $rstss\leftarrow{}\mathtt{null}$\;
+    $rss\leftarrow{}\mathtt{null}$\;
 
     \BlankLine
-    \ForEach{$t\in{}\mathtt{trs}(f)$}{
-      \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
-      $id_s\leftarrow{}\mathtt{actual}(\mathtt{fired},o_t)$\;
-      $e_{id_f}\leftarrow{}id_s~\mathtt{or}~e_{id_f}$\;
+    \ForEach{$f\in\mathcal{F}$}{\label{line:foreach-funs}
+      $id_f\leftarrow\mathtt{genid}()$\;
+      $d.ports\leftarrow{}d.ports\cup\{(\mathtt{out},id_f,\mathtt{boolean})\}$\;
+      $\gamma\leftarrow{}\gamma\cup\{(f,id_f)\}$\;
+      $e_{id_f}\leftarrow{}\mathtt{false}$\; \label{line:init-expr-f}
+
+      \BlankLine
+      \ForEach{$t\in{}\mathtt{trs}(f)$}{
+        \texttt{comp}$(id_t,\mathtt{transition},g_t,i_t,o_t)\leftarrow\mathtt{get\_comp}(\gamma(t),d.cs)$\;
+        $id_s\leftarrow{}\mathtt{actual}(\mathtt{fired},o_t)$\;
+        $e_{id_f}\leftarrow{}id_s~\mathtt{or}~e_{id_f}$\;
+      }
+
+      \BlankLine
+      $rstss\leftarrow{}rstss;~id_f\Leftarrow{}\mathtt{false}$\;
+      $rss\leftarrow{}rss;~id_f\Leftarrow{}e_{id_f}$\;\label{line:add-assign-rss}
     }
 
-    \BlankLine
-    $rstss\leftarrow{}rstss;~id_f\Leftarrow{}\mathtt{false}$\;
-    $rss\leftarrow{}rss;~id_f\Leftarrow{}e_{id_f}$\;\label{line:add-assign-rss}
-  }
-
-  $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{function},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{rising}~rss))$\;
-  
-  \caption{\texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)}
-  \label{alg:genfuns}
-  
-  \AlFnt % overriding the new font
-\end{algorithm}
+    $d.cs\leftarrow{}d.cs~\mathtt{||}~\mathtt{process}(\mathtt{function},\{\mathtt{clk}\},\emptyset,\mathtt{rst}~(rstss)~(\mathtt{rising}~rss))$\;
+    
+    \caption{\texttt{generate\_function\_ports}($sitpn$, $d$, $\gamma$)}
+    \label{alg:genfuns}
+    
+    \AlFnt % overriding the new font
+  \end{algorithm}
+\end{center}
 
 The \texttt{generate\_function\_ports} procedure does two
 things. First, it generates an output port for each function of the
