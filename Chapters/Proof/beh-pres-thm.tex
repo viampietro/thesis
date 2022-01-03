@@ -306,6 +306,14 @@ axioms.
 
 \end{niproof}
 
+The behavior preservation theorem is a case of \textit{simulation}
+theorem. It states that if an execution trace is computed on the SITPN
+side, then there exists an simulation trace on the \hvhdl{} side and
+that both traces are similar. To express a \textit{bisimulation}
+theorem, the other way around must also be true, i.e. if a simulation
+trace is computed on the \hvhdl{} side, then an execution trace exists
+on the SITPN side, and both traces are similar.
+
 Theorem~\ref{thm:elab-ex} states that every \hvhdl{} design returned
 by the \hilecop{} transformation function can be elaborated. The
 elaboration relation verifies that a given \hvhdl{} design is
@@ -358,7 +366,7 @@ the \hilecop{} transformation function. This means that the simulation
 of an \hvhdl{} design never fails when it is the result of the
 transformation of a well-defined SITPN.
 
-\begin{thm}[Simulation]
+\begin{thm}[Trace existence]
   \label{thm:sim-ex}
   For all well-defined $sitpn\in{}SITPN$, $d\in{}design$,
   $b\in{}P\rightarrow\mathbb{N}$, $\gamma\in{}WM(sitpn,d)$,
@@ -420,10 +428,10 @@ transformation of a well-defined SITPN.
   behaviors.
 \end{remark}
 
-\subsection{The bisimulation theorem}
+\subsection{The trace similarity theorem}
 \label{sec:bisim-thm-and-proof}
 
-Here, we present the bisimulation theorem. The bisimulation theorem
+Here, we present the trace similarity theorem. The trace similarity theorem
 states that if an SITPN and its corresponding \hvhdl{} design are
 executed/simulated over $\tau$ execution/simulation cycles, then the
 produced traces are semantically similar, i.e. they verify the full
@@ -432,11 +440,11 @@ Definition~\ref{def:full-exec-trace-sim}. In this thesis, we have
 proved this particular theorem. The proofs of
 Theorems~\ref{thm:elab-ex}, \ref{thm:init-ex} and \ref{thm:sim-ex}
 have been left for future work. We chose to focus our work on the
-bisimulation theorem, because it directly addresses the semantic
+trace similarity theorem, because it directly addresses the semantic
 preservation property of \hilecop{}'s transformation function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% FULL BISIMULATION THM %%%%%%%%%%
+%%%%%%%%%% FULL TRACE SIMILARITY THM %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In the proof of Theorem~\ref{thm:full-bisim}, in the case where
@@ -458,7 +466,7 @@ detailed proofs for Lemmas~\ref{lem:sim-init-states} and
 \ref{lem:fst-re} are given in Sections~\ref{sec:init-states} and
 \ref{sec:fst-re}.
 
-\begin{thm}[Full bisimulation]
+\begin{thm}[Full trace similarity]
   \label{thm:full-bisim}
   For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
   $d\in{}design$, $\gamma\in{}WM(sitpn,d)$, $\tau\in\mathbb{N}$,
@@ -592,18 +600,18 @@ detailed proofs for Lemmas~\ref{lem:sim-init-states} and
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% BISIMULATION LEMMA %%%%%%%%%%
+%%%%%%%%%% TRACE SIMILARITY LEMMA %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To prove the semantic preservation property, we want to prove that a
 given SITPN and its translated \hvhdl{} version follow the
-bisimulation diagram of Figure~\ref{fig:bisim-diagram}.  
+simulation diagram of Figure~\ref{fig:bisim-diagram}.  
 
 \begin{figure}[H]
   \centering
   \includegraphics[keepaspectratio,width=.4\linewidth]{Figures/Proof/beh-preser-details}
-  \caption[Bisimulation diagram over one clock cycle for a source
-  SITPN and a target \hvhdl{} design]{Bisimulation diagram over one
+  \caption[Simulation diagram over one clock cycle for a source
+  SITPN and a target \hvhdl{} design]{Simulation diagram over one
     clock cycle for a source SITPN and a target \hvhdl{} design; the
     left part of the diagram presents the execution of an SITPN over
     one clock cycle, and the right part of the diagram presents the
@@ -632,25 +640,27 @@ $s'\stackrel{\uparrow}{\approx}\sigma'$ in
 Figure~\ref{fig:bisim-diagram}). Then, Lemma~\ref{lem:fe} states that
 after the computation of a falling edge step on the SITPN part and on
 the \hvhdl{} part the resulting states verify the full post falling
-edge state similarity relation.
+edge state similarity relation.\\
 
-The proof of Lemma~\ref{lem:simulation} is based on the bisimulation
-diagram of Figure~\ref{fig:bisim-diagram}.  Lemma~\ref{lem:simulation}
-is similar to Theorem~\ref{thm:full-bisim} excepts that the
-execution/simulation traces are not produced starting from the initial
-states, but starting from two states verifying the full post falling
-edge state similarity relation (i.e,
-$\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$, corresponding
-to the kind of similarity relation that must hold when considering two
-states at the beginning of a random clock cycle). The SITPN execution
-relation and the \hvhdl{} simulation relation execute one
-computational step at clock count $\tau$ and then decrement the clock
-count and call themselves recursively to produce the rest of the
-execution/simulation traces. Therefore, the proof of
-Lemma~\ref{lem:simulation} is naturally done by induction over the
-clock count $\tau$.
+Lemma~\ref{lem:simulation} is a generalization of
+Theorem~\ref{thm:full-bisim}, and it is used in the proof of
+Theorem~\ref{thm:full-bisim} to solve the induction
+case. Lemma~\ref{lem:simulation} is similar to
+Theorem~\ref{thm:full-bisim} excepts that the execution/simulation
+traces are not produced starting from the initial states, but starting
+from two states verifying the full post falling edge state similarity
+relation (i.e, $\gamma\vdash{}s\stackrel{\downarrow}{\approx}\sigma$,
+corresponding to the kind of similarity relation that must hold when
+considering two states at the beginning of a random clock cycle). The
+proof of Lemma~\ref{lem:simulation} is based on the simulation diagram
+of Figure~\ref{fig:bisim-diagram}.  The SITPN execution relation and
+the \hvhdl{} simulation relation execute one computational step at
+clock count $\tau$ and then decrement the clock count and call
+themselves recursively to produce the rest of the execution/simulation
+traces. Therefore, the proof of Lemma~\ref{lem:simulation} is
+naturally done by induction over the clock count $\tau$.
 
-\begin{lemma}[Bisimulation]
+\begin{lemma}[Trace Similarity]
   \label{lem:simulation}
   For all $sitpn\in{}SITPN$, $b\in{}P\rightarrow\mathbb{N}$,
   $d\in{}design$, $\gamma\in{}WM(sitpn,d)$, $\Delta\in{}ElDesign$,
@@ -791,8 +801,8 @@ clock count $\tau$.
 
 
 Now, let us present Lemma~\ref{lem:re} and Lemma~\ref{lem:fe}, along
-with their proofs. In the two lemmas, we added a hypothesis, which can
-always be verified at the beginning of a clock cycle, about the
+with their proofs. In the two lemmas, we added an hypothesis, which
+can always be verified at the beginning of a clock cycle, about the
 starting state of the \hvhdl{} design:
 $\mathcal{D}_{\mathcal{H}},\Delta,\sigma\vdash\mathrm{d.cs}\xrightarrow{comb}\sigma$. This
 hypothesis states that all signal values are stable at the beginning
@@ -1034,7 +1044,9 @@ Section~\ref{sec:detailled-proof}.
     Point~\ref{item:fe-equal-not-firable}.
   \item Apply the \nameref{lem:fe-equal-fired} lemma
     (p.~\pageref{lem:fe-equal-fired}) to solve
-    Point~\ref{item:fe-equal-fired}.
+    Point~\ref{item:fe-equal-fired}. The proof of the
+    \nameref{lem:fe-equal-fired} lemma is detailled in
+    Section~\ref{sec:detailled-proof}.
   \item Apply the \nameref{lem:fe-equal-not-fired} lemma
     (p.~\pageref{lem:fe-equal-not-fired}) to solve
     Point~\ref{item:fe-equal-not-fired}.

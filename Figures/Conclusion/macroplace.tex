@@ -85,7 +85,7 @@
   edge [arcout] (tin);
 
   %% OUTGOING PLACE-TRANSITION(S)
-  \node[transition, rotate=-45] (tout) [below left = 8mm of mp, label={0:\ssmall $t_0\ [1,\infty]$}] {}
+  \node[transition, rotate=-45] (tout) [below left = 8mm of mp, label={0:\ssmall $t_0\ [1,\infty[$}] {}
   edge[arcin, dotted, \focusonarcs] node[auto] {\ssmall (2$p_0$,$p_1$)} (mp);
   \node[place] (pout) [below left= 4mm of tout, label={180:\ssmall $p_{out}$}] {}
   edge[arcin] (tout);

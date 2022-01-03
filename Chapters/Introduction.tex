@@ -62,32 +62,32 @@ The rules imposed by the standards vary with respect to the
 criticality of the considered systems; for instance, in the medical
 field, the regulation text 2017/145 of the EU, pertaining to the
 marketing of medical devices, sets a different requirement level
-whether we are considering the production of dressings (level 0), or
-of neuroprostheses (highest-level, level 4). The IEC defines a SIL
-(Safety Integrity Level) measure that qualifies the criticality level
-of a system. The CC defines a level of Evaluation Assurance Level
-(EAL), from 1 to 7, that must be met by the evaluated systems
-regarding their functional requirements.
+whether we are considering the production of dressings (class I), or
+of neuroprostheses (class III). The IEC defines a SIL (Safety
+Integrity Level) measure that qualifies the criticality level of a
+system. The CC defines a level of Evaluation Assurance Level (EAL),
+from 1 to 7, that must be met by the evaluated systems regarding their
+functional requirements.
 
 Among the mandatory procedures, prescribed by the standards, which
 must be followed to validate a computer system involved in a
 safety-critical system, there are tests (unit, functional or
 integration tests) or simulation (especially applied to hardware
-systems) are to be noted.  However, in the case of the development
-safety-critical computer systems, a particular kind of methods, called
-\textit{formal methods} (FM), are also applied. In formal methods, a
-computer system is considered as a mathematical object
-\cite{Bjorner2014}. As pointed out in \cite{Bowen1993}, ``formal
-methods address \textit{correctness} issues'', that is whether a
-system delivers the required service. The perks of formal methods are
-to set a formal mathematical framework around a computer system.  This
-framework allows us to reason about the system and prove that the
-system meets some required properties. Thus, a ``formal methods''
-framework for computer systems requires at least a formal requirement
-language, i.e. with a formal semantics, to express the properties that
-a given system must verify. The expression of these required
-properties is called the \textit{specification} of the system.  We can
-cite some specification formalism such as CCS \cite{Milner1980}, CSP
+systems).  However, in the case of the development of safety-critical
+computer systems, a particular kind of methods, called \textit{formal
+  methods} (FM), are also applied. In formal methods, a computer
+system is considered as a mathematical object \cite{Bjorner2014}. As
+pointed out in \cite{Bowen1993}, ``formal methods address
+\textit{correctness} issues'', that is whether a system delivers the
+required service. The perks of formal methods are to set a formal
+mathematical framework around a computer system.  This framework
+allows us to reason about the system and prove that the system meets
+some required properties. Thus, a ``formal methods'' framework for
+computer systems requires at least a formal requirement language,
+i.e. with a formal semantics, to express the properties that a given
+system must verify. The expression of these required properties is
+called the \textit{specification} of the system.  We can cite some
+specification formalism such as CCS \cite{Milner1980}, CSP
 \cite{Hoare1978}, Petri nets \cite{Petri1962} or TLA+
 \cite{Lamport1994} to describe reactive systems (i.e. systems that
 continuously interact with an environment); hardware description
@@ -316,7 +316,7 @@ generated proof must be is such a format that can be verified by a
 
 Even though it is not considered as a formal method, compiler testing
 is also a way to validate the semantic preservation property for a
-given compiler program. Considering the essential part that plays
+given compiler program. Considering the essential part played by
 compiler programs regarding the production of software products, a lot
 of efforts has been dedicated for the generation of test suites
 \cite{Chen2020}.
@@ -367,7 +367,7 @@ way to design a digital circuit starting from a high-level view of the
 system. This high-level view can follow a graphical formalism such as
 SysML \cite{Friedenthal2014} or Petri nets \cite{Petri1962}, or a
 textual one such as SystemC \cite{Black2009} or VHDL
-\cite{Ashenden2010}. Then, the MBSE process describes many refinements
+\cite{Ashenden2010}. Then, the MBSE process describes many refinement
 phases (the downward-going green arrows in Figure~\ref{fig:MBSE-ps})
 during which the input model will be transformed; at each refinement
 phase, the model goes down in abstraction towards its final
@@ -501,7 +501,7 @@ their \textit{synchronous} execution semantics. This semantics denotes
 from the standard \textit{asynchronous} execution of PNs.  The PN
 formalism is a formal model and therefore allows us to apply
 mathematical reasoning on its instances. Particularly, a PN model can
-be analyzed, and a proof that a given model meet some properties can
+be analyzed, and a proof that a given model meets some properties can
 be automatically produced through the direct analysis of the structure
 or through the use of model-checking techniques. This feature of PNs
 has been one of the reason of the adoption of this formalism as
@@ -515,11 +515,10 @@ of the model produced in preparation of the next transformation into a
 \vhdl{} design.  The analysis phase is here to convince the engineers
 that they are indeed designing a safe system. The analysis process is
 a round trip between Step~1 and Step~2.  It aims at producing a model
-that is conflict-free (see Section~\ref{sec:sitpn-wd} for more
-details about the definition of a conflict), bounded, and
-deadlock-free, using model-checking techniques.  After several
-iterations, the model should reach soundness and is then said to be
-\emph{implementation-ready}.
+that is conflict-free (see Section~\ref{sec:sitpn-wd} for more details
+about the definition of a conflict), bounded, and deadlock-free, using
+model-checking techniques.  After several iterations, the model should
+reach soundness and is then said to be \emph{implementation-ready}.
 
 In Figure~\ref{fig:hilecop-wf}, from Step~2 to Step~3, \vhdl{} source
 code is then generated by means of an automatic model-to-text
@@ -591,11 +590,11 @@ required properties, qualify the \hilecop{} methodology as a formal
 method for the design and implementation of safety-critical digital
 systems. However, even with input models that are proved to be
 \textit{sound}, the advantages provided by the use Petri nets would be
-lost if one of the transformation performed during the process changes
-the input definition of the circuit in a way that would alter its
-behavior. Thus, the engineers would have specified a perfectly correct
-digital system but would never obtain the expected circuit on a
-physical device. Therefore, in order to reinforce the confidence in
+lost if one of the transformations performed during the process
+changes the input definition of the circuit in a way that would alter
+its behavior. Thus, the engineers would have specified a perfectly
+correct digital system but would never obtain the expected circuit on
+a physical device. Therefore, in order to reinforce the confidence in
 the \hilecop{} methodology, the goal of this thesis is to verify, by
 establishing a formal proof, that the model-to-text transformation
 from Step~2 to Step~3 (i.e. the framed part with red dotted lines in

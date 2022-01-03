@@ -2,7 +2,7 @@ The goal of this section is to present the overall proof strategy that
 we adopted to establish the semantic preservation property for the
 \hilecop{} model-to-text transformation. We take advantage of the
 proof of Lemma~\ref{lem:fe-equal-fired}, involved in the proof of
-Lemma~\ref{lem:fe}, to illustrate our demonstration technics. The
+Lemma~\ref{lem:fe}, to illustrate our demonstration techniques. The
 proof of Lemma~\ref{lem:fe-equal-fired} has been one complex part of
 the overall demonstration; we believe it is worth to be
 mentioned. Also, it has led to a bug detection. We give a full account
@@ -360,8 +360,8 @@ show that \fbox{$\sigma'(id_t)(\texttt{pauths})[i]=\mathtt{true}$.} As
 shown in Figure~\ref{fig:fired-port}, the
 \texttt{priority\_authorizations} signal is an input port of the
 \texttt{transition} design. Therefore, to know what is the value of
-the element $i$-th element of the \texttt{priority\_authorizations}
-port at state $\sigma'(id_t)$, we must know how the
+the $i$-th element of the \texttt{priority\_authorizations} port at
+state $\sigma'(id_t)$, we must know how the
 \texttt{priority\_authorizations} port is connected in the top-level
 design. Basing ourselves on the transformation function
 (cf. Algorithm~\ref{alg:geninter}, p.~\pageref{alg:geninter}), the
@@ -891,7 +891,7 @@ the \texttt{s\_time\_counter} signal must be reset or not. We proved
 that there is an equivalence between the fired transitions and the
 value of the \texttt{fired} ports at the end of a falling edge
 phase. We need a way to memorize the value of \texttt{fired} ports at
-the moment where the equivalence hold (i.e. at the end of the falling
+the moment where the equivalence holds (i.e. at the end of the falling
 edge phase) so that the \texttt{time\_counter} process can use this
 information to reset the \texttt{s\_time\_counter} signal. To do so,
 we have modified the SITPN semantics and the behavior of the

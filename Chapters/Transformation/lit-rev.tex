@@ -81,7 +81,7 @@ and concise implementation of compilers.
 The cases of optimizing compilers like \cite{Leroy2009} and \cite{Tan}
 show that, to avoid writing too complex functions when passing from a
 source to a target program, the compilation is decomposed into many
-passes. No more than 12 passes for the CakeML compiler, and up to 7
+passes. No more than 12 passes for the CakeML compiler, and up to 20
 passes for \ccert{}. This is a way to keep the translation functions
 simple enough in order to ease reasoning afterwards. Indeed, the more
 the gap is important between the source representation and the target
@@ -152,9 +152,9 @@ language Koîka, which is also a simpler version of the BlueSpec
 language. A Koîka program is composed of a list of rules; each rule
 describes actions that must be performed atomically. Actions are read
 and write operations on registers. A Koîka program is accompanied by a
-scheduler that specify an execution order for the rules. The described
-compiler transforms Koîka programs into RTL descriptions of hardware
-circuits. The translation function builds an RTL circuit by
+scheduler that specifies an execution order for the rules. The
+described compiler transforms Koîka programs into RTL descriptions of
+hardware circuits. The translation function builds an RTL circuit by
 descending recursively down the AST of rules. Each action is
 translated into a specific RTL representation which are afterwards
 composed together to get complex circuits. The translation becomes
@@ -186,6 +186,25 @@ expressions of the Verilog programs are turned into netlist cells, and
 the composition of statements leads to the creation of complex
 circuits by means of cell composition.
 
+In \cite{Herklotz2021}, the authors describe a High-Level Synthesis
+(HLS) tool that transforms C programs into Verilog
+descriptions. Moreover, they have formally proved the correctness of
+the whole process, and mechanized the proof with \coq{}. In HLS, the
+purpose of the transformation is to obtain a hardware implementation,
+described with an HDL, of a computer program. The verified
+transformation from C to Verilog described in the paper is decomposed
+into several transformations: from C to a CFG-representation language
+called 3AC, from 3AC to the intermediate language HTL, and from HTL to
+Verilog. The transformation from C to 3AC relies on the \ccert{}
+compiler. In the second transformation pass, i.e. from 3AC to HTL, the
+HTL language permits the FSM-based representation of a hardware
+design. Thus, going from 3AC to HTL implies transforming C statements
+into a complex FSM ecosystem split into a data-path part and a control
+logic part. The data-path part involves a RAM representation of the
+hardware memory. Therefore, in the generated HTL program the RAM
+memory is a part of the code, whereas it does not appear in the input
+program.
+
 \paragraph{Model transformations}
 
 We will now present the works pertaining to model-to-model and
@@ -207,7 +226,7 @@ models. The translation rules from source to target models are
 expressed within the setting of the OMG standard QVT language
 (Query/View/Transform). The QVT language offers a formal way to
 express model transformations, partly based on the Object Constraint
-Language (OCL). The translation rules map the different kind of
+Language (OCL). The translation rules map the different kinds of
 structures that can be found in UML state diagrams to specific
 structures of Petri nets. Even though the two models used as source
 and target of transformations are executable, the authors leverage the
@@ -265,7 +284,7 @@ authors define two algorithms: $\mathtt{fire\_t}$ and
 $\mathtt{succ\_t}$ to compute the graph of reachable states.  These
 are the functions that transform CPNs into concrete LLVM programs.
 
-In \cite{Meghzili2017}, the author describes a transformation from UML
+In \cite{Meghzili2017}, the authors describe a transformation from UML
 state machine diagrams to Coloured Petri Nets (CPNs). The aim is to
 leverage the means of analysis provided by Petri nets to certify
 certain properties over UML state machine diagrams. The authors want
@@ -274,7 +293,7 @@ between source and target models. The transformation function does not
 use a standard setting as QVT or ATL, or transformation graphs. It is
 expressed as a specific function written in \isahol.
 
-In \cite{Yang2014}, the author presents a transformation from
+In \cite{Yang2014}, the authors present a transformation from
 Architecture Analysis and Design Language (AADL) models to Timed
 Abstract State Machines (TASMs). AADL is a language widely used in
 avionics to describe both hardware and software systems. AADL doesn't
@@ -290,7 +309,7 @@ Transformation functions are mappings from a source representation to
 a target representation. The more the mapping from source to target is
 straight-forward the easier the comparison will be when proving that
 the transformation is semantic preserving. Thus, in
-\cite{Leroy2009,Tan,Chlipala2010} where complex case of optimizing
+\cite{Leroy2009,Tan,Chlipala2010} where complex cases of optimizing
 compilers are presented, the compilation is split into many simple
 passes to ease the verification effort coming afterwards. In the case
 of the \hilecop{} transformation, we are not yet concerned with the

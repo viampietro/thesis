@@ -18,7 +18,7 @@ illustrates how a \hvhdl{} design \texttt{tl} can be embedded in
 another top-level design alongside a process regulating the value of a
 clock signal by using a unit-delay signal
 assignment. Listing~\ref{lst:clk-unit-delay} presents the behavioral
-part the embedding top-level design.
+part of the embedding top-level design.
 
 \begin{lstlisting}[language=VHDL,label={lst:clk-unit-delay},
 caption={[An architecture to simulate a synchronous design.] An architecture to simulate a synchronous design. The architecture \texttt{toplevel\_arch} is composed of the \texttt{clkp} process, that simulates a clock signal, and of an instance of the design \texttt{tl} named $id_{tl}$, i.e. the design under simulation. },framexleftmargin=1.5em,xleftmargin=2em,numbers=left,
@@ -67,7 +67,7 @@ transformation interacts with its environment through the input
 ports. The input ports of a top-level design are called \emph{primary}
 input ports. In our simulation algorithm, we need to represent the
 capture and the injection of the values of primary input ports and how
-this affect the values of the internal signals of the simulated
+this affects the values of the internal signals of the simulated
 design.
 
 Finally, Algorithm~\ref{alg:simulation} gives an overview of our
@@ -1872,7 +1872,7 @@ statements.
 
 Here, we present the classical evaluation of for-loop
 statements. Rule~\textsc{LoopInit} corresponds to the evaluation of a
-for loop in the case where the range variable $\mathrm{id}_v$ in not
+for loop in the case where the range variable $\mathrm{id}_v$ is not
 already defined in the local environment; in that case, the loop range
 bounds are evaluated and binding between the variable $\mathrm{id}_v$
 and its type and initial value is added to the local environment;

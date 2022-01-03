@@ -162,7 +162,7 @@ interfaces. To restrict the interconnections to Boolean signals, the
 information (i.e. the weight and type of its input and output arcs) in
 its interface; this approach of encoding the arc information is called
 the \textit{place-pivot} approach. Figure~\ref{fig:arc-infos} points
-out where the arc information are encoded in the interface of the
+out where the arc information is encoded in the interface of the
 \texttt{place} design. Thus, a PCI has all the needed information to
 compute the sensitization of its output TCIs by comparing the weight
 of its output arcs to its current marking value.  A PCI can simply
@@ -220,7 +220,7 @@ function ports, the transformation generates two processes: the
 \texttt{action} process is a synchronous process responding to the
 falling edge of the clock signal. At the occurrence of the falling
 edge of the clock signal, the \texttt{action} process sets the value
-of the \emph{action} ports computed from the values of the
+of the \emph{action} ports computed from the values of the multiple
 \texttt{marked} output ports\footnote{As one action can be associated
   to multiple places, one action port can depend on the value of
   multiple \texttt{marked} output port.}. The \texttt{marked} port is

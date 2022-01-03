@@ -166,7 +166,7 @@ Now, let us define the axioms of the ZF set theory.
 \begin{axiom}[Pair]
   \label{ax:pair}
   For all set $A$ and $B$, there exist a set $C$ such that $x\in{}C$
-  if and only if $x=A$ and $x=B$. I.e.
+  if and only if $x=A$ or $x=B$. I.e.
   $\forall{}A,B,\exists{}C,\forall{}x,~(x\in{}C\Leftrightarrow{}x=A\lor{}x=B)$.
 \end{axiom}
 
@@ -226,7 +226,7 @@ sets then their corresponding pair $C$ is also a set.
   \label{ax:foundation}
   For all non-empty set $A$, there exists a set $B$ such that
   $B\in{}A$ and $B$ has no common element with $A$. I.e.
-  $\forall{}A,x\neq\emptyset\Rightarrow\exists{}B,B\in{}A\land(A\cap{}B=\emptyset)$.
+  $\forall{}A,A\neq\emptyset\Rightarrow\exists{}B,B\in{}A\land(A\cap{}B=\emptyset)$.
 \end{axiom}
 
 Based on the previous axioms, we can complement the theory with

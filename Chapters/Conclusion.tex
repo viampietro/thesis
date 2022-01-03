@@ -78,18 +78,18 @@ Chapters~\ref{chap:transformation} and \ref{chap:proof}, the task of
 formally verifying that a transformation from a source representation
 to a target one is semantic preserving has been thoroughly studied,
 and in different application contexts (generic compilers,
-domain-specific compilers, model transformations, etc.). From this fact
-arises the will to compare the \hilecop{} model-to-text transformation
-to the other kinds of transformation found in the literature. In a
-research point of view, the complementary questions that gravitated
-around our main research question were:
+domain-specific compilers, model transformations, etc.). From this
+fact arises the will to compare the \hilecop{} model-to-text
+transformation to the other kinds of transformations found in the
+literature. In a research point of view, the complementary questions
+that gravitated around our main research question were:
 
 \begin{itemize}
 \item What are the similarities and the differences between the
   \hilecop{} model-to-text transformation and the other kind of
   transformations that have been formally verified?
-\item Are there standard technics to prove that a transformation is
-  semantic preserving? Do these technics apply in the case of the
+\item Are there standard techniques to prove that a transformation is
+  semantic preserving? Do these techniques apply in the case of the
   \hilecop{} model-to-text transformation?
 \end{itemize}
 
@@ -169,7 +169,7 @@ itself, the contribution of this thesis was the design of the
 algorithm of the transformation, which had never been expressed
 before, and its implementation within the \coq{} proof assistant.  For
 the implementation of the transformation, we tried as much as possible
-to draw our inspirations from the technics found in the
+to draw our inspirations from the techniques found in the
 literature. Especially, we tried to produce clear, maintainable code,
 through the use of functional design patterns, while anticipating the
 additions of new elements in the input models. We also tried as much
@@ -182,7 +182,7 @@ semantic preservation, we formalized the way to compare an input SITPN
 model with the corresponding \vhdl{} design, result of the
 transformation. This point is the angular stone of the theorem of
 semantic preservation, moreover considering that the gap between the
-source and the target representation is substantial.  The major
+source and the target representations is substantial.  The major
 contribution of the thesis to this part of the work is, of course, to
 have brought the proof of the semantic preservation theorem, more
 especially the proof of Theorem~\ref{thm:full-bisim}. Although the
@@ -327,7 +327,7 @@ production of safety-critical digital systems.  The Neurinnov company
 exploits the \hilecop{} methodology for the production of
 neuroprostheses, which are considered highly critical medical
 devices. To certify the neuroprostheses as eligible for market, the UE
-regulation ask for the thorough testing of all the programs involved
+regulation asks for the thorough testing of all the programs involved
 in the production chain, thus including the \hilecop{} methodology.
 For the moment, the UE regulation standards for medical devices do not
 consider a formal proof as sufficient to certify a given program.  All

@@ -109,7 +109,7 @@ GPL compilers, we state that this definition of semantic preservation
 holds also for a more general case of transformation from a source
 representation to a target representation. The only condition to be
 able to verify that a transformation is semantic preserving is that
-the source and target representation must have an execution semantics
+the source and target representations must have an execution semantics
 (i.e, the instances of the source and target representations must be
 executable).
 
@@ -134,18 +134,20 @@ asked:
 Taking the \ccert{} compiler as an example, the compilation pass from
 Clight programs to Cminor programs is described in \cite{Blazy2006,
   Leroy2009}. Clight is a subset of the C language, and Cminor is a
-low-level imperative language. The two languages are endowed with a
-big-step operational semantics. Here, the execution state of the
-source and target languages are memory models. The memory model
-consists of block references; each block has a lower and an upper
-bound. To access data, one has to specify the block reference along
-with the size of the accessed data (i.e, the data type) and the offset
-from the start of the block reference (i.e, where to begin the data
-reading). Regarding the proof of semantic preservation, the most
-difficult point is to relate the memory state of the source program to
-the memory state of the target program. To do so, the authors define a
-\emph{memory injection} relation, which binds the values of source and
-target together. They also establish a relation to compare execution
+low-level imperative language. The two languages are endowed with both
+a big-step and small-step operational semantics. Here, the execution
+state of the source and target languages are memory models for the
+most part, but are also completed with representations of global
+variable storage, registers, etc. The memory model consists of block
+references; each block has a lower and an upper bound. To access data,
+one has to specify the block reference along with the size of the
+accessed data (i.e, the data type) and the offset from the start of
+the block reference (i.e, where to begin the data reading). Regarding
+the proof of semantic preservation, the most difficult point is to
+relate the memory state of the source program to the memory state of
+the target program. To do so, the authors define a \emph{memory
+  injection} relation, which binds the values of source and target
+together. They also establish a relation to compare execution
 environments, i.e, the environments holding the declaration of
 functions, global variables\dots The proof of semantic preservation is
 built incrementally. First, the authors prove a correctness lemma for
@@ -241,7 +243,7 @@ circuit holds the value of the registers declared in the
 circuit. Therefore, the state comparison relation, used to state the
 semantic preservation theorem, binds the values of variables on one
 side to the values of registers on the other side. The semantics of
-Verilog quite similar to the one of \vhdl{}; a set of processes
+Verilog is quite similar to the one of \vhdl{}; a set of processes
 composing a module are executed w.r.t. the simulation semantics of the
 language, i.e, composed of synchronous and combinational execution
 steps. The authors give a big-step operational semantics to netlists
@@ -333,7 +335,7 @@ Figure~\ref{fig:bisim-ref-transl}.
   \label{fig:bisim-ref-transl}
 \end{figure}
 
-In Figure~\ref{fig:bisim-ref-transl}, one the right side of the
+In Figure~\ref{fig:bisim-ref-transl}, on the right side of the
 diagram, i.e, the Petri net side, one can see that a Petri net
 possibly performs many internal actions (represented the arrow
 $\stackrel{\tau}{\rightarrow}^{*}$) before and after executing the
@@ -402,7 +404,7 @@ computational step is not related to time, but rather expresses the
 one-time computation of programs.
 
 Concerning proof strategies, in the case of programming languages,
-proving the semantic preservation theorems are systematically done by
+proving the semantic preservation theorems is systematically done by
 induction over the semantics relations of the source and target
 languages, and by reasoning on the translation function. The semantics
 relations are themselves defined by following the inductive structure

@@ -175,7 +175,7 @@ criterions are:
     semantics; this completely disqualifies the adoption of the
     semantics.
   \item Synchronism is expressible in the considered \vhdl{}
-    semantics. Synchronism is expressible if time-steps are handle in
+    semantics. Synchronism is expressible if time-steps are handled in
     the semantics, at least to be able to represent clock events.
   \item Synchronism is explicit, i.e. the simulation loop is built
     around the occurrences of clock events.
@@ -218,7 +218,7 @@ In \cite{Fuchs1995}, the authors give a denotational semantics to the
 framework, a method for the development of distributed systems. Signal
 values and their evolution through time are represented as streams of
 values. Statements are denoted as stream-processing
-functions. Processes are stream-processing functions that takes input
+functions. Processes are stream-processing functions that take input
 signal streams (signals of the sensitivity list) and yields
 transaction traces (i.e, waveforms) over output signals (i.e, signal
 that are written by the process). Transaction traces are merged
@@ -440,23 +440,23 @@ semantics, that is, all processes run until suspension, and one for
 the update part (i.e, the kernel process). Flowgraphs come with a
 large amount of tools for analysis, and this translational semantics
 is involved in the setting of a framework to reason about \vhdl{}
-programs using multiple technics (automatic theorem proving, model
-checking\dots). All these technics rely on the flowgraph formalism.
+programs using multiple techniques (automatic theorem proving, model
+checking\dots). All these techniques rely on the flowgraph formalism.
 
 In \cite{Dohmen1995}, the author introduces a translational semantics
 for \vhdl{} based on deterministic finite-state automatons. Again, the
 reason for using such automatons lies in the existence of many
 analysis tools. Moreover, forcing the generation of deterministic
-automatons improves the time execution of model-checking technics.
+automatons improves the time execution of model-checking techniques.
 The translation is performed on an elaborated \vhdl{} design; a data
 space stores the values of signals and variables, and automatons
-represent the control-flow of \vhdl{} statements. Each \vhdl{} statement is
-associated to a specific automaton; sequence of statements are
-achieved by automaton composition. The simulation kernel is also
-represented by a specific automaton. Processes are composed together
-with respect to synchronization states, i.e. states that permit to
-pass the control from one process to another, therefore achieving
-determinism in the control flow of the overall automaton.
+represent the control-flow of \vhdl{} statements. Each \vhdl{}
+statement is associated to a specific automaton; sequence of
+statements are achieved by automaton composition. The simulation
+kernel is also represented by a specific automaton. Processes are
+composed together with respect to synchronization states, i.e. states
+that permit to pass the control from one process to another, therefore
+achieving determinism in the control flow of the overall automaton.
 
 In \cite{Olcoz1995}, the author presents a translation from \vhdl{} to
 Coloured Petri Nets (CPNs) thus giving a formal semantics to the

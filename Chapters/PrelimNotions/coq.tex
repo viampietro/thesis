@@ -68,15 +68,15 @@ Brouwer-Heyting-Kolmogorov (BHK) interpretation of the
 \textit{intuitionistic} logic \cite{Moschovakis2018}. Intuitionistic
 logic is the underlying logic built-in the \coq{} proof
 assistant. Intuitionistic logic denies the use of the law of excluded
-middle to perform proofs. Thus, intuitionistic logic as a
+middle to perform proofs. Thus, intuitionistic logic has a
 \textit{constructivist} approach of proofs. In the intuitionistic
-setting, one has to provide a explicitly built proof to demonstrate a
+setting, one has to provide an explicitly built proof to demonstrate a
 theorem; one can not rely on pure proof by contradiction by appealing
 to the law of excluded middle. Thus, a proof term of the logical
 implication $\mathtt{A}\Rightarrow\mathtt{B}$ is equivalent to an
 explicitly built program, or a function, of type \coqeb{A -> B},
 i.e. a program that takes an element of type $\mathtt{A}$ and yields
-an element of type $\mathtt{B}$. Thus, the type \coqeb{A -> (A -> B)  -> A} is a valid encoding of the formula
+an element of type $\mathtt{B}$. Thus, the type \coqeb{A -> (A -> B) -> A} is a valid encoding of the formula
 $\mathtt{A}\Rightarrow(\mathtt{A}\Rightarrow{}\mathtt{B})\Rightarrow\mathtt{B}$.
 
 The \texttt{Theorem} keyword triggers the interactive proof mode

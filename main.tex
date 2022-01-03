@@ -145,12 +145,13 @@ natbib=true]{biblatex}
 \doctoral{: Information, Structures, Syst\`emes}
 \researchunit{LIRMM}
 \specialisation{Informatique}
-\jury{Sandrine Blazy}{Professeure}{Université de Rennes}{Rapporteure}
-\jury{Frédéric Boniol}{Maître de recherche}{ONERA, Toulouse}{Rapporteur}
+\jury{Christian Retoré}{Professeur}{Université de Montpellier}{Président du jury}
 \jury{David Déharbe}{Docteur, Ingénieur}{Clearsy}{Examinateur}
 \jury{Marc Pouzet}{Professeur}{ENS, Paris}{Examinateur}
+\jury{David Andreu}{MCF}{Université de Montpellier/Neurinnov}{Co-Directeur}
+\jury{Sandrine Blazy}{Professeure}{Université de Rennes}{Rapporteure}
+\jury{Frédéric Boniol}{Maître de recherche}{ONERA, Toulouse}{Rapporteur}
 \jury{David Delahaye}{Professeur}{Université de Montpellier}{Directeur}
-\jury{David Andreu}{MCF}{Université de Montpellier/Neurinnov}{Co-directeur}
 
 \maketitle
 
@@ -158,11 +159,35 @@ natbib=true]{biblatex}
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
-% \begin{acknowledgements}
-%   \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-%   The acknowledgments and the people to thank go here, don't forget to
-%   include your project advisor\ldots
-% \end{acknowledgements}
+\begin{acknowledgements}
+  \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
+
+  Je remercie mes deux directeurs de thèse David Delahaye et David
+  Andreu pour avoir initié cette projet de thèse et m'avoir permis d'y
+  participer. Durant ces trois années passées avec vous, nous avons
+  appris à nous connaître et à travailler ensemble (même si en bonne
+  partie à distance, à cause de ce virus dont il est interdit de
+  prononcer le nom\dots). Grâce à vous, j'ai pu non seulement acquérir
+  des compétences en informatique, en mathématiques, en automatisme et
+  électronique, mais aussi des compétences en termes d'organisation et
+  de conduite de projets. Je vous suis reconnaissant pour votre
+  patience et votre pédagogie à mon égard.
+
+  Je remercie aussi toute l'équipe MAREL du LIRMM pour m'avoir
+  accueilli, et m'avoir apporté des conseils et des critiques
+  constructives vis-à-vis de mon travail; notamment lors des fameux
+  séminaires de l'équipe. Au sein de l'équipe MAREL, je remercie tout
+  particulièrement mon co-bureau Nicolas Hlad et Pascal Zaragoza (qui
+  était dans un bureau un peu plus loin) qui ont été des soutiens tout
+  au long de ma thèse, et sont maintenant des amis.
+
+  Je remercie également d'autres doctorants du LIRMM, notamment ceux
+  de l'équipe MAORE, à savoir Gabriel Volte, Tom Davot, Samuel
+  Masseport (pour ne citer que les plus permanents), qui ont aussi été
+  des soutiens au quotidien. 
+
+  
+\end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -313,10 +338,10 @@ natbib=true]{biblatex}
   specificities of the \hilecop{} model-to-text transformation,
   compared to compilers for programming languages, bring some
   interesting research challenges.  Finally, we have brought the
-  informal \textit{paper} proof that the \hilecop{} transformation is
-  semantic preserving by demonstrating a related behavior preservation
-  theorem.  The full mechanization of the proof using the \coq{} proof
-  assistant is an ongoing task.
+  \textit{paper} proof that the \hilecop{} transformation is semantic
+  preserving by demonstrating a related behavior preservation theorem.
+  The full mechanization of the proof using the \coq{} proof assistant
+  is an ongoing task.
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
